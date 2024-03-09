@@ -1,0 +1,10 @@
+AppBuilding
+
+1.Project setup
+Prepare repo for development, focus on code style unification.
+-plan folder structure
+-setup EsLint with prefered rules
+-setup Prrettier with prefered rules
+-write basic Readme
+-select css library and prepare scheme
+-Prepare app routes,loadings and errors states

@@ -1,3 +1,24 @@
 {
-  "extends": "next/core-web-vitals"
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "next",
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:jsx-a11y/recommended"
+  ],
+  "rules": {
+    "react/hook-use-state": "warn",
+    "react/react-in-jsx-scope": "off",
+    "react/no-array-index-key": "warn",
+    "react/boolean-prop-naming": [
+      "error",
+      { "rule": "^is[A-Z]([A-Za-z0-9]?)+" }
+    ],
+    "react-hooks/rules-of-hooks": "warn",
+    "react-hooks/exhaustive-deps": "warn",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/no-explicit-any": "warn"
+  }
 }

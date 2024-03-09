@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# NextTemplate 14
 
-## Getting Started
+App Template build with Next14, TS, Tailwind, Mongoose, NextAuth
 
-First, run the development server:
+## Demo link:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Access my site at [futureProd.com](https://futureProd.com)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Table of Content:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [Technologies and Libraries](#technologiesandlibraries)
+- [Setup](#setup)
+- [Branches](#branches)
+- [Credits](#credits)
+- [License](#license)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Technologies and libraries
 
-## Learn More
+Main: `Next14`, `Typescript`
+FrontEnd: `TailwindCSS`,`Yup`,`React Hook Form`
+BackEnd: `MongoDB`,`Mongoose`
+Auth: `Next Auth`,`bcrypt`
+dev: `Prettier`, `Lint`, `Jest`, `Storybook`
 
-To learn more about Next.js, take a look at the following resources:
+## Setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- copy the repository
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- run `pnpm install` for installing dependencies
 
-## Deploy on Vercel
+- create .env file with your MONGODB_URI and NEXTAUTH_SECRET
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- run `pnpm run dev` for start dev
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+Other scripts
+
+- run `pnpm run start` for start prod
+
+- run `pnpm run build` for building app
+
+- run `pnpm run lint` for lint
+
+- run `pnpm run format` for prettier --watch
+
+- run `pnpm run storybook` for starting storybook
+
+## Branches
+
+- `main` - main branch with merged others updated branches by topic
+
+- `basic-setup` - basic setup with app router, eslint, prettier and tailwindCss
+
+## Credits
+
+- [MichalusParus](github.com/MichalusParus)
+
+## License
+
+MIT license @[MichalusParus](github.com/MichalusParus)
