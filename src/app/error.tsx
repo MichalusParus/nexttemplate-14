@@ -1,10 +1,11 @@
-"use client";
-import { ErrorPageProps } from "@/utils/types";
-import { useRouter } from "next/navigation";
+'use client'
+import { useRouter } from 'next/navigation'
+
+import { ErrorPageProps } from '@/utils/types'
 
 export default function Error({ error, reset }: ErrorPageProps) {
-  const router = useRouter();
-  console.error(error);
+  const router = useRouter()
+  console.error(error)
 
   return (
     <>
@@ -14,5 +15,5 @@ export default function Error({ error, reset }: ErrorPageProps) {
         <button onClick={reset}>reset</button>
       </div>
     </>
-  );
+  )
 }

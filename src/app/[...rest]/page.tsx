@@ -1,9 +1,10 @@
-"use client";
-import { PageProps } from "@/utils/types";
-import { useRouter } from "next/navigation";
+'use client'
+import { useRouter } from 'next/navigation'
+
+import { PageProps } from '@/utils/types'
 
 export default function NotFound({ params }: PageProps) {
-  const router = useRouter();
+  const router = useRouter()
 
   return (
     <>
@@ -12,5 +13,5 @@ export default function NotFound({ params }: PageProps) {
         <button onClick={router.back}>back</button>
       </div>
     </>
-  );
+  )
 }

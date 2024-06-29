@@ -1,0 +1,95 @@
+'use client'
+import { forwardRef, HTMLAttributes, useEffect, useRef, useState } from 'react'
+
+import { shadowClass, shadowPosition } from './ScrollShadow.style'
+
+export type ScrollShadowProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
+  /** for passing custom tailwind classes */
+  className?: string
+  /** for setting height or maxHeight in tailwind classes */
+  height?: string
+  /** for setting shadow color in tailwind class "from-primary-700" */
+  color?: string
+  /** stable gutter for Y scroll */
+  gutter?: boolean
+  /** disable horizontal scroll */
+  disableHorizontal?: boolean
+}
+
+/** Content wrapper for scroll shadow effect. Parent must have from-"bgColor" tailwind class set. Default HTMLAttributes props supported. USE CLIENT  */
+export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
+  (
+    {
+      className = '',
+      height = 'h-full',
+      color = 'from-inherit',
+      gutter,
+      disableHorizontal,
+      children,
+      ...rest
+    },
+    ref,
+  ) => {
+    const scrollShadowRef = useRef<HTMLDivElement>(null)
+    const [scroll, setScroll] = useState<('vertical' | 'horizontal')[]>([])
+    const isVertical = scroll.includes('vertical')
+    const isHorizontal = scroll.includes('horizontal')
+    const disabledVertical = !disableHorizontal ? 'overflow-x-auto' : 'overflow-x-hidden'
+
+    useEffect(() => {
+      if (scrollShadowRef.current) {
+        if (scrollShadowRef.current.scrollHeight > scrollShadowRef.current.clientHeight) {
+          setScroll(prev => [...prev, 'vertical'])
+        }
+        if (
+          scrollShadowRef.current.scrollWidth > scrollShadowRef.current.clientWidth &&
+          !disableHorizontal
+        ) {
+          setScroll(prev => [...prev, 'horizontal'])
+        }
+      }
+    }, [
+      scrollShadowRef,
+      scrollShadowRef?.current?.clientHeight,
+      scrollShadowRef?.current?.clientWidth,
+      disableHorizontal,
+    ])
+
+    return (
+      <div
+        className={`ScrollShadow ${className} relative h-full ${color}`}
+        data-testid="ScrollShadow"
+        ref={ref}
+        {...rest}
+      >
+        <div className="ScrollShadowWrap overflow-hidden rounded-md">
+          <div
+            className={`ContentWrap overflow-y-auto ${disabledVertical} ${height} ${isVertical ? 'py-4' : ''} ${isHorizontal ? 'px-4' : ''}`}
+            style={{ scrollbarGutter: gutter ? 'stable' : 'initial' }}
+            ref={scrollShadowRef}
+          >
+            {children}
+          </div>
+        </div>
+        {isVertical ? (
+          <>
+            <div className={`TopShadow rounded-t-md ${shadowPosition.top} ${shadowClass}`} />
+            <div
+              className={`BottomShadow rounded-b-md ${shadowPosition.bottom} ${shadowClass} ${isHorizontal ? 'bottom-2' : 'bottom-0'}`}
+            />
+          </>
+        ) : null}
+        {isHorizontal ? (
+          <>
+            <div className={`LeftShadow rounded-l-md ${shadowPosition.left} ${shadowClass}`} />
+            <div
+              className={`RightShadow rounded-r-md ${shadowPosition.right} ${shadowClass} ${isVertical ? 'right-[0.437rem]' : '-right-[0.063rem]'}`}
+            />
+          </>
+        ) : null}
+      </div>
+    )
+  },
+)
+
+ScrollShadow.displayName = 'ScrollShadow'

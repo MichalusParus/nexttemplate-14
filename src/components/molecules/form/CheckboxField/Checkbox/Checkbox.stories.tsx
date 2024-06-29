@@ -1,0 +1,72 @@
+import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
+
+import Checkbox from '.'
+import { CheckboxProps } from './Checkbox'
+
+const meta: Meta<typeof Checkbox> = {
+  title: 'Molecules/Form/Checkbox',
+  component: Checkbox,
+  tags: ['autodocs'],
+  parameters: {
+    layout: 'centered',
+  },
+}
+
+const CheckboxWithHooks = (args: CheckboxProps) => {
+  const [value, setValue] = useState<string | number>()
+  return (
+    <Checkbox
+      {...args}
+      value={value}
+      isChecked={Boolean(value)}
+      onChange={v => setValue(prev => (prev ? undefined : v))}
+    />
+  )
+}
+
+export default meta
+type Story = StoryObj<typeof Checkbox>
+
+export const PrimaryDefault: Story = {
+  args: {
+    className: '',
+    name: 'checkboxStory',
+    label: 'Label',
+    variant: 'outlined',
+    color: 'primary',
+    size: 'md',
+    isChecked: false,
+    error: '',
+    fake: false,
+    onChange: undefined,
+  },
+  render: args => <CheckboxWithHooks {...args} />,
+}
+
+export const Switch: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'checkboxStory2',
+    variant: 'switch',
+  },
+  render: args => <CheckboxWithHooks {...args} />,
+}
+
+export const Error: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'checkboxStory3',
+    error: 'error',
+  },
+  render: args => <CheckboxWithHooks {...args} />,
+}
+
+export const Disabled: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'checkboxStory4',
+    disabled: true,
+  },
+  render: args => <CheckboxWithHooks {...args} />,
+}
