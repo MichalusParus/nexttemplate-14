@@ -1,7 +1,7 @@
-export const selectedClass = 'absolute left-[1px] top-0 flex max-w-[70%] flex-wrap gap-1'
+export const selectedClass = 'absolute left-[1px] top-0 flex max-w-[70%] flex-wrap gap-1.5'
 
 export const selectedSize = {
-  sm: 'my-smPY mx-smPXtext-sm',
+  sm: 'my-smPY mx-smPX text-sm',
   md: 'my-mdPY mx-mdPX text-base',
   lg: 'my-lgPY mx-lgPX text-lg',
   none: '',

@@ -10,7 +10,7 @@ const meta: Meta<typeof Chip> = {
   component: Chip,
   tags: ['autodocs'],
   parameters: {
-    layout: 'padded',
+    layout: 'centered',
   },
   argTypes: {
     startIcon: { control: false },

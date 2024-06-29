@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
     <>
-      <p>Loading</p>
+      <p>Base Loading</p>
     </>
   )
 }

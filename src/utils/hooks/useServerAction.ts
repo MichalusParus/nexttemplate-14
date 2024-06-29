@@ -1,6 +1,7 @@
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
+/** useServerAction hook is for handling server actions. */
 export const useServerAction = <P, R>(action: (value: P) => Promise<R[]>) => {
   const router = useRouter()
   const [data, setData] = useState<R[]>([])

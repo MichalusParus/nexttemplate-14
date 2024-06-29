@@ -18,6 +18,12 @@ const meta: Meta<typeof Select> = {
     comboboxProps: {
       control: false,
     },
+    dropdownProps: {
+      control: false,
+    },
+    listboxProps: {
+      control: false,
+    },
   },
 }
 
@@ -51,6 +57,8 @@ export const PrimaryDefault: Story = {
     collapsed: 'default',
     error: '',
     comboboxProps: undefined,
+    dropdownProps: undefined,
+    listboxProps: undefined,
     onChange: value => console.log(value),
   },
   render: args => <SelectWithHooks {...args} />,

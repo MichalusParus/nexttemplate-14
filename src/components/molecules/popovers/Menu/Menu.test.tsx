@@ -7,11 +7,14 @@ import Menu from '.'
 describe('Menu', () => {
   it('default', () => {
     render(
-      <Menu name="menuTest" className="className" title="accordion">
+      <Menu name="menuTest" className="className">
         Children
       </Menu>,
     )
-    expect(screen.getByTestId('Menu')).toBeTruthy()
-    expect(screen.getByTestId('Menu')).toHaveClass('className')
+    expect(screen.getByTestId('MenuWrap')).toBeTruthy()
+    expect(screen.getByTestId('MenuWrap')).toHaveClass('className')
+    expect(screen.getByRole('menu')).toBeTruthy()
+    expect(screen.getByRole('menu')).toHaveAttribute('id', 'menuTest')
+    expect(screen.getByRole('menu')).toHaveTextContent('Children')
   })
 })

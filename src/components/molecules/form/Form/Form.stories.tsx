@@ -54,6 +54,7 @@ const FormWithHooks = (args: FormProps) => {
     <Form {...args}>
       <InputField name="inputStory" label="Input:" placeholder="input" />
       <InputField name="numberStory" type="number" label="Number:" placeholder="number" />
+      <InputField name="searchStory" type="search" label="Search:" placeholder="Search" />
       <InputField name="dateStory" type="date" label="Date:" placeholder="date" />
       <TextAreaField name="textareaStory" label="Textarea:" placeholder="textarea" />
       <RangeField name="rangeStory" label="Range:" min={100} max={200} />

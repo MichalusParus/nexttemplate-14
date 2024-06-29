@@ -1,3 +1,4 @@
+'use client'
 import { forwardRef, InputHTMLAttributes } from 'react'
 
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
@@ -22,7 +23,7 @@ export type RadioGroupProps = Omit<
     onChange: (value: string) => void
   }
 
-/** Basic styled RadioGroup inside Label Component. For form purposes use RadioGroupField. Default InputHTMLAttributes props supported. */
+/** Basic styled RadioGroup inside Label Component. For form purposes use RadioGroupField. Default InputHTMLAttributes props supported. USE CLIENT */
 export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
   (
     {

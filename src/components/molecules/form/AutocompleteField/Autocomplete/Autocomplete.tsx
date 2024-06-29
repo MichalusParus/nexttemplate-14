@@ -1,5 +1,5 @@
 'use client'
-import { forwardRef, useCallback, useState } from 'react'
+import { KeyboardEvent, forwardRef, useCallback, useEffect, useState } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import { ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
@@ -20,6 +20,8 @@ import {
   comboboxWrapClass,
   disabledVariant,
 } from './Autocomplete.style'
+import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
+import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 
 export type AutocompleteProps = Pick<ComboboxProps, 'name' | 'disabled'> &
   Omit<LabelProps, 'name' | 'onClick'> & {
@@ -40,14 +42,20 @@ export type AutocompleteProps = Pick<ComboboxProps, 'name' | 'disabled'> &
     /** optional placeholder */
     placeholder?: string
     /** optional input props for autocomplete input */
-    inputProps?: InputProps
+    inputProps?: Partial<InputProps>
+    /** for passing aditional props to dropdown */
+    dropdownProps?: Partial<DropdownProps>
+    /** for passing aditional props to listbox */
+    listboxProps?: Partial<ListBoxProps>
+    /** function to call when autocomplete is opened for fetching options */
+    onOpen?: () => void
     /** set input value */
     onInputChange: (value: string) => void
     /** onChange function */
     onChange: (value: string) => void
   }
 
-/** Basic custom Autocomplete inside Label Component. For form purposes use AutocompleteField. ComboboxProps and InputProps supported. USE CLIENT */
+/** Basic custom Autocomplete inside Label Component. For form purposes use AutocompleteField. Input, Dropdown and ListBox props supported. USE CLIENT */
 export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
   (
     {
@@ -71,6 +79,9 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
       disabled,
       error,
       inputProps,
+      dropdownProps,
+      listboxProps,
+      onOpen,
       onInputChange,
       onChange,
     },
@@ -79,6 +90,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
     const [isOpen, setIsOpen] = useState(false)
     const sortedOptions = placement === 'top' ? options.reverse() : options
     const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false))
+    const ghostArray = new Array(10).fill(null).map((_, i) => ({ label: `${i}`, value: `${i}` }))
     const chevronPosition = isOpen ? 'rotate-180' : ''
     const errorShadow = error ? 'shadow-error' : ''
     const dropdownPadding = placement === 'left' ? 'pt-1' : 'pb-1'
@@ -111,10 +123,16 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
         if (!isOpen) {
           setIsOpen(true)
         }
-        onInputChange(String(value))
+        onInputChange(String(value).trimStart())
       },
       [isOpen, onInputChange],
     )
+
+    useEffect(() => {
+      if (isOpen && onOpen) {
+        onOpen()
+      }
+    }, [isOpen, onOpen])
 
     return (
       <Label
@@ -135,7 +153,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
           >
             <Input
               id={name}
-              className={'[&_input]:border-none [&_input]:bg-transparent [&_input]:pr-16'}
+              className={'w-full [&_input]:border-none [&_input]:bg-transparent [&_input]:pr-16'}
               name={name}
               label="AutoCompleteInput"
               value={inputValue}
@@ -152,7 +170,10 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
               aria-haspopup="listbox"
               aria-expanded={isOpen}
               aria-controls={name}
-              onClick={handleClose}
+              onKeyDown={(e: KeyboardEvent) =>
+                e.code === 'Enter' || e.code === 'Space' ? setIsOpen(true) : null
+              }
+              onClick={() => setIsOpen(true)}
               onChange={handleInputChange}
               {...inputProps}
             />
@@ -179,12 +200,13 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
             variant={variant}
             color={color}
             onClose={handleClose}
+            {...dropdownProps}
           >
             <ListBox
               className={dropdownPadding}
               name={name}
               value={[value]}
-              options={sortedOptions}
+              options={isLoading && onOpen ? ghostArray : sortedOptions}
               variant={variant}
               color={color}
               size={size}
@@ -192,6 +214,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
               hideCheckbox
               noOptionLabel={`No options match ${inputValue}`}
               onClick={handleOnChange}
+              {...listboxProps}
             />
           </Dropdown>
         </div>

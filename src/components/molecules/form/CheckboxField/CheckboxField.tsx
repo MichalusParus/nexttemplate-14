@@ -1,3 +1,4 @@
+'use client'
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
@@ -6,7 +7,7 @@ import { Checkbox, CheckboxProps } from './Checkbox/Checkbox'
 
 export type CheckboxFieldProps = Omit<CheckboxProps, 'value' | 'error' | 'isChecked' | 'onChange'>
 
-/** Form and style context wrapper for Checkbox component. Default InputHTMLAttributes props supported. */
+/** Form and style context wrapper for Checkbox component. Default InputHTMLAttributes props supported. USE CLIENT */
 export const CheckboxField = ({
   className = '',
   name,

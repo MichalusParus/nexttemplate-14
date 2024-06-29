@@ -21,8 +21,8 @@ export type MultiSelectProps = Omit<SelectProps, 'value' | 'onChange'> & {
   onChange: (value: string[]) => void
 }
 
-/** Basic custom MultiSelect inside Label Component. For form purposes use MultiSelectField. ComboboxProps supported. USE CLIENT */
-export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
+/** Basic custom MultiSelect inside Label Component. For form purposes use MultiSelectField. Combobox, Dropdown and ListBox supported. USE CLIENT */
+export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
   (
     {
       className = '',
@@ -43,6 +43,8 @@ export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
       disabled,
       error,
       comboboxProps,
+      dropdownProps,
+      listboxProps,
       onChange,
     },
     ref,
@@ -59,7 +61,7 @@ export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
       '.ChipAction',
       '.ClearButton',
     ])
-    useImperativeHandle(ref, () => startRef.current!)
+    useImperativeHandle(ref, () => componentRef.current!)
     const selectedOptions = options.filter(option => value.includes(option.value)) || options[0]
     const chevronPosition = isOpen ? 'rotate-180' : ''
     const errorClass = error ? 'error' : ''
@@ -123,7 +125,7 @@ export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
             onClick={handleClose}
             {...comboboxProps}
           >
-            <div className="ComboboxInnerWrap flex w-full justify-between">
+            <div className="ComboboxInnerWrap flex w-full items-center justify-between">
               {selectedOptions.length ? (
                 <div
                   className={'FakeSelectedWrap'}
@@ -178,6 +180,7 @@ export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
             variant={variant}
             color={color}
             onClose={handleClose}
+            {...dropdownProps}
           >
             <ListBox
               className={dropdownPadding}
@@ -189,6 +192,7 @@ export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
               size={size}
               aria-multiselectable={true}
               onClick={handleOnChange}
+              {...listboxProps}
             />
           </Dropdown>
         </div>

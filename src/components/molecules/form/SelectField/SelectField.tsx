@@ -1,3 +1,4 @@
+'use client'
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
@@ -6,7 +7,7 @@ import { Select, SelectProps } from './Select/Select'
 
 export type SelectFieldProps = Omit<SelectProps, 'value' | 'error' | 'onChange'>
 
-/** Form and style context wrapper for Input component. ComboboxProps supported. */
+/** Form and style context wrapper for Select component. Combobox, Dropdown and ListBox props supported. USE CLIENT */
 export const SelectField = ({
   className = '',
   name,

@@ -12,7 +12,7 @@ const meta: Meta<typeof Modal> = {
   component: Modal,
   tags: ['autodocs'],
   parameters: {
-    layout: 'fullscreened',
+    layout: 'fullscreen',
   },
 }
 

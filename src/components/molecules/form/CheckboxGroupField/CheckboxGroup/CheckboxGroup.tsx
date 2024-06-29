@@ -1,3 +1,4 @@
+'use client'
 import { forwardRef, useCallback } from 'react'
 
 import { Label, LabelProps } from '@/components/atoms/common/Label/Label'
@@ -18,7 +19,7 @@ export type CheckboxGroupProps = Omit<CheckboxProps, 'value' | 'isChecked' | 'on
     onChange: (value: string[]) => void
   }
 
-/** Basic styled CheckboxGroup inside Label Component. For form purposes use CheckboxGroupField. Default InputHTMLAttributes props supported. */
+/** Basic styled CheckboxGroup inside Label Component. For form purposes use CheckboxGroupField. Default InputHTMLAttributes props supported. USE CLIENT */
 export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
   (
     {

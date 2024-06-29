@@ -21,7 +21,7 @@ export const ImageViewer = ({ className = '', alt, children }: Props) => {
   const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false))
 
   const openClass = 'fixed w-[100vw] h-[100vh] top-0 left-0 z-50'
-  const closeClass = 'relative w-96 h-full'
+  const closeClass = 'relative w-full h-full'
 
   const handleClose = () => {
     startRef?.current?.focus()
@@ -34,17 +34,18 @@ export const ImageViewer = ({ className = '', alt, children }: Props) => {
 
   return (
     <div
-      className={`${className} transition-size bg-dark-400 ${isOpen ? openClass : closeClass}`}
+      className={`${className} transition-size ${isOpen ? openClass : closeClass}`}
       ref={componentRef}
       data-testid="ImageViewer"
     >
       <Combobox
-        className={`h-full w-full ${isOpen ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+        className={`flex h-full w-full overflow-hidden border-0 [&>.ButtonInnerWrap]:h-full ${isOpen ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
         name={alt}
         isOpen={isOpen}
         hasPopup="dialog"
         color="none"
         size="none"
+        hideShadow
         aria-label={alt}
         onClick={handleClose}
       >
@@ -52,7 +53,7 @@ export const ImageViewer = ({ className = '', alt, children }: Props) => {
       </Combobox>
       {isOpen ? (
         <Button
-          className="absolute right-4 top-4 z-50 bg-dark-600 text-dark-50"
+          className="right-4 top-4 z-50 border-0 bg-dark-600 text-dark-50 [&.Button]:fixed"
           variant="text"
           color="none"
           startIcon={<XIcon />}

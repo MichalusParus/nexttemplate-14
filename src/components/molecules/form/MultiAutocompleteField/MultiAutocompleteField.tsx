@@ -1,3 +1,4 @@
+'use client'
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
@@ -9,7 +10,7 @@ export type MultiAutocompleteFieldProps = Omit<
   'value' | 'error' | 'onChange'
 >
 
-/** Form context wrapper for Input component */
+/** Form and style context wrapper for MultiAutocomplete component. Input, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiAutocompleteField = ({
   className = '',
   name,

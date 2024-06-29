@@ -1,3 +1,4 @@
+'use client'
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
@@ -6,7 +7,7 @@ import { TextArea, TextAreaProps } from './TextArea/TextArea'
 
 export type TextAreaFieldProps = Omit<TextAreaProps, 'value' | 'error' | 'onChange'>
 
-/** Form and style context wrapper for TextArea component. Default TextareaHTMLAttributes props supported. */
+/** Form and style context wrapper for TextArea component. Default TextareaHTMLAttributes props supported. USE CLIENT */
 export const TextAreaField = ({
   className = '',
   name,

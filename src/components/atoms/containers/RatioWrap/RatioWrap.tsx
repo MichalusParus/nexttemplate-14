@@ -5,8 +5,8 @@ export type RatioWrapProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 
   className?: string
   /** number in procents for ratio between height and width  */
   ratio: number
-  /** setting fixed width by inline css, dont use tailwind classes  */
-  width?: string
+  /** width as css value, dont use tailwind classes  */
+  width?: string | number
 }
 
 /** Container for absolute children that can keep height to width ratio. Default HTMLAttributes props supported. */

@@ -1,4 +1,4 @@
-export const dottClass = 'mx-0.5 inline-flex animate-loaderAnim rounded-full bg-current'
+export const dottClass = 'mx-0.5 inline-flex animate-inlineLoaderAnim rounded-full bg-current'
 
 export const loaderSize = {
   sm: 'p-smPY',

@@ -2,7 +2,7 @@ import { forwardRef, HTMLAttributes } from 'react'
 
 import { spinnerClass, spinnerColor, spinnerSize } from './SpinnerLoader.style'
 
-export type SpinnerLoaderProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
+export type CircularLoaderProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */
   className?: string
   /** theme color of component, none disable styles for custom styling via className */
@@ -16,14 +16,14 @@ export type SpinnerLoaderProps = Omit<HTMLAttributes<HTMLDivElement>, 'className
 }
 
 /** Serves as block loader. Default HTMLAttributes props supported. */
-export const SpinnerLoader = forwardRef<HTMLDivElement, SpinnerLoaderProps>(
+export const CircularLoader = forwardRef<HTMLDivElement, CircularLoaderProps>(
   (
     { className = '', color = 'primary', size = 'md', label = 'Loading...', hideLabel, ...rest },
     ref,
   ) => {
     return (
       <div
-        className={`SpinnerLoader ${className} flex flex-col items-center`}
+        className={`CircularLoader ${className} flex flex-col items-center`}
         role="status"
         aria-label="loading"
         aria-busy="true"
@@ -33,9 +33,7 @@ export const SpinnerLoader = forwardRef<HTMLDivElement, SpinnerLoaderProps>(
         <div
           className={`SpinnerWrap relative rounded-full border-4 ${spinnerColor[color]} ${spinnerSize[size]}`}
         >
-          <div className={`Spinner animate-[spin_750ms_ease-in_infinite] ${spinnerClass}`} />
-          <div className={`Spinner animate-[spin_750ms_linear_infinite] ${spinnerClass}`} />
-          <div className={`Spinner animate-[spin_750ms_ease-out_infinite] ${spinnerClass}`} />
+          <div className={`Spinner animate-circularLoaderAnim ${spinnerClass}`} />
         </div>
         {!hideLabel ? label : null}
       </div>
@@ -43,4 +41,4 @@ export const SpinnerLoader = forwardRef<HTMLDivElement, SpinnerLoaderProps>(
   },
 )
 
-SpinnerLoader.displayName = 'SpinnerLoader'
+CircularLoader.displayName = 'CircularLoader'

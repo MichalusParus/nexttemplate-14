@@ -9,6 +9,8 @@ import Dropdown from '@/components/molecules/popovers/Dropdown'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
+import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
+import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 
 export type SelectProps = Pick<ComboboxProps, 'name' | 'disabled'> &
   Omit<LabelProps, 'onClick'> & {
@@ -25,13 +27,17 @@ export type SelectProps = Pick<ComboboxProps, 'name' | 'disabled'> &
     /** optional placeholder */
     placeholder?: string
     /** optional combobox props for select combobox */
-    comboboxProps?: ComboboxProps
+    comboboxProps?: Partial<ComboboxProps>
+    /** for passing aditional props to dropdown */
+    dropdownProps?: Partial<DropdownProps>
+    /** for passing aditional props to listbox */
+    listboxProps?: Partial<ListBoxProps>
     /** onChange function */
     onChange: (value: string) => void
   }
 
-/** Basic custom Select inside Label Component. For form purposes use SelectField. ComboboxProps supported. USE CLIENT */
-export const Select = forwardRef<HTMLButtonElement, SelectProps>(
+/** Basic custom Select inside Label Component. For form purposes use SelectField. Combobox, Dropdown and ListBox props supported. USE CLIENT */
+export const Select = forwardRef<HTMLDivElement, SelectProps>(
   (
     {
       className = '',
@@ -52,6 +58,8 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
       disabled,
       error,
       comboboxProps,
+      dropdownProps,
+      listboxProps,
       onChange,
     },
     ref,
@@ -60,7 +68,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
     const sortedOptions = placement === 'top' ? options.reverse() : options
     const selectedOption = options.find(option => option.value === value)
     const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), ['.Option'])
-    useImperativeHandle(ref, () => startRef.current!)
+    useImperativeHandle(ref, () => componentRef.current!)
     const chevronPosition = isOpen ? 'rotate-180' : ''
     const errorClass = error ? 'error' : ''
     const dropdownPadding = placement === 'left' ? 'pt-1' : 'pb-1'
@@ -126,6 +134,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
             variant={variant}
             color={color}
             onClose={handleClose}
+            {...dropdownProps}
           >
             <ListBox
               className={dropdownPadding}
@@ -137,6 +146,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
               size={size}
               hideCheckbox
               onClick={handleOnChange}
+              {...listboxProps}
             />
           </Dropdown>
         </div>

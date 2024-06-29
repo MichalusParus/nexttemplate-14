@@ -1,3 +1,4 @@
+'use client'
 import { forwardRef, TextareaHTMLAttributes } from 'react'
 
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
@@ -25,7 +26,7 @@ export type TextAreaProps = Omit<
     onChange: (value: string) => void
   }
 
-/** Basic styled uncontroled TextArea inside Label Component. For form purposes use TextAreaField. Default TextareaHTMLAttributes props supported.  */
+/** Basic styled uncontroled TextArea inside Label Component. For form purposes use TextAreaField. Default TextareaHTMLAttributes props supported. USE CLIENT */
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     {

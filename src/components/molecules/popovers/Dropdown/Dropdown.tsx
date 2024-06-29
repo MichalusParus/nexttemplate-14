@@ -19,6 +19,8 @@ export type DropdownProps = {
   color?: 'primary' | 'secondary' | 'terciary' | 'none'
   /** for setting component width as tailwind class */
   width?: string
+  /** for setting component height or maxHeight as tailwind class */
+  height?: string
   /** for setting internal padding of Paper component */
   padding?: string
   /** optional for disabling overlay */
@@ -41,6 +43,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       variant = 'text',
       color = 'primary',
       width = 'w-full',
+      height = 'max-h-[40vh]',
       padding = 'p-0',
       hideOverlay,
       hideShadow,
@@ -63,7 +66,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
             padding={padding}
             hideShadow={hideShadow}
           >
-            <ScrollShadow height="max-h-[40vh]">{children}</ScrollShadow>
+            <ScrollShadow height={height}>{children}</ScrollShadow>
           </Paper>
         </div>
         {hideOverlay || placement === 'relative' ? null : (

@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import SpinnerLoader from '.'
+import CircularLoader from '.'
 
-const meta: Meta<typeof SpinnerLoader> = {
-  title: 'Atoms/Loaders/SpinnerLoader',
-  component: SpinnerLoader,
+const meta: Meta<typeof CircularLoader> = {
+  title: 'Atoms/Loaders/CircularLoader',
+  component: CircularLoader,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
@@ -12,7 +12,7 @@ const meta: Meta<typeof SpinnerLoader> = {
 }
 
 export default meta
-type Story = StoryObj<typeof SpinnerLoader>
+type Story = StoryObj<typeof CircularLoader>
 
 export const PrimaryDefault: Story = {
   args: {

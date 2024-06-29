@@ -11,7 +11,7 @@ const meta: Meta<typeof Dropdown> = {
   component: Dropdown,
   tags: ['autodocs'],
   parameters: {
-    layout: 'fullscreened',
+    layout: 'fullscreen',
   },
 }
 
@@ -29,7 +29,7 @@ const DropdownWithHooks = ({ args }: { args: DropdownProps }) => {
         >
           Combobox for Dropdown
         </Combobox>
-        <Dropdown {...args} name="storybookDrawer" isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <Dropdown {...args} isOpen={isOpen} onClose={() => setIsOpen(false)}>
           {args.children}
         </Dropdown>
       </div>

@@ -1,37 +1,21 @@
-'use client'
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import Tabs from '@/components/molecules/common/Tabs'
+import { tabs } from '../../.storybook/helpers'
+import { PageProps } from '@/utils/types'
+import ImageViewer from '@/components/molecules/popovers/ImageViewer'
+import Image from '@/components/atoms/common/Image'
 
-import Avatar from '@/components/atoms/common/Avatar'
-import Chip from '@/components/atoms/common/Chip'
-
-const getData = async () => {
-  const data = await fetch('https://catfact.ninja/fact')
-  return await data.json()
-}
-const getData2 = async () => {
-  const data = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json')
-  return await data.json()
-}
-
-export default function Home() {
-  const [data, setData] = useState<any>()
-  const [data2, setData2] = useState<any>()
-
-  useEffect(() => {
-    getData().then(res => setData(res))
-    getData2().then(res => setData2(res))
-  }, [])
-
-  console.log(data, data2)
-
+export default function Home({ searchParams }: PageProps) {
   return (
-    <div className="borde flex max-w-[90vw] flex-col text-black">
-      Home
-      <Image alt="imageStory" width={500} height={250} src="https://picsum.photos/3000/750" />
-      <Avatar />
-      <Chip>hvhgvhgvjhhj</Chip>
-      mb gvghjhvjvgjgh
+    <div className="flex max-w-[90vw] flex-col text-black">
+      <Tabs name="test" tabs={tabs} param={searchParams.tab || ''} />
+      <ImageViewer alt="imageStory">
+        <Image
+          src="https://picsum.photos/3000/750"
+          alt="imageStory"
+          ratio={75}
+          objectFit="object-cover"
+        />
+      </ImageViewer>
     </div>
   )
 }

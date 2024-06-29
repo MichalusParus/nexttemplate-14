@@ -1,16 +1,15 @@
 'use client'
-import { forwardRef, useCallback, useState } from 'react'
+import { KeyboardEvent, forwardRef, useCallback, useEffect, useState } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import Chip from '@/components/atoms/common/Chip'
-import { ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
 import ListBox from '@/components/atoms/common/ListBox'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 import XIcon from '@/components/atoms/icons/XIcon'
 import Dropdown from '@/components/molecules/popovers/Dropdown'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
-import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
+import { Label } from '../../../../atoms/common/Label/Label'
 import {
   chevronClass,
   clearButtonClass,
@@ -18,37 +17,18 @@ import {
   disabledVariant,
 } from '../../AutocompleteField/Autocomplete/Autocomplete.style'
 import Input from '../../InputField/Input'
-import { InputProps } from '../../InputField/Input/Input'
-import { inputVariant } from '../../InputField/Input/Input.style'
-import { iconSize, selectedSize } from '../../MultiSelectField/MultiSelect/MultiSelect.style'
+import { inputSize, inputVariant } from '../../InputField/Input/Input.style'
+import { iconSize } from '../../MultiSelectField/MultiSelect/MultiSelect.style'
+import { AutocompleteProps } from '../../AutocompleteField/Autocomplete/Autocomplete'
 
-export type MultiAutocompleteProps = Pick<ComboboxProps, 'name' | 'disabled'> &
-  Omit<LabelProps, 'name' | 'onClick'> & {
-    /** position of dropdown */
-    placement?: 'left' | 'top'
-    /** style variant of component */
-    variant?: 'text' | 'outlined' | 'contained'
-    /** theme color of component, none disable styles for custom styling via className */
-    color?: 'primary' | 'secondary' | 'terciary' | 'none'
-    /** current value of input */
-    inputValue: string
-    /** current value of MultiAutocomplete */
-    value: string[]
-    /** options for select to choose from */
-    options: { label: string; value: string }[]
-    /** loading state for options fetching, loading is delayed for 1 second to prevent flickering */
-    isLoading?: boolean
-    /** optional placeholder */
-    placeholder?: string
-    /** optional input props for MultiAutocomplete input */
-    inputProps?: InputProps
-    /** set input value */
-    onInputChange: (value: string) => void
-    /** onChange function */
-    onChange: (value: string[]) => void
-  }
+export type MultiAutocompleteProps = Omit<AutocompleteProps, 'value' | 'onChange'> & {
+  /** current value of component */
+  value: string[]
+  /** onChange function */
+  onChange: (value: string[]) => void
+}
 
-/** Basic custom MultiAutocomplete inside Label Component. For form purposes use MultiAutocompleteField. ComboboxProps and InputProps supported. USE CLIENT */
+/** Basic custom MultiAutocomplete inside Label Component. For form purposes use MultiAutocompleteField. Input, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteProps>(
   (
     {
@@ -72,6 +52,9 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
       disabled,
       error,
       inputProps,
+      dropdownProps,
+      listboxProps,
+      onOpen,
       onInputChange,
       onChange,
     },
@@ -79,8 +62,13 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
   ) => {
     const [isOpen, setIsOpen] = useState(false)
     const sortedOptions = placement === 'top' ? options.reverse() : options
-    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false))
+    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), [
+      '.Option',
+      '.ChipAction',
+      '.ClearButton',
+    ])
     const [selectedOptions, setSelectedOptions] = useState<{ label: string; value: string }[]>([])
+    const ghostArray = new Array(10).fill(null).map((_, i) => ({ label: `${i}`, value: `${i}` }))
     const chevronPosition = isOpen ? 'rotate-180' : ''
     const errorShadow = error ? 'shadow-error' : ''
     const dropdownPadding = placement === 'left' ? 'pt-1' : 'pb-1'
@@ -102,7 +90,6 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
           : [...selectedOptions, ...options.filter(option => option.value === v)]
         onChange(newValues)
         setSelectedOptions(newSelectedOptions)
-        onInputChange('')
       },
       [value, selectedOptions, options, onChange, onInputChange],
     )
@@ -112,7 +99,7 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
         if (!isOpen) {
           setIsOpen(true)
         }
-        onInputChange(String(value))
+        onInputChange(String(value).trimStart())
       },
       [isOpen, onInputChange],
     )
@@ -122,6 +109,12 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
       onInputChange('')
       setSelectedOptions([])
     }, [onChange, onInputChange])
+
+    useEffect(() => {
+      if (isOpen && onOpen) {
+        onOpen()
+      }
+    }, [isOpen, onOpen])
 
     return (
       <Label
@@ -138,45 +131,45 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
       >
         <div className={'MultiAutocomplete relative flex w-full'} ref={componentRef}>
           <div
-            className={`ComboboxWrap pr-16 ${comboboxWrapClass} ${selectedClass} ${inputVariant[variant][color]} ${disabledClass} ${disabledVariant[variant]} ${comboboxZIndex} ${errorShadow}`}
+            className={`ComboboxWrap flex flex-wrap items-start gap-1.5 pr-16 ${comboboxWrapClass} ${selectedClass} ${inputVariant[variant][color]} ${inputSize[size]} ${disabledClass} ${disabledVariant[variant]} ${comboboxZIndex} ${errorShadow}`}
           >
             {selectedOptions.length ? (
-              <div
-                className={`SelectedOptionsWrap flex w-full flex-wrap gap-1 ${selectedSize[size]} ${comboboxZIndex} `}
-                data-testid="SelectedOptionsWrap"
-              >
-                {selectedOptions.map(option => (
-                  <Chip
-                    key={option.value}
-                    variant={variant}
-                    color={color}
-                    size={size}
-                    onClick={() => handleOnChange(option.value)}
-                  >
-                    {option.label}
-                  </Chip>
-                ))}
-                <Button
-                  className={`ClearButton ${clearButtonClass} ${comboboxZIndex} ${selectedClass}`}
-                  startIcon={<XIcon className={iconSize[size]} />}
-                  variant={variant}
-                  color={color}
-                  size="none"
-                  hideShadow
-                  aria-label="clear"
-                  onClick={handleClear}
-                />
-              </div>
+              <Button
+                className={`ClearButton ${clearButtonClass} ${comboboxZIndex} ${selectedClass}`}
+                startIcon={<XIcon className={iconSize[size]} />}
+                variant={variant}
+                color={color}
+                size="none"
+                hideShadow
+                tabIndex={-1}
+                aria-label="clear"
+                onClick={handleClear}
+              />
             ) : null}
+            {selectedOptions.map(option => (
+              <Chip
+                key={option.value}
+                variant={variant}
+                color={color}
+                size={size}
+                buttonProps={{ tabIndex: -1 }}
+                onClick={() => handleOnChange(option.value)}
+              >
+                {option.label}
+              </Chip>
+            ))}
             <Input
               id={name}
-              className={'[&_input]:border-none [&_input]:bg-transparent'}
+              className={
+                'grow basis-40 [&_input]:border-none [&_input]:bg-transparent [&_input]:py-px'
+              }
               name={name}
               label="MultiAutocompleteInput"
               value={inputValue}
               variant={variant}
               color="none"
-              size={size}
+              size="none"
+              width=""
               placeholder={placeholder}
               disabled={disabled}
               hideLabel
@@ -184,10 +177,14 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
               autoComplete="off"
               ref={ref}
               role="combobox"
+              aria-label="multiautocomplete combobox"
               aria-haspopup="listbox"
               aria-expanded={isOpen}
               aria-controls={name}
-              onClick={handleClose}
+              onKeyDown={(e: KeyboardEvent) =>
+                e.code === 'Enter' || e.code === 'Space' ? setIsOpen(true) : null
+              }
+              onClick={() => setIsOpen(true)}
               onChange={handleInputChange}
               {...inputProps}
             />
@@ -199,18 +196,20 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
             variant={variant}
             color={color}
             onClose={handleClose}
+            {...dropdownProps}
           >
             <ListBox
               className={dropdownPadding}
               name={name}
               value={value}
-              options={sortedOptions}
+              options={isLoading && onOpen ? ghostArray : sortedOptions}
               variant={variant}
               color={color}
               size={size}
               isLoading={isLoading}
               noOptionLabel={`No options match ${inputValue}`}
               onClick={handleOnChange}
+              {...listboxProps}
             />
           </Dropdown>
         </div>

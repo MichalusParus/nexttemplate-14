@@ -62,7 +62,7 @@ export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
         ref={ref}
         {...rest}
       >
-        <div className="ScrollShadowWrap overflow-hidden rounded-md">
+        <div className="ScrollShadowWrap h-full overflow-hidden rounded-md">
           <div
             className={`ContentWrap overflow-y-auto ${disabledVertical} ${height} ${isVertical ? 'py-4' : ''} ${isHorizontal ? 'px-4' : ''}`}
             style={{ scrollbarGutter: gutter ? 'stable' : 'initial' }}

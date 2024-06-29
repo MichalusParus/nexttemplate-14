@@ -1,20 +1,19 @@
 'use client'
-import { ReactNode, useState } from 'react'
+import { PropsWithChildren, forwardRef, useImperativeHandle, useState } from 'react'
 
 import { Combobox, ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import Dropdown from '../Dropdown'
+import { DropdownProps } from '../Dropdown/Dropdown'
 
-type MenuProps = {
+export type MenuProps = {
   /** for passing custom tailwind classes */
   className?: string
   /** name string serves as id for aria purposes and as secondary aria label */
   name: string
-  /** combobox title */
-  title?: string
-  /** combobox icon */
-  icon?: ReactNode
+  /** optional isOpen state for external state control, must be use with setIsOpen prop, or for setting default open state */
+  isOpen?: boolean
   /** position of dropdown */
   placement?: 'left' | 'right' | 'top'
   /** style variant of component */
@@ -23,72 +22,86 @@ type MenuProps = {
   color?: 'primary' | 'secondary' | 'none'
   /** for setting dropdown width */
   width?: string
-  /** unlock relative position of menu wrap for custom dropdown placement */
-  unlocked?: boolean
   /** for passing aditional props to combobox */
-  comboboxProps?: Omit<ComboboxProps, 'name' | 'hasPopup' | 'isOpen'>
-  /** children */
-  children: React.ReactNode
+  comboboxProps?: Partial<ComboboxProps>
+  /** for passing aditional props to dropdown */
+  dropdownProps?: Partial<DropdownProps>
+  /** optional setIsOpen function, if set, menu becomes controlled component */
+  setIsOpen?: (value: boolean) => void
 }
 
-/** Menu is dropdown popover for displaying additional settings. */
-export const Menu = ({
-  className = '',
-  name,
-  title,
-  icon,
-  placement = 'left',
-  variant = 'outlined',
-  color = 'primary',
-  width = 'min-w-96',
-  unlocked,
-  comboboxProps,
-  children,
-}: MenuProps) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), [
-    'button:not(.Overlay):not(.FakeSubmitButton)',
-    '[href]',
-    'input',
-    '[tabindex]:not([tabindex="-1"])',
-  ])
+/** Menu is dropdown popover for displaying additional settings. Uncontroled by default or controled with isOpen and onClose props. Should contain somponents with role menuitem. Combobox and Dropdown props supported. USE CLIENT */
+export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
+  (
+    {
+      className = '',
+      name,
+      isOpen,
+      placement = 'left',
+      variant = 'outlined',
+      color = 'primary',
+      width = 'min-w-96',
+      comboboxProps = { children: 'MenuCombobox' },
+      dropdownProps,
+      setIsOpen,
+      children,
+    },
+    ref,
+  ) => {
+    const [isLocallyOpen, setIsLocallyOpen] = useState(Boolean(isOpen))
+    const openState = setIsOpen ? Boolean(isOpen) : isLocallyOpen
+    useImperativeHandle(ref, () => componentRef.current!)
+    const { componentRef, startRef } = useFocusTrap(isLocallyOpen, () => setIsLocallyOpen(false), [
+      'button:not(.Overlay):not(.FakeSubmitButton)',
+      '[href]',
+      'input',
+      '[tabindex]:not([tabindex="-1"])',
+    ])
 
-  const handleClose = () => {
-    startRef?.current?.focus()
-    setIsOpen(prev => !prev)
-  }
+    const handleClose = () => {
+      if (setIsOpen) {
+        setIsOpen(!isOpen)
+      } else {
+        setIsLocallyOpen(prev => !prev)
+      }
+      startRef?.current?.focus()
+    }
 
-  return (
-    <div className={`${className} ${unlocked ? '' : 'relative'}`} data-testid="Menu">
-      <Combobox
-        name={name}
-        isOpen={isOpen}
-        hasPopup="menu"
-        variant={variant}
-        color={color}
-        startIcon={icon}
-        ref={startRef}
-        onClick={handleClose}
-        {...comboboxProps}
+    return (
+      <div
+        className={`MenuWrap ${className} ${!setIsOpen ? 'relative' : ''}`}
+        data-testid="MenuWrap"
       >
-        {title}
-      </Combobox>
-      <Dropdown
-        name={name}
-        isOpen={isOpen}
-        placement={placement}
-        variant={variant}
-        color={color}
-        width={width}
-        padding="pt-1"
-        role="menu"
-        ref={componentRef}
-        onClose={handleClose}
-      >
-        {children}
-      </Dropdown>
-    </div>
-  )
-}
+        {!setIsOpen ? (
+          <Combobox
+            name={name}
+            isOpen={openState}
+            hasPopup="menu"
+            variant={variant}
+            color={color}
+            ref={startRef}
+            onClick={handleClose}
+            {...comboboxProps}
+          />
+        ) : null}
+        <Dropdown
+          isOpen={openState}
+          placement={placement}
+          variant={variant}
+          color={color}
+          width={width}
+          padding="pt-1"
+          ref={componentRef}
+          onClose={handleClose}
+          {...dropdownProps}
+        >
+          <div id={name} role="menu" aria-hidden={!openState}>
+            {children}
+          </div>
+        </Dropdown>
+      </div>
+    )
+  },
+)
 
 Menu.displayName = 'Menu'

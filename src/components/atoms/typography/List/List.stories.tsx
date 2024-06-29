@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 
 import { options, textContent, titleSizeVariants } from '../../../../../.storybook/helpers'
 import { Li, List } from './List'
+import CheckIcon from '../../icons/CheckIcon'
 
 const meta: Meta<typeof List> = {
   title: 'Atoms/Typography/List',
@@ -15,6 +16,9 @@ const meta: Meta<typeof List> = {
       control: false,
     },
     titleProps: {
+      control: false,
+    },
+    icon: {
       control: false,
     },
   },
@@ -31,27 +35,37 @@ export const Default: Story = {
     listStyleType: undefined,
     color: 'none',
     size: 'md',
-    content: listContent,
+    content: listContent.slice(0, 6),
     title: undefined,
     titleProps: { variant: 'h3' },
+    icon: undefined,
     isLoading: false,
     expectedLines: 6,
   },
+}
+
+export const Ol: Story = {
+  args: { ...Default.args, listStyleType: 'list-decimal' },
 }
 
 export const Ul: Story = {
   args: { ...Default.args, listStyleType: 'list-disc' },
 }
 
+export const CustomIcon: Story = {
+  args: { ...Default.args, icon: <CheckIcon /> },
+}
+
 export const Title: Story = {
-  args: { ...Default.args, title: 'List Title' },
+  args: { ...Default.args, listStyleType: 'list-[none]', title: 'List Title', icon: <CheckIcon /> },
 }
 
 export const Description: Story = {
   args: {
     ...Default.args,
     title: 'List Title',
-    children: textContent.slice(0, 57),
+    description: textContent.slice(0, 57),
+    icon: <CheckIcon />,
   },
 }
 
@@ -59,6 +73,7 @@ export const Children: Story = {
   args: {
     ...Default.args,
     content: undefined,
+    listStyleType: 'list-decimal',
     title: 'Pass Li as Children and customize each one.',
   },
   render: args => (

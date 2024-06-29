@@ -1,4 +1,4 @@
-export const drawerClass = 'absolute transition-dropdown z-[40] h-full bg-bg rounded-md'
+export const drawerClass = 'absolute transition-dropdown z-[40] bg-bg rounded-md'
 
 export const openClass = {
   left: 'left-0 visible opacity-100',

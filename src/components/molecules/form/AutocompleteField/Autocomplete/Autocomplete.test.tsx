@@ -90,9 +90,12 @@ describe('Autocomplete', () => {
         onChange={() => {}}
       />,
     )
-    fireEvent.click(screen.getByRole('combobox'))
-    fireEvent.click(screen.getAllByRole('button')[0])
-    expect(spy).toHaveBeenCalledTimes(1)
+    fireEvent.change(screen.getByRole('combobox'), {
+      target: {
+        value: 'newvalue',
+      },
+    })
+    expect(spy).toHaveBeenCalledWith('newvalue')
   })
 
   it('onChange', () => {
@@ -105,13 +108,13 @@ describe('Autocomplete', () => {
         value="value1"
         inputValue="value1"
         options={options}
-        onInputChange={() => {}}
+        onInputChange={spy}
         onChange={spy}
       />,
     )
     fireEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getAllByRole('button')[0])
-    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(2)
   })
 
   it('disabled', () => {

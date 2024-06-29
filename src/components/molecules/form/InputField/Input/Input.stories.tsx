@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import Input from '.'
+import SearchIcon from '@/components/atoms/icons/SearchIcon'
 
 const meta: Meta<typeof Input> = {
   title: 'Molecules/Form/Input',
@@ -55,6 +56,7 @@ export const Search: Story = {
     ...PrimaryDefault.args,
     name: 'inputStory4',
     type: 'search',
+    value: 'fixed value',
   },
 }
 
@@ -66,10 +68,18 @@ export const Date: Story = {
   },
 }
 
-export const Error: Story = {
+export const StartIcon: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'inputStory6',
+    startIcon: <SearchIcon />,
+  },
+}
+
+export const Error: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'inputStory7',
     error: 'error',
   },
 }
@@ -77,7 +87,7 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'inputStory7',
+    name: 'inputStory8',
     disabled: true,
   },
 }

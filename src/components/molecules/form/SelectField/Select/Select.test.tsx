@@ -69,7 +69,7 @@ describe('Select', () => {
     const spy = jest.fn()
     render(<Select name="selectTest" label="label" value="" options={options} onChange={spy} />)
     fireEvent.click(screen.getByRole('combobox'))
-    fireEvent.click(screen.getAllByRole('button')[0])
+    fireEvent.click(screen.getAllByRole('option')[0])
     expect(spy).toHaveBeenCalledWith('value1')
   })
 

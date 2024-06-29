@@ -1,3 +1,4 @@
+'use client'
 import { forwardRef, InputHTMLAttributes } from 'react'
 
 import CheckIcon from '@/components/atoms/icons/CheckIcon'
@@ -42,7 +43,7 @@ export type CheckboxProps = Omit<
   onChange: (value: string) => void
 }
 
-/** Basic styled Checkbox. For form purposes use CheckboxField. Default InputHTMLAttributes props supported. */
+/** Basic styled Checkbox. For form purposes use CheckboxField. Default InputHTMLAttributes props supported. . USE CLIENT */
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   (
     {

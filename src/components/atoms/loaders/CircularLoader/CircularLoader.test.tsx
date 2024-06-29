@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import SpinnerLoader from '.'
+import CircularLoader from '.'
 
-describe('SpinnerLoader', () => {
+describe('CircularLoader', () => {
   it('default', () => {
-    render(<SpinnerLoader className="className" />)
+    render(<CircularLoader className="className" />)
     expect(screen.getByRole('status')).toBeTruthy()
     expect(screen.getByRole('status')).toHaveClass('className')
   })

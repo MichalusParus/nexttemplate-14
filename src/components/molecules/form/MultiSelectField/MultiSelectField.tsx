@@ -1,3 +1,4 @@
+'use client'
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
@@ -6,7 +7,7 @@ import { MultiSelect, MultiSelectProps } from './MultiSelect/MultiSelect'
 
 type MultiSelectFieldProps = Omit<MultiSelectProps, 'value' | 'error' | 'onChange'>
 
-/** Form and style context wrapper for Input component. ComboboxProps supported. */
+/** Form and style context wrapper for MultiSelect component. Combobox, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiSelectField = ({
   className = '',
   name,

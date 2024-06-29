@@ -37,7 +37,7 @@ type Props = {
   /** optional for hiding export */
   hideExport?: boolean
   /** for passing aditional props to multiselect submit button */
-  multiselectButtonProps?: ButtonProps
+  multiselectButtonProps?: Partial<ButtonProps>
   /** onSubmit function for selected rows */
   onMultiselectSubmit?: (value: RowDef[]) => void
   /** function for clicable rows */

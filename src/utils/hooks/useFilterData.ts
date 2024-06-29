@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 export type SortingDef = { [key: string]: 'asc' | 'dec' | 'none' }
 export type FilterDef = { [key: string]: string }
 
+/** useFilterData is hook for client side filtering and sorting. */
 export const useFilterData = <T>(data: T[]) => {
   const [sorting, setSorting] = useState<SortingDef>({})
   const [filter, setFilter] = useState<FilterDef>({})

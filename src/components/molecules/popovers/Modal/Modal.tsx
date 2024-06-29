@@ -78,6 +78,7 @@ export const Modal = ({
         ref={componentRef}
         role="dialog"
         aria-modal="true"
+        aria-hidden={!isOpen}
         aria-label={title || name}
       >
         <Paper

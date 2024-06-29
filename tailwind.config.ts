@@ -152,12 +152,14 @@ const config: Config = {
         activity: 'background-color, color, box-shadow, border-color',
         maxHeight: 'max-height',
         width: 'width',
+        margin: 'margin',
         disableAutofill: 'backgroundColor 600000s 0s, color 600000s 0s',
       },
       animation: {
         ghostAnim: 'ghostAnim 1500ms infinite',
-        loaderAnim: 'loaderAnim 1400ms infinite',
-        spinnerAnim: 'spinnerAnim 2500ms infinite',
+        inlineLoaderAnim: 'inlineLoaderAnim 1400ms infinite',
+        circularLoaderAnim:
+          'circularLoaderAnim1 800ms infinite linear alternate, circularLoaderAnim2 1600ms infinite linear',
       },
     },
   },

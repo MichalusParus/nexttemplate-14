@@ -1,14 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 
 import Tabs from '.'
-
-const tabs = [
-  { label: 'Label 1', slug: 'label1', component: <>Content 1</> },
-  { label: 'Label 2', slug: 'label2', component: <>Content 2</> },
-  { label: 'Label 3', slug: 'label3', component: <>Content 3</> },
-]
+import { tabs } from '../../../../../.storybook/helpers'
 
 jest.mock('next/navigation', () => ({
   useSearchParams: () => ({ get: () => 'label1' }),
@@ -16,8 +11,25 @@ jest.mock('next/navigation', () => ({
 
 describe('Tabs', () => {
   it('default', () => {
-    render(<Tabs name="tabsTest" tabs={tabs} className="className" />)
+    render(<Tabs name="tabsTest" param="label1" tabs={tabs} className="className" />)
     expect(screen.getByTestId('Tabs')).toBeTruthy()
     expect(screen.getByTestId('Tabs')).toHaveClass('className')
+    expect(screen.getAllByRole('tablist')[0]).toHaveTextContent('Label 1Label 2Label 3')
+    expect(screen.getAllByRole('tablist')[1]).toHaveTextContent('Label 1Label 2Label 3')
+    expect(screen.getByTestId('tab1Title')).toHaveTextContent('Content 1')
+  })
+
+  it('param', () => {
+    render(<Tabs name="tabsTest" param="label3" tabs={tabs} className="className" />)
+    expect(screen.getByTestId('tab3Title')).toHaveTextContent('Content 3')
+  })
+
+  it('ontabClick', () => {
+    const spy = jest.fn()
+    render(
+      <Tabs name="tabsTest" param="label3" tabs={tabs} className="className" onTabClick={spy} />,
+    )
+    fireEvent.click(screen.getAllByRole('button')[0])
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 })

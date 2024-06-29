@@ -1,3 +1,4 @@
+'use client'
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
@@ -6,7 +7,7 @@ import { Input, InputProps } from './Input/Input'
 
 export type InputFieldProps = Omit<InputProps, 'value' | 'error' | 'onChange'>
 
-/** Form and style context wrapper for Input component. Default InputHTMLAttributes props supported.  */
+/** Form and style context wrapper for Input component. Default InputHTMLAttributes props supported. USE CLIENT  */
 export const InputField = ({
   className = '',
   name,

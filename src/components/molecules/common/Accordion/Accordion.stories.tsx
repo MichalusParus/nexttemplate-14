@@ -2,11 +2,19 @@ import type { Meta, StoryObj } from '@storybook/react'
 
 import { accordionOptions } from '../../../../../.storybook/helpers'
 import Accordion from '.'
+import Disclosure from '../Disclosure'
 
 const meta: Meta<typeof Accordion> = {
   title: 'Molecules/Common/Accordion',
   component: Accordion,
   tags: ['autodocs'],
+  decorators: [
+    Story => (
+      <div className="min-h-[32rem]">
+        <Story />
+      </div>
+    ),
+  ],
   parameters: {
     layout: 'padded',
   },
@@ -18,17 +26,75 @@ const meta: Meta<typeof Accordion> = {
 export default meta
 type Story = StoryObj<typeof Accordion>
 
-export const Default: Story = {
+export const PrimaryDefault: Story = {
   args: {
-    className: 'className',
+    className: '',
     options: accordionOptions,
+    exclusive: false,
+    gap: 'gap-2',
+    chevronPosition: 'end',
+    variant: 'outlined',
+    color: 'primary',
+    comboboxProps: undefined,
+    dropdownProps: undefined,
+  },
+}
+
+export const Exclusive: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    exclusive: true,
   },
 }
 
 export const ChevronFirst: Story = {
   args: {
-    className: 'className',
-    options: accordionOptions,
+    ...PrimaryDefault.args,
     chevronPosition: 'start',
+  },
+}
+
+export const Nested: Story = {
+  args: {
+    variant: 'text',
+  },
+  render: args => {
+    return (
+      <div className="flex flex-col gap-2">
+        <Disclosure
+          variant={args.variant}
+          color={args.color}
+          chevronPosition={args.chevronPosition}
+          title="Main Disclosure 1"
+          dropdownProps={{ height: '' }}
+        >
+          <div className="pl-4">
+            <Accordion {...args} ariaLevel={2} options={accordionOptions} />
+          </div>
+        </Disclosure>
+        <Disclosure
+          variant={args.variant}
+          color={args.color}
+          chevronPosition={args.chevronPosition}
+          title="Main Disclosure 2"
+          dropdownProps={{ height: '' }}
+        >
+          <div className="pl-4">
+            <Accordion {...args} ariaLevel={2} options={accordionOptions} />
+          </div>
+        </Disclosure>
+        <Disclosure
+          variant={args.variant}
+          color={args.color}
+          chevronPosition={args.chevronPosition}
+          title="Main Disclosure 3"
+          dropdownProps={{ height: '' }}
+        >
+          <div className="pl-4">
+            <Accordion {...args} ariaLevel={2} options={accordionOptions} />
+          </div>
+        </Disclosure>
+      </div>
+    )
   },
 }

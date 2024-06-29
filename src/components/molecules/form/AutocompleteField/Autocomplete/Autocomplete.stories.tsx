@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useEffect, useState, useTransition } from 'react'
+import { useCallback, useEffect, useState, useTransition } from 'react'
 
 import { useFilterData } from '@/utils/hooks/useFilterData'
 
 import { options } from '../../../../../../.storybook/helpers'
 import { Autocomplete, AutocompleteProps } from './Autocomplete'
+import { useDebounce } from '@/utils/hooks/useDebounce'
 
 const meta: Meta<typeof Autocomplete> = {
   title: 'Molecules/Form/Autocomplete',
@@ -20,6 +21,12 @@ const meta: Meta<typeof Autocomplete> = {
     inputProps: {
       control: false,
     },
+    dropdownProps: {
+      control: false,
+    },
+    listboxProps: {
+      control: false,
+    },
   },
 }
 
@@ -28,10 +35,11 @@ const AutocompleteWithFetch = (args: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('')
   const [options, setOptions] = useState<{ label: string; value: string }[]>([])
   const [isPending, startTransition] = useTransition()
+  const { debouncedValue, isDebouncePending } = useDebounce(inputValue, 500)
 
   useEffect(() => {
-    startTransition(() => {
-      fetch(`https://freetestapi.com/api/v1/actresses?search=${inputValue}`)
+    startTransition(async () => {
+      await fetch(`https://freetestapi.com/api/v1/actresses?search=${debouncedValue}`)
         .then(res => res.json())
         .then(res =>
           setOptions(
@@ -39,16 +47,51 @@ const AutocompleteWithFetch = (args: AutocompleteProps) => {
           ),
         )
     })
-  }, [inputValue])
+  }, [debouncedValue])
 
   return (
     <div className={`flex h-96 justify-center ${args.placement === 'top' ? 'items-end' : ''}`}>
       <Autocomplete
         {...args}
         options={options}
-        isLoading={isPending || args.isLoading}
+        isLoading={isPending || isDebouncePending || args.isLoading}
         value={value}
         inputValue={inputValue}
+        onInputChange={setInputValue}
+        onChange={setValue}
+      />
+    </div>
+  )
+}
+
+const AutocompleteOnOpenFetch = (args: AutocompleteProps) => {
+  const [value, setValue] = useState<string>('')
+  const [inputValue, setInputValue] = useState<string>('')
+  const [options, setOptions] = useState<{ label: string; value: string }[]>([])
+  const [isPending, startTransition] = useTransition()
+  const { debouncedValue, isDebouncePending } = useDebounce(inputValue, 500)
+
+  const handleOpen = useCallback(() => {
+    startTransition(async () => {
+      await fetch(`https://freetestapi.com/api/v1/actresses?search=${debouncedValue}`)
+        .then(res => res.json())
+        .then(res =>
+          setOptions(
+            res.map((o: { name: string; id: string }) => ({ label: o.name, value: o.id })),
+          ),
+        )
+    })
+  }, [debouncedValue])
+
+  return (
+    <div className={`flex h-96 justify-center ${args.placement === 'top' ? 'items-end' : ''}`}>
+      <Autocomplete
+        {...args}
+        options={options}
+        isLoading={isPending || isDebouncePending || args.isLoading}
+        value={value}
+        inputValue={inputValue}
+        onOpen={handleOpen}
         onInputChange={setInputValue}
         onChange={setValue}
       />
@@ -98,10 +141,21 @@ export const PrimaryDefault: Story = {
     collapsed: 'default',
     error: '',
     inputProps: undefined,
+    dropdownProps: undefined,
+    listboxProps: undefined,
+    onOpen: undefined,
     onInputChange: () => {},
     onChange: value => console.log(value),
   },
   render: args => <AutocompleteWithFetch {...args} />,
+}
+
+export const OnOpenFetch: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'onOpenAutocompleteStory',
+  },
+  render: args => <AutocompleteOnOpenFetch {...args} />,
 }
 
 export const ClientFilter: Story = {

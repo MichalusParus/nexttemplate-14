@@ -10,7 +10,7 @@ export const useScreenSize = () => {
       setScreenWidth(window.innerWidth)
       setScreenHeight(window.innerHeight)
     }
-    console.log(window.innerHeight)
+
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => {

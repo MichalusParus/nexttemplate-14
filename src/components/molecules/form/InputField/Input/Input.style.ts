@@ -1,5 +1,5 @@
 export const inputClass =
-  'w-full border font-semibold transition-activity placeholder:text-dark-400 rounded-md focus:outline-none'
+  'w-full border appearance-none font-semibold transition-activity placeholder:text-dark-400 rounded-md focus:outline-none [&::-webkit-search-cancel-button]:hidden'
 
 export const inputVariant = {
   text: {
@@ -54,3 +54,6 @@ export const inputSize = {
   lg: 'py-lgPY px-lgPX text-lg',
   none: '',
 }
+
+export const inputIconPosition =
+  'absolute top-1/2 -translate-y-1/2 [&.Button]:absolute [&.Button]:top-1/2 [&.Button]:-translate-y-1/2'

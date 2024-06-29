@@ -1,3 +1,4 @@
+'use client'
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
@@ -6,7 +7,7 @@ import { RadioGroup, RadioGroupProps } from './RadioGroup/RadioGroup'
 
 export type RadioGroupFieldProps = Omit<RadioGroupProps, 'value' | 'error' | 'onChange'>
 
-/** Form and style context wrapper for RadioGroup component. Default InputHTMLAttributes props supported. */
+/** Form and style context wrapper for RadioGroup component. Default InputHTMLAttributes props supported. USE CLIENT */
 export const RadioGroupField = ({
   className = '',
   name,

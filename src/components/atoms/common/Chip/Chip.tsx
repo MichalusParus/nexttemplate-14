@@ -22,7 +22,7 @@ export type ChipProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'colo
   /** pass svg icon to onClick button, onClick cannot be undefined */
   buttonIcon?: React.ReactNode
   /** optional props for button */
-  buttonProps?: ButtonProps
+  buttonProps?: Partial<ButtonProps>
   /** onClick function */
   onClick?: () => void
 }

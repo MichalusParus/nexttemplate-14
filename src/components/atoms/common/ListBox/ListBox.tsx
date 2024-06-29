@@ -40,7 +40,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
       name,
       value,
       options,
-      variant = 'text',
+      variant = 'outlined',
       color = 'primary',
       size = 'md',
       isLoading,

@@ -86,9 +86,9 @@ export const buttonContentSize = {
 }
 
 export const buttonIconSize = {
-  sm: '[&_svg]:min-h-smIcon [&_svg]:w-smIcon [&_svg]:min-w-smIcon',
-  md: '[&_svg]:min-h-mdIcon [&_svg]:w-mdIcon [&_svg]:min-w-mdIcon',
-  lg: '[&_svg]:min-h-lgIcon [&_svg]:w-lgIcon [&_svg]:min-w-lgIcon',
+  sm: '[&_svg]:h-smIcon [&_svg]:w-smIcon [&_svg]:min-w-smIcon',
+  md: '[&_svg]:h-mdIcon [&_svg]:w-mdIcon [&_svg]:min-w-mdIcon',
+  lg: '[&_svg]:h-lgIcon [&_svg]:w-lgIcon [&_svg]:min-w-lgIcon',
   inline: '[&_svg]:h-sm [&_svg]:w-sm [&_svg]:min-w-sm',
   none: '',
 }

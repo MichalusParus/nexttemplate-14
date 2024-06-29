@@ -1,3 +1,4 @@
+'use client'
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
@@ -6,7 +7,7 @@ import { CheckboxGroup, CheckboxGroupProps } from './CheckboxGroup/CheckboxGroup
 
 export type CheckboxGroupFieldProps = Omit<CheckboxGroupProps, 'value' | 'error' | 'onChange'>
 
-/** Form and style context wrapper for CheckboxGroup component. Default InputHTMLAttributes props supported. */
+/** Form and style context wrapper for CheckboxGroup component. Default InputHTMLAttributes props supported. USE CLIENT */
 export const CheckboxGroupField = ({
   className = '',
   name,

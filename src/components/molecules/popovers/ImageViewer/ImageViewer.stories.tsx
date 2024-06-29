@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import Image from 'next/image'
 
 import ImageViewer from '.'
+import Image from '@/components/atoms/common/Image'
 
 const meta: Meta<typeof ImageViewer> = {
   title: 'Molecules/Popovers/ImageViewer',
   component: ImageViewer,
   tags: ['autodocs'],
   parameters: {
-    layout: 'fullscreened',
+    layout: 'fullscreen',
   },
 }
 
@@ -19,7 +19,12 @@ export const Default: Story = {
   args: {
     alt: 'Example img',
     children: (
-      <Image alt="imageStory" width={500} height={250} src="https://picsum.photos/500/250" />
+      <Image
+        src="https://picsum.photos/2000/1250"
+        alt="imageStory"
+        ratio={75}
+        objectFit="object-cover"
+      />
     ),
   },
 }

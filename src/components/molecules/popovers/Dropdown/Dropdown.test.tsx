@@ -7,13 +7,7 @@ import Dropdown from '.'
 describe('Dropdown', () => {
   it('default', () => {
     render(
-      <Dropdown
-        className="className"
-        name="dropdownTest"
-        role="menu"
-        isOpen={true}
-        onClose={() => {}}
-      >
+      <Dropdown className="className" isOpen={true} onClose={() => {}}>
         Children
       </Dropdown>,
     )

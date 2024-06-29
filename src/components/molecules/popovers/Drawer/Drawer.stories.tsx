@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState } from 'react'
+import { PropsWithChildren, useState } from 'react'
 
 import Combobox from '@/components/atoms/common/Combobox'
 
@@ -11,16 +11,21 @@ const meta: Meta<typeof Drawer> = {
   component: Drawer,
   tags: ['autodocs'],
   parameters: {
-    layout: 'fullscreened',
+    layout: 'fullscreen',
+  },
+  argTypes: {
+    children: { control: false },
+    paperProps: { control: false },
+    scrollShadowProps: { control: false },
   },
 }
 
-const DrawerWithHooks = ({ args }: { args: DrawerProps }) => {
+const DrawerWithHooks = (args: PropsWithChildren<DrawerProps>) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
-    <div className="flex h-[50vh] items-center justify-center">
+    <div className="relative flex h-[50vh] items-center justify-center overflow-hidden">
       <Combobox
-        name="storybookDrawer"
+        name="drawerStory"
         hasPopup="menu"
         isOpen={isOpen}
         onClick={() => setIsOpen(prev => !prev)}
@@ -28,7 +33,11 @@ const DrawerWithHooks = ({ args }: { args: DrawerProps }) => {
         Drawer Combobox
       </Combobox>
       <Drawer {...args} name="storybookDrawer" isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        {args.children}
+        <MenuLinks
+          length={args.className === 'scroll' ? 20 : undefined}
+          variant={args.variant}
+          color={args.color}
+        />
       </Drawer>
     </div>
   )
@@ -37,17 +46,44 @@ const DrawerWithHooks = ({ args }: { args: DrawerProps }) => {
 export default meta
 type Story = StoryObj<typeof Drawer>
 
-export const Default: Story = {
-  args: { children: <MenuLinks /> },
-  render: args => <DrawerWithHooks args={args} />,
+export const PrimaryDefault: Story = {
+  args: {
+    className: '',
+    name: 'drawerStory',
+    isOpen: false,
+    placement: 'left',
+    variant: 'outlined',
+    color: 'primary',
+    offsetY: 'top-0 bottom-0',
+    width: 'w-1/3',
+    padding: 'p-0',
+    hideOverlay: false,
+    paperProps: {},
+    scrollShadowProps: {},
+    onClose: () => {},
+  },
+  render: args => <DrawerWithHooks {...args} />,
+}
+
+export const Offset: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    offsetY: 'top-8 bottom-0',
+  },
+  render: args => <DrawerWithHooks {...args} />,
+}
+
+export const HideOverlay: Story = {
+  args: { ...PrimaryDefault.args, hideOverlay: true },
+  render: args => <DrawerWithHooks {...args} />,
 }
 
 export const Scroll: Story = {
-  args: { children: <MenuLinks length={30} /> },
-  render: args => <DrawerWithHooks args={args} />,
+  args: { ...PrimaryDefault.args, className: 'scroll' },
+  render: args => <DrawerWithHooks {...args} />,
 }
 
 export const Right: Story = {
-  args: { placement: 'right', children: <MenuLinks /> },
-  render: args => <DrawerWithHooks args={args} />,
+  args: { ...PrimaryDefault.args, placement: 'right' },
+  render: args => <DrawerWithHooks {...args} />,
 }

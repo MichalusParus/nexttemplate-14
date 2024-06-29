@@ -1,16 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import Image from 'next/image'
 
 import Paper from '@/components/atoms/containers/Paper'
 
 import Carousel from '.'
+import Image from '@/components/atoms/common/Image'
 
 const meta: Meta<typeof Carousel> = {
   title: 'Molecules/Common/Carousel',
   component: Carousel,
   tags: ['autodocs'],
   parameters: {
-    layout: 'padded',
+    layout: 'centered',
   },
 }
 
@@ -25,7 +25,14 @@ export const Default: Story = {
   render: args => (
     <Carousel {...args}>
       {imgArray.map((img, index) => (
-        <Image src="https://picsum.photos/500/300" key={index} alt="img" width={600} height={300} />
+        <Image
+          src="https://picsum.photos/500/300"
+          key={index}
+          alt="img"
+          width="100%"
+          ratio={75}
+          fill
+        />
       ))}
     </Carousel>
   ),
@@ -33,19 +40,17 @@ export const Default: Story = {
 
 export const Panels: Story = {
   args: {
-    className: 'className',
-    pages: cardsArray.filter((item, index) => index % 4 === 0).length,
-    width: '50%',
-    ratio: 70,
+    ...Default.args,
+    pages: cardsArray.filter((_, index) => index % 4 === 0).length,
   },
   render: args => (
     <Carousel {...args}>
       {cardsArray
-        .filter((item, index) => index % 4 === 0)
-        .map((img, index) => (
-          <div key={index} className="Panel flex w-full flex-wrap justify-center gap-4">
+        .filter((_, index) => index % 4 === 0)
+        .map((_, index) => (
+          <div key={index} className="Panel flex flex-wrap justify-center gap-4">
             {cardsArray.slice(index * 4, index * 4 + 4).map(item => (
-              <Paper key={item} className="flex h-36 w-[40%] items-center justify-center">
+              <Paper key={item} className="flex h-28 w-48 items-center justify-center">
                 {'Card ' + (item + 1)}
               </Paper>
             ))}

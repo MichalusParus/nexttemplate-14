@@ -90,9 +90,12 @@ describe('MultiAutocomplete', () => {
         onChange={() => {}}
       />,
     )
-    fireEvent.click(screen.getByRole('combobox'))
-    fireEvent.click(screen.getAllByRole('button')[0])
-    expect(spy).toHaveBeenCalledTimes(1)
+    fireEvent.change(screen.getByRole('combobox'), {
+      target: {
+        value: 'newvalue',
+      },
+    })
+    expect(spy).toHaveBeenCalledWith('newvalue')
   })
 
   it('onChange', () => {

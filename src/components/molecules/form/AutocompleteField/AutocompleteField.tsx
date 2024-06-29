@@ -1,3 +1,4 @@
+'use client'
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
@@ -6,7 +7,7 @@ import { Autocomplete, AutocompleteProps } from './Autocomplete/Autocomplete'
 
 export type AutocompleteFieldProps = Omit<AutocompleteProps, 'value' | 'error' | 'onChange'>
 
-/** Form context wrapper for Input component */
+/** Form and style context wrapper for Autocomplete component. Input, Dropdown and ListBox props supported. USE CLIENT */
 export const AutocompleteField = ({
   className = '',
   name,
