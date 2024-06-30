@@ -1,4 +1,4 @@
-import { forwardRef, PropsWithChildren, ReactNode,useCallback } from 'react'
+import { forwardRef, PropsWithChildren, ReactNode, useCallback } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
@@ -8,6 +8,7 @@ import Paper from '@/components/atoms/containers/Paper'
 
 import Disclosure from '../Disclosure'
 import { DisclosureProps } from '../Disclosure/Disclosure'
+import { cn } from '@/utils/utils'
 
 type TabOption = {
   label: string
@@ -72,7 +73,7 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
     )
 
     return (
-      <div className={`TabsWrap ${className} relative w-full`} data-testid="Tabs">
+      <div className={cn('TabsWrap', 'relative w-full', className)} data-testid="Tabs">
         <Paper
           className={`hidden md:block ${tabsWidth}`}
           variant={variant}
@@ -82,9 +83,10 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
         >
           <ul
             id="tablist"
-            className={
-              'TabList flex overflow-hidden rounded-md focus:outline-offset-8 focus:outline-text'
-            }
+            className={cn(
+              'TabList',
+              'flex overflow-hidden rounded-md focus:outline-offset-8 focus:outline-text',
+            )}
             role="tablist"
             ref={ref}
             aria-label={name}
@@ -93,14 +95,18 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
               !tab.isHidden ? (
                 <li
                   key={tab.slug}
-                  className="Tab w-full"
+                  className={cn('Tab', 'w-full')}
                   role="tab"
                   aria-controls={tabPanelId}
                   aria-selected={tab.slug === selectedTab.slug}
                 >
                   {onTabClick ? (
                     <Button
-                      className={`TabButton [&.TabButton]:border-none ${getSelectedClass(tab.slug)}`}
+                      className={cn(
+                        'TabButton',
+                        'rounded-none border-none',
+                        getSelectedClass(tab.slug),
+                      )}
                       variant={variant}
                       color={color}
                       size={size}
@@ -114,7 +120,11 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
                     </Button>
                   ) : (
                     <Link
-                      className={`TabLink [&.TabLink]:border-none ${getSelectedClass(tab.slug)}`}
+                      className={cn(
+                        'TabLink',
+                        'rounded-none border-none',
+                        getSelectedClass(tab.slug),
+                      )}
                       variant={variant}
                       color={color}
                       size={size}
@@ -141,7 +151,7 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
           {...disclosureProps}
         >
           <ul
-            className="TabList flex w-full flex-col justify-center"
+            className={cn('TabList', 'flex w-full flex-col justify-center')}
             role="tablist"
             ref={ref}
             aria-label={name}
@@ -150,14 +160,14 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
               <li
                 key={tab.slug}
                 id={name + tab.slug}
-                className="Tab"
+                className={cn('Tab', 'w-full')}
                 role="tab"
                 aria-controls={tabPanelId}
                 aria-selected={tab.slug === selectedTab.slug}
               >
                 {onTabClick ? (
                   <Button
-                    className={`TabButton ${getSelectedClass(tab.slug)}`}
+                    className={cn('TabButton', getSelectedClass(tab.slug))}
                     variant={variant}
                     color={color}
                     size={size}
@@ -170,7 +180,7 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
                   </Button>
                 ) : (
                   <Link
-                    className={`TabLink ${getSelectedClass(tab.slug)}`}
+                    className={cn('TabLink', getSelectedClass(tab.slug))}
                     variant={variant}
                     color={color}
                     size={size}
@@ -188,7 +198,7 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
         </Disclosure>
         <div
           id={tabPanelId}
-          className="TabPanel w-full"
+          className={cn('TabPanel', 'w-full')}
           role="tabpanel"
           aria-labelledby={name + selectedTab.slug}
         >

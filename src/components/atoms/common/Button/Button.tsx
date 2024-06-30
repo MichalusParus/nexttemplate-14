@@ -1,5 +1,5 @@
 'use client'
-import { ButtonHTMLAttributes, forwardRef,ReactNode } from 'react'
+import { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react'
 
 import InlineLoader from '../../loaders/InlineLoader'
 import {
@@ -11,6 +11,7 @@ import {
   iconOnlySize,
   innerWrapClass,
 } from './Button.style'
+import { cn } from '@/utils/utils'
 
 export type ButtonProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -67,15 +68,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const buttonSize = iconOnly
       ? `${iconOnlySize[size]} ${buttonIconSize[size]}`
       : `${buttonContentSize[size]} ${iconMargin} ${buttonIconSize[size]}`
-    const buttonShadow =
-      variant === 'contained' && !hideShadow ? 'shadow-button active:shadow-none' : ''
-    const loadingState = isLoading ? 'selected [&>.ButtonInnerWrap]:invisible' : ''
     const upperCase = disableUpperCase ? '' : 'uppercase'
-    const fullWidthSize = fullWidth ? 'w-full' : ''
 
     return (
       <button
-        className={`Button ${className} ${buttonClass} ${buttonVariant[variant][color]} ${buttonDisabledVariant[variant]} ${buttonSize} ${loadingState} ${buttonShadow} ${fullWidthSize}`}
+        className={cn(
+          'Button',
+          buttonClass,
+          buttonVariant[variant][color],
+          buttonSize,
+          buttonDisabledVariant[variant],
+          isLoading && 'selected [&>div]:invisible',
+          variant === 'contained' && !hideShadow && 'shadow-button active:shadow-none',
+          fullWidth && 'w-full',
+          className,
+        )}
         tabIndex={rest.disabled ? -1 : 0}
         onClick={!isLoading ? onClick : () => {}}
         ref={ref}
@@ -84,7 +91,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {isLoading ? (
           <InlineLoader className="absolute inset-0 justify-center" size={size} />
         ) : null}
-        <div className={`ButtonInnerWrap ${innerWrapClass} ${upperCase}`}>
+        <div className={cn('ButtonInnerWrap', innerWrapClass, !disableUpperCase && 'uppercase')}>
           {startIcon ? startIcon : null}
           {children}
           {endIcon ? endIcon : null}

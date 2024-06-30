@@ -1,6 +1,7 @@
 import { forwardRef, HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
 
 import { paperVariant } from './Paper.style'
+import { cn } from '@/utils/utils'
 
 export type PaperProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */
@@ -38,7 +39,14 @@ export const Paper = forwardRef<HTMLDivElement, PropsWithChildren<PaperProps>>(
 
     return (
       <div
-        className={`Paper ${className} ${paperVariant[variant][color]} ${padding} ${rounded} ${paperShadow}`}
+        className={cn(
+          'Paper',
+          paperVariant[variant][color],
+          padding,
+          rounded,
+          !hideShadow && 'shadow-button',
+          className,
+        )}
         data-testid="Paper"
         ref={ref}
         {...rest}

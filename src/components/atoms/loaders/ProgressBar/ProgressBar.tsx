@@ -1,6 +1,7 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
 import { progressClass, progressColor } from './ProgressBar.style'
+import { cn } from '@/utils/utils'
 
 export type ProgressBarProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */
@@ -18,13 +19,13 @@ export const ProgressBar = forwardRef<HTMLDivElement, ProgressBarProps>(
   ({ className = '', progress, color = 'primary', height = 'h-3', ...rest }, ref) => {
     return (
       <div
-        className={`ProgressBar ${className} ${progressClass} ${progressColor[color]}`}
+        className={cn('ProgressBar', progressClass, progressColor[color], className)}
         data-testid="ProgressBar"
         ref={ref}
         {...rest}
       >
         <div
-          className={`Progress rounded-sm ${height}`}
+          className={cn('Progress', 'rounded-sm', height)}
           style={{ width: `${progress}%`, transition: '200ms width linear' }}
         />
       </div>

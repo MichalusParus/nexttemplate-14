@@ -4,10 +4,14 @@ import Checkbox from '@/components/molecules/form/CheckboxField/Checkbox'
 import { checkboxSize } from '@/components/molecules/form/MultiSelectField/MultiSelect/MultiSelect.style'
 
 import Ghost from '../../loaders/Ghost'
-import { buttonContentSize } from '../Button/Button.style'
-import { liVariant } from './ListBox.style'
+import { buttonContentSize, buttonVariant } from '../Button/Button.style'
+import { cn, filterOutKeys } from '@/utils/utils'
+import { CheckboxProps } from '@/components/molecules/form/CheckboxField/Checkbox/Checkbox'
 
-export type ListBoxProps = Omit<OlHTMLAttributes<HTMLUListElement>, 'className' | 'onClick'> & {
+export type ListBoxProps = Omit<
+  OlHTMLAttributes<HTMLUListElement>,
+  'className' | 'onClick' | 'color'
+> & {
   /** for passing custom tailwind classes */
   className?: string
   /** name of the listbox for aria-controls */
@@ -28,6 +32,8 @@ export type ListBoxProps = Omit<OlHTMLAttributes<HTMLUListElement>, 'className' 
   noOptionLabel?: string
   /** hide option checkbox */
   hideCheckbox?: boolean
+  /** optional props for checkbox */
+  checkboxProps?: Partial<CheckboxProps>
   /** on Option click function */
   onClick: (value: string) => void
 }
@@ -46,6 +52,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
       isLoading,
       noOptionLabel = 'No options found',
       hideCheckbox,
+      checkboxProps = {},
       onClick,
       ...rest
     },
@@ -74,7 +81,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
     return (
       <ul
         id={name}
-        className={`ListBox ${className}`}
+        className={cn('ListBox', className)}
         aria-labelledby={'label-' + name}
         role="listbox"
         ref={ref}
@@ -85,7 +92,14 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
             <li
               key={optionValue}
               id={optionValue}
-              className={`Option flex focus:outline-none ${getSelectedClass(optionValue)} ${liVariant[variant][color]} ${buttonContentSize[size]} ${optionCursor}`}
+              className={cn(
+                'Option',
+                'flex focus:outline-none',
+                getSelectedClass(optionValue),
+                buttonVariant[variant][color],
+                buttonContentSize[size],
+                optionCursor,
+              )}
               role="option"
               tabIndex={0}
               aria-selected={value.includes(optionValue)}
@@ -94,7 +108,12 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
             >
               <>
                 <Checkbox
-                  className={`mr-4 ${checkboxSize[size]} ${checkboxVisibility}`}
+                  className={cn(
+                    'mr-4',
+                    checkboxSize[size],
+                    checkboxVisibility,
+                    checkboxProps?.className,
+                  )}
                   name={optionValue}
                   label=""
                   value={optionValue}
@@ -105,12 +124,9 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                   disabled={isLoading}
                   fake
                   onChange={() => {}}
+                  {...filterOutKeys(checkboxProps, ['className'])}
                 />
-                {isLoading ? (
-                  <Ghost className="w-full [&.Ghost]:ml-0 [&.Ghost]:mr-16" size={size} />
-                ) : (
-                  label
-                )}
+                {isLoading ? <Ghost className="ml-0 mr-16 w-full" size={size} /> : label}
               </>
             </li>
           ))

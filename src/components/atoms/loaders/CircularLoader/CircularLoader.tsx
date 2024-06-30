@@ -1,6 +1,7 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
-import { spinnerClass, spinnerColor, spinnerSize } from './SpinnerLoader.style'
+import { spinnerClass, spinnerColor, spinnerSize } from './CircularLoader.style'
+import { cn } from '@/utils/utils'
 
 export type CircularLoaderProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */
@@ -23,7 +24,7 @@ export const CircularLoader = forwardRef<HTMLDivElement, CircularLoaderProps>(
   ) => {
     return (
       <div
-        className={`CircularLoader ${className} flex flex-col items-center`}
+        className={cn('CircularLoader', 'flex flex-col items-center', className)}
         role="status"
         aria-label="loading"
         aria-busy="true"
@@ -31,9 +32,14 @@ export const CircularLoader = forwardRef<HTMLDivElement, CircularLoaderProps>(
         {...rest}
       >
         <div
-          className={`SpinnerWrap relative rounded-full border-4 ${spinnerColor[color]} ${spinnerSize[size]}`}
+          className={cn(
+            'SpinnerWrap',
+            'relative rounded-full border-4',
+            spinnerColor[color],
+            spinnerSize[size],
+          )}
         >
-          <div className={`Spinner animate-circularLoaderAnim ${spinnerClass}`} />
+          <div className={cn('Spinner', 'animate-circularLoaderAnim', spinnerClass)} />
         </div>
         {!hideLabel ? label : null}
       </div>

@@ -5,6 +5,7 @@ import Span from '../../typography/Span'
 import { Button, ButtonProps } from '../Button/Button'
 import { buttonIconSize } from '../Button/Button.style'
 import { chipClass, chipSize, chipVariant } from './Chip.style'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 export type ChipProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color' | 'onClick'> & {
   /** for passing custom tailwind classes */
@@ -38,7 +39,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
       title,
       startIcon,
       buttonIcon,
-      buttonProps,
+      buttonProps = {},
       onClick,
       children,
       ...rest
@@ -47,7 +48,14 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
   ) => {
     return (
       <div
-        className={`Chip ${className} ${chipClass} ${chipVariant[variant][color]} ${chipSize[size]} ${buttonIconSize[size]}`}
+        className={cn(
+          'Chip',
+          chipClass,
+          chipVariant[variant][color],
+          chipSize[size],
+          buttonIconSize[size],
+          className,
+        )}
         data-testid="Chip"
         ref={ref}
         {...rest}
@@ -55,21 +63,21 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
         {startIcon ? startIcon : null}
         <div className="ChipInnerWrap flex flex-col px-2">
           <Span variant="bold">{title ? title : null}</Span>
-          <Span variant="none" className="whitespace-nowrap">
+          <Span className="whitespace-nowrap" variant="none">
             {children}
           </Span>
         </div>
         {onClick ? (
           <Button
-            className="ChipAction border-0 [&.Button]:rounded-full"
+            className={cn('ChipAction', 'rounded-full border-0', buttonProps?.className)}
             startIcon={buttonIcon ? buttonIcon : <XIcon />}
             variant={variant}
             color={color}
             size="none"
             hideShadow
-            aria-label={`action ${title || children}`}
+            aria-label={`delete ${title || children}`}
             onClick={onClick}
-            {...buttonProps}
+            {...filterOutKeys(buttonProps, ['className'])}
           />
         ) : null}
       </div>

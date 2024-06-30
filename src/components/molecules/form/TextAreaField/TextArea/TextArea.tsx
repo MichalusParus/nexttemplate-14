@@ -8,6 +8,7 @@ import {
   inputSize,
   inputVariant,
 } from '../../InputField/Input/Input.style'
+import { cn } from '@/utils/utils'
 
 export type TextAreaProps = Omit<
   TextareaHTMLAttributes<HTMLTextAreaElement>,
@@ -49,9 +50,6 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     },
     ref,
   ) => {
-    const errorShadow = error ? 'shadow-error' : ''
-    const hideMargin = hideError ? '' : 'mb-1'
-
     return (
       <Label
         className={className}
@@ -66,7 +64,14 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         collapsed={collapsed}
       >
         <textarea
-          className={`${inputClass} ${inputVariant[variant][color]} ${disabledVariant[variant]} ${inputSize[size]} ${errorShadow} ${hideMargin}`}
+          className={cn(
+            inputClass,
+            inputVariant[variant][color],
+            inputSize[size],
+            disabledVariant[variant],
+            error && 'shadow-error',
+            !hideError && 'mb-1',
+          )}
           id={name}
           name={name}
           value={value}

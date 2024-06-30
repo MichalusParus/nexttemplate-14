@@ -3,7 +3,7 @@ import { forwardRef, PropsWithChildren, useState } from 'react'
 
 import { Combobox, ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
-import { slugify } from '@/utils/utils'
+import { cn, filterOutKeys, slugify } from '@/utils/utils'
 
 import Dropdown from '../../popovers/Dropdown'
 import { DropdownProps } from '../../popovers/Dropdown/Dropdown'
@@ -42,8 +42,8 @@ export const Disclosure = forwardRef<HTMLButtonElement, PropsWithChildren<Disclo
       color = 'primary',
       expanded,
       ariaLevel,
-      comboboxProps,
-      dropdownProps,
+      comboboxProps = {},
+      dropdownProps = {},
       children,
       setIsOpen,
     },
@@ -65,14 +65,19 @@ export const Disclosure = forwardRef<HTMLButtonElement, PropsWithChildren<Disclo
 
     return (
       <div
-        className={`Disclosure ${className} relative w-full transition-maxHeight ${disclosureOpenState}`}
+        className={cn(
+          'Disclosure',
+          'relative w-full transition-maxHeight',
+          disclosureOpenState,
+          className,
+        )}
         data-testid="Disclosure"
         data-accordion="collapse"
       >
         <div className="DisclosureHeading" role="heading" aria-level={ariaLevel}>
           <Combobox
             id={slugify(title)}
-            className="w-full"
+            className={cn('w-full', comboboxProps.className)}
             name={slugify(title)}
             isOpen={Boolean(openState)}
             variant={variant}
@@ -83,19 +88,21 @@ export const Disclosure = forwardRef<HTMLButtonElement, PropsWithChildren<Disclo
             role="button"
             ref={ref}
             onClick={handleChange}
-            {...comboboxProps}
+            {...filterOutKeys(comboboxProps, ['className'])}
           >
-            <div className="ComboboxInnerWrap flex w-full justify-between">
-              <div className="ComboboxStartWrap flex gap-1">
+            <div className={cn('ComboboxInnerWrap', 'flex w-full justify-between')}>
+              <div className={cn('ComboboxStartWrap', 'flex gap-1')}>
                 {chevronPosition === 'start' ? (
                   <ChevronIcon
-                    className={`text-inherit transition-transform ${startIconOpenState}`}
+                    className={cn('text-inherit transition-transform', startIconOpenState)}
                   />
                 ) : null}
                 {title}
               </div>
               {chevronPosition === 'end' ? (
-                <ChevronIcon className={`text-inherit transition-transform ${endIconOpenState}`} />
+                <ChevronIcon
+                  className={cn('text-inherit transition-transform', endIconOpenState)}
+                />
               ) : null}
             </div>
           </Combobox>

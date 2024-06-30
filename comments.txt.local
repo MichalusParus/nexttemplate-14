@@ -18,10 +18,15 @@ absolute importy zlobi
 Podpora mobilnich gest
 storybook test integration
 dark theme
-Gallery component
 remade shadows
-tailwind class merging
-css variables in tailwind
 aria-described-by for field description
 focus ring
+option to reactnode
+great aria and role check
 add new do autocomplete
+Gallery,
+Calendar,
+Datepicker,
+Toast,
+Breadcrumbs,
+

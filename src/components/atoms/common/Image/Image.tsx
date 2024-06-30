@@ -2,6 +2,7 @@ import NextImage, { ImageProps as NextImageProps } from 'next/image'
 import { forwardRef, ImgHTMLAttributes } from 'react'
 
 import { RatioWrap, RatioWrapProps } from '../../containers/RatioWrap/RatioWrap'
+import { cn } from '@/utils/utils'
 
 export type ImageProps = RatioWrapProps &
   Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'> &
@@ -49,7 +50,7 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
     return (
       <RatioWrap className={`overflow-hidden bg-overlay ${rounded}`} width={width} ratio={ratio}>
         <NextImage
-          className={`${className} ${objectFit} ${objectPosition}`}
+          className={cn(objectFit, objectPosition, className)}
           sizes="100%"
           fill
           ref={ref}

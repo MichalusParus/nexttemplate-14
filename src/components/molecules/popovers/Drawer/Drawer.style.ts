@@ -1,11 +1,13 @@
-export const drawerClass = 'absolute transition-dropdown z-[40] bg-bg rounded-md'
+import { cn } from '@/utils/utils'
+
+export const drawerClass = cn('absolute z-[40] rounded-md bg-bg transition-dropdown')
 
 export const openClass = {
-  left: 'left-0 visible opacity-100',
-  right: 'right-0 visible opacity-100',
+  left: cn('visible left-0 opacity-100'),
+  right: cn('visible right-0 opacity-100'),
 }
 
 export const closeClass = {
-  left: '-left-full invisible opacity-0',
-  right: '-right-full invisible opacity-0',
+  left: cn('invisible -left-full opacity-0'),
+  right: cn('invisible -right-full opacity-0'),
 }

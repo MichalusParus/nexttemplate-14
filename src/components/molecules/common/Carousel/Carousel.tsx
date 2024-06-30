@@ -7,6 +7,7 @@ import { RatioWrapProps } from '@/components/atoms/containers/RatioWrap/RatioWra
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 
 import { arrowClass, controlClass, dottWrapClass, innerWrapClass } from './Carousel.style'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 export type CarouselProps = {
   /** for passing custom tailwind classes */
@@ -18,12 +19,12 @@ export type CarouselProps = {
   /** number in procents for ratio between height and width  */
   ratio: number
   /** for passing aditional props to ratio wrap */
-  ratioWrapProps?: RatioWrapProps
+  ratioWrapProps?: Partial<RatioWrapProps>
 }
 
 /** Carousel component can display multiple panels or images controled by arrows and dotts. RatioWrapProps supported. USE CLIENT */
 export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselProps>>(
-  ({ className = '', pages, width = '100%', ratio, ratioWrapProps, children }, ref) => {
+  ({ className = '', pages, width = '100%', ratio, ratioWrapProps = {}, children }, ref) => {
     const [currentPage, setCurrentPage] = useState(1)
 
     const getSelectedDott = (index: number) => {
@@ -32,43 +33,47 @@ export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselPro
 
     return (
       <div
-        className={`Carousel ${className} relative overflow-hidden`}
+        className={cn('Carousel', 'relative overflow-hidden', className)}
         ref={ref}
         data-testid="Carousel"
       >
-        <RatioWrap className="bg-dark-400" ratio={ratio} width={width}>
+        <RatioWrap
+          className={cn('bg-dark-400', ratioWrapProps.className)}
+          ratio={ratio}
+          width={width}
+          {...filterOutKeys(ratioWrapProps, ['className'])}
+        >
           <div
-            className={`CarouselInnerWrap ${innerWrapClass}`}
+            className={cn('CarouselInnerWrap', innerWrapClass)}
             style={{
               width: `calc(100% * ${pages})`,
               marginLeft: `calc(-100% * ${currentPage - 1})`,
             }}
-            {...ratioWrapProps}
           >
             {children}
           </div>
         </RatioWrap>
         <Button
-          className={`left-0 [&_.Arrow]:rotate-90 ${arrowClass} ${controlClass}`}
+          className={cn('left-0', arrowClass, controlClass)}
           color="none"
           size="none"
-          startIcon={<ChevronIcon className={'Arrow'} />}
+          startIcon={<ChevronIcon className={'h-10 w-10 rotate-90'} />}
           aria-label="previous page"
           onClick={() => setCurrentPage(prev => (prev === 1 ? pages : prev - 1))}
         />
         <Button
-          className={`right-0 [&_.Arrow]:-rotate-90 ${arrowClass} ${controlClass}`}
+          className={cn('right-0', arrowClass, controlClass)}
           color="none"
           size="none"
-          startIcon={<ChevronIcon className={'Arrow'} />}
+          startIcon={<ChevronIcon className={'h-10 w-10 -rotate-90'} />}
           aria-label="next page"
           onClick={() => setCurrentPage(prev => (prev === pages ? 1 : prev + 1))}
         />
-        <div className={`DottWrap ${dottWrapClass}`}>
+        <div className={cn('DottWrap', dottWrapClass)}>
           {new Array(pages).fill(null).map((_, index) => (
             <Button
               key={`carouselDott${index}`}
-              className={`CarouselDott p-1.5 ${controlClass} ${getSelectedDott(index)}`}
+              className={cn('CarouselDott', 'p-1.5', controlClass, getSelectedDott(index))}
               color="none"
               size="none"
               hideShadow

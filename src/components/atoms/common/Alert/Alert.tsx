@@ -6,6 +6,7 @@ import SuccessIcon from '../../icons/SuccessIcon'
 import WarningIcon from '../../icons/WarningIcon'
 import Span from '../../typography/Span'
 import { alertClass, alertIconSize, alertSize, alertVariant } from './Alert.style'
+import { cn } from '@/utils/utils'
 
 export type AlertProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'title'> & {
   /** for passing custom tailwind classes */
@@ -39,7 +40,14 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
   ) => {
     return (
       <div
-        className={`Alert ${className} ${alertClass} ${alertVariant[variant][status]} ${alertSize[size]} ${alertIconSize[size]}`}
+        className={cn(
+          'Alert',
+          alertClass,
+          alertVariant[variant][status],
+          alertSize[size],
+          alertIconSize[size],
+          className,
+        )}
         role="alert"
         ref={ref}
         {...rest}

@@ -22,6 +22,7 @@ import {
   comboboxWrapClass,
   disabledVariant,
 } from './Autocomplete.style'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 export type AutocompleteProps = Pick<ComboboxProps, 'name' | 'disabled'> &
   Omit<LabelProps, 'name' | 'onClick'> & {
@@ -78,9 +79,9 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
       collapsed,
       disabled,
       error,
-      inputProps,
-      dropdownProps,
-      listboxProps,
+      inputProps = {},
+      dropdownProps = {},
+      listboxProps = {},
       onOpen,
       onInputChange,
       onChange,
@@ -91,9 +92,6 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
     const sortedOptions = placement === 'top' ? options.reverse() : options
     const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false))
     const ghostArray = new Array(10).fill(null).map((_, i) => ({ label: `${i}`, value: `${i}` }))
-    const chevronPosition = isOpen ? 'rotate-180' : ''
-    const errorShadow = error ? 'shadow-error' : ''
-    const dropdownPadding = placement === 'left' ? 'pt-1' : 'pb-1'
     const comboboxZIndex = isOpen ? 'z-40' : 'z-20'
     const selectedClass = isOpen ? 'selected' : ''
     const disabledClass = disabled ? 'disabled' : ''
@@ -147,13 +145,25 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
         hideError={hideError}
         collapsed={collapsed}
       >
-        <div className={'Autocomplete relative flex w-full'} ref={componentRef}>
+        <div className={cn('Autocomplete', 'relative flex w-full')} ref={componentRef}>
           <div
-            className={`ComboboxWrap ${comboboxWrapClass} ${selectedClass} ${inputVariant[variant][color]} ${disabledClass} ${disabledVariant[variant]} ${comboboxZIndex} ${errorShadow}`}
+            className={cn(
+              'ComboboxWrap',
+              comboboxWrapClass,
+              selectedClass,
+              inputVariant[variant][color],
+              disabledClass,
+              disabledVariant[variant],
+              comboboxZIndex,
+              error && 'shadow-error',
+            )}
           >
             <Input
               id={name}
-              className={'w-full [&_input]:border-none [&_input]:bg-transparent [&_input]:pr-16'}
+              className={cn(
+                'w-full [&_input]:border-none [&_input]:bg-transparent [&_input]:pr-16',
+                inputProps.className,
+              )}
               name={name}
               label="AutoCompleteInput"
               value={inputValue}
@@ -175,12 +185,12 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
               }
               onClick={() => setIsOpen(true)}
               onChange={handleInputChange}
-              {...inputProps}
+              {...filterOutKeys(inputProps, ['className'])}
             />
-            <ChevronIcon className={`${chevronClass} ${comboboxZIndex} ${chevronPosition}`} />
+            <ChevronIcon className={cn(chevronClass, comboboxZIndex, isOpen && 'rotate-180')} />
             {inputValue ? (
               <Button
-                className={`ClearButton ${clearButtonClass} ${comboboxZIndex} ${selectedClass}`}
+                className={cn('ClearButton', clearButtonClass, comboboxZIndex, selectedClass)}
                 startIcon={<XIcon className={iconSize[size]} />}
                 variant={variant}
                 color={color}
@@ -203,7 +213,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
             {...dropdownProps}
           >
             <ListBox
-              className={dropdownPadding}
+              className={cn(placement === 'left' ? 'pt-1' : 'pb-1', listboxProps.className)}
               name={name}
               value={[value]}
               options={isLoading && onOpen ? ghostArray : sortedOptions}
@@ -214,7 +224,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
               hideCheckbox
               noOptionLabel={`No options match ${inputValue}`}
               onClick={handleOnChange}
-              {...listboxProps}
+              {...filterOutKeys(listboxProps, ['className'])}
             />
           </Dropdown>
         </div>

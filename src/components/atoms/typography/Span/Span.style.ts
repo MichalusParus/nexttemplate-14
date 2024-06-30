@@ -1,13 +1,15 @@
+import { cn } from '@/utils/utils'
+
 export const spanStyle = {
-  bold: 'font-semibold',
-  italic: 'italic',
-  underline: 'underline',
+  bold: cn('font-semibold'),
+  italic: cn('italic'),
+  underline: cn('underline'),
   none: '',
 }
 
 export const spanColor = {
-  primary: 'text-primary-800',
-  secondary: 'text-secondary-800',
-  terciary: 'text-terciary-800',
+  primary: cn('text-primary-800'),
+  secondary: cn('text-secondary-800'),
+  terciary: cn('text-terciary-800'),
   none: '',
 }

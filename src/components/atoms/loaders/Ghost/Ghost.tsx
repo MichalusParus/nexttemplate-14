@@ -1,6 +1,7 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
 import { ghostSize, ghostStyle } from './Ghost.style'
+import { cn } from '@/utils/utils'
 
 export type GhostProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'> & {
   /** for passing custom tailwind classes */
@@ -14,7 +15,7 @@ export const Ghost = forwardRef<HTMLSpanElement, GhostProps>(
   ({ className = '', size = 'none', ...rest }, ref) => {
     return (
       <span
-        className={`Ghost ${className} ${ghostStyle} ${ghostSize[size]}`}
+        className={cn('Ghost', ghostStyle, ghostSize[size], className)}
         role="status"
         aria-label="loading"
         aria-busy="true"

@@ -1,13 +1,15 @@
+import { cn } from '@/utils/utils'
+
 export const listColor = {
-  primary: 'text-primary-800',
-  secondary: 'text-secondary-800',
-  terciary: 'text-terciary-800',
+  primary: cn('text-primary-800'),
+  secondary: cn('text-secondary-800'),
+  terciary: cn('text-terciary-800'),
   none: '',
 }
 
 export const listSize = {
-  sm: 'text-sm',
-  md: 'text-base',
-  lg: 'text-lg',
+  sm: cn('text-sm'),
+  md: cn('text-base'),
+  lg: cn('text-lg'),
   none: '',
 }

@@ -1,9 +1,9 @@
-export const openClass = 'fixed w-[100vw] h-[100vh] top-0 left-0 z-50'
+import { cn } from '@/utils/utils'
 
-export const closeClass = 'relative w-full h-full'
+export const openClass = cn('fixed left-0 top-0 z-50 h-[100vh] w-[100vw]')
 
-export const closeButtonClass =
-  'right-4 top-4 z-50 border-0 bg-dark-600 text-dark-50 [&.CloseButton]:fixed'
+export const closeClass = cn('relative h-full w-full')
 
-export const vieverComboboxClass =
-  'flex h-full w-full overflow-hidden border-0 [&>.ButtonInnerWrap]:h-full'
+export const closeButtonClass = cn('fixed right-4 top-4 z-50 border-0 bg-dark-600 text-dark-50')
+
+export const vieverComboboxClass = cn('flex h-full w-full overflow-hidden border-0')

@@ -1,3 +1,4 @@
+import { cn } from '@/utils/utils'
 import { forwardRef, HTMLAttributes } from 'react'
 
 export type RatioWrapProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
@@ -14,7 +15,7 @@ export const RatioWrap = forwardRef<HTMLDivElement, RatioWrapProps>(
   ({ className = '', ratio, width, children, ...rest }, ref) => {
     return (
       <div
-        className={`RatioWrap ${className} relative`}
+        className={cn('RatioWrap', 'relative', className)}
         style={{ width: width }}
         data-testid="RatioWrap"
         ref={ref}

@@ -1,6 +1,7 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
 import { dottClass, loaderSize } from './InlineLoader.style'
+import { cn } from '@/utils/utils'
 
 export type InlineLoaderProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'> & {
   /** for passing custom tailwind classes */
@@ -14,20 +15,20 @@ export const InlineLoader = forwardRef<HTMLSpanElement, InlineLoaderProps>(
   ({ className = '', size = 'md', ...rest }, ref) => {
     return (
       <span
-        className={`InlineLoaderWrap ${className} inline-flex items-center`}
+        className={cn('InlineLoaderWrap', 'inline-flex items-center', className)}
         role="status"
         aria-label="loading"
         aria-busy="true"
         ref={ref}
         {...rest}
       >
-        <span className={`Dott ${dottClass} ${loaderSize[size]}`} />
+        <span className={cn('Dott', dottClass, loaderSize[size])} />
         <span
-          className={`Dott ${dottClass} ${loaderSize[size]}`}
+          className={cn('Dott', dottClass, loaderSize[size])}
           style={{ animationDelay: '150ms' }}
         />
         <span
-          className={`Dott ${dottClass} ${loaderSize[size]}`}
+          className={cn('Dott', dottClass, loaderSize[size])}
           style={{ animationDelay: '300ms' }}
         />
       </span>

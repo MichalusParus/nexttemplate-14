@@ -2,6 +2,7 @@
 import { forwardRef, HTMLAttributes, useEffect, useRef, useState } from 'react'
 
 import { shadowClass, shadowPosition } from './ScrollShadow.style'
+import { cn } from '@/utils/utils'
 
 export type ScrollShadowProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */
@@ -57,14 +58,21 @@ export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
 
     return (
       <div
-        className={`ScrollShadow ${className} relative h-full ${color}`}
+        className={cn('ScrollShadow', 'relative h-full', color, className)}
         data-testid="ScrollShadow"
         ref={ref}
         {...rest}
       >
         <div className="ScrollShadowWrap h-full overflow-hidden rounded-md">
           <div
-            className={`ContentWrap overflow-y-auto ${disabledVertical} ${height} ${isVertical ? 'py-4' : ''} ${isHorizontal ? 'px-4' : ''}`}
+            className={cn(
+              'ContentWrap',
+              'overflow-y-auto',
+              disabledVertical,
+              height,
+              isVertical && 'py-4',
+              isHorizontal && 'px-4',
+            )}
             style={{ scrollbarGutter: gutter ? 'stable' : 'initial' }}
             ref={scrollShadowRef}
           >
@@ -73,17 +81,29 @@ export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
         </div>
         {isVertical ? (
           <>
-            <div className={`TopShadow rounded-t-md ${shadowPosition.top} ${shadowClass}`} />
+            <div className={cn('TopShadow', 'rounded-t-md', shadowPosition.top, shadowClass)} />
             <div
-              className={`BottomShadow rounded-b-md ${shadowPosition.bottom} ${shadowClass} ${isHorizontal ? 'bottom-2' : 'bottom-0'}`}
+              className={cn(
+                'BottomShadow',
+                'rounded-b-md',
+                shadowPosition.bottom,
+                shadowClass,
+                isHorizontal ? 'bottom-2' : 'bottom-0',
+              )}
             />
           </>
         ) : null}
         {isHorizontal ? (
           <>
-            <div className={`LeftShadow rounded-l-md ${shadowPosition.left} ${shadowClass}`} />
+            <div className={cn('LeftShadow', 'rounded-l-md', shadowPosition.left, shadowClass)} />
             <div
-              className={`RightShadow rounded-r-md ${shadowPosition.right} ${shadowClass} ${isVertical ? 'right-[0.437rem]' : '-right-[0.063rem]'}`}
+              className={cn(
+                'RightShadow',
+                'rounded-r-md',
+                shadowPosition.right,
+                shadowClass,
+                isVertical ? 'right-[0.437rem]' : '-right-[0.063rem]',
+              )}
             />
           </>
         ) : null}

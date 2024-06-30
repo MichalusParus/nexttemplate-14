@@ -1,6 +1,7 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
 import { spanColor, spanStyle } from './Span.style'
+import { cn } from '@/utils/utils'
 
 export type SpanProps = Omit<HTMLAttributes<HTMLSpanElement>, 'color' | 'className'> & {
   /** for passing custom tailwind classes */
@@ -16,7 +17,7 @@ export const Span = forwardRef<HTMLSpanElement, SpanProps>(
   ({ className = '', variant = 'bold', color = 'none', children, ...rest }, ref) => {
     return (
       <span
-        className={`${className} text-inherit ${spanStyle[variant]} ${spanColor[color]}`}
+        className={cn('text-inherit', spanStyle[variant], spanColor[color], className)}
         ref={ref}
         data-testid="Span"
         {...rest}

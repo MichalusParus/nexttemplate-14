@@ -1,4 +1,5 @@
 'use client'
+import { cn } from '@/utils/utils'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { createContext, FormHTMLAttributes } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -64,7 +65,7 @@ export const Form = ({
         }}
       >
         <form
-          className={`${className} flex w-full flex-wrap items-center justify-center`}
+          className={cn('Form', 'flex w-full flex-wrap items-center justify-center', className)}
           onSubmit={methods.handleSubmit(onSubmit)}
           data-testid="Form"
           {...rest}

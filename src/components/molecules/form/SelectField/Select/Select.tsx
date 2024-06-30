@@ -11,6 +11,7 @@ import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 export type SelectProps = Pick<ComboboxProps, 'name' | 'disabled'> &
   Omit<LabelProps, 'onClick'> & {
@@ -57,9 +58,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       collapsed,
       disabled,
       error,
-      comboboxProps,
-      dropdownProps,
-      listboxProps,
+      comboboxProps = {},
+      dropdownProps = {},
+      listboxProps = {},
       onChange,
     },
     ref,
@@ -69,9 +70,6 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     const selectedOption = options.find(option => option.value === value)
     const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), ['.Option'])
     useImperativeHandle(ref, () => componentRef.current!)
-    const chevronPosition = isOpen ? 'rotate-180' : ''
-    const errorClass = error ? 'error' : ''
-    const dropdownPadding = placement === 'left' ? 'pt-1' : 'pb-1'
     const comboboxTitle = selectedOption ? (
       selectedOption?.label
     ) : (
@@ -104,10 +102,10 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         hideError={hideError}
         collapsed={collapsed}
       >
-        <div className="Select relative w-full" ref={componentRef}>
+        <div className={cn('Select', 'relative w-full')} ref={componentRef}>
           <Combobox
             id={name}
-            className={`SelectCombobox ${errorClass}`}
+            className={cn('SelectCombobox', error && 'error', comboboxProps.className)}
             name={name}
             variant={variant}
             color={color}
@@ -121,11 +119,13 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             ref={startRef}
             aria-labelledby={'label-' + name}
             onClick={handleClose}
-            {...comboboxProps}
+            {...filterOutKeys(comboboxProps, ['className'])}
           >
-            <div className="ComboboxInnerWrap flex w-full justify-between gap-2">
+            <div className={cn('ComboboxInnerWrap', 'flex w-full justify-between gap-2')}>
               {comboboxTitle}
-              <ChevronIcon className={`text-inherit transition-transform ${chevronPosition}`} />
+              <ChevronIcon
+                className={cn('text-inherit transition-transform', isOpen && 'rotate-180')}
+              />
             </div>
           </Combobox>
           <Dropdown
@@ -137,7 +137,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             {...dropdownProps}
           >
             <ListBox
-              className={dropdownPadding}
+              className={cn(placement === 'left' ? 'pt-1' : 'pb-1', listboxProps.className)}
               name={name}
               value={[value]}
               options={sortedOptions}
@@ -146,7 +146,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
               size={size}
               hideCheckbox
               onClick={handleOnChange}
-              {...listboxProps}
+              {...filterOutKeys(listboxProps, ['className'])}
             />
           </Dropdown>
         </div>

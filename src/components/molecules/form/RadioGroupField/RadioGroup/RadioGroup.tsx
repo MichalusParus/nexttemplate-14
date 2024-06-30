@@ -3,6 +3,7 @@ import { forwardRef, InputHTMLAttributes } from 'react'
 
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
 import { afterClass, disableVariant, radioClass, radioSize, radioVariant } from './RadioGroup.style'
+import { cn } from '@/utils/utils'
 
 export type RadioGroupProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -48,9 +49,6 @@ export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
     },
     ref,
   ) => {
-    const errorShadow = error ? 'shadow-error' : ''
-    const flexDirection = column ? 'flex-col' : ''
-
     return (
       <Label
         className={className}
@@ -65,16 +63,25 @@ export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
         collapsed={collapsed}
         fakeLabel
       >
-        <div className={`RadioGroupWrap flex flex-wrap ${flexDirection}`} role="radiogroup">
+        <div
+          className={cn('RadioGroupWrap', 'flex flex-wrap', column && 'flex-col')}
+          role="radiogroup"
+        >
           {options.map(({ value: radioValue, label: radioLabel }) => (
             <label
               key={radioValue}
               htmlFor={radioValue}
-              className={`relative flex items-center ${radioSize[size]}`}
+              className={cn('Label', 'relative flex items-center', radioSize[size])}
               data-testid="RadioLabel"
             >
               <input
-                className={`${radioClass} ${radioVariant[variant][color]} ${disableVariant[variant]} ${afterClass} ${errorShadow}`}
+                className={cn(
+                  radioClass,
+                  radioVariant[variant][color],
+                  disableVariant[variant],
+                  afterClass,
+                  error && 'shadow-error',
+                )}
                 id={radioValue}
                 name={name}
                 type="radio"

@@ -1,8 +1,9 @@
-import { forwardRef,LegacyRef, PropsWithChildren } from 'react'
+import { forwardRef, LegacyRef, PropsWithChildren } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button/Button'
 
 import { Link, LinkProps } from '../Link/Link'
+import { cn } from '@/utils/utils'
 
 export type MenuItemProps = {
   className?: string
@@ -18,7 +19,7 @@ export const MenuItem = forwardRef<
   if (buttonProps) {
     return (
       <Button
-        className={`MenuItemButton ${className} [&.MenuItemButton]:w-full [&.MenuItemButton]:rounded-none [&.MenuItemButton]:border-none`}
+        className={cn('MenuItemButton', 'w-full rounded-none border-none', className)}
         role="menuitem"
         ref={ref as LegacyRef<HTMLButtonElement>}
         {...buttonProps}
@@ -29,7 +30,7 @@ export const MenuItem = forwardRef<
   } else {
     return (
       <Link
-        className={`MenuItemLink ${className} [&.MenuItemLink]:w-full [&.MenuItemLink]:rounded-none [&.MenuItemLink]:border-none`}
+        className={cn('MenuItemLink', 'w-full rounded-none border-none', className)}
         role="menuitem"
         ref={ref as LegacyRef<HTMLAnchorElement>}
         href={linkProps?.href || ''}

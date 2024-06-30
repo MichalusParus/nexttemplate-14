@@ -20,6 +20,7 @@ import {
 import Input from '../../InputField/Input'
 import { inputSize, inputVariant } from '../../InputField/Input/Input.style'
 import { iconSize } from '../../MultiSelectField/MultiSelect/MultiSelect.style'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 export type MultiAutocompleteProps = Omit<AutocompleteProps, 'value' | 'onChange'> & {
   /** current value of component */
@@ -51,9 +52,9 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
       collapsed,
       disabled,
       error,
-      inputProps,
-      dropdownProps,
-      listboxProps,
+      inputProps = {},
+      dropdownProps = {},
+      listboxProps = {},
       onOpen,
       onInputChange,
       onChange,
@@ -69,9 +70,6 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
     ])
     const [selectedOptions, setSelectedOptions] = useState<{ label: string; value: string }[]>([])
     const ghostArray = new Array(10).fill(null).map((_, i) => ({ label: `${i}`, value: `${i}` }))
-    const chevronPosition = isOpen ? 'rotate-180' : ''
-    const errorShadow = error ? 'shadow-error' : ''
-    const dropdownPadding = placement === 'left' ? 'pt-1' : 'pb-1'
     const comboboxZIndex = isOpen ? 'z-40' : 'z-20'
     const selectedClass = isOpen ? 'selected' : ''
     const disabledClass = disabled ? 'disabled' : ''
@@ -129,13 +127,24 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
         hideError={hideError}
         collapsed={collapsed}
       >
-        <div className={'MultiAutocomplete relative flex w-full'} ref={componentRef}>
+        <div className={cn('MultiAutocomplete', 'relative flex w-full')} ref={componentRef}>
           <div
-            className={`ComboboxWrap flex flex-wrap items-start gap-1.5 pr-16 ${comboboxWrapClass} ${selectedClass} ${inputVariant[variant][color]} ${inputSize[size]} ${disabledClass} ${disabledVariant[variant]} ${comboboxZIndex} ${errorShadow}`}
+            className={cn(
+              'ComboboxWrap',
+              'flex flex-wrap items-start gap-1.5 pr-16',
+              comboboxWrapClass,
+              selectedClass,
+              inputVariant[variant][color],
+              inputSize[size],
+              disabledClass,
+              disabledVariant[variant],
+              comboboxZIndex,
+              error && 'shadow-error',
+            )}
           >
             {selectedOptions.length ? (
               <Button
-                className={`ClearButton ${clearButtonClass} ${comboboxZIndex} ${selectedClass}`}
+                className={cn('ClearButton', clearButtonClass, comboboxZIndex, selectedClass)}
                 startIcon={<XIcon className={iconSize[size]} />}
                 variant={variant}
                 color={color}
@@ -160,9 +169,10 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
             ))}
             <Input
               id={name}
-              className={
-                'grow basis-40 [&_input]:border-none [&_input]:bg-transparent [&_input]:py-px'
-              }
+              className={cn(
+                'grow basis-40 [&_input]:border-none [&_input]:bg-transparent [&_input]:py-px',
+                inputProps.className,
+              )}
               name={name}
               label="MultiAutocompleteInput"
               value={inputValue}
@@ -186,9 +196,9 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
               }
               onClick={() => setIsOpen(true)}
               onChange={handleInputChange}
-              {...inputProps}
+              {...filterOutKeys(inputProps, ['className'])}
             />
-            <ChevronIcon className={`${chevronClass} ${comboboxZIndex} ${chevronPosition}`} />
+            <ChevronIcon className={cn(chevronClass, comboboxZIndex, isOpen && 'rotate-180')} />
           </div>
           <Dropdown
             isOpen={isOpen}
@@ -199,7 +209,7 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
             {...dropdownProps}
           >
             <ListBox
-              className={dropdownPadding}
+              className={cn(placement === 'left' ? 'pt-1' : 'pb-1', listboxProps.className)}
               name={name}
               value={value}
               options={isLoading && onOpen ? ghostArray : sortedOptions}
@@ -209,7 +219,7 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
               isLoading={isLoading}
               noOptionLabel={`No options match ${inputValue}`}
               onClick={handleOnChange}
-              {...listboxProps}
+              {...filterOutKeys(listboxProps, ['className'])}
             />
           </Dropdown>
         </div>

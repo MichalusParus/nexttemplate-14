@@ -16,6 +16,7 @@ import {
   switchSize,
   thumbClass,
 } from './Checkbox.style'
+import { cn } from '@/utils/utils'
 
 export type CheckboxProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -72,14 +73,33 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     if (fake) {
       return (
         <div
-          className={`FakeCheckboxWrap ${className} relative flex items-center ${checkboxSize[size]}`}
+          className={cn(
+            'FakeCheckboxWrap',
+            'relative flex items-center',
+            checkboxSize[size],
+            className,
+          )}
           data-testid="FakeCheckboxWrap"
         >
           <div
-            className={`FakeInput ${inputClass} ${checkboxVariant[variant][color]} ${disabledClass} ${disabledVariant[variant]} ${selectedClass} ${errorShadow}`}
+            className={cn(
+              'FakeInput',
+              inputClass,
+              checkboxVariant[variant][color],
+              disabledClass,
+              disabledVariant[variant],
+              selectedClass,
+              errorShadow,
+            )}
           />
           <CheckIcon
-            className={`CheckIcon ${checkClass} ${checkVariant[variant][color]} ${checkVisibility} ${disabledClass}`}
+            className={cn(
+              'CheckIcon',
+              checkClass,
+              checkVariant[variant][color],
+              checkVisibility,
+              disabledClass,
+            )}
           />
           {label}
         </div>
@@ -89,12 +109,23 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     if (variant === 'switch') {
       return (
         <label
-          className={`${className} group relative flex items-center ${switchSize[size]} ${checkboxMargin[size]}`}
+          className={cn(
+            'Label',
+            'group relative flex items-center',
+            switchSize[size],
+            checkboxMargin[size],
+            className,
+          )}
           data-testid="SwitchLabel"
         >
           <input
             id={name}
-            className={`${switchClass} ${checkboxVariant[variant][color]} ${disabledVariant[variant]} ${errorShadow}`}
+            className={cn(
+              switchClass,
+              checkboxVariant[variant][color],
+              disabledVariant[variant],
+              errorShadow,
+            )}
             type="checkbox"
             name={name}
             value={value}
@@ -105,7 +136,13 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             {...rest}
           />
           <div
-            className={`SwitchThumb ${thumbClass} ${checkVariant[variant][color]} ${thumbPosition} ${disabledClass}`}
+            className={cn(
+              'SwitchThumb',
+              thumbClass,
+              checkVariant[variant][color],
+              thumbPosition,
+              disabledClass,
+            )}
             data-testid="SwitchThumb"
           />
           {label}
@@ -115,12 +152,24 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 
     return (
       <label
-        className={`${className} relative flex items-center ${checkboxSize[size]} ${checkboxMargin[size]}`}
+        className={cn(
+          'Label',
+          'relative flex items-center',
+          checkboxSize[size],
+          checkboxMargin[size],
+          className,
+        )}
         data-testid="CheckboxLabel"
       >
         <input
           id={name}
-          className={`mr-2 ${inputClass} ${checkboxVariant[variant][color]} ${disabledVariant[variant]} ${errorShadow}`}
+          className={cn(
+            'mr-2',
+            inputClass,
+            checkboxVariant[variant][color],
+            disabledVariant[variant],
+            errorShadow,
+          )}
           type="checkbox"
           name={name}
           value={value}
@@ -131,7 +180,13 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           {...rest}
         />
         <CheckIcon
-          className={`CheckIcon ${checkClass} ${checkVariant[variant][color]} ${checkVisibility} ${disabledClass}`}
+          className={cn(
+            'CheckIcon',
+            checkClass,
+            checkVariant[variant][color],
+            checkVisibility,
+            disabledClass,
+          )}
         />
         {label}
       </label>

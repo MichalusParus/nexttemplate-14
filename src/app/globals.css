@@ -1,6 +1,117 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 1. CSS Variables */
+/* 2. Default CSS */
+/* 4. Scrollbar */
+/* 3. Animations */
+
+/* CSS Variables */
+:root {
+  /* COLORS */
+  --color-text: #0c150d;
+  --color-bg: #f3f8f3;
+  --color-overlay: #00000033;
+  /* Primary */
+  --color-prim-50: #ecfeff;
+  --color-prim-100: #cffafe;
+  --color-prim-200: #a5f3fc;
+  --color-prim-300: #67e8f9;
+  --color-prim-400: #22d3ee;
+  --color-prim-500: #06b6d4;
+  --color-prim-600: #0891b2;
+  --color-prim-700: #0e7490;
+  --color-prim-800: #155e75;
+  --color-prim-900: #164e63;
+  --color-prim-950: #083344;
+  /* Secondary */
+  --color-second-50: #ecfdf5;
+  --color-second-100: #d1fae5;
+  --color-second-200: #a7f3d0;
+  --color-second-300: #6ee7b7;
+  --color-second-400: #34d399;
+  --color-second-500: #10b981;
+  --color-second-600: #059669;
+  --color-second-700: #047857;
+  --color-second-800: #065f46;
+  --color-second-900: #064e3b;
+  --color-second-950: #022c22;
+  /* Terciary */
+  --color-terc-50: #fdf4ff;
+  --color-terc-100: #fae8ff;
+  --color-terc-200: #f5d0fe;
+  --color-terc-300: #f0abfc;
+  --color-terc-400: #e879f9;
+  --color-terc-500: #d946ef;
+  --color-terc-600: #c026d3;
+  --color-terc-700: #a21caf;
+  --color-terc-800: #86198f;
+  --color-terc-900: #701a75;
+  --color-terc-950: #4a044e;
+  /* Dark */
+  --color-dark-50: #fafafa;
+  --color-dark-100: #f5f5f5;
+  --color-dark-200: #e5e5e5;
+  --color-dark-300: #d4d4d4;
+  --color-dark-400: #a3a3a3;
+  --color-dark-500: #737373;
+  --color-dark-600: #525252;
+  --color-dark-700: #404040;
+  --color-dark-800: #262626;
+  --color-dark-900: #171717;
+  --color-dark-950: #0a0a0a;
+  /* Info */
+  --color-info-50: #f0f9ff;
+  --color-info-100: #e0f2fe;
+  --color-info-200: #bae6fd;
+  --color-info-300: #7dd3fc;
+  --color-info-400: #38bdf8;
+  --color-info-500: #0ea5e9;
+  --color-info-600: #0284c7;
+  --color-info-700: #0369a1;
+  --color-info-800: #075985;
+  --color-info-900: #0c4a6e;
+  --color-info-950: #082f49;
+  /* Success */
+  --color-success-50: #f7fee7;
+  --color-success-100: #ecfccb;
+  --color-success-200: #d9f99d;
+  --color-success-300: #bef264;
+  --color-success-400: #a3e635;
+  --color-success-500: #84cc16;
+  --color-success-600: #65a30d;
+  --color-success-700: #4d7c0f;
+  --color-success-800: #3f6212;
+  --color-success-900: #365314;
+  --color-success-950: #1a2e05;
+  /* Warning */
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-800: #92400e;
+  --color-warning-900: #78350f;
+  --color-warning-950: #451a03;
+  /* Error */
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-200: #fecaca;
+  --color-error-300: #fca5a5;
+  --color-error-400: #f87171;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+  --color-error-800: #991b1b;
+  --color-error-900: #7f1d1d;
+  --color-error-950: #450a0a;
+}
+
+/* Default CSS */
 * {
   box-sizing: border-box;
 }

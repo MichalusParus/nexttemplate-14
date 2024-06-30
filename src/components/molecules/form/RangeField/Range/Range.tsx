@@ -4,6 +4,7 @@ import { Label, LabelProps } from '@/components/atoms/common/Label/Label'
 import Span from '@/components/atoms/typography/Span'
 
 import { rangeClass, rangeColor, rangeSize, rangeWrapClass } from './Range.style'
+import { cn } from '@/utils/utils'
 
 export type RangeProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -40,9 +41,6 @@ export const Range = forwardRef<HTMLInputElement, RangeProps>(
     },
     ref,
   ) => {
-    const errorShadow = error ? 'shadow-error' : ''
-    const valueVisibility = value ? 'opacity-100' : 'opacity-0'
-
     return (
       <Label
         className={className}
@@ -56,10 +54,12 @@ export const Range = forwardRef<HTMLInputElement, RangeProps>(
         hideError={hideError}
         collapsed={collapsed}
       >
-        <div className={`RangeWrap ${rangeWrapClass} ${rangeSize[size]}`}>
-          <Span className={`ValueWrap min-w-[3rem] ${valueVisibility}`}>{value || '0'}</Span>
+        <div className={cn('RangeWrap', rangeWrapClass, rangeSize[size])}>
+          <Span className={cn('ValueWrap', 'min-w-[3rem]', !value && 'opacity-0')}>
+            {value || '0'}
+          </Span>
           <input
-            className={`${rangeClass} ${rangeColor[color]} ${errorShadow}`}
+            className={cn(rangeClass, rangeColor[color], error && 'shadow-error')}
             id={name}
             type="range"
             name={name}

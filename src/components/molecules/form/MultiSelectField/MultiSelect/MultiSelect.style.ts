@@ -1,22 +1,24 @@
-export const selectedClass = 'absolute left-[1px] top-0 flex max-w-[70%] flex-wrap gap-1.5'
+import { cn } from '@/utils/utils'
+
+export const selectedClass = cn('absolute left-[1px] top-0 flex max-w-[70%] flex-wrap gap-1.5')
 
 export const selectedSize = {
-  sm: 'my-smPY mx-smPX text-sm',
-  md: 'my-mdPY mx-mdPX text-base',
-  lg: 'my-lgPY mx-lgPX text-lg',
+  sm: cn('mx-smPX my-smPY text-sm'),
+  md: cn('mx-mdPX my-mdPY text-base'),
+  lg: cn('mx-lgPX my-lgPY text-lg'),
   none: '',
 }
 
 export const iconSize = {
-  sm: 'h-smIcon w-smIcon min-w-smIcon',
-  md: 'h-mdIcon w-mdIcon min-w-mdIcon',
-  lg: 'h-lgIcon w-lgIcon min-w-lgIcon',
+  sm: cn('h-smIcon w-smIcon min-w-smIcon'),
+  md: cn('h-mdIcon w-mdIcon min-w-mdIcon'),
+  lg: cn('h-lgIcon w-lgIcon min-w-lgIcon'),
   none: '',
 }
 
 export const checkboxSize = {
-  sm: '[&>*]:w-5 [&>*]:h-5',
-  md: '[&>*]:w-6 [&>*]:h-6',
-  lg: '[&>*]:w-7 [&>*]:h-7',
+  sm: cn('[&>*]:h-5 [&>*]:w-5'),
+  md: cn('[&>*]:h-6 [&>*]:w-6'),
+  lg: cn('[&>*]:h-7 [&>*]:w-7'),
   none: '',
 }

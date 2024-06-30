@@ -30,6 +30,7 @@ export const PrimaryDefault: Story = {
     startIcon: undefined,
     buttonIcon: undefined,
     onClick: undefined,
+    buttonProps: undefined,
     children: 'Chip',
   },
 }

@@ -22,6 +22,7 @@ import { TitleProps } from '@/components/atoms/typography/Title/Title'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import { closeClass, modalPosition, openClass } from './Modal.style'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 export type ModalProps = {
   /** for passing custom tailwind classes */
@@ -74,9 +75,9 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
       closeButton,
       hideXButton,
       comboboxProps = { children: 'ModalCombobox' },
-      paperProps,
-      titleProps,
-      buttonProps,
+      paperProps = {},
+      titleProps = {},
+      buttonProps = {},
       setIsOpen,
       children,
     },
@@ -117,7 +118,7 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
         ) : null}
         <div
           id={name}
-          className={`Modal ${className} ${width} ${modalPosition} ${modalOpenClass}`}
+          className={cn('Modal', width, modalPosition, modalOpenClass, className)}
           ref={componentRef}
           role="dialog"
           aria-modal="true"
@@ -125,13 +126,13 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
           aria-label={title || name}
         >
           <Paper
-            className={'relative h-full w-full'}
+            className={cn('relative h-full w-full', paperProps.className)}
             variant={variant}
             color={color}
             padding={padding}
-            {...paperProps}
+            {...filterOutKeys(paperProps, ['className'])}
           >
-            <div className="ModalTitleWrap pb-8">
+            <div className={cn('ModalTitleWrap', 'pb-8')}>
               {title ? (
                 <Title
                   color={variant === 'contained' ? 'none' : color}
@@ -144,7 +145,7 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
               ) : null}
               {!hideXButton ? (
                 <Button
-                  className="XButton right-0 top-0 [&.XButton]:absolute [&.XButton]:border-none"
+                  className={cn('XButton', 'absolute right-0 top-0 border-none')}
                   variant={variant}
                   color={color}
                   size="lg"
@@ -156,15 +157,15 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
               ) : null}
             </div>
             <ScrollShadow height="max-h-[75vh]">{children}</ScrollShadow>
-            <div className="ModalActions flex justify-end gap-3 pt-8">
+            <div className={cn('ModalActions', 'flex justify-end gap-3 pt-8')}>
               {closeButton ? (
                 <Button
-                  className="CloseButton [&.CloseButton]:border-none"
+                  className={cn('CloseButton', 'border-none', buttonProps.className)}
                   variant={variant}
                   color={color}
                   hideShadow
                   onClick={handleClose}
-                  {...buttonProps}
+                  {...filterOutKeys(buttonProps, ['className'])}
                 >
                   Close
                 </Button>

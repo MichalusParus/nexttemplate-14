@@ -1,6 +1,8 @@
+import { cn } from '@/utils/utils'
+
 export const dividerColor = {
-  primary: 'bg-primary-800',
-  secondary: 'bg-secondary-800',
-  terciary: 'bg-terciary-800',
+  primary: cn('bg-primary-800'),
+  secondary: cn('bg-secondary-800'),
+  terciary: cn('bg-terciary-800'),
   none: '',
 }

@@ -2,6 +2,7 @@ import { forwardRef, HTMLAttributes } from 'react'
 
 import Span from '../../typography/Span'
 import { dividerColor } from './Divider.style'
+import { cn } from '@/utils/utils'
 
 export type DividerProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color' | 'label'> & {
   /** for passing custom tailwind classes */
@@ -26,7 +27,7 @@ export const Divider = forwardRef<HTMLDivElement, DividerProps>(
 
     return (
       <div
-        className={`DividerWrap ${className} flex items-center ${flexDirection}`}
+        className={cn('DividerWrap', 'flex items-center', flexDirection, className)}
         role="separator"
         ref={ref}
         aria-orientation={vertical ? 'vertical' : 'horizontal'}

@@ -14,6 +14,7 @@ import {
   inputSize,
   inputVariant,
 } from './Input.style'
+import { cn } from '@/utils/utils'
 
 export type InputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -59,11 +60,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref,
   ) => {
-    const errorShadow = error ? 'shadow-error' : ''
-    const hideMargin = hideError ? '' : 'mb-1'
-    const searchPadding = type === 'search' ? 'pr-7' : ''
-    const startIconPadding = startIcon ? 'pl-9' : ''
-
     return (
       <Label
         className={className}
@@ -77,9 +73,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         hideError={hideError}
         collapsed={collapsed}
       >
-        <div className={`relative w-full ${hideMargin}`}>
+        <div className={cn('InputWrap', 'relative w-full', !hideError && 'mb-1')}>
           <input
-            className={`${inputClass} ${inputVariant[variant][color]} ${disabledVariant[variant]} ${inputSize[size]} ${errorShadow} ${searchPadding} ${startIconPadding}`}
+            className={cn(
+              inputClass,
+              inputVariant[variant][color],
+              inputSize[size],
+              disabledVariant[variant],
+              error && 'shadow-error',
+              startIcon && 'pl-9',
+              type === 'search' && 'pr-7',
+            )}
             id={name}
             name={name}
             type={type}
@@ -92,14 +96,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
           {startIcon ? (
             <span
-              className={`left-1 ${inputIconPosition} ${checkVariant[variant][color]} ${buttonIconSize[size]}`}
+              className={cn(
+                'left-2 inline-flex',
+                inputIconPosition,
+                checkVariant[variant][color],
+                buttonIconSize[size],
+              )}
             >
               {startIcon}
             </span>
           ) : null}
           {type === 'search' && value ? (
             <Button
-              className={`ClearButton [&.Button]:right-1 ${inputIconPosition} ${buttonIconSize[size]}`}
+              className={cn('ClearButton', 'right-1', inputIconPosition, buttonIconSize[size])}
               variant="text"
               color={color}
               size="none"

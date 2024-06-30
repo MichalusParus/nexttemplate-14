@@ -2,6 +2,7 @@ import { forwardRef, HTMLAttributes } from 'react'
 
 import Ghost from '../../loaders/Ghost'
 import { ghostAligment, titleColor, titleSize } from './Title.style'
+import { cn } from '@/utils/utils'
 
 export type TitleProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'color' | 'className'> & {
   /** for passing custom tailwind classes */
@@ -39,7 +40,7 @@ export const Title = forwardRef<HTMLHeadingElement, TitleProps>(
       case 'h1':
         return (
           <h1
-            className={`${className} ${titleColor[color]} ${titleSize[size]} ${align}`}
+            className={cn(titleColor[color], titleSize[size], align, className)}
             ref={ref}
             {...rest}
           >
@@ -53,7 +54,7 @@ export const Title = forwardRef<HTMLHeadingElement, TitleProps>(
       case 'h2':
         return (
           <h2
-            className={`${className} ${titleColor[color]} ${titleSize[size]} ${align}`}
+            className={cn(titleColor[color], titleSize[size], align, className)}
             ref={ref}
             {...rest}
           >
@@ -67,7 +68,7 @@ export const Title = forwardRef<HTMLHeadingElement, TitleProps>(
       case 'h3':
         return (
           <h3
-            className={`${className} ${titleColor[color]} ${titleSize[size]} ${align}`}
+            className={cn(titleColor[color], titleSize[size], align, className)}
             ref={ref}
             {...rest}
           >
@@ -81,7 +82,7 @@ export const Title = forwardRef<HTMLHeadingElement, TitleProps>(
       case 'h4':
         return (
           <h4
-            className={`${className} ${titleColor[color]} ${titleSize[size]} ${align}`}
+            className={cn(titleColor[color], titleSize[size], align, className)}
             ref={ref}
             {...rest}
           >
@@ -95,7 +96,7 @@ export const Title = forwardRef<HTMLHeadingElement, TitleProps>(
       case 'h5':
         return (
           <h5
-            className={`${className} ${titleColor[color]} ${titleSize[size]} ${align}`}
+            className={cn(titleColor[color], titleSize[size], align, className)}
             ref={ref}
             {...rest}
           >
@@ -109,7 +110,7 @@ export const Title = forwardRef<HTMLHeadingElement, TitleProps>(
       case 'h6':
         return (
           <h6
-            className={`${className} ${titleColor[color]} ${titleSize[size]} ${align}`}
+            className={cn(titleColor[color], titleSize[size], align, className)}
             ref={ref}
             {...rest}
           >

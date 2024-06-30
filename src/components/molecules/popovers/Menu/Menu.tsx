@@ -6,6 +6,7 @@ import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import Dropdown from '../Dropdown'
 import { DropdownProps } from '../Dropdown/Dropdown'
+import { cn } from '@/utils/utils'
 
 export type MenuProps = {
   /** for passing custom tailwind classes */
@@ -70,7 +71,7 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
     ])
 
     return (
-      <div className={`MenuWrap ${className} ${menuPosition}`} data-testid="MenuWrap">
+      <div className={cn('MenuWrap', menuPosition, className)} data-testid="MenuWrap">
         {!setIsOpen ? (
           <Combobox
             name={name}

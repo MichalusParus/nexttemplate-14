@@ -2,6 +2,7 @@ import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react'
 
 import Ghost from '../../loaders/Ghost'
 import { PColor, PSize } from './P.style'
+import { cn } from '@/utils/utils'
 
 export type PProps = Omit<HTMLAttributes<HTMLParagraphElement>, 'color' | 'className'> & {
   /** for passing custom tailwind classes */
@@ -37,13 +38,13 @@ export const P = forwardRef<HTMLParagraphElement, PropsWithChildren<PProps>>(
 
     return (
       <p
-        className={`${className} whitespace-pre-wrap ${PColor[color]} ${PSize[size]} ${align}`}
+        className={cn('whitespace-pre-wrap', PColor[color], PSize[size], align, className)}
         data-testid="P"
         ref={ref}
         {...rest}
       >
         {isLoading
-          ? expectedArray.map((line, index) => (
+          ? expectedArray.map((_, index) => (
               <Ghost key={'pGhost' + index} className="float-left w-full" size={size} />
             ))
           : children}

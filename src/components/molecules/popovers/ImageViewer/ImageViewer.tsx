@@ -7,6 +7,7 @@ import XIcon from '@/components/atoms/icons/XIcon'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import { closeButtonClass, closeClass, openClass, vieverComboboxClass } from './ImageViewer.style'
+import { cn } from '@/utils/utils'
 
 type ImageViewerProps = {
   /** for passing custom tailwind classes */
@@ -22,9 +23,6 @@ export const ImageViewer = forwardRef<HTMLDivElement, PropsWithChildren<ImageVie
     const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false))
     useImperativeHandle(ref, () => componentRef.current!)
 
-    const viewerOpenState = isOpen ? openClass : closeClass
-    const viewerCursor = isOpen ? 'cursor-zoom-out' : 'cursor-zoom-in'
-
     const handleClose = () => {
       startRef?.current?.focus()
       setIsOpen(prev => !prev)
@@ -36,12 +34,12 @@ export const ImageViewer = forwardRef<HTMLDivElement, PropsWithChildren<ImageVie
 
     return (
       <div
-        className={`ImageViewer ${className} transition-size ${viewerOpenState}`}
+        className={cn('ImageViewer', 'transition-size', isOpen ? openClass : closeClass, className)}
         ref={componentRef}
         data-testid="ImageViewer"
       >
         <Combobox
-          className={`${vieverComboboxClass} ${viewerCursor}`}
+          className={cn(vieverComboboxClass, isOpen ? 'cursor-zoom-out' : 'cursor-zoom-in')}
           name={alt}
           isOpen={isOpen}
           hasPopup="dialog"
@@ -55,7 +53,7 @@ export const ImageViewer = forwardRef<HTMLDivElement, PropsWithChildren<ImageVie
         </Combobox>
         {isOpen ? (
           <Button
-            className={`CloseButton ${closeButtonClass}`}
+            className={cn('CloseButton', closeButtonClass)}
             variant="text"
             color="none"
             startIcon={<XIcon />}

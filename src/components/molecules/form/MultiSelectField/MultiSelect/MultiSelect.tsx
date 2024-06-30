@@ -13,6 +13,7 @@ import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 import { Label } from '../../../../atoms/common/Label/Label'
 import { SelectProps } from '../../SelectField/Select/Select'
 import { iconSize, selectedClass, selectedSize } from './MultiSelect.style'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 export type MultiSelectProps = Omit<SelectProps, 'value' | 'onChange'> & {
   /** current value of component */
@@ -42,9 +43,9 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
       collapsed,
       disabled,
       error,
-      comboboxProps,
-      dropdownProps,
-      listboxProps,
+      comboboxProps = {},
+      dropdownProps = {},
+      listboxProps = {},
       onChange,
     },
     ref,
@@ -63,10 +64,6 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
     ])
     useImperativeHandle(ref, () => componentRef.current!)
     const selectedOptions = options.filter(option => value.includes(option.value)) || options[0]
-    const chevronPosition = isOpen ? 'rotate-180' : ''
-    const errorClass = error ? 'error' : ''
-    const dropdownPadding = placement === 'left' ? 'pt-1' : 'pb-1'
-    const comboboxZIndex = isOpen ? 'z-40' : 'z-20'
 
     const handleClose = useCallback(() => {
       startRef?.current?.focus()
@@ -106,10 +103,10 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
         hideError={hideError}
         collapsed={collapsed}
       >
-        <div className="MultiSelect relative w-full" ref={componentRef}>
+        <div className={cn('MultiSelect', 'relative w-full')} ref={componentRef}>
           <Combobox
             id={name}
-            className={`SelectCombobox ${errorClass}`}
+            className={cn('SelectCombobox', error && 'error', comboboxProps.className)}
             name={name}
             variant={variant}
             color={color}
@@ -123,12 +120,12 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
             ref={startRef}
             aria-labelledby={'label-' + name}
             onClick={handleClose}
-            {...comboboxProps}
+            {...filterOutKeys(comboboxProps, ['className'])}
           >
-            <div className="ComboboxInnerWrap flex w-full items-center justify-between">
+            <div className={cn('ComboboxInnerWrap', 'flex w-full items-center justify-between')}>
               {selectedOptions.length ? (
                 <div
-                  className={'FakeSelectedWrap'}
+                  className="FakeSelectedWrap"
                   style={{
                     width: selectedOptionsSize?.width,
                     height: selectedOptionsSize?.height,
@@ -138,12 +135,21 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
                 <div className="text-dark-400">{placeholder}</div>
               )}
               <ChevronIcon
-                className={`text-inherit transition-transform ${chevronPosition} ${iconSize[size]}`}
+                className={cn(
+                  'text-inherit transition-transform',
+                  isOpen && 'rotate-180',
+                  iconSize[size],
+                )}
               />
             </div>
           </Combobox>
           <div
-            className={`SelectedOptionsWrap ${selectedClass} ${selectedSize[size]} ${comboboxZIndex} `}
+            className={cn(
+              'SelectedOptionsWrap',
+              selectedClass,
+              selectedSize[size],
+              isOpen ? 'z-40' : 'z-20',
+            )}
             ref={selectedOptionsRef}
             data-testid="SelectedOptionsWrap"
           >
@@ -161,9 +167,9 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
             ))}
             {value.length ? (
               <Button
-                className={'ClearButton shrink-0 border-0'}
+                className={cn('ClearButton', 'shrink-0 border-0')}
                 type="button"
-                startIcon={<XIcon className={`${iconSize[size]}`} />}
+                startIcon={<XIcon className={iconSize[size]} />}
                 variant={variant}
                 color={color}
                 size="none"
@@ -183,7 +189,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
             {...dropdownProps}
           >
             <ListBox
-              className={dropdownPadding}
+              className={cn(placement === 'left' ? 'pt-1' : 'pb-1', listboxProps.className)}
               name={name}
               value={value}
               options={sortedOptions}
@@ -192,7 +198,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
               size={size}
               aria-multiselectable={true}
               onClick={handleOnChange}
-              {...listboxProps}
+              {...filterOutKeys(listboxProps, ['className'])}
             />
           </Dropdown>
         </div>

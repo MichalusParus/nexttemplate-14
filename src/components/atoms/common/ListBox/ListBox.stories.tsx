@@ -16,6 +16,9 @@ const meta: Meta<typeof ListBox> = {
     options: {
       control: false,
     },
+    checkboxProps: {
+      control: false,
+    },
   },
 }
 
@@ -46,7 +49,10 @@ export const PrimaryDefault: Story = {
     variant: 'outlined',
     color: 'primary',
     size: 'md',
+    isLoading: false,
+    noOptionLabel: 'No options found',
     hideCheckbox: false,
+    checkboxProps: {},
     onClick: value => console.log(value),
   },
   render: args => <ListBoxWithHooks {...args} />,

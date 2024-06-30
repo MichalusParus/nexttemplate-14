@@ -1,7 +1,7 @@
 'use client'
 import { forwardRef, ReactNode, useState } from 'react'
 
-import { slugify } from '@/utils/utils'
+import { cn, slugify } from '@/utils/utils'
 
 import { Disclosure, DisclosureProps } from '../Disclosure/Disclosure'
 
@@ -26,9 +26,10 @@ export const Accordion = forwardRef<HTMLButtonElement, AccordionProps>(
     const [openState, setOpenState] = useState<boolean[]>(
       options.map(({ expanded }) => Boolean(expanded)),
     )
+
     return (
       <div
-        className={`Accordion ${className} flex flex-col overflow-hidden ${gap}`}
+        className={cn('Accordion', 'flex flex-col overflow-hidden', gap, className)}
         data-testid="Accordion"
       >
         {options.map(({ content, title, expanded }, index) => (

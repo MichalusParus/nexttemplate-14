@@ -9,6 +9,7 @@ import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/Sc
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import { closeClass, drawerClass, openClass } from './Drawer.style'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 export type DrawerProps = {
   /** for passing tailwind classes to Paper through props */
@@ -53,8 +54,8 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
       width = 'w-1/3',
       padding = 'p-0',
       hideOverlay,
-      paperProps,
-      scrollShadowProps,
+      paperProps = {},
+      scrollShadowProps = {},
       children,
       onClose,
     },
@@ -76,19 +77,26 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
       <>
         <div
           id={name}
-          className={`Drawer ${className} ${drawerClass} ${offsetY} ${width} ${isOpen ? openClass[placement] : closeClass[placement]}`}
+          className={cn(
+            'Drawer',
+            drawerClass,
+            offsetY,
+            width,
+            isOpen ? openClass[placement] : closeClass[placement],
+            className,
+          )}
           ref={componentRef}
           role="menu"
           aria-hidden={!isOpen}
           aria-label={name}
         >
           <Paper
-            className={`${className} relative h-full`}
+            className={cn(`relative h-full`, paperProps.className)}
             variant={variant}
             color={color}
             padding={padding}
             rounded={placement === 'left' ? 'rounded-r-md' : 'rounded-l-md'}
-            {...paperProps}
+            {...filterOutKeys(paperProps, ['className'])}
           >
             <ScrollShadow {...scrollShadowProps}>{children}</ScrollShadow>
           </Paper>

@@ -9,6 +9,7 @@ import {
   iconOnlySize,
 } from '../Button/Button.style'
 import { linkClass } from './Link.style'
+import { cn } from '@/utils/utils'
 
 export type LinkProps = Omit<LinkHTMLAttributes<HTMLAnchorElement>, 'className' | 'color'> &
   NextLinkProps & {
@@ -58,14 +59,20 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
     const linkSize = iconOnly
       ? `${iconOnlySize[size]} ${buttonIconSize[size]}`
       : `${buttonContentSize[size]} ${iconMargin} ${buttonIconSize[size]}`
-    const linkShadow =
-      variant === 'contained' && !hideShadow ? 'shadow-button active:shadow-none' : ''
-    const upperCase = disableUpperCase ? '' : 'uppercase'
-    const fullWidthSize = fullWidth ? 'w-full' : ''
 
     return (
       <NextLink
-        className={`Link ${className} ${linkClass} ${linkFlex} ${buttonVariant[variant][color]} ${linkSize} ${fullWidthSize} ${linkShadow} ${upperCase}`}
+        className={cn(
+          'Link',
+          linkClass,
+          linkFlex,
+          buttonVariant[variant][color],
+          linkSize,
+          fullWidth && 'w-full',
+          variant === 'contained' && !hideShadow && 'shadow-button active:shadow-none',
+          !disableUpperCase && 'uppercase',
+          className,
+        )}
         ref={ref}
         {...rest}
       >

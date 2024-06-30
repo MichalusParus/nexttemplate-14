@@ -4,6 +4,7 @@ import { forwardRef, useCallback } from 'react'
 import { Label, LabelProps } from '@/components/atoms/common/Label/Label'
 
 import { Checkbox, CheckboxProps } from '../../CheckboxField/Checkbox/Checkbox'
+import { cn } from '@/utils/utils'
 
 export type CheckboxGroupProps = Omit<CheckboxProps, 'value' | 'isChecked' | 'onChange' | 'fake'> &
   LabelProps & {
@@ -44,8 +45,6 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
     },
     ref,
   ) => {
-    const flexDirection = column ? 'flex-col' : ''
-
     const isChecked = useCallback(
       (checkboxValue: string) => {
         if (value) {
@@ -82,7 +81,7 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
         collapsed={collapsed}
         fakeLabel
       >
-        <div className={`CheckboxGroupWrap flex flex-wrap ${flexDirection}`}>
+        <div className={cn('CheckboxGroupWrap', 'flex flex-wrap', column && 'flex-col')}>
           {options.map(({ value: checkboxValue, label }) => (
             <Checkbox
               key={checkboxValue}

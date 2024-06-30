@@ -5,6 +5,7 @@ import Ghost from '../../loaders/Ghost'
 import P from '../P'
 import { Title, TitleProps } from '../Title/Title'
 import { listColor, listSize } from './List.style'
+import { cn } from '@/utils/utils'
 
 export type ListProps = Omit<
   OlHTMLAttributes<HTMLOListElement>,
@@ -55,7 +56,7 @@ export const List = forwardRef<HTMLOListElement, ListProps>(
     ref,
   ) => {
     return (
-      <div className={`ListWrap ${className}`} data-testid="ListWrap">
+      <div className={cn('ListWrap', className)} data-testid="ListWrap">
         {title ? (
           <Title className="ListTitle" color={color} size={size} {...titleProps}>
             {title}
@@ -92,7 +93,14 @@ List.displayName = 'List'
 export const Li = ({ className = '', color = 'none', size = 'md', icon, children }: ListProps) => {
   return (
     <li
-      className={`Li [&>svg]:absolute [&>svg]:left-3 ${className} ${listColor[color]} ${listSize[size]} ${buttonIconSize[size]}`}
+      className={cn(
+        'Li',
+        '[&>svg]:absolute [&>svg]:left-3',
+        listColor[color],
+        listSize[size],
+        buttonIconSize[size],
+        className,
+      )}
     >
       {icon}
       {children}

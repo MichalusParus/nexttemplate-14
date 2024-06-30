@@ -2,6 +2,7 @@
 import { ButtonHTMLAttributes, forwardRef } from 'react'
 
 import { overlayClass } from './Overlay.style'
+import { cn } from '@/utils/utils'
 
 export type OverlayProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> & {
   /** for passing custom tailwind classes */
@@ -17,12 +18,15 @@ export type OverlayProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'classN
 /** Overlay is used in popover components for closing popover on click outside. USE CLIENT */
 export const Overlay = forwardRef<HTMLButtonElement, OverlayProps>(
   ({ className = '', isOpen, dark, onClose, ...rest }, ref) => {
-    const darkOverlay = dark ? 'bg-dark-950 bg-opacity-20' : ''
-    const openState = isOpen ? 'opacity-100' : 'invisible opacity-0'
-
     return (
       <button
-        className={`Overlay ${className} ${overlayClass} ${openState} ${darkOverlay}`}
+        className={cn(
+          'Overlay',
+          overlayClass,
+          isOpen ? 'opacity-100' : 'invisible opacity-0',
+          dark && 'bg-dark-950 bg-opacity-20',
+          className,
+        )}
         type="button"
         onClick={onClose}
         tabIndex={-1}

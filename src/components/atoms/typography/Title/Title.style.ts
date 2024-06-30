@@ -1,22 +1,24 @@
+import { cn } from '@/utils/utils'
+
 export const titleColor = {
-  primary: 'text-primary-800 whitespace-pre-wrap',
-  secondary: 'text-secondary-800 whitespace-pre-wrap',
-  terciary: 'text-terciary-800 whitespace-pre-wrap',
+  primary: cn('whitespace-pre-wrap text-primary-800'),
+  secondary: cn('whitespace-pre-wrap text-secondary-800'),
+  terciary: cn('whitespace-pre-wrap text-terciary-800'),
   none: '',
 }
 
 export const titleSize = {
-  sm: 'text-sm w-full font-semibold',
-  md: 'text-base w-full font-semibold',
-  lg: 'text-lg w-full font-semibold',
-  xl: 'text-xl w-full font-semibold',
-  '2xl': 'text-2xl w-full font-semibold',
-  '3xl': 'text-3xl w-full font-semibold',
+  sm: cn('w-full text-sm font-semibold'),
+  md: cn('w-full text-base font-semibold'),
+  lg: cn('w-full text-lg font-semibold'),
+  xl: cn('w-full text-xl font-semibold'),
+  '2xl': cn('w-full text-2xl font-semibold'),
+  '3xl': cn('w-full text-3xl font-semibold'),
   none: '',
 }
 
 export const ghostAligment = {
-  left: '',
-  center: 'mx-auto',
-  right: 'ml-auto',
+  left: cn(''),
+  center: cn('mx-auto'),
+  right: cn('ml-auto'),
 }

@@ -11,6 +11,7 @@ import Form from '../Form'
 import InputField from '../InputField'
 import Input from '../InputField/Input'
 import { searchColor, searchSize } from './SearchBar.style'
+import { cn } from '@/utils/utils'
 
 export type SearchBarProps = {
   /** for passing custom tailwind classes */
@@ -70,7 +71,7 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
 
     if (onChange) {
       return (
-        <div className={`${className} relative flex`} role="search">
+        <div className={cn('SearchBar', className)} role="search">
           <Input
             className={searchSize[size]}
             name={name}
@@ -82,30 +83,20 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
             size={size}
             width={width}
             placeholder={placeholder}
+            startIcon={<SearchIcon />}
             hideLabel
             hideError
             ref={ref}
             disabled={disabled}
             onChange={value => onChange(String(value))}
           />
-          <div className="FakeSubmitWrap absolute left-0">
-            <Button
-              className={searchColor[variant][color]}
-              variant="text"
-              color="none"
-              size={size}
-              startIcon={<SearchIcon />}
-              aria-label="search"
-              tabIndex={-1}
-            />
-          </div>
         </div>
       )
     }
 
     return (
       <Form
-        className={`${className} relative flex`}
+        className={cn('SearchBarForm', 'relative flex', className)}
         initialValues={{ [name]: '' }}
         validationSchema={object().shape({})}
         role="search"
@@ -122,21 +113,22 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
           size={size}
           width={width}
           placeholder={placeholder}
+          startIcon={
+            <Button
+              className={cn('SearchBarSubmit', 'px-0 py-0', searchColor[variant][color])}
+              type="submit"
+              variant="text"
+              color="none"
+              size={size}
+              startIcon={<SearchIcon />}
+              disabled={disabled}
+              aria-label="search"
+            />
+          }
           hideLabel
           hideError
           disabled={disabled}
         />
-        <div className="SubmitWrap absolute left-0">
-          <Button
-            className={searchColor[variant][color]}
-            type="submit"
-            variant="text"
-            color="none"
-            size={size}
-            startIcon={<SearchIcon />}
-            aria-label="search"
-          />
-        </div>
       </Form>
     )
   },

@@ -3,6 +3,7 @@ import { forwardRef, HTMLAttributes } from 'react'
 import ProfileIcon from '../../icons/ProfileIcon'
 import Image from '../Image'
 import { avatarClass, avatarSize, avatarVariant } from './Avatar.style'
+import { cn } from '@/utils/utils'
 
 export type AvatarProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */
@@ -39,7 +40,7 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
       if (src) {
         return <Image className="min-h-full min-w-full" src={src} alt="test" ratio={100} />
       } else if (userInitials) {
-        return userInitials
+        return <span>{userInitials}</span>
       } else {
         return <ProfileIcon className="min-h-full min-w-full p-0.5" />
       }
@@ -47,7 +48,13 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
 
     return (
       <div
-        className={`Avatar ${className} ${avatarClass} ${avatarVariant[variant][color]} ${avatarSize[size]}`}
+        className={cn(
+          'Avatar',
+          avatarClass,
+          avatarVariant[variant][color],
+          avatarSize[size],
+          className,
+        )}
         role="img"
         ref={ref}
         aria-label="profile"

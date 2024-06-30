@@ -3,6 +3,7 @@ import { forwardRef, LabelHTMLAttributes } from 'react'
 import Alert from '@/components/atoms/common/Alert'
 
 import { collapsedState, fieldWrapClass, labelClass, textSize } from './Label.style'
+import { cn } from '@/utils/utils'
 
 export type LabelProps = Omit<
   LabelHTMLAttributes<HTMLLabelElement>,
@@ -56,17 +57,23 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
 
     return (
       <div
-        className={`LabelWrap ${className} relative flex items-start ${collapsedState[collapsed]} ${width}`}
+        className={cn(
+          'LabelWrap',
+          'relative flex items-start',
+          collapsedState[collapsed],
+          width,
+          className,
+        )}
         data-testid="LabelWrap"
       >
         {fakeLabel ? (
-          <div className={`FakeLabel ${labelClass} ${textSize[size]} ${labelVisibility}`}>
+          <div className={cn('FakeLabel', labelClass, textSize[size], labelVisibility)}>
             {label}
           </div>
         ) : (
           <label
             id={'label-' + name}
-            className={`Label ${labelClass} ${textSize[size]} ${labelVisibility}`}
+            className={cn('Label', labelClass, textSize[size], labelVisibility)}
             htmlFor={name}
             ref={ref}
             data-testid="Label"
@@ -75,11 +82,11 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
             {label}
           </label>
         )}
-        <div className={`FieldWrap ${fieldWrapClass}`}>
+        <div className={cn('FieldWrap', fieldWrapClass)}>
           {children}
           {!hideError ? (
             <Alert
-              className={`${error || description ? 'opacity-100' : 'opacity-0'} mb-2`}
+              className={cn('mb-2', error || description ? 'opacity-100' : 'opacity-0')}
               variant="text"
               status={description && !error ? 'info' : 'error'}
               size="sm"

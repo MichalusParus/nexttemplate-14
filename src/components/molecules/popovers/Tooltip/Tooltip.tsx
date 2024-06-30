@@ -1,6 +1,7 @@
-import { forwardRef,HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
+import { forwardRef, HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
 
 import { tooltipClass, tooltipPosition, tooltipVisibility } from './Tooltip.style'
+import { cn } from '@/utils/utils'
 
 export type TooltipProps = Omit<HTMLAttributes<HTMLDivElement>, 'title' | 'className'> & {
   /** for passing custom tailwind classes */
@@ -20,13 +21,20 @@ export const Tooltip = forwardRef<HTMLDivElement, PropsWithChildren<TooltipProps
 
     return (
       <div
-        className={`TooltipWrap ${className} group/tooltip relative`}
+        className={cn('TooltipWrap', 'group/tooltip relative', className)}
         aria-describedby={String(title)}
         data-testid="TooltipWrap"
       >
         <div
           id={String(title)}
-          className={`Tooltip ${tooltipClass} ${tooltipPosition[placement]} ${tooltipVisibility} ${tooltipMargin} ${delay}`}
+          className={cn(
+            'Tooltip',
+            tooltipClass,
+            tooltipPosition[placement],
+            tooltipVisibility,
+            tooltipMargin,
+            delay,
+          )}
           role="tooltip"
           ref={ref}
           {...rest}

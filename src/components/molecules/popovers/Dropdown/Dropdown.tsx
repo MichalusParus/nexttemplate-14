@@ -1,4 +1,4 @@
-import { forwardRef,PropsWithChildren } from 'react'
+import { forwardRef, PropsWithChildren } from 'react'
 
 import Overlay from '@/components/atoms/common/Overlay'
 import Paper from '@/components/atoms/containers/Paper'
@@ -7,6 +7,7 @@ import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
 
 import { closeClass, dropdownClass, openClass } from './Dropdown.style'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 export type DropdownProps = {
   /** for passing custom tailwind classes */
@@ -51,28 +52,33 @@ export const Dropdown = forwardRef<HTMLDivElement, PropsWithChildren<DropdownPro
       padding = 'p-0',
       hideOverlay,
       hideShadow,
-      paperProps,
-      scrollShadowProps,
+      paperProps = {},
+      scrollShadowProps = {},
       onClose,
       children,
     },
     ref,
   ) => {
-    const dropdownOpenState = isOpen ? openClass[placement] : closeClass[placement]
     return (
       <>
         <div
-          className={`Dropdown ${className} ${dropdownClass} ${width} ${dropdownOpenState}`}
+          className={cn(
+            'Dropdown',
+            dropdownClass,
+            width,
+            isOpen ? openClass[placement] : closeClass[placement],
+            className,
+          )}
           ref={ref}
           data-testid="Dropdown"
         >
           <Paper
-            className="overflow-hidden"
+            className={cn('overflow-hidden', paperProps.className)}
             variant={variant}
             color={color}
             padding={padding}
             hideShadow={hideShadow}
-            {...paperProps}
+            {...filterOutKeys(paperProps, ['className'])}
           >
             <ScrollShadow height={height} {...scrollShadowProps}>
               {children}
