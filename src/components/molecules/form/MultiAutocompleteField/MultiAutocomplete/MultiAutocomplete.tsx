@@ -1,5 +1,5 @@
 'use client'
-import { KeyboardEvent, forwardRef, useCallback, useEffect, useState } from 'react'
+import { forwardRef, KeyboardEvent, useCallback, useEffect, useState } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import Chip from '@/components/atoms/common/Chip'
@@ -10,6 +10,7 @@ import Dropdown from '@/components/molecules/popovers/Dropdown'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import { Label } from '../../../../atoms/common/Label/Label'
+import { AutocompleteProps } from '../../AutocompleteField/Autocomplete/Autocomplete'
 import {
   chevronClass,
   clearButtonClass,
@@ -19,7 +20,6 @@ import {
 import Input from '../../InputField/Input'
 import { inputSize, inputVariant } from '../../InputField/Input/Input.style'
 import { iconSize } from '../../MultiSelectField/MultiSelect/MultiSelect.style'
-import { AutocompleteProps } from '../../AutocompleteField/Autocomplete/Autocomplete'
 
 export type MultiAutocompleteProps = Omit<AutocompleteProps, 'value' | 'onChange'> & {
   /** current value of component */
@@ -91,7 +91,7 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
         onChange(newValues)
         setSelectedOptions(newSelectedOptions)
       },
-      [value, selectedOptions, options, onChange, onInputChange],
+      [value, selectedOptions, options, onChange],
     )
 
     const handleInputChange = useCallback(

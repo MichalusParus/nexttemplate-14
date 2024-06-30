@@ -1,9 +1,5 @@
 // PagePropsTypes
 
-export type LayoutProps = {
-  children: React.ReactNode
-}
-
 export type PageProps = {
   params: {
     params?: string

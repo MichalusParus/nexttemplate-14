@@ -1,8 +1,9 @@
-import Tabs from '@/components/molecules/common/Tabs'
-import { tabs } from '../../.storybook/helpers'
-import { PageProps } from '@/utils/types'
-import ImageViewer from '@/components/molecules/popovers/ImageViewer'
 import Image from '@/components/atoms/common/Image'
+import Tabs from '@/components/molecules/common/Tabs'
+import ImageViewer from '@/components/molecules/popovers/ImageViewer'
+import { PageProps } from '@/utils/types'
+
+import { tabs } from '../../.storybook/helpers'
 
 export default function Home({ searchParams }: PageProps) {
   return (

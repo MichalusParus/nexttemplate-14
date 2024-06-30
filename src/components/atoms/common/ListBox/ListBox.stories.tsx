@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
 
 import { options } from '../../../../../.storybook/helpers'
 import ListBox from '.'
 import { ListBoxProps } from './ListBox'
-import { useState } from 'react'
 
 const meta: Meta<typeof ListBox> = {
   title: 'Atoms/Common/ListBox',

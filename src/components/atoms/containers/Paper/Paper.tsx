@@ -1,4 +1,4 @@
-import { forwardRef, HTMLAttributes, ReactNode } from 'react'
+import { forwardRef, HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
 
 import { paperVariant } from './Paper.style'
 
@@ -20,7 +20,7 @@ export type PaperProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'col
 }
 
 /** Styled wrap. Default HTMLAttributes props supported. */
-export const Paper = forwardRef<HTMLDivElement, PaperProps>(
+export const Paper = forwardRef<HTMLDivElement, PropsWithChildren<PaperProps>>(
   (
     {
       className = '',

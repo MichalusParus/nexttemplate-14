@@ -2,8 +2,7 @@ import './globals.css'
 
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-
-import { LayoutProps } from '@/utils/types'
+import { PropsWithChildren } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,7 +19,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: LayoutProps) {
+export default function RootLayout({ children }: PropsWithChildren<object>) {
   const layoutSizes = 'mx-auto w-full max-w-screen-2xl px-4'
 
   return (

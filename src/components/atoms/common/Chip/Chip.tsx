@@ -1,4 +1,4 @@
-import { forwardRef, HTMLAttributes } from 'react'
+import { forwardRef, HTMLAttributes, ReactNode } from 'react'
 
 import XIcon from '../../icons/XIcon'
 import Span from '../../typography/Span'
@@ -18,9 +18,9 @@ export type ChipProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'colo
   /** Optional chip heading */
   title?: string
   /** pass svg icon before children */
-  startIcon?: React.ReactNode
+  startIcon?: ReactNode
   /** pass svg icon to onClick button, onClick cannot be undefined */
-  buttonIcon?: React.ReactNode
+  buttonIcon?: ReactNode
   /** optional props for button */
   buttonProps?: Partial<ButtonProps>
   /** onClick function */

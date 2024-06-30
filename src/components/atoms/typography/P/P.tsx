@@ -1,4 +1,4 @@
-import { forwardRef, HTMLAttributes, ReactNode } from 'react'
+import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react'
 
 import Ghost from '../../loaders/Ghost'
 import { PColor, PSize } from './P.style'
@@ -16,12 +16,10 @@ export type PProps = Omit<HTMLAttributes<HTMLParagraphElement>, 'color' | 'class
   isLoading?: boolean
   /** expected lines for ghost template */
   expectedLines?: number
-  /** children */
-  children?: ReactNode
 }
 
 /** Basic paragraph component with ghost loading. Default HTMLAttributes props supported. */
-export const P = forwardRef<HTMLParagraphElement, PProps>(
+export const P = forwardRef<HTMLParagraphElement, PropsWithChildren<PProps>>(
   (
     {
       className = '',

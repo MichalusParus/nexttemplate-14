@@ -1,5 +1,5 @@
 'use client'
-import { ButtonHTMLAttributes, forwardRef } from 'react'
+import { ButtonHTMLAttributes, forwardRef,ReactNode } from 'react'
 
 import InlineLoader from '../../loaders/InlineLoader'
 import {
@@ -25,9 +25,9 @@ export type ButtonProps = Omit<
   /** size of component, none disable sizes for custom styling via className */
   size?: 'sm' | 'md' | 'lg' | 'inline' | 'none'
   /** pass svg icon before children, without children becomes iconOnly button */
-  startIcon?: React.ReactNode
+  startIcon?: ReactNode
   /** pass svg icon after children, without children becomes iconOnly button */
-  endIcon?: React.ReactNode
+  endIcon?: ReactNode
   /** loading state for async fn */
   isLoading?: boolean
   /** shortcut for width 100% */

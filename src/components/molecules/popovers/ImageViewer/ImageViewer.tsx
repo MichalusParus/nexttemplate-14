@@ -1,66 +1,71 @@
 'use client'
-import { ReactNode, useEffect, useState } from 'react'
+import { forwardRef, PropsWithChildren, useEffect, useImperativeHandle, useState } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import Combobox from '@/components/atoms/common/Combobox'
 import XIcon from '@/components/atoms/icons/XIcon'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
-type Props = {
+import { closeButtonClass, closeClass, openClass, vieverComboboxClass } from './ImageViewer.style'
+
+type ImageViewerProps = {
   /** for passing custom tailwind classes */
   className?: string
   /** alt image label for aria purposes */
   alt: string
-  /** children */
-  children: ReactNode
 }
 
-/** Fullscreen modal window for image detail. */
-export const ImageViewer = ({ className = '', alt, children }: Props) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false))
+/** Fullscreen modal window for image detail. USE CLIENT */
+export const ImageViewer = forwardRef<HTMLDivElement, PropsWithChildren<ImageViewerProps>>(
+  ({ className = '', alt, children }, ref) => {
+    const [isOpen, setIsOpen] = useState(false)
+    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false))
+    useImperativeHandle(ref, () => componentRef.current!)
 
-  const openClass = 'fixed w-[100vw] h-[100vh] top-0 left-0 z-50'
-  const closeClass = 'relative w-full h-full'
+    const viewerOpenState = isOpen ? openClass : closeClass
+    const viewerCursor = isOpen ? 'cursor-zoom-out' : 'cursor-zoom-in'
 
-  const handleClose = () => {
-    startRef?.current?.focus()
-    setIsOpen(prev => !prev)
-  }
+    const handleClose = () => {
+      startRef?.current?.focus()
+      setIsOpen(prev => !prev)
+    }
 
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : 'unset'
-  }, [isOpen])
+    useEffect(() => {
+      document.body.style.overflow = isOpen ? 'hidden' : 'unset'
+    }, [isOpen])
 
-  return (
-    <div
-      className={`${className} transition-size ${isOpen ? openClass : closeClass}`}
-      ref={componentRef}
-      data-testid="ImageViewer"
-    >
-      <Combobox
-        className={`flex h-full w-full overflow-hidden border-0 [&>.ButtonInnerWrap]:h-full ${isOpen ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
-        name={alt}
-        isOpen={isOpen}
-        hasPopup="dialog"
-        color="none"
-        size="none"
-        hideShadow
-        aria-label={alt}
-        onClick={handleClose}
+    return (
+      <div
+        className={`ImageViewer ${className} transition-size ${viewerOpenState}`}
+        ref={componentRef}
+        data-testid="ImageViewer"
       >
-        {children}
-      </Combobox>
-      {isOpen ? (
-        <Button
-          className="right-4 top-4 z-50 border-0 bg-dark-600 text-dark-50 [&.Button]:fixed"
-          variant="text"
+        <Combobox
+          className={`${vieverComboboxClass} ${viewerCursor}`}
+          name={alt}
+          isOpen={isOpen}
+          hasPopup="dialog"
           color="none"
-          startIcon={<XIcon />}
-          aria-label="close"
+          size="none"
+          hideShadow
+          aria-label={alt}
           onClick={handleClose}
-        />
-      ) : null}
-    </div>
-  )
-}
+        >
+          {children}
+        </Combobox>
+        {isOpen ? (
+          <Button
+            className={`CloseButton ${closeButtonClass}`}
+            variant="text"
+            color="none"
+            startIcon={<XIcon />}
+            aria-label="close"
+            onClick={handleClose}
+          />
+        ) : null}
+      </div>
+    )
+  },
+)
+
+ImageViewer.displayName = 'ImageViewer'

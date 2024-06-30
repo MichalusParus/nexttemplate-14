@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react'
-
-import Tabs from '.'
 import { useState } from 'react'
-import { TabsProps } from './Tabs'
-import { tabs, textContent } from '../../../../../.storybook/helpers'
+
 import Button from '@/components/atoms/common/Button'
 import PlusIcon from '@/components/atoms/icons/PlusIcon'
+
+import { tabs, textContent } from '../../../../../.storybook/helpers'
+import Tabs from '.'
+import { TabsProps } from './Tabs'
 
 const meta: Meta<typeof Tabs> = {
   title: 'Molecules/Common/Tabs',

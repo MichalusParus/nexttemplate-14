@@ -88,7 +88,7 @@ export const useFocusTrap = (
     focusableElRef.current = [startRef.current!, ...focusableArr]
     const newIndex = focusableElRef.current.indexOf(document.activeElement as HTMLButtonElement)
     focusIndexRef.current = newIndex
-  }, [focusableElRef.current])
+  }, [focusable])
 
   return {
     componentRef: componentRef,

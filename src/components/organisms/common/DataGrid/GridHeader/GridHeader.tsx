@@ -1,7 +1,7 @@
 import { FilterDef, SortingDef } from '@/utils/hooks/useFilterData'
 
-import { ColumnDef } from '../types'
 import ColumnHead from '../ColumnHead'
+import { ColumnDef } from '../types'
 import { rowgroupVariant } from './GridHeader.style'
 
 type Props = {

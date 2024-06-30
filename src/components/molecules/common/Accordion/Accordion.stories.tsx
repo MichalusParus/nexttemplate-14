@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { accordionOptions } from '../../../../../.storybook/helpers'
-import Accordion from '.'
 import Disclosure from '../Disclosure'
+import Accordion from '.'
 
 const meta: Meta<typeof Accordion> = {
   title: 'Molecules/Common/Accordion',

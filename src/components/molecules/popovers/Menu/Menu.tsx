@@ -1,5 +1,5 @@
 'use client'
-import { PropsWithChildren, forwardRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, PropsWithChildren, useImperativeHandle, useState } from 'react'
 
 import { Combobox, ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
@@ -19,7 +19,7 @@ export type MenuProps = {
   /** style variant of component */
   variant?: 'text' | 'outlined' | 'contained'
   /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'none'
+  color?: 'primary' | 'secondary' | 'terciary' | 'none'
   /** for setting dropdown width */
   width?: string
   /** for passing aditional props to combobox */
@@ -51,12 +51,7 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
     const [isLocallyOpen, setIsLocallyOpen] = useState(Boolean(isOpen))
     const openState = setIsOpen ? Boolean(isOpen) : isLocallyOpen
     useImperativeHandle(ref, () => componentRef.current!)
-    const { componentRef, startRef } = useFocusTrap(isLocallyOpen, () => setIsLocallyOpen(false), [
-      'button:not(.Overlay):not(.FakeSubmitButton)',
-      '[href]',
-      'input',
-      '[tabindex]:not([tabindex="-1"])',
-    ])
+    const menuPosition = !setIsOpen ? 'relative' : ''
 
     const handleClose = () => {
       if (setIsOpen) {
@@ -67,11 +62,15 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
       startRef?.current?.focus()
     }
 
+    const { componentRef, startRef } = useFocusTrap(isLocallyOpen, handleClose, [
+      'button:not(.Overlay)',
+      '[href]',
+      'input',
+      '[tabindex]:not([tabindex="-1"])',
+    ])
+
     return (
-      <div
-        className={`MenuWrap ${className} ${!setIsOpen ? 'relative' : ''}`}
-        data-testid="MenuWrap"
-      >
+      <div className={`MenuWrap ${className} ${menuPosition}`} data-testid="MenuWrap">
         {!setIsOpen ? (
           <Combobox
             name={name}

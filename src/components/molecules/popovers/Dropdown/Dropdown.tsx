@@ -1,8 +1,10 @@
-import { forwardRef } from 'react'
+import { forwardRef,PropsWithChildren } from 'react'
 
 import Overlay from '@/components/atoms/common/Overlay'
 import Paper from '@/components/atoms/containers/Paper'
+import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
+import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
 
 import { closeClass, dropdownClass, openClass } from './Dropdown.style'
 
@@ -27,14 +29,16 @@ export type DropdownProps = {
   hideOverlay?: boolean
   /** hide dropdown shadow */
   hideShadow?: boolean
-  /** children */
-  children: React.ReactNode
-  /** drawer closing function */
+  /** for passing aditional props to Paper */
+  paperProps?: Partial<PaperProps>
+  /** for passing aditional props to Scrollshadow */
+  scrollShadowProps?: Partial<ScrollShadowProps>
+  /** dropdown closing function */
   onClose: () => void
 }
 
-/** Multirole dropdown popover, dropping down from relative parent */
-export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
+/** Multirole dropdown popover, dropping down from relative parent. Paper and ScrollShadow props supported. */
+export const Dropdown = forwardRef<HTMLDivElement, PropsWithChildren<DropdownProps>>(
   (
     {
       className = '',
@@ -47,15 +51,18 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       padding = 'p-0',
       hideOverlay,
       hideShadow,
-      children,
+      paperProps,
+      scrollShadowProps,
       onClose,
+      children,
     },
     ref,
   ) => {
+    const dropdownOpenState = isOpen ? openClass[placement] : closeClass[placement]
     return (
       <>
         <div
-          className={`Dropdown ${className} ${dropdownClass} ${width} ${isOpen ? openClass[placement] : closeClass[placement]}`}
+          className={`Dropdown ${className} ${dropdownClass} ${width} ${dropdownOpenState}`}
           ref={ref}
           data-testid="Dropdown"
         >
@@ -65,8 +72,11 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
             color={color}
             padding={padding}
             hideShadow={hideShadow}
+            {...paperProps}
           >
-            <ScrollShadow height={height}>{children}</ScrollShadow>
+            <ScrollShadow height={height} {...scrollShadowProps}>
+              {children}
+            </ScrollShadow>
           </Paper>
         </div>
         {hideOverlay || placement === 'relative' ? null : (

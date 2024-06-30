@@ -1,12 +1,12 @@
 'use client'
-import { PropsWithChildren, forwardRef, useState } from 'react'
+import { forwardRef, PropsWithChildren, useState } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import RatioWrap from '@/components/atoms/containers/RatioWrap'
+import { RatioWrapProps } from '@/components/atoms/containers/RatioWrap/RatioWrap'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 
 import { arrowClass, controlClass, dottWrapClass, innerWrapClass } from './Carousel.style'
-import { RatioWrapProps } from '@/components/atoms/containers/RatioWrap/RatioWrap'
 
 export type CarouselProps = {
   /** for passing custom tailwind classes */

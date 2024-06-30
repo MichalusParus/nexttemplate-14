@@ -1,7 +1,12 @@
 'use client'
-import { forwardRef, InputHTMLAttributes } from 'react'
+import { forwardRef, InputHTMLAttributes, ReactNode } from 'react'
+
+import Button from '@/components/atoms/common/Button'
+import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
+import XIcon from '@/components/atoms/icons/XIcon'
 
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
+import { checkVariant } from '../../CheckboxField/Checkbox/Checkbox.style'
 import {
   disabledVariant,
   inputClass,
@@ -9,10 +14,6 @@ import {
   inputSize,
   inputVariant,
 } from './Input.style'
-import Button from '@/components/atoms/common/Button'
-import XIcon from '@/components/atoms/icons/XIcon'
-import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
-import { checkVariant } from '../../CheckboxField/Checkbox/Checkbox.style'
 
 export type InputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -28,7 +29,7 @@ export type InputProps = Omit<
     /** theme color of component, none disable styles for custom styling via className */
     color?: 'primary' | 'secondary' | 'terciary' | 'none'
     /** pass svg icon before input value */
-    startIcon?: React.ReactNode
+    startIcon?: ReactNode
     /** onChange function */
     onChange: (value: string | number) => void
   }

@@ -1,6 +1,6 @@
 import { LinkProps as NextLinkProps } from 'next/link'
 import NextLink from 'next/link'
-import { forwardRef, LinkHTMLAttributes } from 'react'
+import { forwardRef, LinkHTMLAttributes, ReactNode } from 'react'
 
 import {
   buttonContentSize,
@@ -21,9 +21,9 @@ export type LinkProps = Omit<LinkHTMLAttributes<HTMLAnchorElement>, 'className' 
     /** size of component, inline for links in text and none disable sizes for custom styling via className */
     size?: 'sm' | 'md' | 'lg' | 'inline' | 'none'
     /** pass svg icon before children, without children becomes iconOnly button */
-    startIcon?: React.ReactNode
+    startIcon?: ReactNode
     /** pass svg icon after children, without children becomes iconOnly button */
-    endIcon?: React.ReactNode
+    endIcon?: ReactNode
     /** shortcut for width 100% */
     fullWidth?: boolean
     /** hide button shadow */

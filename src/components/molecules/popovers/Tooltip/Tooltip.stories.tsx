@@ -1,4 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { ReactNode } from 'react'
+
+import Alert from '@/components/atoms/common/Alert'
 
 import Tooltip from '.'
 
@@ -15,17 +18,31 @@ export default meta
 type Story = StoryObj<typeof Tooltip>
 
 export const Default: Story = {
-  args: { children: 'HoverMe', title: 'tooltip' },
+  args: {
+    className: '',
+    placement: 'top',
+    title: 'tooltip',
+    delay: 'delay-500',
+    children: 'HoverMe',
+  },
+}
+
+export const Element: Story = {
+  args: {
+    ...Default.args,
+    className: '[&>.Tooltip]:p-0',
+    title: (<Alert status="info">info</Alert>) as ReactNode,
+  },
 }
 
 export const Right: Story = {
-  args: { children: 'HoverMe', title: 'tooltip', placement: 'right' },
+  args: { ...Default.args, placement: 'right' },
 }
 
 export const Bottom: Story = {
-  args: { children: 'HoverMe', title: 'tooltip', placement: 'bottom' },
+  args: { ...Default.args, placement: 'bottom' },
 }
 
 export const Left: Story = {
-  args: { children: 'HoverMe', title: 'tooltip', placement: 'left' },
+  args: { ...Default.args, placement: 'left' },
 }

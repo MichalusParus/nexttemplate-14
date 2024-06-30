@@ -1,13 +1,14 @@
 'use client'
+import { forwardRef, PropsWithChildren, useImperativeHandle } from 'react'
+
 import Overlay from '@/components/atoms/common/Overlay'
 import Paper from '@/components/atoms/containers/Paper'
+import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
+import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import { closeClass, drawerClass, openClass } from './Drawer.style'
-import { PropsWithChildren, forwardRef, useImperativeHandle } from 'react'
-import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
-import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
 
 export type DrawerProps = {
   /** for passing tailwind classes to Paper through props */

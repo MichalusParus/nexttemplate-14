@@ -146,10 +146,8 @@ export const ColumnHead = ({
             <Menu
               className={`${searchMenuClass} ${filterMenuVisibility} ${isFilterApplied ? 'opacity-100' : 'opacity-0'}`}
               name={`filter${name}${column.name}`}
-              icon={<FilterIcon />}
               color="none"
-              unlocked
-              comboboxProps={{ size: size, tabIndex: -1 }}
+              comboboxProps={{ size: size, tabIndex: -1, startIcon: <FilterIcon /> }}
             >
               <SearchBar
                 name={`searchIn${column.name}`}

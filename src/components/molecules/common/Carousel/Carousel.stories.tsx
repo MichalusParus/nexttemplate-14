@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
+import Image from '@/components/atoms/common/Image'
 import Paper from '@/components/atoms/containers/Paper'
 
 import Carousel from '.'
-import Image from '@/components/atoms/common/Image'
 
 const meta: Meta<typeof Carousel> = {
   title: 'Molecules/Common/Carousel',

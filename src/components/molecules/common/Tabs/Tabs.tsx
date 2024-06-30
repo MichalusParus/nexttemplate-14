@@ -1,17 +1,18 @@
-import Link from '@/components/atoms/common/Link'
+import { forwardRef, PropsWithChildren, ReactNode,useCallback } from 'react'
 
-import Disclosure from '../Disclosure'
-import { PropsWithChildren, forwardRef, useCallback } from 'react'
-import Paper from '@/components/atoms/containers/Paper'
 import Button from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
+import Link from '@/components/atoms/common/Link'
 import { LinkProps } from '@/components/atoms/common/Link/Link'
+import Paper from '@/components/atoms/containers/Paper'
+
+import Disclosure from '../Disclosure'
 import { DisclosureProps } from '../Disclosure/Disclosure'
 
-type Tabs = {
+type TabOption = {
   label: string
   slug: string
-  component: React.ReactNode
+  component: ReactNode
   isHidden?: boolean
 }
 
@@ -23,7 +24,7 @@ export type TabsProps = {
   /** url param for identifying selectedtab */
   param: string
   /** tabs object list: tab label, searchparam slug, rendered component and hidden for hiding tab list */
-  tabs: Tabs[]
+  tabs: TabOption[]
   /** style variant of component */
   variant?: 'text' | 'outlined' | 'contained'
   /** theme color of component, none disable styles for custom styling via className */
@@ -39,7 +40,7 @@ export type TabsProps = {
   /** for passing aditional props to Disclosure */
   disclosureProps?: Partial<DisclosureProps>
   /** optional on tab click for external control. Must be inside use client parent */
-  onTabClick?: (tab: Tabs) => void
+  onTabClick?: (tab: TabOption) => void
 }
 
 /** Tabs component for switching panels with content. Link, Button and Disclosure props supported. Default server component with optional client side control. */

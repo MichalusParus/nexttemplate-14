@@ -7,7 +7,7 @@ import Menu from '.'
 describe('Menu', () => {
   it('default', () => {
     render(
-      <Menu name="menuTest" className="className">
+      <Menu name="menuTest" className="className" isOpen={true}>
         Children
       </Menu>,
     )

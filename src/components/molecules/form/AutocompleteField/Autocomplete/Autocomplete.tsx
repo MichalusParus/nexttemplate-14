@@ -1,12 +1,14 @@
 'use client'
-import { KeyboardEvent, forwardRef, useCallback, useEffect, useState } from 'react'
+import { forwardRef, KeyboardEvent, useCallback, useEffect, useState } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import { ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
 import ListBox from '@/components/atoms/common/ListBox'
+import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 import XIcon from '@/components/atoms/icons/XIcon'
 import Dropdown from '@/components/molecules/popovers/Dropdown'
+import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
@@ -20,8 +22,6 @@ import {
   comboboxWrapClass,
   disabledVariant,
 } from './Autocomplete.style'
-import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
-import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 
 export type AutocompleteProps = Pick<ComboboxProps, 'name' | 'disabled'> &
   Omit<LabelProps, 'name' | 'onClick'> & {

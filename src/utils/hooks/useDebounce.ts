@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 /** Hook for Debounce. */
-export const useDebounce = (value: any, delay: number) => {
+export const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value)
   const [isDebouncePending, setIsDebouncePending] = useState(false)
 
@@ -15,7 +15,7 @@ export const useDebounce = (value: any, delay: number) => {
       clearTimeout(handler)
       setIsDebouncePending(false)
     }
-  }, [value])
+  }, [value, delay])
 
   return { debouncedValue: debouncedValue, isDebouncePending: isDebouncePending }
 }

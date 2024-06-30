@@ -1,43 +1,42 @@
-import { ReactNode } from 'react'
+import { forwardRef,HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
 
-import { positionClass, tooltipClass, visibilityClass } from './Tooltip.style'
+import { tooltipClass, tooltipPosition, tooltipVisibility } from './Tooltip.style'
 
-export type TooltipProps = {
+export type TooltipProps = Omit<HTMLAttributes<HTMLDivElement>, 'title' | 'className'> & {
   /** for passing custom tailwind classes */
   className?: string
   /** position of tooltip */
   placement?: 'top' | 'right' | 'bottom' | 'left'
-  /** text content of tooltip */
-  title: string
+  /** content of tooltip */
+  title: ReactNode
   /** delay of tooltip visibility as tailwind class */
   delay?: string
-  /** children */
-  children?: ReactNode
 }
 
-/** Small popover for displaying aditional information on children hover or focus. */
-export const Tooltip = ({
-  className = '',
-  placement = 'top',
-  title,
-  delay = 'delay-500',
-  children,
-}: TooltipProps) => {
-  const isVerticalPlacement = placement === 'top' || placement === 'bottom'
-  return (
-    <div
-      className={`TooltipWrap ${className} group/tooltip relative`}
-      aria-describedby={title}
-      data-testid="TooltipWrap"
-    >
+/** Small popover for displaying aditional information on children hover or focus. Default HTMLDivElement props supported. */
+export const Tooltip = forwardRef<HTMLDivElement, PropsWithChildren<TooltipProps>>(
+  ({ className = '', placement = 'top', title, delay = 'delay-500', children, ...rest }, ref) => {
+    const tooltipMargin = placement === 'top' || placement === 'bottom' ? 'my-2' : 'mx-4'
+
+    return (
       <div
-        id={title}
-        className={`Tooltip ${tooltipClass} ${isVerticalPlacement ? 'my-2' : 'mx-4'} ${positionClass[placement]} ${visibilityClass} ${delay}`}
-        role="tooltip"
+        className={`TooltipWrap ${className} group/tooltip relative`}
+        aria-describedby={String(title)}
+        data-testid="TooltipWrap"
       >
-        {title}
+        <div
+          id={String(title)}
+          className={`Tooltip ${tooltipClass} ${tooltipPosition[placement]} ${tooltipVisibility} ${tooltipMargin} ${delay}`}
+          role="tooltip"
+          ref={ref}
+          {...rest}
+        >
+          {title}
+        </div>
+        {children}
       </div>
-      {children}
-    </div>
-  )
-}
+    )
+  },
+)
+
+Tooltip.displayName = 'Tooltip'

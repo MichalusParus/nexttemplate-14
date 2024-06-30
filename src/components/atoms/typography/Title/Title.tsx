@@ -7,7 +7,7 @@ export type TitleProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'color' | 'cla
   /** for passing custom tailwind classes */
   className?: string
   /** for choosing heading type */
-  variant: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+  variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
   /** theme color of component, none disable styles for custom styling via className */
   color?: 'primary' | 'secondary' | 'terciary' | 'none'
   /** font size of component, none disable sizes for custom styling via className */

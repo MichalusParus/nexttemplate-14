@@ -4,13 +4,13 @@ import { forwardRef, useCallback, useImperativeHandle, useState } from 'react'
 import Combobox from '@/components/atoms/common/Combobox'
 import { ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
 import ListBox from '@/components/atoms/common/ListBox'
+import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 import Dropdown from '@/components/molecules/popovers/Dropdown'
+import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
-import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
-import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 
 export type SelectProps = Pick<ComboboxProps, 'name' | 'disabled'> &
   Omit<LabelProps, 'onClick'> & {

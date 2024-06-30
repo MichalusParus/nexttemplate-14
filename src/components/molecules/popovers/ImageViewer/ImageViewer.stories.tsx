@@ -1,15 +1,28 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import ImageViewer from '.'
 import Image from '@/components/atoms/common/Image'
+
+import ImageViewer from '.'
 
 const meta: Meta<typeof ImageViewer> = {
   title: 'Molecules/Popovers/ImageViewer',
   component: ImageViewer,
   tags: ['autodocs'],
   parameters: {
-    layout: 'fullscreen',
+    layout: 'padded',
   },
+  argTypes: {
+    children: {
+      control: false,
+    },
+  },
+  decorators: [
+    Story => (
+      <div className="flex h-screen items-center justify-center">
+        <Story />
+      </div>
+    ),
+  ],
 }
 
 export default meta
@@ -17,6 +30,7 @@ type Story = StoryObj<typeof ImageViewer>
 
 export const Default: Story = {
   args: {
+    className: '',
     alt: 'Example img',
     children: (
       <Image

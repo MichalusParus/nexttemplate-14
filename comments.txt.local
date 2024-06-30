@@ -14,20 +14,14 @@ Prepare repo for development, focus on code style unification.
 
 
 2. Parus Components
-Fill some jest tests
-aria hidden
 absolute importy zlobi
 Podpora mobilnich gest
 storybook test integration
 dark theme
-forwardRef and useCallback back
-accessibility form, focus on error fields
-check Image and RatioWrap and Carousel
+Gallery component
 remade shadows
 tailwind class merging
 css variables in tailwind
-serverside searchbar
 aria-described-by for field description
 focus ring
-dropdown a dalsi propsy
 add new do autocomplete

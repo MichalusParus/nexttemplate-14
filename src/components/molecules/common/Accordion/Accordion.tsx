@@ -1,5 +1,5 @@
 'use client'
-import { ReactNode, forwardRef, useState } from 'react'
+import { forwardRef, ReactNode, useState } from 'react'
 
 import { slugify } from '@/utils/utils'
 
@@ -37,7 +37,7 @@ export const Accordion = forwardRef<HTMLButtonElement, AccordionProps>(
             title={title}
             ref={ref}
             expanded={exclusive ? openState[index] : expanded}
-            onChange={
+            setIsOpen={
               exclusive
                 ? () => setOpenState(options.map((_, i) => (i === index ? true : false)))
                 : undefined

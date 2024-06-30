@@ -11,11 +11,11 @@ const meta: Meta<typeof Dropdown> = {
   component: Dropdown,
   tags: ['autodocs'],
   parameters: {
-    layout: 'fullscreen',
+    layout: 'padded',
   },
 }
 
-const DropdownWithHooks = ({ args }: { args: DropdownProps }) => {
+const DropdownWithHooks = (args: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <div className="flex h-[50vh] w-full items-center justify-center">
@@ -30,7 +30,9 @@ const DropdownWithHooks = ({ args }: { args: DropdownProps }) => {
           Combobox for Dropdown
         </Combobox>
         <Dropdown {...args} isOpen={isOpen} onClose={() => setIsOpen(false)}>
-          {args.children}
+          <div role="menu" aria-hidden={!isOpen}>
+            {textContent.slice(0, 300)}
+          </div>
         </Dropdown>
       </div>
     </div>
@@ -40,33 +42,47 @@ const DropdownWithHooks = ({ args }: { args: DropdownProps }) => {
 export default meta
 type Story = StoryObj<typeof Dropdown>
 
-export const Default: Story = {
-  args: { children: textContent.slice(0, 300) },
-  render: args => <DropdownWithHooks args={args} />,
+export const PrimaryDefault: Story = {
+  args: {
+    className: '',
+    isOpen: false,
+    placement: 'relative',
+    variant: 'text',
+    color: 'primary',
+    width: 'w-full',
+    height: 'max-h-[40vh]',
+    padding: 'p-0',
+    hideOverlay: false,
+    hideShadow: false,
+    paperProps: undefined,
+    scrollShadowProps: undefined,
+    onClose: () => {},
+  },
+  render: args => <DropdownWithHooks {...args} />,
 }
 
 export const Left: Story = {
   args: {
-    children: textContent.slice(0, 300),
+    ...PrimaryDefault.args,
     placement: 'left',
     width: 'w-96',
   },
-  render: args => <DropdownWithHooks args={args} />,
+  render: args => <DropdownWithHooks {...args} />,
 }
 
 export const Right: Story = {
   args: {
-    children: <div className="pt-1">{textContent.slice(0, 300)}</div>,
+    ...PrimaryDefault.args,
     placement: 'right',
     width: 'w-96',
   },
-  render: args => <DropdownWithHooks args={args} />,
+  render: args => <DropdownWithHooks {...args} />,
 }
 
 export const Top: Story = {
   args: {
-    children: <div className="pb-1">{textContent.slice(0, 300)}</div>,
+    ...PrimaryDefault.args,
     placement: 'top',
   },
-  render: args => <DropdownWithHooks args={args} />,
+  render: args => <DropdownWithHooks {...args} />,
 }
