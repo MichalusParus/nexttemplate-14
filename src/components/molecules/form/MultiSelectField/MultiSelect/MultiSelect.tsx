@@ -14,6 +14,7 @@ import { Label } from '../../../../atoms/common/Label/Label'
 import { SelectProps } from '../../SelectField/Select/Select'
 import { iconSize, selectedClass, selectedSize } from './MultiSelect.style'
 import { cn, filterOutKeys } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 export type MultiSelectProps = Omit<SelectProps, 'value' | 'onChange'> & {
   /** current value of component */
@@ -50,6 +51,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
     },
     ref,
   ) => {
+    const t = useTranslations('Components')
     const [isOpen, setIsOpen] = useState(false)
     const [selectedOptionsSize, setSelectedOptionsSize] = useState<{
       width?: number
@@ -174,7 +176,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
                 color={color}
                 size="none"
                 hideShadow
-                aria-label={'clear'}
+                aria-label={t('clear')}
                 tabIndex={-1}
                 onClick={() => onChange([])}
               />

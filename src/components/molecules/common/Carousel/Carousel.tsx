@@ -8,6 +8,7 @@ import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 
 import { arrowClass, controlClass, dottWrapClass, innerWrapClass } from './Carousel.style'
 import { cn, filterOutKeys } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 export type CarouselProps = {
   /** for passing custom tailwind classes */
@@ -25,6 +26,7 @@ export type CarouselProps = {
 /** Carousel component can display multiple panels or images controled by arrows and dotts. RatioWrapProps supported. USE CLIENT */
 export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselProps>>(
   ({ className = '', pages, width = '100%', ratio, ratioWrapProps = {}, children }, ref) => {
+    const t = useTranslations('Components')
     const [currentPage, setCurrentPage] = useState(1)
 
     const getSelectedDott = (index: number) => {
@@ -58,7 +60,7 @@ export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselPro
           color="none"
           size="none"
           startIcon={<ChevronIcon className={'h-10 w-10 rotate-90'} />}
-          aria-label="previous page"
+          aria-label={t('previousPage')}
           onClick={() => setCurrentPage(prev => (prev === 1 ? pages : prev - 1))}
         />
         <Button
@@ -66,7 +68,7 @@ export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselPro
           color="none"
           size="none"
           startIcon={<ChevronIcon className={'h-10 w-10 -rotate-90'} />}
-          aria-label="next page"
+          aria-label={t('nextPage')}
           onClick={() => setCurrentPage(prev => (prev === pages ? 1 : prev + 1))}
         />
         <div className={cn('DottWrap', dottWrapClass)}>
@@ -77,7 +79,7 @@ export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselPro
               color="none"
               size="none"
               hideShadow
-              aria-label={`page ${index + 1}`}
+              aria-label={t('page', { page: index + 1 })}
               onClick={() => setCurrentPage(index + 1)}
             >
               <div className="rounded-full bg-current p-1" />

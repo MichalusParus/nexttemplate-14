@@ -6,6 +6,7 @@ import { Button, ButtonProps } from '../Button/Button'
 import { buttonIconSize } from '../Button/Button.style'
 import { chipClass, chipSize, chipVariant } from './Chip.style'
 import { cn, filterOutKeys } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 export type ChipProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color' | 'onClick'> & {
   /** for passing custom tailwind classes */
@@ -46,6 +47,8 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
     },
     ref,
   ) => {
+    const t = useTranslations('Components')
+
     return (
       <div
         className={cn(
@@ -75,7 +78,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
             color={color}
             size="none"
             hideShadow
-            aria-label={`delete ${title || children}`}
+            aria-label={t('delete') + (title || children)}
             onClick={onClick}
             {...filterOutKeys(buttonProps, ['className'])}
           />

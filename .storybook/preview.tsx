@@ -1,7 +1,11 @@
+import React from 'react'
 import type { Preview } from '@storybook/react'
 import '../src/app/globals.css'
+import { NextIntlClientProvider } from 'next-intl'
+import messages from '../messages/en.json'
 
 const preview: Preview = {
+  tags: ['autodocs'],
   parameters: {
     backgrounds: {
       default: 'bg',
@@ -21,6 +25,13 @@ const preview: Preview = {
       ],
     },
   },
+  decorators: [
+    Story => (
+      <NextIntlClientProvider messages={messages} locale="en">
+        <Story />
+      </NextIntlClientProvider>
+    ),
+  ],
 }
 
 export default preview

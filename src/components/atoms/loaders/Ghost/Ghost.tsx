@@ -2,6 +2,7 @@ import { forwardRef, HTMLAttributes } from 'react'
 
 import { ghostSize, ghostStyle } from './Ghost.style'
 import { cn } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 export type GhostProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'> & {
   /** for passing custom tailwind classes */
@@ -13,11 +14,13 @@ export type GhostProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'> & {
 /** Ghost is loading template for text, images, boxes and sections. Height and width must be set through className, for inline use theme heights. Default HTMLAttributes props supported. */
 export const Ghost = forwardRef<HTMLSpanElement, GhostProps>(
   ({ className = '', size = 'none', ...rest }, ref) => {
+    const t = useTranslations('Components')
+
     return (
       <span
         className={cn('Ghost', ghostStyle, ghostSize[size], className)}
         role="status"
-        aria-label="loading"
+        aria-label={t('loading')}
         aria-busy="true"
         ref={ref}
         {...rest}

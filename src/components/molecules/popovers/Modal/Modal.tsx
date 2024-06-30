@@ -23,6 +23,7 @@ import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import { closeClass, modalPosition, openClass } from './Modal.style'
 import { cn, filterOutKeys } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 export type ModalProps = {
   /** for passing custom tailwind classes */
@@ -83,6 +84,7 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
     },
     ref,
   ) => {
+    const t = useTranslations('Components')
     const [isLocallyOpen, setIsLocallyOpen] = useState(Boolean(isOpen))
     const openState = setIsOpen ? Boolean(isOpen) : isLocallyOpen
     const modalOpenClass = openState ? openClass : closeClass
@@ -152,7 +154,7 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
                   startIcon={<XIcon />}
                   hideShadow
                   onClick={handleClose}
-                  aria-label="close"
+                  aria-label={t('close')}
                 />
               ) : null}
             </div>

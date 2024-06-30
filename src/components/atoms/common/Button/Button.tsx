@@ -68,7 +68,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const buttonSize = iconOnly
       ? `${iconOnlySize[size]} ${buttonIconSize[size]}`
       : `${buttonContentSize[size]} ${iconMargin} ${buttonIconSize[size]}`
-    const upperCase = disableUpperCase ? '' : 'uppercase'
 
     return (
       <button

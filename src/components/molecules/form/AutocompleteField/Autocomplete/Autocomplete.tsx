@@ -23,6 +23,7 @@ import {
   disabledVariant,
 } from './Autocomplete.style'
 import { cn, filterOutKeys } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 export type AutocompleteProps = Pick<ComboboxProps, 'name' | 'disabled'> &
   Omit<LabelProps, 'name' | 'onClick'> & {
@@ -88,6 +89,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
     },
     ref,
   ) => {
+    const t = useTranslations('Components')
     const [isOpen, setIsOpen] = useState(false)
     const sortedOptions = placement === 'top' ? options.reverse() : options
     const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false))
@@ -196,7 +198,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                 color={color}
                 size="none"
                 hideShadow
-                aria-label="clear"
+                aria-label={t('clear')}
                 onClick={() => {
                   onChange('')
                   onInputChange('')
@@ -222,7 +224,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
               size={size}
               isLoading={isLoading}
               hideCheckbox
-              noOptionLabel={`No options match ${inputValue}`}
+              noOptionLabel={t('noOptionsMatch', { value: inputValue })}
               onClick={handleOnChange}
               {...filterOutKeys(listboxProps, ['className'])}
             />

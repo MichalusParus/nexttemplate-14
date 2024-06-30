@@ -12,6 +12,7 @@ import InputField from '../InputField'
 import Input from '../InputField/Input'
 import { searchColor, searchSize } from './SearchBar.style'
 import { cn } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 export type SearchBarProps = {
   /** for passing custom tailwind classes */
@@ -56,6 +57,7 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     },
     ref,
   ) => {
+    const t = useTranslations('Components')
     const { push } = useRouter()
 
     const handleOnSubmit = useCallback(
@@ -122,7 +124,7 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
               size={size}
               startIcon={<SearchIcon />}
               disabled={disabled}
-              aria-label="search"
+              aria-label={t('search')}
             />
           }
           hideLabel

@@ -4,6 +4,7 @@ import ProfileIcon from '../../icons/ProfileIcon'
 import Image from '../Image'
 import { avatarClass, avatarSize, avatarVariant } from './Avatar.style'
 import { cn } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 export type AvatarProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */
@@ -34,11 +35,12 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
     },
     ref,
   ) => {
+    const t = useTranslations('Components')
     const userInitials = username?.split(' ').map(name => name.slice(0, 1).toUpperCase())
 
     const AvatarType = () => {
       if (src) {
-        return <Image className="min-h-full min-w-full" src={src} alt="test" ratio={100} />
+        return <Image className="min-h-full min-w-full" src={src} alt={t('profile')} ratio={100} />
       } else if (userInitials) {
         return <span>{userInitials}</span>
       } else {
@@ -57,7 +59,7 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         )}
         role="img"
         ref={ref}
-        aria-label="profile"
+        aria-label={t('profile')}
         {...rest}
       >
         <AvatarType />

@@ -21,6 +21,7 @@ import Input from '../../InputField/Input'
 import { inputSize, inputVariant } from '../../InputField/Input/Input.style'
 import { iconSize } from '../../MultiSelectField/MultiSelect/MultiSelect.style'
 import { cn, filterOutKeys } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 export type MultiAutocompleteProps = Omit<AutocompleteProps, 'value' | 'onChange'> & {
   /** current value of component */
@@ -61,6 +62,7 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
     },
     ref,
   ) => {
+    const t = useTranslations('Components')
     const [isOpen, setIsOpen] = useState(false)
     const sortedOptions = placement === 'top' ? options.reverse() : options
     const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), [
@@ -151,7 +153,7 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
                 size="none"
                 hideShadow
                 tabIndex={-1}
-                aria-label="clear"
+                aria-label={t('clear')}
                 onClick={handleClear}
               />
             ) : null}
@@ -187,7 +189,6 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
               autoComplete="off"
               ref={ref}
               role="combobox"
-              aria-label="multiautocomplete combobox"
               aria-haspopup="listbox"
               aria-expanded={isOpen}
               aria-controls={name}
@@ -216,8 +217,9 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
               variant={variant}
               color={color}
               size={size}
+              aria-multiselectable={true}
               isLoading={isLoading}
-              noOptionLabel={`No options match ${inputValue}`}
+              noOptionLabel={t('noOptionsMatch', { value: inputValue })}
               onClick={handleOnChange}
               {...filterOutKeys(listboxProps, ['className'])}
             />

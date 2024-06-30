@@ -15,6 +15,7 @@ import {
   inputVariant,
 } from './Input.style'
 import { cn } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 export type InputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -60,6 +61,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref,
   ) => {
+    const t = useTranslations('Components')
+
     return (
       <Label
         className={className}
@@ -113,6 +116,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               color={color}
               size="none"
               startIcon={<XIcon />}
+              aria-label={t('clear')}
               onClick={() => onChange('')}
             />
           ) : null}

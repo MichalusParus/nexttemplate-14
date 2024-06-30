@@ -7,6 +7,7 @@ import Ghost from '../../loaders/Ghost'
 import { buttonContentSize, buttonVariant } from '../Button/Button.style'
 import { cn, filterOutKeys } from '@/utils/utils'
 import { CheckboxProps } from '@/components/molecules/form/CheckboxField/Checkbox/Checkbox'
+import { useTranslations } from 'next-intl'
 
 export type ListBoxProps = Omit<
   OlHTMLAttributes<HTMLUListElement>,
@@ -50,7 +51,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
       color = 'primary',
       size = 'md',
       isLoading,
-      noOptionLabel = 'No options found',
+      noOptionLabel,
       hideCheckbox,
       checkboxProps = {},
       onClick,
@@ -58,8 +59,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
     },
     ref,
   ) => {
-    const optionCursor = isLoading ? 'cursor-not-allowed' : 'cursor-pointer'
-    const checkboxVisibility = hideCheckbox ? 'hidden' : 'block'
+    const t = useTranslations('Components')
 
     const getSelectedClass = useCallback(
       (optionValue: string) => {
@@ -98,7 +98,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                 getSelectedClass(optionValue),
                 buttonVariant[variant][color],
                 buttonContentSize[size],
-                optionCursor,
+                isLoading ? 'cursor-not-allowed' : 'cursor-pointer',
               )}
               role="option"
               tabIndex={0}
@@ -111,7 +111,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                   className={cn(
                     'mr-4',
                     checkboxSize[size],
-                    checkboxVisibility,
+                    hideCheckbox ? 'hidden' : 'block',
                     checkboxProps?.className,
                   )}
                   name={optionValue}
@@ -131,7 +131,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
             </li>
           ))
         ) : (
-          <li className="py-2 text-center">{noOptionLabel}</li>
+          <li className="py-2 text-center">{noOptionLabel || t('noOptions')}</li>
         )}
       </ul>
     )

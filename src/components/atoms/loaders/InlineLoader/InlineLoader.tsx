@@ -2,6 +2,7 @@ import { forwardRef, HTMLAttributes } from 'react'
 
 import { dottClass, loaderSize } from './InlineLoader.style'
 import { cn } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 export type InlineLoaderProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'> & {
   /** for passing custom tailwind classes */
@@ -13,11 +14,13 @@ export type InlineLoaderProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className
 /** Serves as inline loader, takes current text color. Default HTMLAttributes props supported. */
 export const InlineLoader = forwardRef<HTMLSpanElement, InlineLoaderProps>(
   ({ className = '', size = 'md', ...rest }, ref) => {
+    const t = useTranslations('Components')
+
     return (
       <span
         className={cn('InlineLoaderWrap', 'inline-flex items-center', className)}
         role="status"
-        aria-label="loading"
+        aria-label={t('loading')}
         aria-busy="true"
         ref={ref}
         {...rest}

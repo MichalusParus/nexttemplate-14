@@ -1,0 +1,15 @@
+{
+    "Components": {
+      "profile": "profile",
+      "close": "close",
+      "clear": "clear",
+      "delete": "delete",
+      "loading": "loading",
+      "noOptions": "No options found",
+      "noOptionsMatch": "No options match {value}",
+      "previousPage": "previous page",
+      "nextPage": "next page",
+      "page": "page {page}",
+      "search": "search"
+    }
+}

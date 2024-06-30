@@ -18,6 +18,5 @@ export const filterOutKeys = (object: object, keys: string[]) => {
   const newObject = Object.fromEntries(
     Object.entries(object).filter(([key]) => !keys.includes(key)),
   )
-  console.log(newObject)
   return newObject
 }

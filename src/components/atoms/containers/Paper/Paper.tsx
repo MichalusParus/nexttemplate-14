@@ -35,8 +35,6 @@ export const Paper = forwardRef<HTMLDivElement, PropsWithChildren<PaperProps>>(
     },
     ref,
   ) => {
-    const paperShadow = !hideShadow ? 'shadow-button' : ''
-
     return (
       <div
         className={cn(

@@ -2,6 +2,7 @@ import { forwardRef, HTMLAttributes } from 'react'
 
 import { spinnerClass, spinnerColor, spinnerSize } from './CircularLoader.style'
 import { cn } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 export type CircularLoaderProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */
@@ -22,11 +23,13 @@ export const CircularLoader = forwardRef<HTMLDivElement, CircularLoaderProps>(
     { className = '', color = 'primary', size = 'md', label = 'Loading...', hideLabel, ...rest },
     ref,
   ) => {
+    const t = useTranslations('Components')
+
     return (
       <div
         className={cn('CircularLoader', 'flex flex-col items-center', className)}
         role="status"
-        aria-label="loading"
+        aria-label={t('loading')}
         aria-busy="true"
         ref={ref}
         {...rest}

@@ -8,6 +8,7 @@ import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 
 import { closeButtonClass, closeClass, openClass, vieverComboboxClass } from './ImageViewer.style'
 import { cn } from '@/utils/utils'
+import { useTranslations } from 'next-intl'
 
 type ImageViewerProps = {
   /** for passing custom tailwind classes */
@@ -19,6 +20,7 @@ type ImageViewerProps = {
 /** Fullscreen modal window for image detail. USE CLIENT */
 export const ImageViewer = forwardRef<HTMLDivElement, PropsWithChildren<ImageViewerProps>>(
   ({ className = '', alt, children }, ref) => {
+    const t = useTranslations('Components')
     const [isOpen, setIsOpen] = useState(false)
     const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false))
     useImperativeHandle(ref, () => componentRef.current!)
@@ -57,7 +59,7 @@ export const ImageViewer = forwardRef<HTMLDivElement, PropsWithChildren<ImageVie
             variant="text"
             color="none"
             startIcon={<XIcon />}
-            aria-label="close"
+            aria-label={t('close')}
             onClick={handleClose}
           />
         ) : null}
