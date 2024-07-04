@@ -2,20 +2,22 @@ import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { options } from '../../../../../../.storybook/helpers'
+import { JestMockProvider, options } from '../../../../../../.storybook/helpers'
 import MultiSelect from '.'
 
 describe('MultiSelect', () => {
   it('default', () => {
     render(
-      <MultiSelect
-        className="className"
-        name="multiSelectTest"
-        label="label"
-        value={[]}
-        options={options}
-        onChange={() => {}}
-      />,
+      <JestMockProvider>
+        <MultiSelect
+          className="className"
+          name="multiSelectTest"
+          label="label"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+        />
+      </JestMockProvider>,
     )
     expect(screen.getByRole('listbox')).toBeTruthy()
     expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
@@ -25,41 +27,47 @@ describe('MultiSelect', () => {
 
   it('error', () => {
     render(
-      <MultiSelect
-        name="multiSelectTest"
-        label="label"
-        value={[]}
-        options={options}
-        error="error"
-        onChange={() => {}}
-      />,
+      <JestMockProvider>
+        <MultiSelect
+          name="multiSelectTest"
+          label="label"
+          value={[]}
+          options={options}
+          error="error"
+          onChange={() => {}}
+        />
+      </JestMockProvider>,
     )
     expect(screen.getByRole('alert')).toHaveTextContent('error')
   })
 
   it('description', () => {
     render(
-      <MultiSelect
-        name="multiSelectTest"
-        label="label"
-        value={[]}
-        options={options}
-        description="description"
-        onChange={() => {}}
-      />,
+      <JestMockProvider>
+        <MultiSelect
+          name="multiSelectTest"
+          label="label"
+          value={[]}
+          options={options}
+          description="description"
+          onChange={() => {}}
+        />
+      </JestMockProvider>,
     )
     expect(screen.getByRole('alert')).toHaveTextContent('description')
   })
 
   it('value', () => {
     render(
-      <MultiSelect
-        name="multiSelectTest"
-        label="label"
-        value={['value1']}
-        options={options}
-        onChange={() => {}}
-      />,
+      <JestMockProvider>
+        <MultiSelect
+          name="multiSelectTest"
+          label="label"
+          value={['value1']}
+          options={options}
+          onChange={() => {}}
+        />
+      </JestMockProvider>,
     )
     expect(screen.getByTestId('SelectedOptionsWrap')).toHaveTextContent('label1')
     expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true')
@@ -68,13 +76,15 @@ describe('MultiSelect', () => {
   it('onChange', () => {
     const spy = jest.fn()
     render(
-      <MultiSelect
-        name="multiSelectTest"
-        label="label"
-        value={[]}
-        options={options}
-        onChange={spy}
-      />,
+      <JestMockProvider>
+        <MultiSelect
+          name="multiSelectTest"
+          label="label"
+          value={[]}
+          options={options}
+          onChange={spy}
+        />
+      </JestMockProvider>,
     )
     fireEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getAllByRole('option')[0])
@@ -83,14 +93,16 @@ describe('MultiSelect', () => {
 
   it('disabled', () => {
     render(
-      <MultiSelect
-        name="multiSelectTest"
-        label="label"
-        value={[]}
-        options={options}
-        disabled
-        onChange={() => {}}
-      />,
+      <JestMockProvider>
+        <MultiSelect
+          name="multiSelectTest"
+          label="label"
+          value={[]}
+          options={options}
+          disabled
+          onChange={() => {}}
+        />
+      </JestMockProvider>,
     )
     expect(screen.getByRole('combobox')).toHaveAttribute('disabled', '')
   })

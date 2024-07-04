@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useCallback, useEffect, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 
+import Button from '@/components/atoms/common/Button'
 import { useDebounce } from '@/utils/hooks/useDebounce'
 import { useFilterData } from '@/utils/hooks/useFilterData'
 
@@ -27,6 +28,9 @@ const meta: Meta<typeof MultiAutocomplete> = {
     listboxProps: {
       control: false,
     },
+    children: {
+      control: false,
+    },
   },
 }
 
@@ -35,53 +39,27 @@ const MultiAutocompleteWithFetch = (args: MultiAutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('')
   const [options, setOptions] = useState<{ label: string; value: string }[]>([])
   const [isPending, startTransition] = useTransition()
-  const { debouncedValue, isDebouncePending } = useDebounce(inputValue, 500)
 
-  useEffect(() => {
-    startTransition(async () => {
-      await fetch(`https://freetestapi.com/api/v1/actresses?search=${debouncedValue}`)
-        .then(res => res.json())
-        .then(res =>
-          setOptions(
-            res.map((o: { name: string; id: string }) => ({ label: o.name, value: o.id })),
-          ),
-        )
-    })
-  }, [debouncedValue])
+  const getOptions = async (value: string) => {
+    await fetch(`https://freetestapi.com/api/v1/actresses?search=${value}`)
+      .then(res => res.json())
+      .then(res =>
+        setOptions(res.map((o: { name: string; id: string }) => ({ label: o.name, value: o.id }))),
+      )
+  }
 
-  return (
-    <div className={`flex h-96 justify-center ${args.placement === 'top' ? 'items-end' : ''}`}>
-      <MultiAutocomplete
-        {...args}
-        options={options}
-        isLoading={isPending || isDebouncePending || args.isLoading}
-        value={value}
-        inputValue={inputValue}
-        onInputChange={setInputValue}
-        onChange={setValue}
-      />
-    </div>
-  )
-}
+  const { debouncedFn, isDebouncePending } = useDebounce(getOptions, 500)
 
-const MultiAutocompleteOnOpenFetch = (args: MultiAutocompleteProps) => {
-  const [value, setValue] = useState<string[]>([])
-  const [inputValue, setInputValue] = useState<string>('')
-  const [options, setOptions] = useState<{ label: string; value: string }[]>([])
-  const [isPending, startTransition] = useTransition()
-  const { debouncedValue, isDebouncePending } = useDebounce(inputValue, 500)
-
-  const handleOpen = useCallback(() => {
-    startTransition(async () => {
-      await fetch(`https://freetestapi.com/api/v1/actresses?search=${debouncedValue}`)
-        .then(res => res.json())
-        .then(res =>
-          setOptions(
-            res.map((o: { name: string; id: string }) => ({ label: o.name, value: o.id })),
-          ),
-        )
-    })
-  }, [debouncedValue])
+  const handleInputChange = (value: string) => {
+    if (value.length > 2) {
+      startTransition(async () => {
+        await debouncedFn(value)
+      })
+    } else if (options.length) {
+      setOptions([])
+    }
+    setInputValue(value)
+  }
 
   return (
     <div className={`flex h-96 justify-center ${args.placement === 'top' ? 'items-end' : ''}`}>
@@ -91,8 +69,7 @@ const MultiAutocompleteOnOpenFetch = (args: MultiAutocompleteProps) => {
         isLoading={isPending || isDebouncePending || args.isLoading}
         value={value}
         inputValue={inputValue}
-        onOpen={handleOpen}
-        onInputChange={setInputValue}
+        onInputChange={handleInputChange}
         onChange={setValue}
       />
     </div>
@@ -149,14 +126,6 @@ export const PrimaryDefault: Story = {
   render: args => <MultiAutocompleteWithFetch {...args} />,
 }
 
-export const OnOpenFetch: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    name: 'onOpenAutocompleteStory',
-  },
-  render: args => <MultiAutocompleteOnOpenFetch {...args} />,
-}
-
 export const ClientFilter: Story = {
   args: {
     ...PrimaryDefault.args,
@@ -192,11 +161,31 @@ export const IsLoading: Story = {
   render: args => <MultiAutocompleteWithFetch {...args} />,
 }
 
+export const CreateNew: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    isLoading: true,
+    name: 'MultiAutocompleteStory5',
+    children: (
+      <Button
+        className="w-full rounded-none border-none"
+        variant={PrimaryDefault.args?.variant}
+        color={PrimaryDefault.args?.color}
+        size={PrimaryDefault.args?.size}
+        onClick={() => console.log('create new')}
+      >
+        Create new
+      </Button>
+    ),
+  },
+  render: args => <MultiAutocompleteWithFetch {...args} />,
+}
+
 export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
     error: 'error',
-    name: 'MultiAutocompleteStory5',
+    name: 'MultiAutocompleteStory6',
   },
   render: args => <MultiAutocompleteWithFetch {...args} />,
 }
@@ -204,7 +193,7 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'MultiAutocompleteStory6',
+    name: 'MultiAutocompleteStory7',
     disabled: true,
   },
   render: args => <MultiAutocompleteWithFetch {...args} />,

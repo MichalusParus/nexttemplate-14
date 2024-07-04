@@ -1,0 +1,39 @@
+import '@testing-library/jest-dom'
+
+import { render, screen } from '@testing-library/react'
+
+import { JestMockProvider } from '../../../../../.storybook/helpers'
+import MobilePagination from '.'
+
+describe('MobilePagination', () => {
+  it('default', () => {
+    render(
+      <JestMockProvider>
+        <MobilePagination
+          pages={[1, 2, 3]}
+          selectedPage={1}
+          setSelectedPage={() => {}}
+          className="className"
+        />
+      </JestMockProvider>,
+    )
+    expect(screen.getByTestId('MobilePagination')).toBeTruthy()
+    expect(screen.getByTestId('MobilePagination')).toHaveClass('className')
+    expect(screen.getAllByRole('button')).toHaveLength(2)
+    expect(screen.getByTestId('SelectedOutOff')).toHaveTextContent('1 / 3')
+  })
+
+  it('selectedPage', () => {
+    render(
+      <JestMockProvider>
+        <MobilePagination
+          pages={[1, 2, 3]}
+          selectedPage={3}
+          setSelectedPage={() => {}}
+          className="className"
+        />
+      </JestMockProvider>,
+    )
+    expect(screen.getByTestId('SelectedOutOff')).toHaveTextContent('3 / 3')
+  })
+})

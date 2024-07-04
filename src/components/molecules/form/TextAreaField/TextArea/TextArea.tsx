@@ -1,6 +1,8 @@
 'use client'
 import { forwardRef, TextareaHTMLAttributes } from 'react'
 
+import { cn } from '@/utils/utils'
+
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
 import {
   disabledVariant,
@@ -8,7 +10,6 @@ import {
   inputSize,
   inputVariant,
 } from '../../InputField/Input/Input.style'
-import { cn } from '@/utils/utils'
 
 export type TextAreaProps = Omit<
   TextareaHTMLAttributes<HTMLTextAreaElement>,
@@ -78,6 +79,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           disabled={disabled}
           ref={ref}
           tabIndex={disabled ? -1 : 0}
+          aria-describedby={`${name}-description`}
           onChange={e => onChange(e.target.value)}
           {...rest}
         />

@@ -1,14 +1,14 @@
 'use client'
+import { useTranslations } from 'next-intl'
 import { forwardRef, PropsWithChildren, useState } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import RatioWrap from '@/components/atoms/containers/RatioWrap'
 import { RatioWrapProps } from '@/components/atoms/containers/RatioWrap/RatioWrap'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 import { arrowClass, controlClass, dottWrapClass, innerWrapClass } from './Carousel.style'
-import { cn, filterOutKeys } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
 
 export type CarouselProps = {
   /** for passing custom tailwind classes */
@@ -60,7 +60,7 @@ export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselPro
           color="none"
           size="none"
           startIcon={<ChevronIcon className={'h-10 w-10 rotate-90'} />}
-          aria-label={t('previousPage')}
+          aria-label={t('previousPage', { page: currentPage === 1 ? pages : currentPage - 1 })}
           onClick={() => setCurrentPage(prev => (prev === 1 ? pages : prev - 1))}
         />
         <Button
@@ -68,7 +68,7 @@ export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselPro
           color="none"
           size="none"
           startIcon={<ChevronIcon className={'h-10 w-10 -rotate-90'} />}
-          aria-label={t('nextPage')}
+          aria-label={t('nextPage', { page: currentPage === pages ? 1 : currentPage + 1 })}
           onClick={() => setCurrentPage(prev => (prev === pages ? 1 : prev + 1))}
         />
         <div className={cn('DottWrap', dottWrapClass)}>

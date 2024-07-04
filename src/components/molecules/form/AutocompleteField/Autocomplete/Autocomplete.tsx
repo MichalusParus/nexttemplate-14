@@ -1,5 +1,6 @@
 'use client'
-import { forwardRef, KeyboardEvent, useCallback, useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { forwardRef, KeyboardEvent, useCallback, useState } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import { ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
@@ -9,7 +10,9 @@ import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 import XIcon from '@/components/atoms/icons/XIcon'
 import Dropdown from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
+import { OptionType } from '@/components/types'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
 import Input from '../../InputField/Input'
@@ -22,8 +25,6 @@ import {
   comboboxWrapClass,
   disabledVariant,
 } from './Autocomplete.style'
-import { cn, filterOutKeys } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
 
 export type AutocompleteProps = Pick<ComboboxProps, 'name' | 'disabled'> &
   Omit<LabelProps, 'name' | 'onClick'> & {
@@ -38,7 +39,7 @@ export type AutocompleteProps = Pick<ComboboxProps, 'name' | 'disabled'> &
     /** current value of autocomplete */
     value: string
     /** options for select to choose from */
-    options: { label: string; value: string }[]
+    options: OptionType[]
     /** loading state for options fetching, loading is delayed for 1 second to prevent flickering */
     isLoading?: boolean
     /** optional placeholder */
@@ -49,8 +50,6 @@ export type AutocompleteProps = Pick<ComboboxProps, 'name' | 'disabled'> &
     dropdownProps?: Partial<DropdownProps>
     /** for passing aditional props to listbox */
     listboxProps?: Partial<ListBoxProps>
-    /** function to call when autocomplete is opened for fetching options */
-    onOpen?: () => void
     /** set input value */
     onInputChange: (value: string) => void
     /** onChange function */
@@ -83,9 +82,9 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
       inputProps = {},
       dropdownProps = {},
       listboxProps = {},
-      onOpen,
       onInputChange,
       onChange,
+      children,
     },
     ref,
   ) => {
@@ -93,7 +92,8 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
     const [isOpen, setIsOpen] = useState(false)
     const sortedOptions = placement === 'top' ? options.reverse() : options
     const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false))
-    const ghostArray = new Array(10).fill(null).map((_, i) => ({ label: `${i}`, value: `${i}` }))
+    const noOptionsLabel =
+      inputValue.length <= 2 ? t('searchForOptions') : t('noOptionsMatch', { value: inputValue })
     const comboboxZIndex = isOpen ? 'z-40' : 'z-20'
     const selectedClass = isOpen ? 'selected' : ''
     const disabledClass = disabled ? 'disabled' : ''
@@ -127,12 +127,6 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
       },
       [isOpen, onInputChange],
     )
-
-    useEffect(() => {
-      if (isOpen && onOpen) {
-        onOpen()
-      }
-    }, [isOpen, onOpen])
 
     return (
       <Label
@@ -180,6 +174,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
               ref={ref}
               role="combobox"
               aria-haspopup="listbox"
+              aria-describedby={`${name}-description`}
               aria-expanded={isOpen}
               aria-controls={name}
               onKeyDown={(e: KeyboardEvent) =>
@@ -218,16 +213,17 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
               className={cn(placement === 'left' ? 'pt-1' : 'pb-1', listboxProps.className)}
               name={name}
               value={[value]}
-              options={isLoading && onOpen ? ghostArray : sortedOptions}
+              options={sortedOptions}
               variant={variant}
               color={color}
               size={size}
               isLoading={isLoading}
               hideCheckbox
-              noOptionLabel={t('noOptionsMatch', { value: inputValue })}
+              noOptionLabel={noOptionsLabel}
               onClick={handleOnChange}
               {...filterOutKeys(listboxProps, ['className'])}
             />
+            {children}
           </Dropdown>
         </div>
       </Label>

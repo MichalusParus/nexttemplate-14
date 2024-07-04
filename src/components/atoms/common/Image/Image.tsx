@@ -1,8 +1,9 @@
 import NextImage, { ImageProps as NextImageProps } from 'next/image'
 import { forwardRef, ImgHTMLAttributes } from 'react'
 
-import { RatioWrap, RatioWrapProps } from '../../containers/RatioWrap/RatioWrap'
 import { cn } from '@/utils/utils'
+
+import { RatioWrap, RatioWrapProps } from '../../containers/RatioWrap/RatioWrap'
 
 export type ImageProps = RatioWrapProps &
   Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'> &

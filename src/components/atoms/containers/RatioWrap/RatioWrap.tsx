@@ -1,5 +1,6 @@
-import { cn } from '@/utils/utils'
 import { forwardRef, HTMLAttributes } from 'react'
+
+import { cn } from '@/utils/utils'
 
 export type RatioWrapProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */

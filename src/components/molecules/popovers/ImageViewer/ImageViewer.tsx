@@ -1,14 +1,14 @@
 'use client'
+import { useTranslations } from 'next-intl'
 import { forwardRef, PropsWithChildren, useEffect, useImperativeHandle, useState } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import Combobox from '@/components/atoms/common/Combobox'
 import XIcon from '@/components/atoms/icons/XIcon'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { cn } from '@/utils/utils'
 
 import { closeButtonClass, closeClass, openClass, vieverComboboxClass } from './ImageViewer.style'
-import { cn } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
 
 type ImageViewerProps = {
   /** for passing custom tailwind classes */

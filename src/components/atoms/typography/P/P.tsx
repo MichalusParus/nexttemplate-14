@@ -1,8 +1,9 @@
 import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react'
 
+import { cn } from '@/utils/utils'
+
 import Ghost from '../../loaders/Ghost'
 import { PColor, PSize } from './P.style'
-import { cn } from '@/utils/utils'
 
 export type PProps = Omit<HTMLAttributes<HTMLParagraphElement>, 'color' | 'className'> & {
   /** for passing custom tailwind classes */

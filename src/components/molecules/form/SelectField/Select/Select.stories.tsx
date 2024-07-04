@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { options } from '../../../../../../.storybook/helpers'
+import { options, optionsWithContent } from '../../../../../../.storybook/helpers'
 import { Select, SelectProps } from './Select'
 
 const meta: Meta<typeof Select> = {
@@ -82,11 +82,20 @@ export const Scroll: Story = {
   render: args => <SelectWithHooks {...args} />,
 }
 
+export const OptionsWithContent: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'selectStory4',
+    options: optionsWithContent.slice(0, 5),
+  },
+  render: args => <SelectWithHooks {...args} />,
+}
+
 export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
     error: 'error',
-    name: 'selectStory4',
+    name: 'selectStory5',
   },
   render: args => <SelectWithHooks {...args} />,
 }
@@ -94,7 +103,7 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'selectStory5',
+    name: 'selectStory6',
     disabled: true,
   },
   render: args => <SelectWithHooks {...args} />,

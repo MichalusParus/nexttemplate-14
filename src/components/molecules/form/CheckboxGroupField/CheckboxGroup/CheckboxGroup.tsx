@@ -2,9 +2,10 @@
 import { forwardRef, useCallback } from 'react'
 
 import { Label, LabelProps } from '@/components/atoms/common/Label/Label'
+import { OptionType } from '@/components/types'
+import { cn } from '@/utils/utils'
 
 import { Checkbox, CheckboxProps } from '../../CheckboxField/Checkbox/Checkbox'
-import { cn } from '@/utils/utils'
 
 export type CheckboxGroupProps = Omit<CheckboxProps, 'value' | 'isChecked' | 'onChange' | 'fake'> &
   LabelProps & {
@@ -13,7 +14,7 @@ export type CheckboxGroupProps = Omit<CheckboxProps, 'value' | 'isChecked' | 'on
     /** checkboxGroup value */
     value: string[]
     /** group options for individual radio inputs */
-    options: { label: string; value: string }[]
+    options: OptionType[]
     /** display radio inputs in column */
     column?: boolean
     /** onChange function */
@@ -82,12 +83,13 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
         fakeLabel
       >
         <div className={cn('CheckboxGroupWrap', 'flex flex-wrap', column && 'flex-col')}>
-          {options.map(({ value: checkboxValue, label }) => (
+          {options.map(({ value: checkboxValue, label, content }) => (
             <Checkbox
               key={checkboxValue}
               name={checkboxValue}
               label={label}
               value={checkboxValue}
+              content={content}
               variant={variant}
               color={color}
               size={size}
@@ -95,6 +97,7 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
               error={error}
               disabled={disabled}
               onChange={handleOnChange}
+              aria-describedby={`${name}-description`}
               ref={ref}
               {...rest}
             />

@@ -2,19 +2,21 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import { options } from '../../../../../.storybook/helpers'
+import { JestMockProvider, options } from '../../../../../.storybook/helpers'
 import ListBox from '.'
 
 describe('ListBox', () => {
   it('default', () => {
     render(
-      <ListBox
-        className="className"
-        name="listboxTest"
-        value={[]}
-        options={options}
-        onClick={() => {}}
-      />,
+      <JestMockProvider>
+        <ListBox
+          className="className"
+          name="listboxTest"
+          value={[]}
+          options={options}
+          onClick={() => {}}
+        />
+      </JestMockProvider>,
     )
     expect(screen.getByRole('listbox')).toBeTruthy()
     expect(screen.getByRole('listbox')).toHaveClass('className')
@@ -24,13 +26,15 @@ describe('ListBox', () => {
 
   it('value', () => {
     render(
-      <ListBox
-        className="className"
-        name="listboxTest"
-        value={['value1']}
-        options={options}
-        onClick={() => {}}
-      />,
+      <JestMockProvider>
+        <ListBox
+          className="className"
+          name="listboxTest"
+          value={['value1']}
+          options={options}
+          onClick={() => {}}
+        />
+      </JestMockProvider>,
     )
     expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true')
   })

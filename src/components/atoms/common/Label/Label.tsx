@@ -1,9 +1,9 @@
 import { forwardRef, LabelHTMLAttributes } from 'react'
 
 import Alert from '@/components/atoms/common/Alert'
+import { cn } from '@/utils/utils'
 
 import { collapsedState, fieldWrapClass, labelClass, textSize } from './Label.style'
-import { cn } from '@/utils/utils'
 
 export type LabelProps = Omit<
   LabelHTMLAttributes<HTMLLabelElement>,
@@ -86,6 +86,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
           {children}
           {!hideError ? (
             <Alert
+              id={`${name}-description`}
               className={cn('mb-2', error || description ? 'opacity-100' : 'opacity-0')}
               variant="text"
               status={description && !error ? 'info' : 'error'}

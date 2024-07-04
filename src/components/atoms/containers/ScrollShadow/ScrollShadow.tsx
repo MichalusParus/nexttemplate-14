@@ -1,8 +1,9 @@
 'use client'
 import { forwardRef, HTMLAttributes, useEffect, useRef, useState } from 'react'
 
-import { shadowClass, shadowPosition } from './ScrollShadow.style'
 import { cn } from '@/utils/utils'
+
+import { shadowClass, shadowPosition } from './ScrollShadow.style'
 
 export type ScrollShadowProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */

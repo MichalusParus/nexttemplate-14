@@ -1,7 +1,8 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
-import { spanColor, spanStyle } from './Span.style'
 import { cn } from '@/utils/utils'
+
+import { spanColor, spanStyle } from './Span.style'
 
 export type SpanProps = Omit<HTMLAttributes<HTMLSpanElement>, 'color' | 'className'> & {
   /** for passing custom tailwind classes */

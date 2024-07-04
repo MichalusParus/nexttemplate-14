@@ -1,5 +1,6 @@
 'use client'
-import { forwardRef, KeyboardEvent, useCallback, useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { forwardRef, KeyboardEvent, useCallback, useState } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import Chip from '@/components/atoms/common/Chip'
@@ -8,6 +9,7 @@ import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 import XIcon from '@/components/atoms/icons/XIcon'
 import Dropdown from '@/components/molecules/popovers/Dropdown'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 import { Label } from '../../../../atoms/common/Label/Label'
 import { AutocompleteProps } from '../../AutocompleteField/Autocomplete/Autocomplete'
@@ -20,8 +22,6 @@ import {
 import Input from '../../InputField/Input'
 import { inputSize, inputVariant } from '../../InputField/Input/Input.style'
 import { iconSize } from '../../MultiSelectField/MultiSelect/MultiSelect.style'
-import { cn, filterOutKeys } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
 
 export type MultiAutocompleteProps = Omit<AutocompleteProps, 'value' | 'onChange'> & {
   /** current value of component */
@@ -56,9 +56,9 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
       inputProps = {},
       dropdownProps = {},
       listboxProps = {},
-      onOpen,
       onInputChange,
       onChange,
+      children,
     },
     ref,
   ) => {
@@ -71,7 +71,8 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
       '.ClearButton',
     ])
     const [selectedOptions, setSelectedOptions] = useState<{ label: string; value: string }[]>([])
-    const ghostArray = new Array(10).fill(null).map((_, i) => ({ label: `${i}`, value: `${i}` }))
+    const noOptionsLabel =
+      inputValue.length <= 2 ? t('searchForOptions') : t('noOptionsMatch', { value: inputValue })
     const comboboxZIndex = isOpen ? 'z-40' : 'z-20'
     const selectedClass = isOpen ? 'selected' : ''
     const disabledClass = disabled ? 'disabled' : ''
@@ -109,12 +110,6 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
       onInputChange('')
       setSelectedOptions([])
     }, [onChange, onInputChange])
-
-    useEffect(() => {
-      if (isOpen && onOpen) {
-        onOpen()
-      }
-    }, [isOpen, onOpen])
 
     return (
       <Label
@@ -192,6 +187,7 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
               aria-haspopup="listbox"
               aria-expanded={isOpen}
               aria-controls={name}
+              aria-describedby={`${name}-description`}
               onKeyDown={(e: KeyboardEvent) =>
                 e.code === 'Enter' || e.code === 'Space' ? setIsOpen(true) : null
               }
@@ -213,16 +209,17 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
               className={cn(placement === 'left' ? 'pt-1' : 'pb-1', listboxProps.className)}
               name={name}
               value={value}
-              options={isLoading && onOpen ? ghostArray : sortedOptions}
+              options={sortedOptions}
               variant={variant}
               color={color}
               size={size}
               aria-multiselectable={true}
               isLoading={isLoading}
-              noOptionLabel={t('noOptionsMatch', { value: inputValue })}
+              noOptionLabel={noOptionsLabel}
               onClick={handleOnChange}
               {...filterOutKeys(listboxProps, ['className'])}
             />
+            {children}
           </Dropdown>
         </div>
       </Label>

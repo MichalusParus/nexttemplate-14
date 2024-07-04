@@ -1,12 +1,12 @@
 import { cn } from '@/utils/utils'
 
 export const inputClass = cn(
-  'cursor-pointer appearance-none rounded-md transition-activity focus:outline-none',
+  'shrink-0 cursor-pointer appearance-none rounded-md transition-activity focus:outline-none',
   'disabled:cursor-not-allowed disabled:opacity-50 [&.disabled]:cursor-not-allowed [&.disabled]:opacity-50',
 )
 
 export const switchClass = cn(
-  'mr-2 cursor-pointer appearance-none rounded-3xl transition-activity focus:outline-none',
+  'cursor-pointer appearance-none rounded-3xl transition-activity focus:outline-none',
   'disabled:cursor-not-allowed disabled:opacity-50 [&.disabled]:cursor-not-allowed [&.disabled]:opacity-50',
 )
 
@@ -120,9 +120,16 @@ export const checkVariant = {
 }
 
 export const checkboxSize = {
-  sm: cn('text-sm [&>*]:h-smIcon [&>*]:w-smIcon'),
-  md: cn('text-base [&>*]:h-mdIcon [&>*]:w-mdIcon'),
-  lg: cn('text-lg [&>*]:h-lgIcon [&>*]:w-lgIcon'),
+  sm: cn('h-smIcon w-smIcon'),
+  md: cn('h-mdIcon w-mdIcon'),
+  lg: cn('h-lgIcon w-lgIcon'),
+  none: '',
+}
+
+export const checkLabelSize = {
+  sm: cn('text-sm'),
+  md: cn('text-base'),
+  lg: cn('text-lg'),
   none: '',
 }
 

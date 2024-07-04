@@ -1,18 +1,18 @@
 'use client'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { forwardRef, useCallback } from 'react'
 import { FieldValues } from 'react-hook-form'
 import { object } from 'yup'
 
 import Button from '@/components/atoms/common/Button'
 import SearchIcon from '@/components/atoms/icons/SearchIcon'
+import { cn } from '@/utils/utils'
 
 import Form from '../Form'
 import InputField from '../InputField'
 import Input from '../InputField/Input'
 import { searchColor, searchSize } from './SearchBar.style'
-import { cn } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
 
 export type SearchBarProps = {
   /** for passing custom tailwind classes */

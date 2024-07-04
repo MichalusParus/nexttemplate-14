@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { options } from '../../../../../../.storybook/helpers'
+import { options, optionsWithContent } from '../../../../../../.storybook/helpers'
 import { CheckboxGroup, CheckboxGroupProps } from './CheckboxGroup'
 
 const meta: Meta<typeof CheckboxGroup> = {
@@ -57,10 +57,20 @@ export const Column: Story = {
   render: args => <CheckboxGroupWithHooks {...args} />,
 }
 
-export const Error: Story = {
+export const OptionsWithContent: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'checkboxGroupStory3',
+    options: optionsWithContent.slice(0, 5),
+    column: true,
+  },
+  render: args => <CheckboxGroupWithHooks {...args} />,
+}
+
+export const Error: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'checkboxGroupStory4',
     error: 'error',
   },
   render: args => <CheckboxGroupWithHooks {...args} />,
@@ -69,7 +79,7 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'checkboxGroupStory4',
+    name: 'checkboxGroupStory5',
     disabled: true,
   },
   render: args => <CheckboxGroupWithHooks {...args} />,

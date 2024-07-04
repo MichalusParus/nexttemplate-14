@@ -1,7 +1,8 @@
 import { forwardRef, HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
 
-import { tooltipClass, tooltipPosition, tooltipVisibility } from './Tooltip.style'
 import { cn } from '@/utils/utils'
+
+import { tooltipClass, tooltipPosition, tooltipVisibility } from './Tooltip.style'
 
 export type TooltipProps = Omit<HTMLAttributes<HTMLDivElement>, 'title' | 'className'> & {
   /** for passing custom tailwind classes */

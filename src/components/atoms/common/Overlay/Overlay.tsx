@@ -1,8 +1,9 @@
 'use client'
 import { ButtonHTMLAttributes, forwardRef } from 'react'
 
-import { overlayClass } from './Overlay.style'
 import { cn } from '@/utils/utils'
+
+import { overlayClass } from './Overlay.style'
 
 export type OverlayProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> & {
   /** for passing custom tailwind classes */
@@ -24,7 +25,7 @@ export const Overlay = forwardRef<HTMLButtonElement, OverlayProps>(
           'Overlay',
           overlayClass,
           isOpen ? 'opacity-100' : 'invisible opacity-0',
-          dark && 'bg-dark-950 bg-opacity-20',
+          dark && 'bg-overlay',
           className,
         )}
         type="button"

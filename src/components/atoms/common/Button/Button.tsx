@@ -1,6 +1,8 @@
 'use client'
 import { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react'
 
+import { cn } from '@/utils/utils'
+
 import InlineLoader from '../../loaders/InlineLoader'
 import {
   buttonClass,
@@ -11,7 +13,6 @@ import {
   iconOnlySize,
   innerWrapClass,
 } from './Button.style'
-import { cn } from '@/utils/utils'
 
 export type ButtonProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,

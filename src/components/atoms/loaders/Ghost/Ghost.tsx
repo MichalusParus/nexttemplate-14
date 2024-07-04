@@ -1,8 +1,9 @@
+import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
-import { ghostSize, ghostStyle } from './Ghost.style'
 import { cn } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
+
+import { ghostSize, ghostStyle } from './Ghost.style'
 
 export type GhostProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'> & {
   /** for passing custom tailwind classes */

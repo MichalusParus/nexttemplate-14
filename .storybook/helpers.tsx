@@ -1,5 +1,7 @@
-import Link from '@/components/atoms/common/Link'
 import MenuItem from '@/components/atoms/common/MenuItem'
+import PlusIcon from '@/components/atoms/icons/PlusIcon'
+import { NextIntlClientProvider } from 'next-intl'
+import { PropsWithChildren } from 'react'
 import { array, date, number, object, string } from 'yup'
 
 export const textContent =
@@ -8,6 +10,25 @@ export const textContent =
 export const options = new Array(20).fill(null).map((opt, index) => ({
   label: index % 3 === 0 ? 'very long label' + (index + 1) : 'label' + (index + 1),
   value: 'value' + (index + 1),
+}))
+
+export const optionsWithContent = new Array(20).fill(null).map((opt, index) => ({
+  label: index % 3 === 0 ? 'very long label' + (index + 1) : 'label' + (index + 1),
+  value: 'value' + (index + 1),
+  content: (
+    <div className="flex w-full items-center">
+      <div>
+        <p>label {index + 1}</p>
+        <p className="text-sm">{textContent.slice(0, 21)}</p>
+      </div>
+      <PlusIcon />
+    </div>
+  ),
+}))
+
+export const tileData = new Array(200).fill(0).map((_, i) => ({
+  id: i,
+  title: `Title ${i}`,
 }))
 
 export const MenuLinks = ({
@@ -75,36 +96,39 @@ export const gridDoubleColsDef = [
   {
     label: 'Column Head 1',
     name: 'col1',
-    width: 'basis-[336px]',
+    width: '400px',
     grow: true,
     columns: [
       {
         label: 'Subcol Head 1',
         name: 'name1',
-        width: 'basis-52',
+        width: '250px',
         grow: true,
       },
       {
         label: 'Num 2',
         name: 'name2',
-        width: 'basis-32',
+        width: '150px',
+        shrink: true,
       },
     ],
   },
   {
     label: 'Column Head 2',
     name: 'col2',
-    width: 'basis-[416px]',
+    width: '500px',
     columns: [
       {
         label: 'Subcol Head 3',
         name: 'name3',
-        width: 'basis-52',
+        width: '250px',
+        shrink: true,
       },
       {
         label: 'Subcol Head 4',
         name: 'name4',
-        width: 'basis-52',
+        width: '250px',
+        shrink: true,
       },
     ],
   },
@@ -113,23 +137,23 @@ export const gridColsDef = [
   {
     label: 'Column Head 1',
     name: 'name1',
-    width: 'basis-52',
-    grow: 1,
+    width: '250px',
+    grow: true,
   },
   {
     label: 'Num 2',
     name: 'name2',
-    width: 'basis-32',
+    width: '150px',
   },
   {
     label: 'Column Head 3',
     name: 'name3',
-    width: 'basis-52',
+    width: '250px',
   },
   {
     label: 'Column Head 4',
     name: 'name4',
-    width: 'basis-52',
+    width: '250px',
   },
 ]
 
@@ -137,7 +161,7 @@ export const gridCleanColsDef = [
   {
     label: 'Column Head 1',
     name: 'name1',
-    width: 'basis-52',
+    width: '250px',
     grow: true,
     hideFilter: true,
     hideSort: true,
@@ -145,21 +169,21 @@ export const gridCleanColsDef = [
   {
     label: 'Num 2',
     name: 'name2',
-    width: 'basis-32',
+    width: '150px',
     hideFilter: true,
     hideSort: true,
   },
   {
     label: 'Column Head 3',
     name: 'name3',
-    width: 'basis-52',
+    width: '250px',
     hideFilter: true,
     hideSort: true,
   },
   {
     label: 'Column Head 4',
     name: 'name4',
-    width: 'basis-52',
+    width: '250px',
     hideFilter: true,
     hideSort: true,
   },
@@ -254,3 +278,12 @@ export const tabs = [
     ),
   },
 ]
+
+export const JestMockProvider = ({ children }: PropsWithChildren<object>) => {
+  const messages = require(`../messages/en.json`)
+  return (
+    <NextIntlClientProvider messages={messages} locale={'en'}>
+      {children}
+    </NextIntlClientProvider>
+  )
+}

@@ -1,8 +1,9 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
+import { cn } from '@/utils/utils'
+
 import Span from '../../typography/Span'
 import { dividerColor } from './Divider.style'
-import { cn } from '@/utils/utils'
 
 export type DividerProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color' | 'label'> & {
   /** for passing custom tailwind classes */

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
+import { optionsWithContent } from '../../../../../../.storybook/helpers'
 import Checkbox from '.'
 import { CheckboxProps } from './Checkbox'
 
@@ -33,6 +34,7 @@ export const PrimaryDefault: Story = {
     className: '',
     name: 'checkboxStory',
     label: 'Label',
+    content: undefined,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
@@ -53,10 +55,20 @@ export const Switch: Story = {
   render: args => <CheckboxWithHooks {...args} />,
 }
 
+export const OptionsWithContent: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    className: 'min-w-40',
+    name: 'checkboxStory3',
+    content: optionsWithContent[0].content,
+  },
+  render: args => <CheckboxWithHooks {...args} />,
+}
+
 export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'checkboxStory3',
+    name: 'checkboxStory4',
     error: 'error',
   },
   render: args => <CheckboxWithHooks {...args} />,
@@ -65,7 +77,7 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'checkboxStory4',
+    name: 'checkboxStory5',
     disabled: true,
   },
   render: args => <CheckboxWithHooks {...args} />,

@@ -11,6 +11,22 @@ export const useFocusTrap = (
   const focusIndexRef = useRef<number>(0)
   const focusableElRef = useRef<HTMLElement[]>([])
 
+  // Autofocus to first element with class selected on open state and startRef update
+  useEffect(() => {
+    if (isActive) {
+      startRef.current = document.activeElement as HTMLButtonElement
+      const focusableSelectedEl = componentRef.current?.querySelectorAll(
+        '.selected.Option',
+      ) as NodeListOf<HTMLElement>
+      if (focusableSelectedEl.length) {
+        focusableSelectedEl[0].focus()
+        focusIndexRef.current = focusableElRef.current.indexOf(focusableSelectedEl[0])
+      } else {
+        focusIndexRef.current = 0
+      }
+    }
+  }, [isActive])
+
   // onKeyDown listerer and keys handling
   useEffect(() => {
     if (componentRef.current && isActive && startRef.current) {
@@ -63,22 +79,6 @@ export const useFocusTrap = (
       }
     }
   }, [isActive, componentRef, onClose])
-
-  // Autofocus to first element with class selected on open state
-  useEffect(() => {
-    if (isActive) {
-      startRef.current = document.activeElement as HTMLButtonElement
-      const focusableSelectedEl = componentRef.current?.querySelectorAll(
-        '.selected.Option',
-      ) as NodeListOf<HTMLElement>
-      if (focusableSelectedEl.length) {
-        focusableSelectedEl[0].focus()
-        focusIndexRef.current = focusableElRef.current.indexOf(focusableSelectedEl[0])
-      } else {
-        focusIndexRef.current = 0
-      }
-    }
-  }, [isActive])
 
   // Focusable array actualization with index update
   useEffect(() => {

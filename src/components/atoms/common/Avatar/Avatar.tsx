@@ -1,10 +1,11 @@
+import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
+
+import { cn } from '@/utils/utils'
 
 import ProfileIcon from '../../icons/ProfileIcon'
 import Image from '../Image'
 import { avatarClass, avatarSize, avatarVariant } from './Avatar.style'
-import { cn } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
 
 export type AvatarProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */

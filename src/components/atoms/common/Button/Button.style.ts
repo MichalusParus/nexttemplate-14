@@ -8,22 +8,22 @@ export const buttonVariant = {
   text: {
     primary: cn(
       'border-transparent bg-transparent text-primary-800',
-      'hover:bg-primary-200 focus-visible:bg-primary-200 active:bg-primary-100',
+      'hover:bg-primary-200 focus-visible:bg-primary-200 active:bg-primary-100 group-focus-visible:bg-primary-200',
       '[&.selected]:bg-primary-100 [&.selected]:hover:bg-primary-200 [&.selected]:focus-visible:bg-primary-200',
     ),
     secondary: cn(
       'border-transparent bg-transparent text-secondary-800',
-      'hover:bg-secondary-200 focus-visible:bg-secondary-200 active:bg-secondary-100',
+      'hover:bg-secondary-200 focus-visible:bg-secondary-200 active:bg-secondary-100 group-focus-visible:bg-secondary-200',
       '[&.selected]:bg-secondary-100 [&.selected]:hover:bg-secondary-200 [&.selected]:focus-visible:bg-secondary-200',
     ),
     terciary: cn(
       'border-transparent bg-transparent text-terciary-800',
-      'hover:bg-terciary-200 focus-visible:bg-terciary-200 active:bg-terciary-100',
+      'hover:bg-terciary-200 focus-visible:bg-terciary-200 active:bg-terciary-100 group-focus-visible:bg-terciary-200',
       '[&.selected]:bg-terciary-100 [&.selected]:hover:bg-terciary-200 [&.selected]:focus-visible:bg-terciary-200',
     ),
     error: cn(
       'border-transparent bg-transparent text-error-800',
-      'hover:bg-error-200 focus-visible:bg-error-200 active:bg-error-100',
+      'hover:bg-error-200 focus-visible:bg-error-200 active:bg-error-100 group-focus-visible:bg-error-200',
       '[&.selected]:bg-error-100 [&.selected]:hover:bg-error-200 [&.selected]:focus-visible:bg-error-200',
     ),
     none: '',
@@ -31,22 +31,22 @@ export const buttonVariant = {
   outlined: {
     primary: cn(
       'border-primary-800 bg-transparent text-primary-800',
-      'hover:bg-primary-200 focus-visible:bg-primary-200 active:bg-primary-100',
+      'hover:bg-primary-200 focus-visible:bg-primary-200 active:bg-primary-100 group-focus-visible:bg-primary-200',
       '[&.selected]:bg-primary-100 [&.selected]:hover:bg-primary-200 [&.selected]:focus-visible:bg-primary-200',
     ),
     secondary: cn(
       'border-secondary-800 bg-transparent text-secondary-800',
-      'hover:bg-secondary-200 focus-visible:bg-secondary-200 active:bg-secondary-100',
+      'hover:bg-secondary-200 focus-visible:bg-secondary-200 active:bg-secondary-100 group-focus-visible:bg-secondary-200',
       '[&.selected]:bg-secondary-100 [&.selected]:hover:bg-secondary-200 [&.selected]:focus-visible:bg-secondary-200',
     ),
     terciary: cn(
       'border-terciary-800 bg-transparent text-terciary-800',
-      'hover:bg-terciary-200 focus-visible:bg-terciary-200 active:bg-terciary-100',
+      'hover:bg-terciary-200 focus-visible:bg-terciary-200 active:bg-terciary-100 group-focus-visible:bg-terciary-200',
       '[&.selected]:bg-terciary-100 [&.selected]:hover:bg-terciary-200 [&.selected]:focus-visible:bg-terciary-200',
     ),
     error: cn(
       'border-error-800 bg-transparent text-error-800',
-      'hover:bg-error-200 focus-visible:bg-error-200 active:bg-error-100',
+      'hover:bg-error-200 focus-visible:bg-error-200 active:bg-error-100 group-focus-visible:bg-error-200',
       '[&.selected]:bg-error-100 [&.selected]:hover:bg-error-200 [&.selected]:focus-visible:bg-error-200',
     ),
     none: '',
@@ -54,22 +54,22 @@ export const buttonVariant = {
   contained: {
     primary: cn(
       'border-primary-800 bg-primary-800 text-primary-50',
-      'hover:border-primary-900 hover:bg-primary-900 focus-visible:border-primary-900 focus-visible:bg-primary-900 active:bg-primary-700',
+      'hover:border-primary-900 hover:bg-primary-900 focus-visible:border-primary-900 focus-visible:bg-primary-900 active:bg-primary-700 group-focus-visible:bg-primary-900',
       '[&.selected]:bg-primary-700 [&.selected]:hover:bg-primary-900 [&.selected]:focus-visible:bg-primary-900',
     ),
     secondary: cn(
       'border-secondary-800 bg-secondary-800 text-secondary-50',
-      'hover:border-secondary-900 hover:bg-secondary-900 focus-visible:border-secondary-900 focus-visible:bg-secondary-900 active:bg-secondary-700',
+      'hover:border-secondary-900 hover:bg-secondary-900 focus-visible:border-secondary-900 focus-visible:bg-secondary-900 active:bg-secondary-700 group-focus-visible:bg-secondary-900',
       '[&.selected]:bg-secondary-700 [&.selected]:hover:bg-secondary-900 [&.selected]:focus-visible:bg-secondary-900',
     ),
     terciary: cn(
       'border-terciary-800 bg-terciary-800 text-terciary-50',
-      'hover:border-terciary-900 hover:bg-terciary-900 focus-visible:border-terciary-900 focus-visible:bg-terciary-900 active:bg-terciary-700',
+      'hover:border-terciary-900 hover:bg-terciary-900 focus-visible:border-terciary-900 focus-visible:bg-terciary-900 active:bg-terciary-700 group-focus-visible:bg-terciary-900',
       '[&.selected]:bg-terciary-700 [&.selected]:hover:bg-terciary-900 [&.selected]:focus-visible:bg-terciary-900',
     ),
     error: cn(
       'border-error-800 bg-error-800 text-error-50',
-      'hover:border-error-900 hover:bg-error-900 focus-visible:border-error-900 focus-visible:bg-error-900 active:bg-error-700',
+      'hover:border-error-900 hover:bg-error-900 focus-visible:border-error-900 focus-visible:bg-error-900 active:bg-error-700 group-focus-visible:bg-error-900',
       '[&.selected]:bg-error-700 [&.selected]:hover:bg-error-900 [&.selected]:focus-visible:bg-error-900',
     ),
     none: '',

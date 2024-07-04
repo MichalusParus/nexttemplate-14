@@ -1,5 +1,7 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
+import { cn } from '@/utils/utils'
+
 export type ComponentTemplateProps = Omit<HTMLAttributes<HTMLDivElement>, 'className'> & {
   /** for passing custom tailwind classes */
   className?: string
@@ -28,7 +30,7 @@ export const ComponentTemplate = forwardRef<HTMLDivElement, ComponentTemplatePro
   ({ className = '', ...rest }, ref) => {
     return (
       <div
-        className={`ComponentTemplate ${className}`}
+        className={cn('ComponentTemplate', className)}
         ref={ref}
         data-testid="ComponentTemplate"
         {...rest}

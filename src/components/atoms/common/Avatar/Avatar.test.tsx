@@ -2,11 +2,16 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
+import { JestMockProvider } from '../../../../../.storybook/helpers'
 import Avatar from '.'
 
 describe('Avatar', () => {
   it('default', () => {
-    render(<Avatar className="className" />)
+    render(
+      <JestMockProvider>
+        <Avatar className="className" />
+      </JestMockProvider>,
+    )
     expect(screen.getByRole('img')).toBeVisible()
     expect(screen.getByRole('img')).toBeTruthy()
     expect(screen.getByRole('img')).toHaveClass('className')
@@ -14,12 +19,20 @@ describe('Avatar', () => {
   })
 
   it('username', () => {
-    render(<Avatar username="User Name" />)
+    render(
+      <JestMockProvider>
+        <Avatar username="User Name" />
+      </JestMockProvider>,
+    )
     expect(screen.getByRole('img')).toHaveTextContent('UN')
   })
 
   it('src', () => {
-    render(<Avatar username="User Name" src="/src" />)
+    render(
+      <JestMockProvider>
+        <Avatar username="User Name" src="/src" />
+      </JestMockProvider>,
+    )
     expect(screen.getAllByRole('img')[1]).toHaveAttribute('src')
   })
 })

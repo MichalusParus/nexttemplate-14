@@ -1,4 +1,5 @@
 'use client'
+import { useTranslations } from 'next-intl'
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 import Button from '@/components/atoms/common/Button'
@@ -9,12 +10,11 @@ import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 import XIcon from '@/components/atoms/icons/XIcon'
 import Dropdown from '@/components/molecules/popovers/Dropdown'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 import { Label } from '../../../../atoms/common/Label/Label'
 import { SelectProps } from '../../SelectField/Select/Select'
 import { iconSize, selectedClass, selectedSize } from './MultiSelect.style'
-import { cn, filterOutKeys } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
 
 export type MultiSelectProps = Omit<SelectProps, 'value' | 'onChange'> & {
   /** current value of component */
@@ -121,6 +121,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
             disableUpperCase
             ref={startRef}
             aria-labelledby={'label-' + name}
+            aria-describedby={`${name}-description`}
             onClick={handleClose}
             {...filterOutKeys(comboboxProps, ['className'])}
           >

@@ -1,12 +1,13 @@
 import { forwardRef, HTMLAttributes, ReactNode } from 'react'
 
+import { cn } from '@/utils/utils'
+
 import ErrorIcon from '../../icons/ErrorIcon'
 import InfoIcon from '../../icons/InfoIcon'
 import SuccessIcon from '../../icons/SuccessIcon'
 import WarningIcon from '../../icons/WarningIcon'
 import Span from '../../typography/Span'
 import { alertClass, alertIconSize, alertSize, alertVariant } from './Alert.style'
-import { cn } from '@/utils/utils'
 
 export type AlertProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'title'> & {
   /** for passing custom tailwind classes */

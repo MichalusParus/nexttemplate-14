@@ -16,11 +16,11 @@ describe('Checkbox', () => {
       />,
     )
     expect(screen.getByRole('checkbox')).toBeTruthy()
-    expect(screen.getByTestId('CheckboxLabel')).toHaveClass('className')
+    expect(screen.getByTestId('Checkbox')).toHaveClass('className')
     expect(screen.getByRole('checkbox')).toHaveAttribute('id', 'checkboxTest')
     expect(screen.getByRole('checkbox')).toHaveAttribute('name', 'checkboxTest')
     expect(screen.getByRole('checkbox')).toHaveAttribute('type', 'checkbox')
-    expect(screen.getByTestId('CheckboxLabel')).toHaveTextContent('label')
+    expect(screen.getByTestId('Checkbox')).toHaveTextContent('label')
   })
 
   it('switch', () => {

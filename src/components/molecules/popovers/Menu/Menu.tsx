@@ -3,10 +3,10 @@ import { forwardRef, PropsWithChildren, useImperativeHandle, useState } from 're
 
 import { Combobox, ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { cn } from '@/utils/utils'
 
 import Dropdown from '../Dropdown'
 import { DropdownProps } from '../Dropdown/Dropdown'
-import { cn } from '@/utils/utils'
 
 export type MenuProps = {
   /** for passing custom tailwind classes */

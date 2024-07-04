@@ -2,20 +2,22 @@ import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { options } from '../../../../../../.storybook/helpers'
+import { JestMockProvider, options } from '../../../../../../.storybook/helpers'
 import Select from '.'
 
 describe('Select', () => {
   it('default', () => {
     render(
-      <Select
-        className="className"
-        name="selectTest"
-        label="label"
-        value=""
-        options={options}
-        onChange={() => {}}
-      />,
+      <JestMockProvider>
+        <Select
+          className="className"
+          name="selectTest"
+          label="label"
+          value=""
+          options={options}
+          onChange={() => {}}
+        />
+      </JestMockProvider>,
     )
     expect(screen.getByRole('listbox')).toBeTruthy()
     expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
@@ -25,41 +27,47 @@ describe('Select', () => {
 
   it('error', () => {
     render(
-      <Select
-        name="selectTest"
-        label="label"
-        value=""
-        options={options}
-        error="error"
-        onChange={() => {}}
-      />,
+      <JestMockProvider>
+        <Select
+          name="selectTest"
+          label="label"
+          value=""
+          options={options}
+          error="error"
+          onChange={() => {}}
+        />
+      </JestMockProvider>,
     )
     expect(screen.getByRole('alert')).toHaveTextContent('error')
   })
 
   it('description', () => {
     render(
-      <Select
-        name="selectTest"
-        label="label"
-        value=""
-        options={options}
-        description="description"
-        onChange={() => {}}
-      />,
+      <JestMockProvider>
+        <Select
+          name="selectTest"
+          label="label"
+          value=""
+          options={options}
+          description="description"
+          onChange={() => {}}
+        />
+      </JestMockProvider>,
     )
     expect(screen.getByRole('alert')).toHaveTextContent('description')
   })
 
   it('value', () => {
     render(
-      <Select
-        name="selectTest"
-        label="label"
-        value="value1"
-        options={options}
-        onChange={() => {}}
-      />,
+      <JestMockProvider>
+        <Select
+          name="selectTest"
+          label="label"
+          value="value1"
+          options={options}
+          onChange={() => {}}
+        />
+      </JestMockProvider>,
     )
     expect(screen.getByRole('combobox')).toHaveTextContent('label1')
     expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true')
@@ -67,7 +75,11 @@ describe('Select', () => {
 
   it('onChange', () => {
     const spy = jest.fn()
-    render(<Select name="selectTest" label="label" value="" options={options} onChange={spy} />)
+    render(
+      <JestMockProvider>
+        <Select name="selectTest" label="label" value="" options={options} onChange={spy} />
+      </JestMockProvider>,
+    )
     fireEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getAllByRole('option')[0])
     expect(spy).toHaveBeenCalledWith('value1')
@@ -75,14 +87,16 @@ describe('Select', () => {
 
   it('disabled', () => {
     render(
-      <Select
-        name="selectTest"
-        label="label"
-        value=""
-        options={options}
-        disabled
-        onChange={() => {}}
-      />,
+      <JestMockProvider>
+        <Select
+          name="selectTest"
+          label="label"
+          value=""
+          options={options}
+          disabled
+          onChange={() => {}}
+        />
+      </JestMockProvider>,
     )
     expect(screen.getByRole('combobox')).toHaveAttribute('disabled', '')
   })

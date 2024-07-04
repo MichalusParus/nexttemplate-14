@@ -7,9 +7,9 @@ import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 import { closeClass, drawerClass, openClass } from './Drawer.style'
-import { cn, filterOutKeys } from '@/utils/utils'
 
 export type DrawerProps = {
   /** for passing tailwind classes to Paper through props */
@@ -91,7 +91,7 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
           aria-label={name}
         >
           <Paper
-            className={cn(`relative h-full`, paperProps.className)}
+            className={cn('relative h-full', paperProps.className)}
             variant={variant}
             color={color}
             padding={padding}

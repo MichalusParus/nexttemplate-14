@@ -1,8 +1,9 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
+import { cn } from '@/utils/utils'
+
 import Ghost from '../../loaders/Ghost'
 import { ghostAligment, titleColor, titleSize } from './Title.style'
-import { cn } from '@/utils/utils'
 
 export type TitleProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'color' | 'className'> & {
   /** for passing custom tailwind classes */

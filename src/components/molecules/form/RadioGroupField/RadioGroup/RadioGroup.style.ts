@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const radioClass = cn(
-  'relative mr-2 cursor-pointer appearance-none rounded-full transition-activity focus:outline-none',
+  'relative mr-2 shrink-0 cursor-pointer appearance-none rounded-full transition-activity focus:outline-none',
 )
 
 export const radioVariant = {

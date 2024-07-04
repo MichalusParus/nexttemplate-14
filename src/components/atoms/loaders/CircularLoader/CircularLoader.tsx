@@ -1,8 +1,9 @@
+import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
-import { spinnerClass, spinnerColor, spinnerSize } from './CircularLoader.style'
 import { cn } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
+
+import { spinnerClass, spinnerColor, spinnerSize } from './CircularLoader.style'
 
 export type CircularLoaderProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */

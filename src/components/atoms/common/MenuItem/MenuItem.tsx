@@ -1,9 +1,9 @@
 import { forwardRef, LegacyRef, PropsWithChildren } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button/Button'
+import { cn } from '@/utils/utils'
 
 import { Link, LinkProps } from '../Link/Link'
-import { cn } from '@/utils/utils'
 
 export type MenuItemProps = {
   className?: string

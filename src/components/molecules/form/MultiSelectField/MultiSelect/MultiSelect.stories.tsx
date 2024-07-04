@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { options } from '../../../../../../.storybook/helpers'
+import { options, optionsWithContent } from '../../../../../../.storybook/helpers'
 import { MultiSelect, MultiSelectProps } from './MultiSelect'
 
 const meta: Meta<typeof MultiSelect> = {
@@ -82,11 +82,20 @@ export const Scroll: Story = {
   render: args => <MultiSelectWithHooks {...args} />,
 }
 
+export const OptionsWithContent: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'multiSelectStory4',
+    options: optionsWithContent.slice(0, 5),
+  },
+  render: args => <MultiSelectWithHooks {...args} />,
+}
+
 export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
     error: 'error',
-    name: 'multiSelectStory4',
+    name: 'multiSelectStory5',
   },
   render: args => <MultiSelectWithHooks {...args} />,
 }
@@ -94,7 +103,7 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'multiSelectStory5',
+    name: 'multiSelectStory6',
     disabled: true,
   },
   render: args => <MultiSelectWithHooks {...args} />,

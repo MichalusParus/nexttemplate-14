@@ -22,7 +22,7 @@ describe('CheckboxGroup', () => {
     expect(screen.getAllByRole('checkbox')[0]).toHaveAttribute('id', 'value1')
     expect(screen.getAllByRole('checkbox')[0]).toHaveAttribute('name', 'value1')
     expect(screen.getAllByRole('checkbox')[0]).toHaveAttribute('type', 'checkbox')
-    expect(screen.getAllByTestId('CheckboxLabel')[0]).toHaveTextContent('label1')
+    expect(screen.getAllByTestId('Checkbox')[0]).toHaveTextContent('label1')
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
   })
 

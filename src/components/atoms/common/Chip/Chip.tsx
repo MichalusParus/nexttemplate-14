@@ -1,12 +1,13 @@
+import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes, ReactNode } from 'react'
+
+import { cn, filterOutKeys } from '@/utils/utils'
 
 import XIcon from '../../icons/XIcon'
 import Span from '../../typography/Span'
 import { Button, ButtonProps } from '../Button/Button'
 import { buttonIconSize } from '../Button/Button.style'
 import { chipClass, chipSize, chipVariant } from './Chip.style'
-import { cn, filterOutKeys } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
 
 export type ChipProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color' | 'onClick'> & {
   /** for passing custom tailwind classes */

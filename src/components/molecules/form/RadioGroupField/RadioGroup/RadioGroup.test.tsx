@@ -21,7 +21,7 @@ describe('RadioGroup', () => {
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('id', 'value1')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('name', 'radioGroupTest')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('type', 'radio')
-    expect(screen.getAllByTestId('RadioLabel')[0]).toHaveTextContent('label1')
+    expect(screen.getAllByTestId('Radio')[0]).toHaveTextContent('label1')
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
   })
 

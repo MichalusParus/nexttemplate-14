@@ -1,8 +1,9 @@
+import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
-import { dottClass, loaderSize } from './InlineLoader.style'
 import { cn } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
+
+import { dottClass, loaderSize } from './InlineLoader.style'
 
 export type InlineLoaderProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'> & {
   /** for passing custom tailwind classes */

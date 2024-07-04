@@ -1,11 +1,12 @@
 import { forwardRef, OlHTMLAttributes, ReactNode } from 'react'
 
+import { cn } from '@/utils/utils'
+
 import { buttonIconSize } from '../../common/Button/Button.style'
 import Ghost from '../../loaders/Ghost'
 import P from '../P'
 import { Title, TitleProps } from '../Title/Title'
 import { listColor, listSize } from './List.style'
-import { cn } from '@/utils/utils'
 
 export type ListProps = Omit<
   OlHTMLAttributes<HTMLOListElement>,

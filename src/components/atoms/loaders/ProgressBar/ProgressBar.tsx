@@ -1,7 +1,8 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
-import { progressClass, progressColor } from './ProgressBar.style'
 import { cn } from '@/utils/utils'
+
+import { progressClass, progressColor } from './ProgressBar.style'
 
 export type ProgressBarProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */

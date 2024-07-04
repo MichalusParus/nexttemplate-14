@@ -1,7 +1,8 @@
 import { forwardRef, HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
 
-import { paperVariant } from './Paper.style'
 import { cn } from '@/utils/utils'
+
+import { paperVariant } from './Paper.style'
 
 export type PaperProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
   /** for passing custom tailwind classes */

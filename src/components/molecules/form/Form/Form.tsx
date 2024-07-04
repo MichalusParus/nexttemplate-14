@@ -1,9 +1,10 @@
 'use client'
-import { cn } from '@/utils/utils'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { createContext, FormHTMLAttributes } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { AnyObject, InferType, ObjectSchema } from 'yup'
+
+import { cn } from '@/utils/utils'
 
 export type FormProps = Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'color'> & {
   /** for passing custom tailwind classes */

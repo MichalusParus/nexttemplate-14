@@ -3,25 +3,27 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { object, string } from 'yup'
 
-import { options } from '../../../../../.storybook/helpers'
+import { JestMockProvider, options } from '../../../../../.storybook/helpers'
 import Form from '../Form'
 import MultiSelectField from '.'
 
 describe('MultiSelectField', () => {
   it('default', () => {
     render(
-      <Form
-        initialValues={{ multiSelectTest: ['multiSelectTest'] }}
-        validationSchema={object().shape({})}
-        onSubmit={() => {}}
-      >
-        <MultiSelectField
-          className="className"
-          name="multiSelectTest"
-          label="label"
-          options={options}
-        />
-      </Form>,
+      <JestMockProvider>
+        <Form
+          initialValues={{ multiSelectTest: ['multiSelectTest'] }}
+          validationSchema={object().shape({})}
+          onSubmit={() => {}}
+        >
+          <MultiSelectField
+            className="className"
+            name="multiSelectTest"
+            label="label"
+            options={options}
+          />
+        </Form>
+      </JestMockProvider>,
     )
     expect(screen.getByRole('listbox')).toBeTruthy()
     expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
@@ -32,21 +34,23 @@ describe('MultiSelectField', () => {
   it('onSubmit', () => {
     const spy = jest.fn()
     render(
-      <Form
-        initialValues={{ multiSelectTest: ['multiSelectTest'] }}
-        validationSchema={object().shape({
-          multiSelectTest: string().required('required'),
-        })}
-        onSubmit={spy}
-      >
-        <MultiSelectField
-          className="className"
-          name="multiSelectTest"
-          label="label"
-          options={options}
-        />
-        <button type="submit" data-testid="submit" />
-      </Form>,
+      <JestMockProvider>
+        <Form
+          initialValues={{ multiSelectTest: ['multiSelectTest'] }}
+          validationSchema={object().shape({
+            multiSelectTest: string().required('required'),
+          })}
+          onSubmit={spy}
+        >
+          <MultiSelectField
+            className="className"
+            name="multiSelectTest"
+            label="label"
+            options={options}
+          />
+          <button type="submit" data-testid="submit" />
+        </Form>
+      </JestMockProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByTestId('submit'))

@@ -5,9 +5,9 @@ import Paper from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 import { closeClass, dropdownClass, openClass } from './Dropdown.style'
-import { cn, filterOutKeys } from '@/utils/utils'
 
 export type DropdownProps = {
   /** for passing custom tailwind classes */

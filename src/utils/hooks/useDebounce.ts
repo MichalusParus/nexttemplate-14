@@ -1,21 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-/** Hook for Debounce. */
-export const useDebounce = (value: string, delay: number) => {
-  const [debouncedValue, setDebouncedValue] = useState(value)
+/** Hook for Debounce function. */
+export const useDebounce = <T, A>(fn: (args: A) => T, delay: number) => {
   const [isDebouncePending, setIsDebouncePending] = useState(false)
+  let timer: NodeJS.Timeout
 
-  useEffect(() => {
+  const debouncedFn = (args: A): Promise<T> => {
     setIsDebouncePending(true)
-    const handler = setTimeout(() => {
-      setDebouncedValue(value)
-      setIsDebouncePending(false)
-    }, delay)
-    return () => {
-      clearTimeout(handler)
-      setIsDebouncePending(false)
-    }
-  }, [value, delay])
+    return new Promise(resolve => {
+      if (timer) {
+        clearTimeout(timer)
+      }
+      timer = setTimeout(() => {
+        setIsDebouncePending(false)
+        resolve(fn(args))
+      }, delay)
+    })
+  }
 
-  return { debouncedValue: debouncedValue, isDebouncePending: isDebouncePending }
+  return { debouncedFn: debouncedFn, isDebouncePending: isDebouncePending }
 }

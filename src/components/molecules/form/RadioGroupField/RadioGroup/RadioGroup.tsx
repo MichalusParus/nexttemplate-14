@@ -1,9 +1,11 @@
 'use client'
 import { forwardRef, InputHTMLAttributes } from 'react'
 
+import { OptionType } from '@/components/types'
+import { cn } from '@/utils/utils'
+
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
 import { afterClass, disableVariant, radioClass, radioSize, radioVariant } from './RadioGroup.style'
-import { cn } from '@/utils/utils'
 
 export type RadioGroupProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -13,7 +15,7 @@ export type RadioGroupProps = Omit<
     /** name of form field */
     name: string
     /** group options for individual radio inputs */
-    options: { label: string; value: string }[]
+    options: OptionType[]
     /** style variant of component */
     variant?: 'text' | 'outlined' | 'contained'
     /** theme color of component, none disable styles for custom styling via className */
@@ -67,12 +69,11 @@ export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
           className={cn('RadioGroupWrap', 'flex flex-wrap', column && 'flex-col')}
           role="radiogroup"
         >
-          {options.map(({ value: radioValue, label: radioLabel }) => (
-            <label
+          {options.map(({ value: radioValue, label: radioLabel, content }) => (
+            <div
               key={radioValue}
-              htmlFor={radioValue}
-              className={cn('Label', 'relative flex items-center', radioSize[size])}
-              data-testid="RadioLabel"
+              className={cn('Radio', 'relative flex items-center', radioSize[size])}
+              data-testid="Radio"
             >
               <input
                 className={cn(
@@ -88,12 +89,15 @@ export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
                 value={radioValue}
                 onChange={e => onChange(e.target.value)}
                 checked={Boolean(value === radioValue)}
+                aria-describedby={`${name}-description`}
                 disabled={disabled}
                 ref={ref}
                 {...rest}
               />
-              {radioLabel}
-            </label>
+              <label htmlFor={radioValue} className={cn('Label')}>
+                {content || radioLabel}
+              </label>
+            </div>
           ))}
         </div>
       </Label>

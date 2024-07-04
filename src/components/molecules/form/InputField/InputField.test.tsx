@@ -3,19 +3,22 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { object, string } from 'yup'
 
+import { JestMockProvider } from '../../../../../.storybook/helpers'
 import Form from '../Form'
 import InputField from '.'
 
 describe('InputField', () => {
   it('default', () => {
     render(
-      <Form
-        initialValues={{ inputTest: 'inputTest' }}
-        validationSchema={object().shape({})}
-        onSubmit={() => {}}
-      >
-        <InputField className="className" type="text" name="inputTest" label="label" />
-      </Form>,
+      <JestMockProvider>
+        <Form
+          initialValues={{ inputTest: 'inputTest' }}
+          validationSchema={object().shape({})}
+          onSubmit={() => {}}
+        >
+          <InputField className="className" type="text" name="inputTest" label="label" />
+        </Form>
+      </JestMockProvider>,
     )
     expect(screen.getByRole('textbox')).toBeTruthy()
     expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
@@ -29,16 +32,18 @@ describe('InputField', () => {
   it('onSubmit', () => {
     const spy = jest.fn()
     render(
-      <Form
-        initialValues={{ inputTest: 'inputTest' }}
-        validationSchema={object().shape({
-          inputTest: string().required('required'),
-        })}
-        onSubmit={spy}
-      >
-        <InputField className="className" type="text" name="inputTest" label="label" />
-        <button type="submit" />
-      </Form>,
+      <JestMockProvider>
+        <Form
+          initialValues={{ inputTest: 'inputTest' }}
+          validationSchema={object().shape({
+            inputTest: string().required('required'),
+          })}
+          onSubmit={spy}
+        >
+          <InputField className="className" type="text" name="inputTest" label="label" />
+          <button type="submit" />
+        </Form>
+      </JestMockProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByRole('button'))

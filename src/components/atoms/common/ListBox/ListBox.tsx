@@ -1,13 +1,14 @@
+import { useTranslations } from 'next-intl'
 import { forwardRef, KeyboardEvent, OlHTMLAttributes, useCallback } from 'react'
 
 import Checkbox from '@/components/molecules/form/CheckboxField/Checkbox'
+import { CheckboxProps } from '@/components/molecules/form/CheckboxField/Checkbox/Checkbox'
 import { checkboxSize } from '@/components/molecules/form/MultiSelectField/MultiSelect/MultiSelect.style'
+import { OptionType } from '@/components/types'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 import Ghost from '../../loaders/Ghost'
 import { buttonContentSize, buttonVariant } from '../Button/Button.style'
-import { cn, filterOutKeys } from '@/utils/utils'
-import { CheckboxProps } from '@/components/molecules/form/CheckboxField/Checkbox/Checkbox'
-import { useTranslations } from 'next-intl'
 
 export type ListBoxProps = Omit<
   OlHTMLAttributes<HTMLUListElement>,
@@ -20,7 +21,7 @@ export type ListBoxProps = Omit<
   /** current values of selected options */
   value: string[]
   /** options for display */
-  options: { label: string; value: string }[]
+  options: OptionType[]
   /** style variant of component */
   variant?: 'text' | 'outlined' | 'contained'
   /** theme color of component, none disable styles for custom styling via className */
@@ -88,13 +89,13 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
         {...rest}
       >
         {options.length ? (
-          options.map(({ value: optionValue, label }) => (
+          options.map(({ value: optionValue, label, content }) => (
             <li
               key={optionValue}
               id={optionValue}
               className={cn(
                 'Option',
-                'flex focus:outline-none',
+                'flex items-center focus:outline-none',
                 getSelectedClass(optionValue),
                 buttonVariant[variant][color],
                 buttonContentSize[size],
@@ -126,7 +127,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                   onChange={() => {}}
                   {...filterOutKeys(checkboxProps, ['className'])}
                 />
-                {isLoading ? <Ghost className="ml-0 mr-16 w-full" size={size} /> : label}
+                {isLoading ? <Ghost className="ml-0 mr-16 w-full" size={size} /> : content || label}
               </>
             </li>
           ))

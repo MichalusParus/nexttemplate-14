@@ -1,9 +1,11 @@
 'use client'
-import { forwardRef, InputHTMLAttributes, ReactNode } from 'react'
+import { useTranslations } from 'next-intl'
+import { forwardRef, InputHTMLAttributes, ReactNode, useImperativeHandle, useRef } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
 import XIcon from '@/components/atoms/icons/XIcon'
+import { cn } from '@/utils/utils'
 
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
 import { checkVariant } from '../../CheckboxField/Checkbox/Checkbox.style'
@@ -14,8 +16,6 @@ import {
   inputSize,
   inputVariant,
 } from './Input.style'
-import { cn } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
 
 export type InputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -62,6 +62,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     ref,
   ) => {
     const t = useTranslations('Components')
+    const inputRef = useRef<HTMLInputElement | null>(null)
+    useImperativeHandle(ref, () => inputRef.current!)
 
     return (
       <Label
@@ -92,8 +94,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             type={type}
             value={value}
             disabled={disabled}
-            ref={ref}
+            ref={inputRef}
             tabIndex={disabled ? -1 : 0}
+            aria-describedby={`${name}-description`}
             onChange={e => onChange(e.target.value)}
             {...rest}
           />
@@ -109,7 +112,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               {startIcon}
             </span>
           ) : null}
-          {type === 'search' && value ? (
+          {type === 'search' && (value || inputRef?.current?.value) ? (
             <Button
               className={cn('ClearButton', 'right-1', inputIconPosition, buttonIconSize[size])}
               variant="text"
@@ -117,7 +120,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               size="none"
               startIcon={<XIcon />}
               aria-label={t('clear')}
-              onClick={() => onChange('')}
+              onClick={() => {
+                onChange('')
+                inputRef.current!.value = ''
+              }}
             />
           ) : null}
         </div>

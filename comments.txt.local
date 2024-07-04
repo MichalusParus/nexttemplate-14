@@ -14,19 +14,18 @@ Prepare repo for development, focus on code style unification.
 
 
 2. Parus Components
-absolute importy zlobi
 Podpora mobilnich gest
 storybook test integration
 dark theme
 remade shadows
-aria-described-by for field description
 focus ring
-option to reactnode
 great aria and role check
-add new do autocomplete
 Gallery,
 Calendar,
 Datepicker,
-Toast,
+SnackBar,
 Breadcrumbs,
+LoadMore,
+infiniteScroll,
+serverside table
 

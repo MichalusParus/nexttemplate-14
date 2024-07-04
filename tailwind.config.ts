@@ -4,6 +4,17 @@ const config: Config = {
   content: ['./src/components/**/*.{js,ts,jsx,tsx}', './src/app/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      screens: {
+        xs: '480px',
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1536px',
+        '3xl': '1920px',
+        // rewrites hover state on touch devices
+        touch: { raw: '(hover: hover)' },
+      },
       colors: {
         text: 'var(--color-text)',
         bg: 'var(--color-bg)',
@@ -130,11 +141,10 @@ const config: Config = {
         // should be equal to lg text line height
         lgIcon: '1.75rem',
         xl: 'theme(fontSize.xl)',
+        xlIcon: '1.75rem',
         '2xl': 'theme(fontSize.2xl)',
+        '2xlIcon': '2rem',
         '3xl': 'theme(fontSize.3xl)',
-        headerHeight: '3.5rem',
-        footerHeight: '1.5rem',
-        mainHeight: 'calc(100vh - theme(spacing.headerHeight) - theme(spacing.footerHeight))',
       },
       boxShadow: {
         button:

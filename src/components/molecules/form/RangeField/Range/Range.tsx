@@ -2,9 +2,9 @@ import { forwardRef, InputHTMLAttributes } from 'react'
 
 import { Label, LabelProps } from '@/components/atoms/common/Label/Label'
 import Span from '@/components/atoms/typography/Span'
+import { cn } from '@/utils/utils'
 
 import { rangeClass, rangeColor, rangeSize, rangeWrapClass } from './Range.style'
-import { cn } from '@/utils/utils'
 
 export type RangeProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -67,6 +67,7 @@ export const Range = forwardRef<HTMLInputElement, RangeProps>(
             onChange={e => onChange(e.target.value)}
             disabled={disabled}
             tabIndex={disabled ? -1 : 0}
+            aria-describedby={`${name}-description`}
             ref={ref}
             {...rest}
           />

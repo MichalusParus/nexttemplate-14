@@ -8,10 +8,11 @@ import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 import Dropdown from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
+import { OptionType } from '@/components/types'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
-import { cn, filterOutKeys } from '@/utils/utils'
 
 export type SelectProps = Pick<ComboboxProps, 'name' | 'disabled'> &
   Omit<LabelProps, 'onClick'> & {
@@ -24,7 +25,7 @@ export type SelectProps = Pick<ComboboxProps, 'name' | 'disabled'> &
     /** current value of component */
     value: string
     /** options for select to choose from */
-    options: { label: string; value: string }[]
+    options: OptionType[]
     /** optional placeholder */
     placeholder?: string
     /** optional combobox props for select combobox */
@@ -118,6 +119,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             disableUpperCase
             ref={startRef}
             aria-labelledby={'label-' + name}
+            aria-describedby={`${name}-description`}
             onClick={handleClose}
             {...filterOutKeys(comboboxProps, ['className'])}
           >

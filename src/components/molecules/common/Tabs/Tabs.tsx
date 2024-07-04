@@ -5,10 +5,10 @@ import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import Link from '@/components/atoms/common/Link'
 import { LinkProps } from '@/components/atoms/common/Link/Link'
 import Paper from '@/components/atoms/containers/Paper'
+import { cn } from '@/utils/utils'
 
 import Disclosure from '../Disclosure'
 import { DisclosureProps } from '../Disclosure/Disclosure'
-import { cn } from '@/utils/utils'
 
 type TabOption = {
   label: string

@@ -2,6 +2,8 @@ import { LinkProps as NextLinkProps } from 'next/link'
 import NextLink from 'next/link'
 import { forwardRef, LinkHTMLAttributes, ReactNode } from 'react'
 
+import { cn } from '@/utils/utils'
+
 import {
   buttonContentSize,
   buttonIconSize,
@@ -9,7 +11,6 @@ import {
   iconOnlySize,
 } from '../Button/Button.style'
 import { linkClass } from './Link.style'
-import { cn } from '@/utils/utils'
 
 export type LinkProps = Omit<LinkHTMLAttributes<HTMLAnchorElement>, 'className' | 'color'> &
   NextLinkProps & {

@@ -1,5 +1,6 @@
 'use client'
-import Overlay from '@atoms/common/Overlay'
+
+import { useTranslations } from 'next-intl'
 import {
   forwardRef,
   PropsWithChildren,
@@ -13,6 +14,7 @@ import Button from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import Combobox from '@/components/atoms/common/Combobox'
 import { ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
+import Overlay from '@/components/atoms/common/Overlay'
 import Paper from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
@@ -20,10 +22,9 @@ import XIcon from '@/components/atoms/icons/XIcon'
 import Title from '@/components/atoms/typography/Title'
 import { TitleProps } from '@/components/atoms/typography/Title/Title'
 import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { cn, filterOutKeys } from '@/utils/utils'
 
 import { closeClass, modalPosition, openClass } from './Modal.style'
-import { cn, filterOutKeys } from '@/utils/utils'
-import { useTranslations } from 'next-intl'
 
 export type ModalProps = {
   /** for passing custom tailwind classes */

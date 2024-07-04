@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useCallback, useEffect, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 
+import Button from '@/components/atoms/common/Button'
 import { useDebounce } from '@/utils/hooks/useDebounce'
 import { useFilterData } from '@/utils/hooks/useFilterData'
 
@@ -27,6 +28,9 @@ const meta: Meta<typeof Autocomplete> = {
     listboxProps: {
       control: false,
     },
+    children: {
+      control: false,
+    },
   },
 }
 
@@ -35,53 +39,27 @@ const AutocompleteWithFetch = (args: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('')
   const [options, setOptions] = useState<{ label: string; value: string }[]>([])
   const [isPending, startTransition] = useTransition()
-  const { debouncedValue, isDebouncePending } = useDebounce(inputValue, 500)
 
-  useEffect(() => {
-    startTransition(async () => {
-      await fetch(`https://freetestapi.com/api/v1/actresses?search=${debouncedValue}`)
-        .then(res => res.json())
-        .then(res =>
-          setOptions(
-            res.map((o: { name: string; id: string }) => ({ label: o.name, value: o.id })),
-          ),
-        )
-    })
-  }, [debouncedValue])
+  const getOptions = async (value: string) => {
+    await fetch(`https://freetestapi.com/api/v1/actresses?search=${value}`)
+      .then(res => res.json())
+      .then(res =>
+        setOptions(res.map((o: { name: string; id: string }) => ({ label: o.name, value: o.id }))),
+      )
+  }
 
-  return (
-    <div className={`flex h-96 justify-center ${args.placement === 'top' ? 'items-end' : ''}`}>
-      <Autocomplete
-        {...args}
-        options={options}
-        isLoading={isPending || isDebouncePending || args.isLoading}
-        value={value}
-        inputValue={inputValue}
-        onInputChange={setInputValue}
-        onChange={setValue}
-      />
-    </div>
-  )
-}
+  const { debouncedFn, isDebouncePending } = useDebounce(getOptions, 500)
 
-const AutocompleteOnOpenFetch = (args: AutocompleteProps) => {
-  const [value, setValue] = useState<string>('')
-  const [inputValue, setInputValue] = useState<string>('')
-  const [options, setOptions] = useState<{ label: string; value: string }[]>([])
-  const [isPending, startTransition] = useTransition()
-  const { debouncedValue, isDebouncePending } = useDebounce(inputValue, 500)
-
-  const handleOpen = useCallback(() => {
-    startTransition(async () => {
-      await fetch(`https://freetestapi.com/api/v1/actresses?search=${debouncedValue}`)
-        .then(res => res.json())
-        .then(res =>
-          setOptions(
-            res.map((o: { name: string; id: string }) => ({ label: o.name, value: o.id })),
-          ),
-        )
-    })
-  }, [debouncedValue])
+  const handleInputChange = (value: string) => {
+    if (value.length > 2) {
+      startTransition(async () => {
+        await debouncedFn(value)
+      })
+    } else if (options.length) {
+      setOptions([])
+    }
+    setInputValue(value)
+  }
 
   return (
     <div className={`flex h-96 justify-center ${args.placement === 'top' ? 'items-end' : ''}`}>
@@ -91,8 +69,7 @@ const AutocompleteOnOpenFetch = (args: AutocompleteProps) => {
         isLoading={isPending || isDebouncePending || args.isLoading}
         value={value}
         inputValue={inputValue}
-        onOpen={handleOpen}
-        onInputChange={setInputValue}
+        onInputChange={handleInputChange}
         onChange={setValue}
       />
     </div>
@@ -143,19 +120,10 @@ export const PrimaryDefault: Story = {
     inputProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
-    onOpen: undefined,
     onInputChange: () => {},
     onChange: value => console.log(value),
   },
   render: args => <AutocompleteWithFetch {...args} />,
-}
-
-export const OnOpenFetch: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    name: 'onOpenAutocompleteStory',
-  },
-  render: args => <AutocompleteOnOpenFetch {...args} />,
 }
 
 export const ClientFilter: Story = {
@@ -193,11 +161,31 @@ export const IsLoading: Story = {
   render: args => <AutocompleteWithFetch {...args} />,
 }
 
+export const CreateNew: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    isLoading: true,
+    name: 'autocompleteStory5',
+    children: (
+      <Button
+        className="w-full rounded-none border-none"
+        variant={PrimaryDefault.args?.variant}
+        color={PrimaryDefault.args?.color}
+        size={PrimaryDefault.args?.size}
+        onClick={() => console.log('create new')}
+      >
+        Create new
+      </Button>
+    ),
+  },
+  render: args => <AutocompleteWithFetch {...args} />,
+}
+
 export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
     error: 'error',
-    name: 'autocompleteStory5',
+    name: 'autocompleteStory6',
   },
   render: args => <AutocompleteWithFetch {...args} />,
 }
@@ -205,7 +193,7 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'autocompleteStory6',
+    name: 'autocompleteStory7',
     disabled: true,
   },
   render: args => <AutocompleteWithFetch {...args} />,
