@@ -43,7 +43,7 @@ export const Paper = forwardRef<HTMLDivElement, PropsWithChildren<PaperProps>>(
           paperVariant[variant][color],
           padding,
           rounded,
-          !hideShadow && 'shadow-button',
+          !hideShadow && 'shadow-paper',
           className,
         )}
         data-testid="Paper"

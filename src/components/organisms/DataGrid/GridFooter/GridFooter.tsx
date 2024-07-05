@@ -102,13 +102,13 @@ export const GridFooter = forwardRef<HTMLDivElement, GridFooterProps>(
               tabIndex={-1}
               hideError
               collapsed="never"
-              comboboxProps={{ className: 'border-transparent' }}
+              comboboxProps={{ className: 'border-transparent dark:border-transparent' }}
               onChange={(value: string) => handleRowsPerPage(value)}
             />
             {!hideExport ? (
               <Tooltip title="Export">
                 <Button
-                  className={cn('ExportButton', 'border-transparent')}
+                  className={cn('ExportButton', 'border-transparent dark:border-transparent')}
                   variant={variant}
                   color={color}
                   size={size}
@@ -127,7 +127,7 @@ export const GridFooter = forwardRef<HTMLDivElement, GridFooterProps>(
             variant={variant}
             color={color}
             size={size}
-            buttonProps={{ className: 'border-transparent' }}
+            buttonProps={{ className: 'border-transparent dark:border-transparent' }}
             setSelectedPage={setSelectedPage}
           />
         </div>

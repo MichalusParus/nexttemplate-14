@@ -32,7 +32,12 @@ export default async function RootLayout({ children }: PropsWithChildren<object>
 
   return (
     <html lang={locale}>
-      <body className={cn('flex min-h-[100vh] flex-col bg-primary-800', inter.className)}>
+      <body
+        className={cn(
+          'dark:text-darkText dark flex min-h-[100vh] flex-col bg-primary-800 text-dark-950 dark:bg-dark-900',
+          inter.className,
+        )}
+      >
         <NextIntlClientProvider messages={messages}>
           <Header />
           <Main>{children}</Main>

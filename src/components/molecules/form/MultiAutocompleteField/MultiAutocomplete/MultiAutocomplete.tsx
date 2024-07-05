@@ -136,7 +136,7 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
               disabledClass,
               disabledVariant[variant],
               comboboxZIndex,
-              error && 'shadow-error',
+              error && 'border-error-800 shadow-error',
             )}
           >
             {selectedOptions.length ? (

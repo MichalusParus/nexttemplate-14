@@ -85,7 +85,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               inputVariant[variant][color],
               inputSize[size],
               disabledVariant[variant],
-              error && 'shadow-error',
+              error && 'border-error-800 shadow-error',
               startIcon && 'pl-9',
               type === 'search' && 'pr-7',
             )}

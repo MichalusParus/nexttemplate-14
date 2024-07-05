@@ -81,7 +81,7 @@ export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
                   radioVariant[variant][color],
                   disableVariant[variant],
                   afterClass,
-                  error && 'shadow-error',
+                  error && 'border-error-800 shadow-error',
                 )}
                 id={radioValue}
                 name={name}

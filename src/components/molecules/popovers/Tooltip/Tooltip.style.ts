@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const tooltipClass = cn(
-  'rounded-md bg-dark-500 px-smPX py-smPY text-sm text-dark-50 shadow-button',
+  'shadow-paper rounded-md bg-dark-500 px-smPX py-smPY text-sm text-dark-100',
 )
 
 export const tooltipPosition = {

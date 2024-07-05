@@ -7,37 +7,49 @@ export const radioClass = cn(
 export const radioVariant = {
   text: {
     primary: cn(
-      'border border-transparent bg-transparent after:bg-primary-800',
-      'hover:bg-primary-200 focus-visible:bg-primary-200',
-      'checked:bg-primary-100 active:bg-primary-100',
+      'border border-transparent bg-transparent after:bg-primary-800 dark:after:bg-primary-50',
+      'hover:bg-primary-100 focus-visible:bg-primary-100',
+      'dark:hover:bg-primary-900 dark:focus-visible:bg-primary-900',
+      'checked:bg-primary-50 active:bg-primary-50',
+      'dark:checked:bg-primary-700 dark:active:bg-primary-700',
     ),
     secondary: cn(
-      'border border-transparent bg-transparent after:bg-secondary-800',
+      'border border-transparent bg-transparent after:bg-secondary-800 dark:after:bg-secondary-100',
       'hover:bg-secondary-200 focus-visible:bg-secondary-200',
+      'dark:hover:bg-secondary-900 dark:focus-visible:bg-secondary-900',
       'checked:bg-secondary-100 active:bg-secondary-100',
+      'dark:checked:bg-secondary-700 dark:active:bg-secondary-700',
     ),
     terciary: cn(
-      'border border-transparent bg-transparent after:bg-terciary-800',
+      'border border-transparent bg-transparent after:bg-terciary-800 dark:after:bg-terciary-100',
       'hover:bg-terciary-200 focus-visible:bg-terciary-200',
+      'dark:hover:bg-terciary-900 dark:focus-visible:bg-terciary-900',
       'checked:bg-terciary-100 active:bg-terciary-100',
+      'dark:checked:bg-terciary-700 dark:active:bg-terciary-700',
     ),
     none: '',
   },
   outlined: {
     primary: cn(
-      'border border-primary-800 bg-transparent after:bg-primary-800',
-      'hover:bg-primary-200 focus-visible:bg-primary-200',
-      'checked:bg-primary-100 active:bg-primary-100',
+      'border border-primary-800 bg-transparent after:bg-primary-800 dark:border-primary-100 dark:after:bg-primary-50',
+      'hover:bg-primary-100 focus-visible:bg-primary-100',
+      'dark:hover:bg-primary-900 dark:focus-visible:bg-primary-900',
+      'checked:bg-primary-50 active:bg-primary-50',
+      'dark:checked:bg-primary-700 dark:active:bg-primary-700',
     ),
     secondary: cn(
-      'border border-secondary-800 bg-transparent after:bg-secondary-800',
+      'border border-secondary-800 bg-transparent after:bg-secondary-800 dark:border-secondary-100 dark:after:bg-secondary-100',
       'hover:bg-secondary-200 focus-visible:bg-secondary-200',
+      'dark:hover:bg-secondary-900 dark:focus-visible:bg-secondary-900',
       'checked:bg-secondary-100 active:bg-secondary-100',
+      'dark:checked:bg-secondary-700 dark:active:bg-secondary-700',
     ),
     terciary: cn(
-      'border border-terciary-800 bg-transparent after:bg-terciary-800',
+      'border border-terciary-800 bg-transparent after:bg-terciary-800 dark:border-terciary-100 dark:after:bg-terciary-100',
       'hover:bg-terciary-200 focus-visible:bg-terciary-200',
+      'dark:hover:bg-terciary-900 dark:focus-visible:bg-terciary-900',
       'checked:bg-terciary-100 active:bg-terciary-100',
+      'dark:checked:bg-terciary-700 dark:active:bg-terciary-700',
     ),
     none: '',
   },
@@ -69,9 +81,11 @@ export const afterClass = cn(
 export const disableVariant = {
   text: cn(
     'disabled:cursor-not-allowed disabled:border-transparent disabled:bg-dark-200 disabled:text-dark-500 disabled:opacity-50',
+    'dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:opacity-50',
   ),
   outlined: cn(
     'disabled:cursor-not-allowed disabled:border-dark-500 disabled:bg-dark-200 disabled:text-dark-500 disabled:opacity-50',
+    'dark:disabled:border-dark-500 dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:opacity-50',
   ),
   contained: cn(
     'disabled:cursor-not-allowed disabled:border-dark-500 disabled:bg-dark-500 disabled:text-dark-500 disabled:opacity-50',

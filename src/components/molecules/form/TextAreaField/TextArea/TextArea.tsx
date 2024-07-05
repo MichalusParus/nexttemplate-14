@@ -70,7 +70,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             inputVariant[variant][color],
             inputSize[size],
             disabledVariant[variant],
-            error && 'shadow-error',
+            error && 'border-error-800 shadow-error',
             !hideError && 'mb-1',
           )}
           id={name}

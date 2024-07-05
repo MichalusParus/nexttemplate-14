@@ -1,8 +1,5 @@
 AppBuilding
 
-Backlog
-- connect tailwind theme to storybook docs
-
 1.Project setup
 Prepare repo for development, focus on code style unification.
 -plan folder structure
@@ -14,11 +11,7 @@ Prepare repo for development, focus on code style unification.
 
 
 2. Parus Components
-Podpora mobilnich gest
-storybook test integration
-dark theme
-remade shadows
-focus ring
+Podpora mobilnich gest, tooltip
 great aria and role check
 Gallery,
 Calendar,
@@ -28,4 +21,3 @@ Breadcrumbs,
 LoadMore,
 infiniteScroll,
 serverside table
-

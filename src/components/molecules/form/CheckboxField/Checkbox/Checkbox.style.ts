@@ -17,53 +17,65 @@ export const thumbClass = cn('absolute rounded-full transition-dropdown')
 export const checkboxVariant = {
   text: {
     primary: cn(
-      'border border-transparent bg-bg [&_.CheckIcon]:text-primary-800',
-      'hover:bg-primary-200 focus-visible:bg-primary-200 group-hover:bg-primary-200 group-focus-visible:bg-primary-200',
-      'checked:bg-primary-100 active:bg-primary-100 [&.selected]:bg-primary-100 ',
+      'border border-transparent',
+      'hover:bg-primary-100 focus-visible:bg-primary-100 group-hover:bg-primary-100 group-focus-visible:bg-primary-100',
+      'dark:hover:bg-primary-900 dark:focus-visible:bg-primary-900 dark:group-hover:bg-primary-900 dark:group-focus-visible:bg-primary-900',
+      'checked:bg-primary-50 active:bg-primary-50 [&.selected]:bg-primary-50 ',
+      'dark:checked:bg-primary-700 dark:active:bg-primary-700 dark:[&.selected]:bg-primary-700',
     ),
     secondary: cn(
-      'border border-transparent bg-bg [&_.CheckIcon]:text-secondary-800',
+      'border border-transparent',
       'hover:bg-secondary-200 focus-visible:bg-secondary-200 group-hover:bg-secondary-200 group-focus-visible:bg-secondary-200',
-      'checked:bg-secondary-100 active:bg-secondary-100 [&.selected]:bg-secondary-100 ',
+      'dark:hover:bg-secondary-900 dark:focus-visible:bg-secondary-900 dark:group-hover:bg-secondary-900 dark:group-focus-visible:bg-secondary-900',
+      'checked:bg-secondary-100 active:bg-secondary-100 [&.selected]:bg-secondary-100',
+      'dark:checked:bg-secondary-700 dark:active:bg-secondary-700 dark:[&.selected]:bg-secondary-700',
     ),
     terciary: cn(
-      'border border-transparent bg-bg [&_.CheckIcon]:text-terciary-800',
+      'border border-transparent',
       'hover:bg-terciary-200 focus-visible:bg-terciary-200 group-hover:bg-terciary-200 group-focus-visible:bg-terciary-200',
+      'dark:hover:bg-terciary-900 dark:focus-visible:bg-terciary-900 dark:group-hover:bg-terciary-900 dark:group-focus-visible:bg-terciary-900',
       'checked:bg-terciary-100 active:bg-terciary-100 [&.selected]:bg-terciary-100 ',
+      'dark:checked:bg-terciary-700 dark:active:bg-terciary-700 dark:[&.selected]:bg-terciary-700',
     ),
     none: '',
   },
   outlined: {
     primary: cn(
-      'border border-primary-800 bg-bg [&_.CheckIcon]:text-primary-800',
-      'hover:bg-primary-200 focus-visible:bg-primary-200 group-hover:bg-primary-200 group-focus-visible:bg-primary-200',
-      'checked:bg-primary-100 active:bg-primary-100 [&.selected]:bg-primary-100',
+      'border border-primary-800 dark:border-primary-100',
+      'hover:bg-primary-100 focus-visible:bg-primary-100 group-hover:bg-primary-100 group-focus-visible:bg-primary-100',
+      'dark:hover:bg-primary-900 dark:focus-visible:bg-primary-900 dark:group-hover:bg-primary-900 dark:group-focus-visible:bg-primary-900',
+      'checked:bg-primary-50 active:bg-primary-50 [&.selected]:bg-primary-50',
+      'dark:checked:bg-primary-700 dark:active:bg-primary-700 dark:[&.selected]:bg-primary-700',
     ),
     secondary: cn(
-      'border border-secondary-800 bg-bg [&_.CheckIcon]:text-secondary-800',
+      'border border-secondary-800 dark:border-secondary-100',
       'hover:bg-secondary-200 focus-visible:bg-secondary-200 group-hover:bg-secondary-200 group-focus-visible:bg-secondary-200',
+      'dark:hover:bg-secondary-900 dark:focus-visible:bg-secondary-900 dark:group-hover:bg-secondary-900 dark:group-focus-visible:bg-secondary-900',
       'checked:bg-secondary-100 active:bg-secondary-100 [&.selected]:bg-secondary-100',
+      'dark:checked:bg-secondary-700 dark:active:bg-secondary-700 dark:[&.selected]:bg-secondary-700',
     ),
     terciary: cn(
-      'border border-terciary-800 bg-bg [&_.CheckIcon]:text-terciary-800',
+      'border border-terciary-800 dark:border-terciary-100',
       'hover:bg-terciary-200 focus-visible:bg-terciary-200 group-hover:bg-terciary-200 group-focus-visible:bg-terciary-200',
+      'dark:hover:bg-terciary-900 dark:focus-visible:bg-terciary-900 dark:group-hover:bg-terciary-900 dark:group-focus-visible:bg-terciary-900',
       'checked:bg-terciary-100 active:bg-terciary-100 [&.selected]:bg-terciary-100',
+      'dark:checked:bg-terciary-700 dark:active:bg-terciary-700 dark:[&.selected]:bg-terciary-700',
     ),
     none: '',
   },
   contained: {
     primary: cn(
-      'border border-primary-900 bg-primary-800 [&_.CheckIcon]:text-primary-50',
+      'border border-primary-100 bg-primary-800',
       'hover:bg-primary-900 focus-visible:bg-primary-900 group-hover:bg-primary-900 group-focus-visible:bg-primary-900',
       'checked:bg-primary-700 active:bg-primary-700 [&.selected]:bg-primary-700',
     ),
     secondary: cn(
-      'border border-secondary-900 bg-secondary-800 [&_.CheckIcon]:text-secondary-50',
+      'border border-secondary-100 bg-secondary-800',
       'hover:bg-secondary-900 focus-visible:bg-secondary-900 group-hover:bg-secondary-900 group-focus-visible:bg-secondary-900',
       'checked:bg-secondary-700 active:bg-secondary-700 [&.selected]:bg-secondary-700',
     ),
     terciary: cn(
-      'border border-terciary-900 bg-terciary-800 [&_.CheckIcon]:text-terciary-50',
+      'border border-terciary-100 bg-terciary-800',
       'hover:bg-terciary-900 focus-visible:bg-terciary-900 group-hover:bg-terciary-900 group-focus-visible:bg-terciary-900',
       'checked:bg-terciary-700 active:bg-terciary-700 [&.selected]:bg-terciary-700',
     ),
@@ -85,34 +97,46 @@ export const checkboxVariant = {
 
 export const checkVariant = {
   text: {
-    primary: cn('text-primary-800 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-400'),
-    secondary: cn('text-secondary-800 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-400'),
-    terciary: cn('text-terciary-800 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-400'),
+    primary: cn(
+      'text-primary-800 dark:text-primary-100 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-400',
+    ),
+    secondary: cn(
+      'text-secondary-800 dark:text-secondary-100 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-400',
+    ),
+    terciary: cn(
+      'text-terciary-800 dark:text-terciary-100 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-400',
+    ),
     none: '',
   },
   outlined: {
-    primary: cn('text-primary-800 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-400'),
-    secondary: cn('text-secondary-800 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-400'),
-    terciary: cn('text-terciary-800 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-400'),
+    primary: cn(
+      'text-primary-800 dark:text-primary-100 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-400',
+    ),
+    secondary: cn(
+      'text-secondary-800 dark:text-secondary-100 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-400',
+    ),
+    terciary: cn(
+      'text-terciary-800 dark:text-terciary-100 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-400',
+    ),
     none: '',
   },
   contained: {
-    primary: cn('text-primary-50 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-200'),
-    secondary: cn('text-secondary-50 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-200'),
-    terciary: cn('text-terciary-50 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-200'),
+    primary: cn('text-primary-100 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-200'),
+    secondary: cn('text-secondary-100 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-200'),
+    terciary: cn('text-terciary-100 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-200'),
     none: '',
   },
   switch: {
     primary: cn(
-      'border border-primary-900 bg-primary-800 shadow-button group-focus-within:bg-primary-900 group-hover:bg-primary-900',
+      'border border-primary-900 bg-primary-800 group-focus-within:bg-primary-900 group-hover:bg-primary-900',
       '[&.disabled]:cursor-not-allowed [&.disabled]:border-dark-400 [&.disabled]:bg-dark-400 [&.disabled]:opacity-50 [&.disabled]:group-hover:bg-dark-400',
     ),
     secondary: cn(
-      'border border-secondary-900 bg-secondary-800 shadow-button group-focus-within:bg-secondary-900 group-hover:bg-secondary-900',
+      'border border-secondary-900 bg-secondary-800 group-focus-within:bg-secondary-900 group-hover:bg-secondary-900',
       '[&.disabled]:cursor-not-allowed [&.disabled]:border-dark-400 [&.disabled]:bg-dark-400 [&.disabled]:opacity-50 [&.disabled]:group-hover:bg-dark-400',
     ),
     terciary: cn(
-      'border border-terciary-900 bg-terciary-800 shadow-button group-focus-within:bg-terciary-900 group-hover:bg-terciary-900',
+      'border border-terciary-900 bg-terciary-800 group-focus-within:bg-terciary-900 group-hover:bg-terciary-900',
       '[&.disabled]:cursor-not-allowed [&.disabled]:border-dark-400 [&.disabled]:bg-dark-400 [&.disabled]:opacity-50 [&.disabled]:group-hover:bg-dark-400',
     ),
     none: '',
@@ -163,12 +187,15 @@ export const switchLeft = {
 export const disabledVariant = {
   text: cn(
     'disabled:border-transparent disabled:bg-dark-200 [&.disabled]:border-transparent [&.disabled]:bg-dark-300',
+    'dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:opacity-50',
   ),
   outlined: cn(
     'disabled:border-dark-500 disabled:bg-dark-200 [&.disabled]:border-dark-400 [&.disabled]:bg-dark-300',
+    'dark:disabled:border-dark-500 dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:opacity-50',
   ),
   contained: cn(
     'disabled:border-dark-500 disabled:bg-dark-500 [&.disabled]:border-dark-400 [&.disabled]:bg-dark-400',
+    'dark:disabled:border-dark-500 dark:disabled:bg-dark-500 dark:disabled:text-dark-500 dark:disabled:opacity-50',
   ),
   switch: cn(
     'disabled:border-dark-500 disabled:bg-dark-200 [&.disabled]:border-dark-400 [&.disabled]:bg-dark-300',

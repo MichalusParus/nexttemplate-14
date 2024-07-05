@@ -129,7 +129,7 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
           aria-label={title || name}
         >
           <Paper
-            className={cn('relative h-full w-full', paperProps.className)}
+            className={cn('relative h-full w-full shadow-modal', paperProps.className)}
             variant={variant}
             color={color}
             padding={padding}

@@ -2,21 +2,21 @@ import { cn } from '@/utils/utils'
 
 export const searchColor = {
   text: {
-    primary: cn('text-primary-800'),
-    secondary: cn('text-secondary-800'),
-    terciary: cn('text-terciary-800'),
+    primary: cn('text-primary-800 dark:text-primary-100'),
+    secondary: cn('text-secondary-800 dark:text-secondary-100'),
+    terciary: cn('text-terciary-800 dark:text-terciary-100'),
     none: '',
   },
   outlined: {
-    primary: cn('text-primary-800'),
-    secondary: cn('text-secondary-800'),
-    terciary: cn('text-terciary-800'),
+    primary: cn('text-primary-800 dark:text-primary-100'),
+    secondary: cn('text-secondary-800 dark:text-secondary-100'),
+    terciary: cn('text-terciary-800 dark:text-terciary-100'),
     none: '',
   },
   contained: {
-    primary: cn('text-primary-50'),
-    secondary: cn('text-secondary-50'),
-    terciary: cn('text-terciary-50'),
+    primary: cn('text-primary-100'),
+    secondary: cn('text-secondary-100'),
+    terciary: cn('text-terciary-100'),
     none: '',
   },
 }

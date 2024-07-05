@@ -2,23 +2,27 @@ import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: ['./src/components/**/*.{js,ts,jsx,tsx}', './src/app/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'selector',
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
+    screens: {
+      xs: '480px',
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px',
+      '3xl': '1920px',
+    },
     extend: {
-      screens: {
-        xs: '480px',
-        sm: '640px',
-        md: '768px',
-        lg: '1024px',
-        xl: '1280px',
-        '2xl': '1536px',
-        '3xl': '1920px',
-        // rewrites hover state on touch devices
-        touch: { raw: '(hover: hover)' },
-      },
       colors: {
-        text: 'var(--color-text)',
-        bg: 'var(--color-bg)',
-        overlay: 'var(--color-overlay)',
+        text: 'var(--color-dark-950)',
+        darkText: 'var(--color-dark-50)',
+        bg: 'var(--color-dark-50)',
+        darkBg: 'var(--color-dark-800)',
+        overlay: '#00000033',
         primary: {
           '50': 'var(--color-prim-50)',
           '100': 'var(--color-prim-100)',
@@ -147,13 +151,10 @@ const config: Config = {
         '3xl': 'theme(fontSize.3xl)',
       },
       boxShadow: {
-        button:
-          '0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12)',
-        inner:
-          'inset 0px 3px 1px -2px rgba(0,0,0,0.2), inset 0px 2px 2px 0px rgba(0,0,0,0.14), inset 0px 1px 5px 0px rgba(0,0,0,0.12)',
-        modal:
-          'rgba(0, 0, 0, 0.2) 0px 11px 15px -7px, rgba(0, 0, 0, 0.14) 0px 24px 38px 3px, rgba(0, 0, 0, 0.12) 0px 9px 46px 8px',
-        error: '0 0 0 2px theme(colors.error[800])',
+        button: 'var(--shadow-button)',
+        paper: 'var(--shadow-paper)',
+        modal: 'var(--shadow-modal)',
+        error: 'var(--shadow-error)',
       },
       transitionProperty: {
         colors:

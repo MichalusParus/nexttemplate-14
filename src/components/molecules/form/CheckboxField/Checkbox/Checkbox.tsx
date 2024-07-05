@@ -47,7 +47,7 @@ export type CheckboxProps = Omit<
   onChange: (value: string) => void
 }
 
-/** Basic styled Checkbox. For form purposes use CheckboxField. Default InputHTMLAttributes props supported. . USE CLIENT */
+/** Basic styled Checkbox. For form purposes use CheckboxField. Default InputHTMLAttributes props supported. USE CLIENT */
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   (
     {
@@ -68,7 +68,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     },
     ref,
   ) => {
-    const errorShadow = error ? 'shadow-error' : ''
+    const errorShadow = error ? 'shadow-error border-error-800' : ''
     const checkVisibility = isChecked || disabled ? 'visible opacity-100' : 'invisible opacity-0'
     const thumbPosition = isChecked || disabled ? switchLeft[size] : 'left-0'
     const disabledClass = disabled ? 'disabled' : ''

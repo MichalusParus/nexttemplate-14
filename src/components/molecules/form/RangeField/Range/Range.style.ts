@@ -5,25 +5,25 @@ export const rangeWrapClass = cn(
 )
 
 export const rangeClass = cn(
-  'h-2 w-full cursor-pointer appearance-none rounded-lg bg-dark-950 bg-opacity-20',
+  'h-2 w-full cursor-pointer appearance-none rounded-lg bg-overlay',
   '[&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full',
   'disabled:cursor-not-allowed disabled:opacity-50 [&::-moz-range-thumb]:disabled:bg-dark-500 [&::-webkit-slider-thumb]:disabled:bg-dark-500',
 )
 
 export const rangeColor = {
   primary: cn(
-    '[&::-webkit-slider-thumb]:bg-primary-800 [&::-webkit-slider-thumb]:shadow-button [&::-webkit-slider-thumb]:hover:bg-primary-900 [&::-webkit-slider-thumb]:active:bg-primary-700',
-    '[&::-moz-range-thumb]:border-primary-800 [&::-moz-range-thumb]:bg-primary-800 [&::-moz-range-thumb]:shadow-button [&::-moz-range-thumb]:hover:bg-primary-900 [&::-moz-range-thumb]:active:bg-primary-700',
+    '[&::-webkit-slider-thumb]:bg-primary-800 [&::-webkit-slider-thumb]:hover:bg-primary-900 [&::-webkit-slider-thumb]:active:bg-primary-700',
+    '[&::-moz-range-thumb]:border-primary-800 [&::-moz-range-thumb]:bg-primary-800 [&::-moz-range-thumb]:hover:bg-primary-900 [&::-moz-range-thumb]:active:bg-primary-700',
     '[&::-moz-range-track]:bg-transparent [&::-webkit-slider-runnable-track]:bg-transparent',
   ),
   secondary: cn(
-    '[&::-webkit-slider-thumb]:bg-secondary-800 [&::-webkit-slider-thumb]:shadow-button [&::-webkit-slider-thumb]:hover:bg-secondary-900 [&::-webkit-slider-thumb]:active:bg-secondary-700',
-    '[&::-moz-range-thumb]:border-secondary-800 [&::-moz-range-thumb]:bg-secondary-800 [&::-moz-range-thumb]:shadow-button [&::-moz-range-thumb]:hover:bg-secondary-900 [&::-moz-range-thumb]:active:bg-secondary-700',
+    '[&::-webkit-slider-thumb]:bg-secondary-800 [&::-webkit-slider-thumb]:active:bg-secondary-700 [&:::-webkit-slider-thumb]:hover:bg-secondary-900',
+    '[&::-moz-range-thumb]:border-secondary-800 [&::-moz-range-thumb]:bg-secondary-800 [&::-moz-range-thumb]:hover:bg-secondary-900 [&::-moz-range-thumb]:active:bg-secondary-700',
     '[&::-moz-range-track]:bg-transparent [&::-webkit-slider-runnable-track]:bg-transparent',
   ),
   terciary: cn(
-    '[&::-webkit-slider-thumb]:bg-terciary-800 [&::-webkit-slider-thumb]:shadow-button [&::-webkit-slider-thumb]:hover:bg-terciary-900 [&::-webkit-slider-thumb]:active:bg-terciary-700',
-    '[&::-moz-range-thumb]:border-terciary-800 [&::-moz-range-thumb]:bg-terciary-800 [&::-moz-range-thumb]:shadow-button [&::-moz-range-thumb]:hover:bg-terciary-900 [&::-moz-range-thumb]:active:bg-terciary-700',
+    '[&::-webkit-slider-thumb]:bg-terciary-800 [&::-webkit-slider-thumb]:hover:bg-terciary-900 [&::-webkit-slider-thumb]:active:bg-terciary-700',
+    '[&::-moz-range-thumb]:border-terciary-800 [&::-moz-range-thumb]:bg-terciary-800 [&::-moz-range-thumb]:hover:bg-terciary-900 [&::-moz-range-thumb]:active:bg-terciary-700',
     '[&::-moz-range-track]:bg-transparent [&::-webkit-slider-runnable-track]:bg-transparent',
   ),
   none: '',

@@ -151,7 +151,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
               disabledClass,
               disabledVariant[variant],
               comboboxZIndex,
-              error && 'shadow-error',
+              error && 'border-error-800 shadow-error',
             )}
           >
             <Input

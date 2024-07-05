@@ -1,9 +1,9 @@
 import { cn } from '@/utils/utils'
 
 export const titleColor = {
-  primary: cn('whitespace-pre-wrap text-primary-800'),
-  secondary: cn('whitespace-pre-wrap text-secondary-800'),
-  terciary: cn('whitespace-pre-wrap text-terciary-800'),
+  primary: cn('whitespace-pre-wrap text-primary-800 dark:text-primary-100'),
+  secondary: cn('whitespace-pre-wrap text-secondary-800 dark:text-secondary-100'),
+  terciary: cn('whitespace-pre-wrap text-terciary-800 dark:text-terciary-100'),
   none: '',
 }
 

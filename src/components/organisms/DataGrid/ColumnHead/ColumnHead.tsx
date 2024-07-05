@@ -104,7 +104,7 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
             selectCellSize[size],
             allSelected && 'selected',
             isInteractive ? buttonVariant[variant][color] : 'cursor-default',
-            'group border-transparent',
+            'group border-transparent dark:border-transparent',
             className,
           )}
           variant="text"
@@ -173,6 +173,7 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
                 <Combobox
                   className={cn(
                     'GridFilterCombobox',
+                    'border-transparent dark:border-transparent',
                     filterMenuVisibility,
                     !isFilterApplied ? 'opacity-0' : 'selected',
                   )}
@@ -197,7 +198,7 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
                   dropdownProps={{ className: 'mt-1' }}
                 >
                   <SearchBar
-                    className="border border-transparent bg-bg"
+                    className="dark:bg-darkBg border border-transparent bg-bg"
                     name={`searchIn${column.name}`}
                     placeholder={t('searchIn', { field: column.label })}
                     variant={variant}

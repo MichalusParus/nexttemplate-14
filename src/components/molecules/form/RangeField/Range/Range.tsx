@@ -59,7 +59,7 @@ export const Range = forwardRef<HTMLInputElement, RangeProps>(
             {value || '0'}
           </Span>
           <input
-            className={cn(rangeClass, rangeColor[color], error && 'shadow-error')}
+            className={cn(rangeClass, rangeColor[color], error && 'border-error-800 shadow-error')}
             id={name}
             type="range"
             name={name}
