@@ -24,3 +24,5 @@ export default function EditIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+EditIcon.displayName = 'EditIcon'

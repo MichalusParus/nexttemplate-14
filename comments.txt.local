@@ -11,7 +11,7 @@ Prepare repo for development, focus on code style unification.
 
 
 2. Parus Components
-Podpora mobilnich gest, tooltip
+tooltip
 great aria and role check
 Gallery,
 Calendar,
@@ -21,3 +21,6 @@ Breadcrumbs,
 LoadMore,
 infiniteScroll,
 serverside table
+adjust to mac screen reader
+hamburger fix
+pagination, tabs, menu focustrap

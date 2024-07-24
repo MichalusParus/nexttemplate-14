@@ -39,16 +39,10 @@ export default meta
 type Story = StoryObj<typeof Form>
 
 const FormWithHooks = (args: FormProps) => {
-  const {
-    filteredData: autocompleteOptions,
-    filter: autocompleteFilter,
-    setFilter: setAutocompleteFilter,
-  } = useFilterData(options)
-  const {
-    filteredData: multiAutocompleteOptions,
-    filter: multiAutocompleteFilter,
-    setFilter: setMultiAutocompleteFilter,
-  } = useFilterData(options)
+  const { filteredData: autocompleteOptions, setFilter: setAutocompleteFilter } =
+    useFilterData(options)
+  const { filteredData: multiAutocompleteOptions, setFilter: setMultiAutocompleteFilter } =
+    useFilterData(options)
 
   return (
     <Form {...args}>
@@ -96,7 +90,6 @@ const FormWithHooks = (args: FormProps) => {
         label="Autocomplete:"
         placeholder="autocomplete"
         options={autocompleteOptions}
-        inputValue={autocompleteFilter.label || ''}
         onInputChange={(value: string) => setAutocompleteFilter({ label: value })}
       />
       <MultiAutocompleteField
@@ -104,7 +97,6 @@ const FormWithHooks = (args: FormProps) => {
         label="MultiAutocomplete:"
         placeholder="multiAutocomplete"
         options={multiAutocompleteOptions}
-        inputValue={multiAutocompleteFilter.label || ''}
         onInputChange={(value: string) => setMultiAutocompleteFilter({ label: value })}
       />
       <Button type="submit">Submit</Button>

@@ -69,7 +69,10 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     const [isOpen, setIsOpen] = useState(false)
     const sortedOptions = placement === 'top' ? options.reverse() : options
     const selectedOption = options.find(option => option.value === value)
-    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), ['.Option'])
+    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), {
+      focusable: ['.Option'],
+      focusSelected: '.selected.Option',
+    })
     useImperativeHandle(ref, () => componentRef.current!)
     const comboboxTitle = selectedOption ? (
       selectedOption?.label

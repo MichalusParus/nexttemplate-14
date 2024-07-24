@@ -23,7 +23,7 @@ export type GridBodyProps = {
   /** style variant of component */
   variant?: 'text' | 'outlined' | 'contained'
   /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'none'
+  color?: 'primary' | 'secondary' | 'terciary' | 'none'
   /** size of component, none disable sizes for custom styling via className */
   size?: 'sm' | 'md' | 'lg' | 'none'
   /** loading ghost state */

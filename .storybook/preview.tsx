@@ -1,6 +1,6 @@
+import '../src/app/globals.css'
 import React from 'react'
 import type { Preview } from '@storybook/react'
-import '../src/app/globals.css'
 import { NextIntlClientProvider } from 'next-intl'
 import messages from '../messages/en.json'
 import { withThemeByClassName } from '@storybook/addon-themes'
@@ -21,11 +21,15 @@ const preview: Preview = {
         },
         {
           name: 'primary',
-          value: 'var(--color-primary-800)',
+          value: 'var(--color-prim-800)',
         },
         {
           name: 'secondary',
-          value: 'var(--color-secondary-800)',
+          value: 'var(--color-second-800)',
+        },
+        {
+          name: 'terciary',
+          value: 'var(--color-terc-800)',
         },
         {
           name: 'dark',
@@ -44,7 +48,7 @@ const preview: Preview = {
     }),
     Story => (
       <NextIntlClientProvider messages={messages} locale="en">
-        <div className={`${inter.className} dark:text-darkText text-dark-950`}>
+        <div className={`${inter.className} text-dark-950 dark:text-darkText`}>
           <Story />
         </div>
       </NextIntlClientProvider>

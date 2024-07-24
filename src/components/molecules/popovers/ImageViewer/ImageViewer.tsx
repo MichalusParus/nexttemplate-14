@@ -22,7 +22,7 @@ export const ImageViewer = forwardRef<HTMLDivElement, PropsWithChildren<ImageVie
   ({ className = '', alt, children }, ref) => {
     const t = useTranslations('Components')
     const [isOpen, setIsOpen] = useState(false)
-    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false))
+    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), {})
     useImperativeHandle(ref, () => componentRef.current!)
 
     const handleClose = () => {

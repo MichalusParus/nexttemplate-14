@@ -63,12 +63,9 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
       startRef?.current?.focus()
     }
 
-    const { componentRef, startRef } = useFocusTrap(isLocallyOpen, handleClose, [
-      'button:not(.Overlay)',
-      '[href]',
-      'input',
-      '[tabindex]:not([tabindex="-1"])',
-    ])
+    const { componentRef, startRef } = useFocusTrap(openState, handleClose, {
+      focusable: ['button:not(.Overlay)', '[href]', 'input', '[tabindex]:not([tabindex="-1"])'],
+    })
 
     return (
       <div className={cn('MenuWrap', menuPosition, className)} data-testid="MenuWrap">

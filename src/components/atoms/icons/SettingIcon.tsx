@@ -31,3 +31,5 @@ export default function SettingIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+SettingIcon.displayName = 'SettingIcon'

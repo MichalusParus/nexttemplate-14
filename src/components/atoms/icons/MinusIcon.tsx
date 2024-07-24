@@ -24,3 +24,5 @@ export default function MinusIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+MinusIcon.displayName = 'MinusIcon'

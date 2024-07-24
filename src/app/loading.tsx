@@ -1,7 +1,5 @@
+import Ghost from '@/components/atoms/loaders/Ghost'
+
 export default function Loading() {
-  return (
-    <>
-      <p>Base Loading</p>
-    </>
-  )
+  return <Ghost className="mt-12 min-h-[60vh] min-w-full" />
 }

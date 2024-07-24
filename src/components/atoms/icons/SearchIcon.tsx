@@ -24,3 +24,5 @@ export default function SearchIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+SearchIcon.displayName = 'SearchIcon'

@@ -26,3 +26,5 @@ export default function ProfileIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+ProfileIcon.displayName = 'ProfileIcon'

@@ -24,3 +24,5 @@ export default function CheckIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+CheckIcon.displayName = 'CheckIcon'

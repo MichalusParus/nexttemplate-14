@@ -1,5 +1,5 @@
 'use client'
-import { forwardRef, PropsWithChildren, useImperativeHandle } from 'react'
+import { forwardRef, PropsWithChildren, useEffect, useImperativeHandle } from 'react'
 
 import Overlay from '@/components/atoms/common/Overlay'
 import Paper from '@/components/atoms/containers/Paper'
@@ -30,6 +30,8 @@ export type DrawerProps = {
   width?: string
   /** for setting internal padding of Paper component */
   padding?: string
+  /** optional boolean for setting modal behavior */
+  isModal?: boolean
   /** optional for disabling overlay */
   hideOverlay?: boolean
   /** for passing aditional props to Paper */
@@ -53,6 +55,7 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
       offsetY = 'top-0 bottom-0',
       width = 'w-1/3',
       padding = 'p-0',
+      isModal,
       hideOverlay,
       paperProps = {},
       scrollShadowProps = {},
@@ -62,16 +65,20 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
     ref,
   ) => {
     useImperativeHandle(ref, () => componentRef.current!)
-    const { componentRef, startRef } = useFocusTrap(isOpen, onClose, [
-      'button',
-      '[href]',
-      '[tabindex]:not([tabindex="-1"])',
-    ])
+    const { componentRef, startRef } = useFocusTrap(isOpen, onClose, {
+      focusable: ['button', '[href]', '[tabindex]:not([tabindex="-1"])'],
+    })
 
     const handleClose = () => {
       startRef?.current?.focus()
       onClose()
     }
+
+    useEffect(() => {
+      if (isModal) {
+        document.body.style.overflow = isOpen ? 'hidden' : 'unset'
+      }
+    }, [isOpen, isModal])
 
     return (
       <>

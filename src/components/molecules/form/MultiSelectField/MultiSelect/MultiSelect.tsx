@@ -59,11 +59,10 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
     }>()
     const sortedOptions = placement === 'top' ? options.reverse() : options
     const selectedOptionsRef = useRef<HTMLDivElement>(null)
-    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), [
-      '.Option',
-      '.ChipAction',
-      '.ClearButton',
-    ])
+    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), {
+      focusable: ['.Option', '.ChipAction', '.ClearButton'],
+      focusSelected: '.selected.Option',
+    })
     useImperativeHandle(ref, () => componentRef.current!)
     const selectedOptions = options.filter(option => value.includes(option.value)) || options[0]
 
@@ -82,6 +81,11 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
       },
       [value, onChange],
     )
+
+    const handleClear = useCallback(() => {
+      onChange([])
+      startRef?.current?.focus()
+    }, [startRef, onChange])
 
     useEffect(() => {
       if (selectedOptions.length) {
@@ -179,7 +183,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
                 hideShadow
                 aria-label={t('clear')}
                 tabIndex={-1}
-                onClick={() => onChange([])}
+                onClick={handleClear}
               />
             ) : null}
           </div>

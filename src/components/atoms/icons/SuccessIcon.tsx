@@ -24,3 +24,5 @@ export default function SuccessIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+SuccessIcon.displayName = 'SuccessIcon'

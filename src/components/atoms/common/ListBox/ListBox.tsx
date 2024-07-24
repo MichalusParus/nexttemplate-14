@@ -61,6 +61,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
     ref,
   ) => {
     const t = useTranslations('Components')
+    const ghostOptions = isLoading ? [{ value: 'ghost', label: 'ghost', content: '' }] : []
 
     const getSelectedClass = useCallback(
       (optionValue: string) => {
@@ -88,8 +89,8 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
         ref={ref}
         {...rest}
       >
-        {options.length ? (
-          options.map(({ value: optionValue, label, content }) => (
+        {options.length || isLoading ? (
+          [...options, ...ghostOptions].map(({ value: optionValue, label, content }) => (
             <li
               key={optionValue}
               id={optionValue}

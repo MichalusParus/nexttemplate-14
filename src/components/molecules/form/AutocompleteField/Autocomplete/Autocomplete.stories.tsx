@@ -36,40 +36,36 @@ const meta: Meta<typeof Autocomplete> = {
 
 const AutocompleteWithFetch = (args: AutocompleteProps) => {
   const [value, setValue] = useState<string>('')
-  const [inputValue, setInputValue] = useState<string>('')
   const [options, setOptions] = useState<{ label: string; value: string }[]>([])
   const [isPending, startTransition] = useTransition()
 
   const getOptions = async (value: string) => {
-    await fetch(`https://freetestapi.com/api/v1/actresses?search=${value}`)
-      .then(res => res.json())
-      .then(res =>
-        setOptions(res.map((o: { name: string; id: string }) => ({ label: o.name, value: o.id }))),
-      )
-  }
-
-  const { debouncedFn, isDebouncePending } = useDebounce(getOptions, 500)
-
-  const handleInputChange = (value: string) => {
+    console.log('setoptions', value)
     if (value.length > 2) {
       startTransition(async () => {
-        await debouncedFn(value)
+        await fetch(`https://freetestapi.com/api/v1/actresses?search=${value}`)
+          .then(res => res.json())
+          .then(res =>
+            setOptions(
+              res.map((o: { name: string; id: string }) => ({ label: o.name, value: o.id })),
+            ),
+          )
       })
-    } else if (options.length) {
+    } else {
       setOptions([])
     }
-    setInputValue(value)
   }
+
+  const { debouncedFn } = useDebounce(getOptions, 500)
 
   return (
     <div className={`flex h-96 justify-center ${args.placement === 'top' ? 'items-end' : ''}`}>
       <Autocomplete
         {...args}
         options={options}
-        isLoading={isPending || isDebouncePending || args.isLoading}
+        isLoading={isPending || args.isLoading}
         value={value}
-        inputValue={inputValue}
-        onInputChange={handleInputChange}
+        onInputChange={debouncedFn}
         onChange={setValue}
       />
     </div>
@@ -78,7 +74,7 @@ const AutocompleteWithFetch = (args: AutocompleteProps) => {
 
 const ClientAutocomplete = (args: AutocompleteProps) => {
   const [value, setValue] = useState<string>('')
-  const { filteredData, filter, setFilter } = useFilterData(args.options)
+  const { filteredData, setFilter } = useFilterData(args.options)
 
   return (
     <div className={'flex h-80 justify-center'}>
@@ -86,7 +82,6 @@ const ClientAutocomplete = (args: AutocompleteProps) => {
         {...args}
         options={filteredData}
         value={value}
-        inputValue={filter.label || ''}
         onInputChange={(value: string) => setFilter({ label: value })}
         onChange={setValue}
       />
@@ -102,7 +97,6 @@ export const PrimaryDefault: Story = {
     className: 'className',
     name: 'autocompleteStory',
     label: 'Label',
-    inputValue: '',
     value: '',
     options: options.slice(0, 5),
     variant: 'outlined',

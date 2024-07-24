@@ -10,10 +10,11 @@ export const useDebounce = <T, A>(fn: (args: A) => T, delay: number) => {
     return new Promise(resolve => {
       if (timer) {
         clearTimeout(timer)
+        return
       }
       timer = setTimeout(() => {
-        setIsDebouncePending(false)
         resolve(fn(args))
+        setIsDebouncePending(false)
       }, delay)
     })
   }

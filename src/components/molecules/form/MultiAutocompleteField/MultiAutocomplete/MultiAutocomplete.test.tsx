@@ -14,7 +14,6 @@ describe('MultiAutocomplete', () => {
           name="MultiAutocompleteTest"
           label="label"
           value={['value']}
-          inputValue="inputValue"
           options={options}
           onInputChange={() => {}}
           onChange={() => {}}
@@ -36,7 +35,6 @@ describe('MultiAutocomplete', () => {
           label="label"
           value={['value']}
           error="error"
-          inputValue="inputValue"
           options={options}
           onInputChange={() => {}}
           onChange={() => {}}
@@ -54,7 +52,6 @@ describe('MultiAutocomplete', () => {
           name="MultiAutocompleteTest"
           label="label"
           value={['value']}
-          inputValue="inputValue"
           description="description"
           options={options}
           onInputChange={() => {}}
@@ -73,14 +70,12 @@ describe('MultiAutocomplete', () => {
           name="MultiAutocompleteTest"
           label="label"
           value={['value1']}
-          inputValue="value2"
           options={options}
           onInputChange={() => {}}
           onChange={() => {}}
         />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('combobox')).toHaveValue('value2')
     expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true')
   })
 
@@ -93,7 +88,6 @@ describe('MultiAutocomplete', () => {
           name="MultiAutocompleteTest"
           label="label"
           value={['value1']}
-          inputValue="value1"
           options={options}
           onInputChange={spy}
           onChange={() => {}}
@@ -117,7 +111,6 @@ describe('MultiAutocomplete', () => {
           name="MultiAutocompleteTest"
           label="label"
           value={[]}
-          inputValue="value1"
           options={options}
           onInputChange={spy}
           onChange={spy}
@@ -137,7 +130,6 @@ describe('MultiAutocomplete', () => {
           name="MultiAutocompleteTest"
           label="label"
           value={['value1']}
-          inputValue="value1"
           disabled
           options={options}
           onInputChange={() => {}}

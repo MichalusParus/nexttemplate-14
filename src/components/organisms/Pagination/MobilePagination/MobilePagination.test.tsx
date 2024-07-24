@@ -19,7 +19,7 @@ describe('MobilePagination', () => {
     )
     expect(screen.getByTestId('MobilePagination')).toBeTruthy()
     expect(screen.getByTestId('MobilePagination')).toHaveClass('className')
-    expect(screen.getAllByRole('button')).toHaveLength(2)
+    expect(screen.getAllByRole('button')).toHaveLength(1)
     expect(screen.getByTestId('SelectedOutOff')).toHaveTextContent('1 / 3')
   })
 

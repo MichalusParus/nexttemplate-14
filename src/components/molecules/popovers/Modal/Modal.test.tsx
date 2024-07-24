@@ -20,7 +20,6 @@ describe('Modal', () => {
     expect(screen.getByRole('dialog')).toHaveTextContent('Children')
     expect(screen.getByRole('combobox')).toHaveTextContent('ModalCombobox')
   })
-
   it('title', () => {
     render(
       <JestMockProvider>
@@ -31,7 +30,6 @@ describe('Modal', () => {
     )
     expect(screen.getByRole('heading')).toHaveTextContent('Title')
   })
-
   it('actions', () => {
     render(
       <JestMockProvider>
@@ -47,14 +45,12 @@ describe('Modal', () => {
     )
     expect(screen.getByTestId('button')).toHaveTextContent('Action')
   })
-
   it('closebutton', () => {
     render(
       <JestMockProvider>
         <Modal className="className" name="test" isOpen closeButton>
           Children
         </Modal>
-        ,
       </JestMockProvider>,
     )
     expect(screen.getAllByRole('button')[1]).toHaveTextContent('Close')

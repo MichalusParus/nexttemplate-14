@@ -100,7 +100,7 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
       return (
         <Button
           className={cn(
-            'ColumnHeader',
+            'SelectAll',
             selectCellSize[size],
             allSelected && 'selected',
             isInteractive ? buttonVariant[variant][color] : 'cursor-default',
@@ -117,7 +117,7 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
           onClick={() => (isInteractive ? handleAll() : {})}
           startIcon={
             <Checkbox
-              className={cn('SelectAll', !isInteractive && 'cursor-default opacity-0')}
+              className={cn('SelectAllCheck', !isInteractive && 'cursor-default opacity-0')}
               name={`${name}All`}
               label=""
               value={String(allSelected)}
@@ -198,7 +198,7 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
                   dropdownProps={{ className: 'mt-1' }}
                 >
                   <SearchBar
-                    className="dark:bg-darkBg border border-transparent bg-bg"
+                    className="border border-transparent bg-bg dark:bg-darkBg"
                     name={`searchIn${column.name}`}
                     placeholder={t('searchIn', { field: column.label })}
                     variant={variant}

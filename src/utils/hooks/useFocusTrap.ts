@@ -1,10 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 /** useFocusTrap hook is used for trapping focus inside componentRef El. Pass state for open state, closing fn. Optionally choose focusable for targeting specific elements. */
 export const useFocusTrap = (
   isActive: boolean,
   onClose: () => void,
-  focusable: string[] = ['[tabindex]:not([tabindex="-1"])'],
+  options?: {
+    focusable?: string[]
+    focusSelected?: string
+  },
 ) => {
   const componentRef = useRef<HTMLDivElement | null>(null)
   const startRef = useRef<HTMLButtonElement | null>(null)
@@ -13,82 +16,96 @@ export const useFocusTrap = (
 
   // Autofocus to first element with class selected on open state and startRef update
   useEffect(() => {
-    if (isActive) {
-      startRef.current = document.activeElement as HTMLButtonElement
+    startRef.current = document.activeElement as HTMLButtonElement
+    if (isActive && options?.focusSelected) {
       const focusableSelectedEl = componentRef.current?.querySelectorAll(
-        '.selected.Option',
+        options.focusSelected,
       ) as NodeListOf<HTMLElement>
       if (focusableSelectedEl.length) {
         focusableSelectedEl[0].focus()
         focusIndexRef.current = focusableElRef.current.indexOf(focusableSelectedEl[0])
       } else {
-        focusIndexRef.current = 0
+        focusIndexRef.current = 1
+        focusableElRef.current[1]
+          ? focusableElRef.current[1].focus()
+          : focusableElRef.current[0].focus()
       }
+    } else if (isActive && focusableElRef.current[0]) {
+      focusableElRef.current[1]
+        ? focusableElRef.current[1].focus()
+        : focusableElRef.current[0].focus()
+      focusIndexRef.current = 1
     }
-  }, [isActive])
+  }, [isActive, options?.focusSelected])
 
   // onKeyDown listerer and keys handling
-  useEffect(() => {
-    if (componentRef.current && isActive && startRef.current) {
-      const onKeyDown = (e: KeyboardEvent) => {
-        if (focusableElRef.current.length) {
-          if (
-            e.code === 'ArrowDown' ||
-            (e.code === 'ArrowRight' && !e.metaKey) ||
-            (e.code === 'Tab' && !e.shiftKey)
-          ) {
-            e.preventDefault()
-            if (focusIndexRef.current + 1 === focusableElRef.current.length) {
-              focusableElRef.current[0].focus()
-              focusIndexRef.current = 0
-            } else {
-              focusableElRef.current[focusIndexRef.current + 1].focus()
-              focusIndexRef.current++
-            }
-          } else if (
-            e.code === 'ArrowUp' ||
-            (e.code === 'ArrowLeft' && !e.metaKey) ||
-            (e.code === 'Tab' && e.shiftKey)
-          ) {
-            e.preventDefault()
-            if (focusIndexRef.current == 0) {
-              focusableElRef.current[focusableElRef.current.length - 1].focus()
-              focusIndexRef.current = focusableElRef.current.length - 1
-            } else {
-              focusableElRef.current[focusIndexRef.current - 1].focus()
-              focusIndexRef.current--
-            }
-          } else if (e.code === 'Home' || (e.code === 'ArrowLeft' && e.metaKey)) {
-            e.preventDefault()
+  const onKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (focusableElRef.current.length) {
+        if (
+          e.code === 'ArrowDown' ||
+          (e.code === 'ArrowRight' && !e.metaKey) ||
+          (e.code === 'Tab' && !e.shiftKey)
+        ) {
+          e.preventDefault()
+          if (focusIndexRef.current + 1 === focusableElRef.current.length) {
             focusableElRef.current[0].focus()
             focusIndexRef.current = 0
-          } else if (e.code === 'End' || (e.code === 'ArrowRight' && e.metaKey)) {
-            e.preventDefault()
+          } else {
+            focusableElRef.current[focusIndexRef.current + 1].focus()
+            focusIndexRef.current++
+          }
+        } else if (
+          e.code === 'ArrowUp' ||
+          (e.code === 'ArrowLeft' && !e.metaKey) ||
+          (e.code === 'Tab' && e.shiftKey)
+        ) {
+          e.preventDefault()
+          if (focusIndexRef.current == 0) {
             focusableElRef.current[focusableElRef.current.length - 1].focus()
             focusIndexRef.current = focusableElRef.current.length - 1
-          } else if (e.code === 'Escape' && startRef.current) {
-            e.preventDefault()
-            startRef.current.focus()
-            onClose()
+          } else {
+            focusableElRef.current[focusIndexRef.current - 1].focus()
+            focusIndexRef.current--
           }
+        } else if (e.code === 'Home' || (e.code === 'ArrowLeft' && e.metaKey)) {
+          e.preventDefault()
+          focusableElRef.current[0].focus()
+          focusIndexRef.current = 0
+        } else if (e.code === 'End' || (e.code === 'ArrowRight' && e.metaKey)) {
+          e.preventDefault()
+          focusableElRef.current[focusableElRef.current.length - 1].focus()
+          focusIndexRef.current = focusableElRef.current.length - 1
+        } else if (e.code === 'Escape' && startRef.current) {
+          e.preventDefault()
+          startRef.current.focus()
+          onClose()
         }
       }
-      window.addEventListener('keydown', onKeyDown)
+    },
+    [onClose],
+  )
+
+  useEffect(() => {
+    if (componentRef.current && isActive && startRef.current) {
+      const element = componentRef.current
+      element.addEventListener('keydown', onKeyDown)
       return () => {
-        window.removeEventListener('keydown', onKeyDown)
+        element.removeEventListener('keydown', onKeyDown)
       }
     }
-  }, [isActive, componentRef, onClose])
+  }, [isActive, componentRef, onKeyDown, onClose])
 
   // Focusable array actualization with index update
   useEffect(() => {
+    const focusable = options?.focusable || ['[tabindex]:not([tabindex="-1"])']
     const focusableArr = componentRef.current?.querySelectorAll(
       focusable.join(),
     ) as NodeListOf<HTMLElement>
     focusableElRef.current = [startRef.current!, ...focusableArr]
     const newIndex = focusableElRef.current.indexOf(document.activeElement as HTMLButtonElement)
     focusIndexRef.current = newIndex
-  }, [focusable])
+  }, [options?.focusable])
 
   return {
     componentRef: componentRef,

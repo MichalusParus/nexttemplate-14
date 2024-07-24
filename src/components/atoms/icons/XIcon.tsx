@@ -24,3 +24,5 @@ export default function XIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+XIcon.displayName = 'XIcon'

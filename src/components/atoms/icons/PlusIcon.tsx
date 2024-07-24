@@ -24,3 +24,5 @@ export default function PlusIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+PlusIcon.displayName = 'PlusIcon'

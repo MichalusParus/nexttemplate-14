@@ -24,3 +24,5 @@ export default function FilterIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+FilterIcon.displayName = 'FilterIcon'

@@ -1,4 +1,15 @@
 {
+    "Common": {
+      "back": "Back",
+      "reset": "Reset",
+      "pageNotFound": "404 - Page ' {name} ' not found",
+      "errorPageTitle": "Internal Error",
+      "errorPageMessage": "Oops! Something went wrong - {message}"
+    },
+    "Navigation": {
+      "home": "Home",
+      "about": "About"
+    },
     "Components": {
       "profile": "profile",
       "close": "close",

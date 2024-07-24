@@ -59,23 +59,19 @@ export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps
         ref={ref}
         data-testid="MobilePagination"
       >
-        <Button
-          className={cn(
-            'LeftChevronButton',
-            'rotate-90',
-            arrowClass,
-            selectedPage === 1 && 'hidden',
-            buttonProps.className,
-          )}
-          variant={variant}
-          color={color}
-          size={size}
-          startIcon={<ChevronIcon />}
-          onClick={() => setSelectedPage(selectedPage - 1)}
-          aria-label={t('previousPage', { page: selectedPage - 1 })}
-          hideShadow
-          {...filterOutKeys(buttonProps, ['className'])}
-        />
+        {selectedPage !== 1 ? (
+          <Button
+            className={cn('LeftChevronButton', 'rotate-90', arrowClass, buttonProps.className)}
+            variant={variant}
+            color={color}
+            size={size}
+            startIcon={<ChevronIcon />}
+            onClick={() => setSelectedPage(selectedPage - 1)}
+            aria-label={t('previousPage', { page: selectedPage - 1 })}
+            hideShadow
+            {...filterOutKeys(buttonProps, ['className'])}
+          />
+        ) : null}
         <div
           className={cn('SelectedOutOff', 'cursor-default font-semibold')}
           data-testid="SelectedOutOff"
@@ -83,25 +79,21 @@ export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps
           {`${selectedPage}${loadMoreCount ? `-${selectedPage + loadMoreCount}` : ''}`} /{' '}
           {pages.length}
         </div>
-        <Button
-          className={cn(
-            'RightChevronButton',
-            '-rotate-90',
-            arrowClass,
-            selectedPage === pages.length && 'hidden',
-            buttonProps.className,
-          )}
-          variant={variant}
-          color={color}
-          size={size}
-          startIcon={<ChevronIcon />}
-          onClick={() => setSelectedPage(selectedPage + loadMoreCount + 1)}
-          aria-label={t('nextPage', {
-            page: selectedPage + 1,
-          })}
-          hideShadow
-          {...filterOutKeys(buttonProps, ['className'])}
-        />
+        {selectedPage + loadMoreCount < pages.length ? (
+          <Button
+            className={cn('RightChevronButton', '-rotate-90', arrowClass, buttonProps.className)}
+            variant={variant}
+            color={color}
+            size={size}
+            startIcon={<ChevronIcon />}
+            onClick={() => setSelectedPage(selectedPage + loadMoreCount + 1)}
+            aria-label={t('nextPage', {
+              page: selectedPage + 1,
+            })}
+            hideShadow
+            {...filterOutKeys(buttonProps, ['className'])}
+          />
+        ) : null}
       </div>
     )
   },

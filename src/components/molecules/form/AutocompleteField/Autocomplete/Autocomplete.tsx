@@ -34,8 +34,6 @@ export type AutocompleteProps = Pick<ComboboxProps, 'name' | 'disabled'> &
     variant?: 'text' | 'outlined' | 'contained'
     /** theme color of component, none disable styles for custom styling via className */
     color?: 'primary' | 'secondary' | 'terciary' | 'none'
-    /** current value of input */
-    inputValue: string
     /** current value of autocomplete */
     value: string
     /** options for select to choose from */
@@ -66,7 +64,6 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
       placement = 'left',
       variant = 'outlined',
       color = 'primary',
-      inputValue,
       value,
       isLoading,
       options,
@@ -90,8 +87,12 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
   ) => {
     const t = useTranslations('Components')
     const [isOpen, setIsOpen] = useState(false)
+    const [inputValue, setInputValue] = useState<string>('')
     const sortedOptions = placement === 'top' ? options.reverse() : options
-    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false))
+    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), {
+      focusable: ['.Option', '.ClearButton'],
+      focusSelected: '.selected.Option',
+    })
     const noOptionsLabel =
       inputValue.length <= 2 ? t('searchForOptions') : t('noOptionsMatch', { value: inputValue })
     const comboboxZIndex = isOpen ? 'z-40' : 'z-20'
@@ -111,11 +112,11 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
       (target: string) => {
         const selectedOption = options.find(({ value }) => value === target) || options[0]
         onChange(selectedOption.value)
-        onInputChange(selectedOption.label)
+        setInputValue(selectedOption.label)
         startRef?.current?.focus()
         setIsOpen(prev => !prev)
       },
-      [startRef, options, onChange, setIsOpen, onInputChange],
+      [startRef, options, onChange, setIsOpen, setInputValue],
     )
 
     const handleInputChange = useCallback(
@@ -123,10 +124,18 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
         if (!isOpen) {
           setIsOpen(true)
         }
+        setInputValue(String(value).trimStart())
         onInputChange(String(value).trimStart())
       },
       [isOpen, onInputChange],
     )
+
+    const handleClear = useCallback(() => {
+      onChange('')
+      onInputChange('')
+      setInputValue('')
+      startRef?.current?.focus()
+    }, [startRef, onChange, onInputChange])
 
     return (
       <Label
@@ -194,10 +203,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                 size="none"
                 hideShadow
                 aria-label={t('clear')}
-                onClick={() => {
-                  onChange('')
-                  onInputChange('')
-                }}
+                onClick={handleClear}
               />
             ) : null}
           </div>

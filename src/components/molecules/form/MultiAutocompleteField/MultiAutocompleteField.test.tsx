@@ -21,7 +21,6 @@ describe('MultiAutocompleteField', () => {
             name="MultiAutocompleteTest"
             label="label"
             options={options}
-            inputValue=""
             onInputChange={() => {}}
           />
         </Form>
@@ -49,7 +48,6 @@ describe('MultiAutocompleteField', () => {
             name="MultiAutocompleteTest"
             label="label"
             options={options}
-            inputValue=""
             onInputChange={() => {}}
           />
           <button type="submit" data-testid="submit" />

@@ -24,7 +24,7 @@ export type DataGridProps = {
   /** style variant of component */
   variant?: 'text' | 'outlined' | 'contained'
   /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'none'
+  color?: 'primary' | 'secondary' | 'terciary' | 'none'
   /** size of component, none disable sizes for custom styling via className */
   size?: 'sm' | 'md' | 'lg' | 'none'
   /** loading ghost state */
@@ -79,14 +79,18 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
     const { componentRef, startRef } = useFocusTrap(
       isGridFocusOpen,
       () => setIsGridFocusOpen(false),
-      [
-        '.RowButton',
-        '.SubColButton',
-        '.Combobox',
-        '.ExportButton',
-        '.LeftChevronButton',
-        '.RightChevronButton',
-      ],
+      {
+        focusable: [
+          '.RowButton:not(.cursor-default)',
+          '.SubColButton',
+          '.Combobox',
+          '.ExportButton',
+          '.LeftChevronButton',
+          '.RightChevronButton',
+          '.SelectAll:not(.cursor-default)',
+        ],
+        focusSelected: '.RowButton.selected',
+      },
     )
     useImperativeHandle(ref, () => componentRef.current!)
     const { filteredData, sorting, filter, setFilter, handleSorting } = useFilterData(rows)
@@ -136,19 +140,37 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
       setIsGridFocusOpen(true)
     }, [startRef])
 
-    useEffect(() => {
-      const handleClick = (e: KeyboardEvent) => {
-        const target = e.target as HTMLDivElement
-        if ((e.code === 'Space' || e.code === 'Enter') && target.id === `grid-${name}`) {
+    const handleKeyDown = useCallback(
+      (e: KeyboardEvent) => {
+        if (e.code === 'Space' || e.code === 'Enter') {
           e.preventDefault()
           handleCloseFocusTrap()
         }
+      },
+      [handleCloseFocusTrap],
+    )
+
+    const handleClick = useCallback(
+      (e: MouseEvent) => {
+        const target = e.target as HTMLDivElement
+        if (isGridFocusOpen && !componentRef.current?.contains(target)) {
+          setIsGridFocusOpen(false)
+        }
+      },
+      [isGridFocusOpen, componentRef],
+    )
+
+    useEffect(() => {
+      if (componentRef.current && typeof window !== 'undefined') {
+        const element = componentRef.current
+        window.addEventListener('click', handleClick)
+        element.addEventListener('keydown', handleKeyDown)
+        return () => {
+          window.removeEventListener('click', handleClick)
+          element.removeEventListener('keydown', handleKeyDown)
+        }
       }
-      window.addEventListener('keydown', handleClick)
-      return () => {
-        window.removeEventListener('keydown', handleClick)
-      }
-    }, [name, handleCloseFocusTrap])
+    }, [componentRef, handleClick, handleKeyDown])
 
     return (
       <>
@@ -156,7 +178,7 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
           id={`grid-${name}`}
           className={cn(
             'DataGrid',
-            'w-full overflow-x-auto focus:outline-info-900',
+            'w-full overflow-x-auto focus:ring-2 focus:ring-primary-100',
             !hideShadow && variant === 'contained' && 'rounded-md shadow-button',
             className,
           )}

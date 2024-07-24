@@ -24,3 +24,5 @@ export default function SignOutIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+SignOutIcon.displayName = 'SignOutIcon'

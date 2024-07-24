@@ -22,3 +22,5 @@ export default function LockIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+LockIcon.displayName = 'LockIcon'

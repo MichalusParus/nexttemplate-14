@@ -26,15 +26,15 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function RootLayout({ children }: PropsWithChildren<object>) {
+export default async function RootLayout(props: PropsWithChildren) {
   const locale = await getLocale()
   const messages = await getMessages()
-
+  const { children } = props
   return (
     <html lang={locale}>
       <body
         className={cn(
-          'dark:text-darkText dark flex min-h-[100vh] flex-col bg-primary-800 text-dark-950 dark:bg-dark-900',
+          'flex min-h-[100vh] flex-col bg-primary-800 text-dark-950 dark:bg-dark-900 dark:text-darkText',
           inter.className,
         )}
       >

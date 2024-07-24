@@ -24,3 +24,5 @@ export default function DeleteIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+DeleteIcon.displayName = 'DeleteIcon'

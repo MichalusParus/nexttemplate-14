@@ -14,7 +14,7 @@ export type MainProps = {
 export const Main = ({ className = '', children }: PropsWithChildren<MainProps>) => {
   return (
     <main className={cn('Main', mainClass, mainXPadding, className)} data-testid="Main">
-      <div className={cn('MainContent', 'py-8 md:py-12', containerSize)}>{children}</div>
+      <div className={cn('MainContent', containerSize)}>{children}</div>
     </main>
   )
 }

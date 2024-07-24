@@ -24,3 +24,5 @@ export default function InfoIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+InfoIcon.displayName = 'InfoIcon'

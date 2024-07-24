@@ -24,3 +24,5 @@ export default function SignInIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+SignInIcon.displayName = 'SignInIcon'

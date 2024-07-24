@@ -21,7 +21,7 @@ describe('ScreenPagination', () => {
     )
     expect(screen.getByTestId('ScreenPagination')).toBeTruthy()
     expect(screen.getByTestId('ScreenPagination')).toHaveClass('className')
-    expect(screen.getAllByRole('button')).toHaveLength(8)
+    expect(screen.getAllByRole('button')).toHaveLength(7)
   })
 
   it('pageSpread', () => {
@@ -37,7 +37,7 @@ describe('ScreenPagination', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getAllByRole('button')).toHaveLength(13)
+    expect(screen.getAllByRole('button')).toHaveLength(12)
   })
 
   it('pageSpreadMiddle', () => {
@@ -69,7 +69,7 @@ describe('ScreenPagination', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getAllByRole('button')).toHaveLength(13)
+    expect(screen.getAllByRole('button')).toHaveLength(12)
   })
 
   it('pageSpreadLow', () => {

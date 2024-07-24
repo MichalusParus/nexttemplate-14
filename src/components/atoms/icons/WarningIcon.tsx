@@ -24,3 +24,5 @@ export default function WarningIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+WarningIcon.displayName = 'WarningIcon'

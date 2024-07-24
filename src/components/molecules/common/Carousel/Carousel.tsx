@@ -1,11 +1,12 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, PropsWithChildren, useState } from 'react'
+import { forwardRef, PropsWithChildren, useCallback, useImperativeHandle, useState } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import RatioWrap from '@/components/atoms/containers/RatioWrap'
 import { RatioWrapProps } from '@/components/atoms/containers/RatioWrap/RatioWrap'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
+import { useTouch } from '@/utils/hooks/useTouch'
 import { cn, filterOutKeys } from '@/utils/utils'
 
 import { arrowClass, controlClass, dottWrapClass, innerWrapClass } from './Carousel.style'
@@ -29,6 +30,20 @@ export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselPro
     const t = useTranslations('Components')
     const [currentPage, setCurrentPage] = useState(1)
 
+    const handleSwipe = useCallback(
+      (value: { x: number; y: number }) => {
+        if (value.x > 0 && Math.abs(value.x) > 30) {
+          setCurrentPage(prev => (prev === 1 ? pages : prev - 1))
+        } else if (value.x < 0 && Math.abs(value.x) > 30) {
+          setCurrentPage(prev => (prev === pages ? 1 : prev + 1))
+        }
+      },
+      [pages],
+    )
+
+    const { componentRef } = useTouch(handleSwipe)
+    useImperativeHandle(ref, () => componentRef.current!)
+
     const getSelectedDott = (index: number) => {
       return currentPage === index + 1 ? 'selected scale-150' : ''
     }
@@ -36,7 +51,7 @@ export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselPro
     return (
       <div
         className={cn('Carousel', 'relative overflow-hidden', className)}
-        ref={ref}
+        ref={componentRef}
         data-testid="Carousel"
       >
         <RatioWrap

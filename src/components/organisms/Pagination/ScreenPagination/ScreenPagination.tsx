@@ -38,10 +38,10 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
   ) => {
     const t = useTranslations('Components')
     const [isActive, setIsActive] = useState(false)
-    const { componentRef } = useFocusTrap(isActive, () => setIsActive(false), [
-      'button',
-      '.PageButton',
-    ])
+    const { componentRef } = useFocusTrap(isActive, () => setIsActive(false), {
+      focusable: ['.LeftChevronButton', '.RightChevronButton', '.PageButton'],
+      focusSelected: '.PageButton.selected',
+    })
     useImperativeHandle(ref, () => componentRef.current!)
     const sidePagesCount = (pageSpread - 5) / 2
 
@@ -87,22 +87,23 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
         onKeyDown={onKeyDown}
         data-testid="ScreenPagination"
       >
-        <Button
-          className={cn(
-            'LeftChevronButton',
-            'absolute top-1/2 translate-y-[-50%] [&_svg]:rotate-90',
-            selectedPage === 1 && 'hidden',
-            buttonProps.className,
-          )}
-          variant={variant}
-          color={color}
-          size={size}
-          startIcon={<ChevronIcon />}
-          onClick={() => setSelectedPage(selectedPage - 1)}
-          tabIndex={-1}
-          aria-label={t('previousPage', { page: selectedPage - 1 })}
-          {...filterOutKeys(buttonProps, ['className'])}
-        />
+        {selectedPage !== 1 ? (
+          <Button
+            className={cn(
+              'LeftChevronButton',
+              'absolute top-1/2 translate-y-[-50%] [&_svg]:rotate-90',
+              buttonProps.className,
+            )}
+            variant={variant}
+            color={color}
+            size={size}
+            startIcon={<ChevronIcon />}
+            onClick={() => setSelectedPage(selectedPage - 1)}
+            tabIndex={-1}
+            aria-label={t('previousPage', { page: selectedPage - 1 })}
+            {...filterOutKeys(buttonProps, ['className'])}
+          />
+        ) : null}
         {pages.length > sidePagesCount * 2 + 6 && selectedPage > sidePagesCount + 3 ? (
           <Button
             className={cn(
@@ -174,24 +175,25 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
             {...filterOutKeys(buttonProps, ['className'])}
           />
         ) : null}
-        <Button
-          className={cn(
-            'RightChevronButton',
-            'absolute top-1/2 translate-y-[-50%] [&_svg]:-rotate-90',
-            selectedPage + loadMoreCount >= pages.length && 'hidden',
-            buttonProps.className,
-          )}
-          variant={variant}
-          color={color}
-          size={size}
-          startIcon={<ChevronIcon />}
-          onClick={() => setSelectedPage(selectedPage + loadMoreCount + 1)}
-          tabIndex={-1}
-          aria-label={t('nextPage', {
-            page: selectedPage + 1,
-          })}
-          {...filterOutKeys(buttonProps, ['className'])}
-        />
+        {selectedPage + loadMoreCount < pages.length ? (
+          <Button
+            className={cn(
+              'RightChevronButton',
+              'absolute top-1/2 translate-y-[-50%] [&_svg]:-rotate-90',
+              buttonProps.className,
+            )}
+            variant={variant}
+            color={color}
+            size={size}
+            startIcon={<ChevronIcon />}
+            onClick={() => setSelectedPage(selectedPage + loadMoreCount + 1)}
+            tabIndex={-1}
+            aria-label={t('nextPage', {
+              page: selectedPage + 1,
+            })}
+            {...filterOutKeys(buttonProps, ['className'])}
+          />
+        ) : null}
       </div>
     )
   },

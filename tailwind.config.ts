@@ -149,8 +149,10 @@ const config: Config = {
         '2xl': 'theme(fontSize.2xl)',
         '2xlIcon': '2rem',
         '3xl': 'theme(fontSize.3xl)',
+        smHeaderHeight: '3.375rem',
       },
       boxShadow: {
+        header: 'var(--shadow-header)',
         button: 'var(--shadow-button)',
         paper: 'var(--shadow-paper)',
         modal: 'var(--shadow-modal)',

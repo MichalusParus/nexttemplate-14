@@ -23,3 +23,5 @@ export default function ErrorIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+ErrorIcon.displayName = 'ErrorIcon'

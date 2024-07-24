@@ -14,7 +14,6 @@ describe('Autocomplete', () => {
           name="autocompleteTest"
           label="label"
           value="value"
-          inputValue="inputValue"
           options={options}
           onInputChange={() => {}}
           onChange={() => {}}
@@ -36,7 +35,6 @@ describe('Autocomplete', () => {
           label="label"
           value="value"
           error="error"
-          inputValue="inputValue"
           options={options}
           onInputChange={() => {}}
           onChange={() => {}}
@@ -54,7 +52,6 @@ describe('Autocomplete', () => {
           name="autocompleteTest"
           label="label"
           value="value"
-          inputValue="inputValue"
           description="description"
           options={options}
           onInputChange={() => {}}
@@ -73,14 +70,12 @@ describe('Autocomplete', () => {
           name="autocompleteTest"
           label="label"
           value="value1"
-          inputValue="value2"
           options={options}
           onInputChange={() => {}}
           onChange={() => {}}
         />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('combobox')).toHaveValue('value2')
     expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true')
   })
 
@@ -93,7 +88,6 @@ describe('Autocomplete', () => {
           name="autocompleteTest"
           label="label"
           value="value1"
-          inputValue="value1"
           options={options}
           onInputChange={spy}
           onChange={() => {}}
@@ -117,7 +111,6 @@ describe('Autocomplete', () => {
           name="autocompleteTest"
           label="label"
           value="value1"
-          inputValue="value1"
           options={options}
           onInputChange={spy}
           onChange={spy}
@@ -126,7 +119,7 @@ describe('Autocomplete', () => {
     )
     fireEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getAllByRole('button')[0])
-    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 
   it('disabled', () => {
@@ -137,7 +130,6 @@ describe('Autocomplete', () => {
           name="autocompleteTest"
           label="label"
           value="value1"
-          inputValue="value1"
           disabled
           options={options}
           onInputChange={() => {}}

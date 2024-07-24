@@ -24,3 +24,5 @@ export default function DoubleChevronIcon({ className = '' }: Props) {
     </svg>
   )
 }
+
+DoubleChevronIcon.displayName = 'DoubleChevronIcon'

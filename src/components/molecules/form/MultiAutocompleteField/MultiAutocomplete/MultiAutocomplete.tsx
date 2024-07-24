@@ -40,7 +40,6 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
       placement = 'left',
       variant = 'outlined',
       color = 'primary',
-      inputValue,
       value,
       isLoading,
       options,
@@ -64,12 +63,12 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
   ) => {
     const t = useTranslations('Components')
     const [isOpen, setIsOpen] = useState(false)
+    const [inputValue, setInputValue] = useState<string>('')
     const sortedOptions = placement === 'top' ? options.reverse() : options
-    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), [
-      '.Option',
-      '.ChipAction',
-      '.ClearButton',
-    ])
+    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), {
+      focusable: ['.Option', '.ChipAction', '.ClearButton'],
+      focusSelected: '.selected.Option',
+    })
     const [selectedOptions, setSelectedOptions] = useState<{ label: string; value: string }[]>([])
     const noOptionsLabel =
       inputValue.length <= 2 ? t('searchForOptions') : t('noOptionsMatch', { value: inputValue })
@@ -101,6 +100,7 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
           setIsOpen(true)
         }
         onInputChange(String(value).trimStart())
+        setInputValue(String(value).trimStart())
       },
       [isOpen, onInputChange],
     )
@@ -108,8 +108,10 @@ export const MultiAutocomplete = forwardRef<HTMLInputElement, MultiAutocompleteP
     const handleClear = useCallback(() => {
       onChange([])
       onInputChange('')
+      setInputValue('')
       setSelectedOptions([])
-    }, [onChange, onInputChange])
+      startRef?.current?.focus()
+    }, [startRef, onChange, onInputChange])
 
     return (
       <Label
