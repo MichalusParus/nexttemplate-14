@@ -45,7 +45,7 @@ export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselPro
     useImperativeHandle(ref, () => componentRef.current!)
 
     const getSelectedDott = (index: number) => {
-      return currentPage === index + 1 ? 'selected scale-150' : ''
+      return currentPage === index + 1 ? 'selected [&>div]:scale-150' : ''
     }
 
     return (
@@ -75,6 +75,7 @@ export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselPro
           color="none"
           size="none"
           startIcon={<ChevronIcon className={'h-10 w-10 rotate-90'} />}
+          hideShadow
           aria-label={t('previousPage', { page: currentPage === 1 ? pages : currentPage - 1 })}
           onClick={() => setCurrentPage(prev => (prev === 1 ? pages : prev - 1))}
         />
@@ -83,6 +84,7 @@ export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselPro
           color="none"
           size="none"
           startIcon={<ChevronIcon className={'h-10 w-10 -rotate-90'} />}
+          hideShadow
           aria-label={t('nextPage', { page: currentPage === pages ? 1 : currentPage + 1 })}
           onClick={() => setCurrentPage(prev => (prev === pages ? 1 : prev + 1))}
         />

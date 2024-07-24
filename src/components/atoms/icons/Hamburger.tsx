@@ -7,11 +7,11 @@ type Props = {
 
 export default function Hamburger({ className = '', isOpen }: Props) {
   return (
-    <div className={cn('Hamburger', 'px-1', className)}>
+    <div className={cn('Hamburger', 'px-px', className)}>
       <div className="relative">
         <div
           className={`absolute left-0 h-1 w-full bg-current transition-dropdown ${
-            isOpen ? 'top-[1.125rem] rotate-[135deg]' : 'left-0 top-1.5'
+            isOpen ? 'top-[1rem] rotate-[135deg]' : 'left-0 top-1.5'
           }`}
         />
         <div
@@ -21,7 +21,7 @@ export default function Hamburger({ className = '', isOpen }: Props) {
         />
         <div
           className={`absolute left-0 h-1 w-full bg-current transition-dropdown ${
-            isOpen ? 'top-[1.125rem] rotate-[-135deg]' : 'left-0 top-[1.625rem]'
+            isOpen ? 'top-[1rem] rotate-[-135deg]' : 'left-0 top-[1.625rem]'
           }`}
         />
       </div>

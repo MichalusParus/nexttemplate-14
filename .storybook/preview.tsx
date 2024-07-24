@@ -17,23 +17,23 @@ const preview: Preview = {
       values: [
         {
           name: 'bg',
-          value: 'var(--color-bg)',
+          value: 'rgb(var(--color-bg))',
         },
         {
           name: 'primary',
-          value: 'var(--color-prim-800)',
+          value: 'rgb(var(--color-prim-800))',
         },
         {
           name: 'secondary',
-          value: 'var(--color-second-800)',
+          value: 'rgb(var(--color-second-800))',
         },
         {
           name: 'terciary',
-          value: 'var(--color-terc-800)',
+          value: 'rgb(var(--color-terc-800))',
         },
         {
           name: 'dark',
-          value: 'var(--color-dark-800)',
+          value: 'rgb(var(--color-dark-800))',
         },
       ],
     },

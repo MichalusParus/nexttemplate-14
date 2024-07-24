@@ -7,7 +7,12 @@ const meta: Meta<typeof Main> = {
   component: Main,
   tags: ['autodocs'],
   parameters: {
-    layout: 'padded',
+    layout: 'fullscreen',
+  },
+  argTypes: {
+    children: {
+      control: false,
+    },
   },
 }
 
@@ -15,5 +20,5 @@ export default meta
 type Story = StoryObj<typeof Main>
 
 export const Default: Story = {
-  args: { className: 'border border-primary-500', children: <div>Content</div> },
+  args: { className: '', children: <div>Content</div> },
 }

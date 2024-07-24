@@ -7,114 +7,117 @@
 /* 4. Scrollbar */
 /* 3. Animations */
 
-/* CSS Variables */
-:root {
-  /* COLORS */
-  /* Primary */
-  --color-prim-50: #ecfeff;
-  --color-prim-100: #cffafe;
-  --color-prim-200: #a5f3fc;
-  --color-prim-300: #67e8f9;
-  --color-prim-400: #22d3ee;
-  --color-prim-500: #06b6d4;
-  --color-prim-600: #0891b2;
-  --color-prim-700: #0e7490;
-  --color-prim-800: #155e75;
-  --color-prim-900: #164e63;
-  --color-prim-950: #083344;
-  /* Secondary */
-  --color-second-50: #ecfdf5;
-  --color-second-100: #d1fae5;
-  --color-second-200: #a7f3d0;
-  --color-second-300: #6ee7b7;
-  --color-second-400: #34d399;
-  --color-second-500: #10b981;
-  --color-second-600: #059669;
-  --color-second-700: #047857;
-  --color-second-800: #065f46;
-  --color-second-900: #064e3b;
-  --color-second-950: #022c22;
-  /* Terciary */
-  --color-terc-50: #fdf4ff;
-  --color-terc-100: #fae8ff;
-  --color-terc-200: #f5d0fe;
-  --color-terc-300: #f0abfc;
-  --color-terc-400: #e879f9;
-  --color-terc-500: #d946ef;
-  --color-terc-600: #c026d3;
-  --color-terc-700: #a21caf;
-  --color-terc-800: #86198f;
-  --color-terc-900: #701a75;
-  --color-terc-950: #4a044e;
-  /* Dark */
-  --color-dark-50: #fafafa;
-  --color-dark-100: #f5f5f5;
-  --color-dark-200: #e5e5e5;
-  --color-dark-300: #d4d4d4;
-  --color-dark-400: #a3a3a3;
-  --color-dark-500: #737373;
-  --color-dark-600: #525252;
-  --color-dark-700: #404040;
-  --color-dark-800: #262626;
-  --color-dark-900: #171717;
-  --color-dark-950: #0a0a0a;
-  /* Info */
-  --color-info-50: #f0f9ff;
-  --color-info-100: #e0f2fe;
-  --color-info-200: #bae6fd;
-  --color-info-300: #7dd3fc;
-  --color-info-400: #38bdf8;
-  --color-info-500: #0ea5e9;
-  --color-info-600: #0284c7;
-  --color-info-700: #0369a1;
-  --color-info-800: #075985;
-  --color-info-900: #0c4a6e;
-  --color-info-950: #082f49;
-  /* Success */
-  --color-success-50: #f7fee7;
-  --color-success-100: #ecfccb;
-  --color-success-200: #d9f99d;
-  --color-success-300: #bef264;
-  --color-success-400: #a3e635;
-  --color-success-500: #84cc16;
-  --color-success-600: #65a30d;
-  --color-success-700: #4d7c0f;
-  --color-success-800: #3f6212;
-  --color-success-900: #365314;
-  --color-success-950: #1a2e05;
-  /* Warning */
-  --color-warning-50: #fffbeb;
-  --color-warning-100: #fef3c7;
-  --color-warning-200: #fde68a;
-  --color-warning-300: #fcd34d;
-  --color-warning-400: #fbbf24;
-  --color-warning-500: #f59e0b;
-  --color-warning-600: #d97706;
-  --color-warning-700: #b45309;
-  --color-warning-800: #92400e;
-  --color-warning-900: #78350f;
-  --color-warning-950: #451a03;
-  /* Error */
-  --color-error-50: #fef2f2;
-  --color-error-100: #fee2e2;
-  --color-error-200: #fecaca;
-  --color-error-300: #fca5a5;
-  --color-error-400: #f87171;
-  --color-error-500: #ef4444;
-  --color-error-600: #dc2626;
-  --color-error-700: #b91c1c;
-  --color-error-800: #991b1b;
-  --color-error-900: #7f1d1d;
-  --color-error-950: #450a0a;
-
-
-  /* SHADOWS */
-  --shadow-header: 0px 0px 4px 0px rgba(0, 0, 0, 0.4), 0px 0px 8px 0px rgba(0, 0, 0, 0.3);
-  --shadow-button: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-  --shadow-paper: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
-  --shadow-modal: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
-  --shadow-error: 0 0 2px 1px var(--color-error-800);
+@layer base {
+  :root {
+    /* CSS Variables */
+      /* COLORS defined as RGB values, in tailwind theme used with opacity */
+      /* Primary */
+      --color-prim-50: 236 254 255;
+      --color-prim-100: 207 250 254;
+      --color-prim-200: 165 243 252;
+      --color-prim-300: 103 232 249;
+      --color-prim-400: 34 211 238;
+      --color-prim-500: 6 182 212;
+      --color-prim-600: 8 145 178;
+      --color-prim-700: 14 116 144;
+      --color-prim-800: 21 94 117;
+      --color-prim-900: 22 78 99;
+      --color-prim-950: 8 51 68;
+      /* Secondary */
+      --color-second-50: 236 253 245;
+      --color-second-100: 209 250 229;
+      --color-second-200: 167 243 208;
+      --color-second-300: 110 231 183;
+      --color-second-400: 52 211 153;
+      --color-second-500: 16 185 129;
+      --color-second-600: 5 150 105;
+      --color-second-700: 4 120 87;
+      --color-second-800: 6 95 70;
+      --color-second-900: 6 78 59;
+      --color-second-950: 2 44 34;
+      /* Terciary */
+      --color-terc-50: 253 244 255;
+      --color-terc-100: 250 232 255;
+      --color-terc-200: 245 208 254;
+      --color-terc-300: 240 171 252;
+      --color-terc-400: 232 121 249;
+      --color-terc-500: 217 70 239;
+      --color-terc-600: 192 38 211;
+      --color-terc-700: 162 28 175;
+      --color-terc-800: 134 25 143;
+      --color-terc-900: 112 26 117;
+      --color-terc-950: 74 4 78;
+      /* Dark */
+      --color-dark-50: 250 250 250;
+      --color-dark-100: 245	245	245;
+      --color-dark-200: 229	229	229;
+      --color-dark-300: 212	212	212;
+      --color-dark-400: 163	163	163;
+      --color-dark-500: 115	115	115;
+      --color-dark-600: 82 82	82;
+      --color-dark-700: 64 64	64;
+      --color-dark-800: 38 38	38;
+      --color-dark-900: 23 23	23;
+      --color-dark-950:	10 10	10;
+      /* Info */
+      --color-info-50: 240 249 255;
+      --color-info-100: 224 242 254;
+      --color-info-200: 186 230 253;
+      --color-info-300: 125 211 252;
+      --color-info-400: 56 189 248;
+      --color-info-500: 14 165 233;
+      --color-info-600: 2 132 199;
+      --color-info-700: 3 105 161;
+      --color-info-800: 7 89 133;
+      --color-info-900: 12 74 110;
+      --color-info-950: 8 47 73;
+      /* Success */
+      --color-success-50: 247 254 231;
+      --color-success-100: 236 252 203;
+      --color-success-200: 217 249 157;
+      --color-success-300: 190 242 100;
+      --color-success-400: 163 230 53;
+      --color-success-500: 132 204 22;
+      --color-success-600: 101 163 13;
+      --color-success-700: 77 124 15;
+      --color-success-800: 63 98 18;
+      --color-success-900: 54 83 20;
+      --color-success-950: 26 46 5;
+      /* Warning */
+      --color-warning-50: 255 251 235;
+      --color-warning-100: 254 243 199;
+      --color-warning-200: 253 230 138;
+      --color-warning-300: 252 211 77;
+      --color-warning-400: 251 191 36;
+      --color-warning-500: 245 158 11;
+      --color-warning-600: 217 119 6;
+      --color-warning-700: 180 83 9;
+      --color-warning-800: 146 64 14;
+      --color-warning-900: 120 53 15;
+      --color-warning-950: 69 26 3;
+      /* Error */
+      --color-error-50: 254 242 242;
+      --color-error-100: 254 226 226;
+      --color-error-200: 254 202 202;
+      --color-error-300: 252 165 165;
+      --color-error-400: 248 113 113;
+      --color-error-500: 239 68 68;
+      --color-error-600: 220 38 38;
+      --color-error-700: 185 28 28;
+      --color-error-800: 153 27 27;
+      --color-error-900: 127 29 29;
+      --color-error-950: 69 10 10;
+    
+    
+      /* SHADOWS */
+      --shadow-header: 0px 0px 4px 0px rgba(0, 0, 0, 0.4), 0px 0px 8px 0px rgba(0, 0, 0, 0.3);
+      --shadow-button: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+      --shadow-paper: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+      --shadow-modal: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+      --shadow-error: 0 0 2px 1px rgb(var(--color-error-800));
+    }
 }
+
 
 /* Default CSS */
 * {

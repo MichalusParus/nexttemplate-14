@@ -76,6 +76,7 @@ export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
             )}
             style={{ scrollbarGutter: gutter ? 'stable' : 'initial' }}
             ref={scrollShadowRef}
+            tabIndex={-1}
           >
             {children}
           </div>

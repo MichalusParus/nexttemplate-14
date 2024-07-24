@@ -7,8 +7,18 @@ const meta: Meta<typeof HamburgerMenu> = {
   component: HamburgerMenu,
   tags: ['autodocs'],
   parameters: {
-    layout: 'padded',
+    layout: 'fullscreen',
+    backgrounds: {
+      default: 'primary',
+    },
   },
+  decorators: [
+    Story => (
+      <div className="h-96 w-14 p-2">
+        <Story />
+      </div>
+    ),
+  ],
 }
 
 export default meta

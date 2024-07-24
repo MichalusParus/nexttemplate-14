@@ -1,6 +1,13 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, KeyboardEvent, useCallback, useImperativeHandle, useState } from 'react'
+import {
+  forwardRef,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
@@ -38,7 +45,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
   ) => {
     const t = useTranslations('Components')
     const [isActive, setIsActive] = useState(false)
-    const { componentRef } = useFocusTrap(isActive, () => setIsActive(false), {
+    const { componentRef, startRef } = useFocusTrap(isActive, () => setIsActive(false), {
       focusable: ['.LeftChevronButton', '.RightChevronButton', '.PageButton'],
       focusSelected: '.PageButton.selected',
     })
@@ -63,13 +70,33 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
       [selectedPage, loadMoreCount],
     )
 
-    const onKeyDown = (e: KeyboardEvent) => {
+    const handleClick = useCallback(
+      (e: MouseEvent) => {
+        const target = e.target as HTMLDivElement
+        if (isActive && !componentRef.current?.contains(target)) {
+          setIsActive(false)
+          startRef?.current?.focus()
+        }
+      },
+      [isActive, componentRef, startRef],
+    )
+
+    const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLDivElement
       if (target.id === name && (e.code === 'Enter' || e.code === 'Space')) {
         e.preventDefault()
         setIsActive(prev => !prev)
       }
     }
+
+    useEffect(() => {
+      if (typeof window !== 'undefined') {
+        window.addEventListener('click', handleClick)
+        return () => {
+          window.removeEventListener('click', handleClick)
+        }
+      }
+    }, [handleClick])
 
     return (
       <div
@@ -84,7 +111,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
         id={name}
         ref={componentRef}
         tabIndex={0}
-        onKeyDown={onKeyDown}
+        onKeyDown={handleKeyDown}
         data-testid="ScreenPagination"
       >
         {selectedPage !== 1 ? (

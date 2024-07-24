@@ -34,7 +34,7 @@ export const HamburgerMenu = ({ className = '' }: HamburgerMenuProps) => {
 
   return (
     <div
-      className={cn('HamburgerMenu', 'flex items-center justify-center pr-2', className)}
+      className={cn('HamburgerMenu', 'flex items-center justify-center pr-3', className)}
       data-testid="HamburgerMenu"
     >
       <Combobox
@@ -47,7 +47,7 @@ export const HamburgerMenu = ({ className = '' }: HamburgerMenuProps) => {
         hideShadow
         onClick={() => setIsOpen(prev => !prev)}
       >
-        <Hamburger className="h-9 w-10" isOpen={isOpen} />
+        <Hamburger className="h-9 w-9" isOpen={isOpen} />
       </Combobox>
       <Drawer
         className="fixed"

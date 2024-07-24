@@ -1,5 +1,12 @@
 'use client'
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react'
+import {
+  forwardRef,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button/Button'
 import { useFilterData } from '@/utils/hooks/useFilterData'
@@ -7,6 +14,7 @@ import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
 import { usePagination } from '@/utils/hooks/usePagination'
 import { cn } from '@/utils/utils'
 
+import { tableFocus } from './DataGrid.style'
 import GridBody from './GridBody'
 import GridFooter from './GridFooter'
 import GridHeader from './GridHeader'
@@ -135,42 +143,36 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
       [onRowClick, onMultiselectSubmit, handleSelect],
     )
 
-    const handleCloseFocusTrap = useCallback(() => {
-      startRef?.current?.focus()
-      setIsGridFocusOpen(true)
-    }, [startRef])
-
-    const handleKeyDown = useCallback(
-      (e: KeyboardEvent) => {
-        if (e.code === 'Space' || e.code === 'Enter') {
-          e.preventDefault()
-          handleCloseFocusTrap()
-        }
-      },
-      [handleCloseFocusTrap],
-    )
-
     const handleClick = useCallback(
       (e: MouseEvent) => {
         const target = e.target as HTMLDivElement
         if (isGridFocusOpen && !componentRef.current?.contains(target)) {
           setIsGridFocusOpen(false)
+          startRef?.current?.focus()
         }
       },
-      [isGridFocusOpen, componentRef],
+      [isGridFocusOpen, componentRef, startRef],
+    )
+
+    const handleKeyDown = useCallback(
+      (e: KeyboardEvent<HTMLDivElement>) => {
+        const target = e.target as HTMLDivElement
+        if (e.code === 'Space' || (e.code === 'Enter' && target.id === `grid-${name}`)) {
+          e.preventDefault()
+          setIsGridFocusOpen(prev => !prev)
+        }
+      },
+      [name, setIsGridFocusOpen],
     )
 
     useEffect(() => {
-      if (componentRef.current && typeof window !== 'undefined') {
-        const element = componentRef.current
+      if (typeof window !== 'undefined') {
         window.addEventListener('click', handleClick)
-        element.addEventListener('keydown', handleKeyDown)
         return () => {
           window.removeEventListener('click', handleClick)
-          element.removeEventListener('keydown', handleKeyDown)
         }
       }
-    }, [componentRef, handleClick, handleKeyDown])
+    }, [handleClick])
 
     return (
       <>
@@ -178,8 +180,9 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
           id={`grid-${name}`}
           className={cn(
             'DataGrid',
-            'w-full overflow-x-auto focus:ring-2 focus:ring-primary-100',
-            !hideShadow && variant === 'contained' && 'rounded-md shadow-button',
+            'w-full overflow-x-auto rounded-md focus-visible:outline-1 focus-visible:outline-offset-1',
+            tableFocus[color],
+            !hideShadow && variant === 'contained' && 'shadow-button',
             className,
           )}
           ref={componentRef}
@@ -188,6 +191,7 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
           aria-label={`table-${name}`}
           aria-multiselectable={Boolean(onMultiselectSubmit)}
           aria-rowcount={rows.length + (haveSubColumns ? 3 : 2)}
+          onKeyDown={handleKeyDown}
         >
           <div className={cn('GridInnerWrap', 'min-w-max overflow-x-hidden')}>
             <GridHeader

@@ -10,13 +10,13 @@ export const useFocusTrap = (
   },
 ) => {
   const componentRef = useRef<HTMLDivElement | null>(null)
-  const startRef = useRef<HTMLButtonElement | null>(null)
+  const startRef = useRef<HTMLElement | null>(null)
   const focusIndexRef = useRef<number>(0)
   const focusableElRef = useRef<HTMLElement[]>([])
 
   // Autofocus to first element with class selected on open state and startRef update
   useEffect(() => {
-    startRef.current = document.activeElement as HTMLButtonElement
+    startRef.current = document.activeElement as HTMLElement
     if (isActive && options?.focusSelected) {
       const focusableSelectedEl = componentRef.current?.querySelectorAll(
         options.focusSelected,
@@ -48,12 +48,13 @@ export const useFocusTrap = (
           (e.code === 'Tab' && !e.shiftKey)
         ) {
           e.preventDefault()
+          e.stopPropagation()
           if (focusIndexRef.current + 1 === focusableElRef.current.length) {
-            focusableElRef.current[0].focus()
             focusIndexRef.current = 0
+            focusableElRef.current[0].focus()
           } else {
-            focusableElRef.current[focusIndexRef.current + 1].focus()
-            focusIndexRef.current++
+            focusIndexRef.current = focusIndexRef.current + 1
+            focusableElRef.current[focusIndexRef.current].focus()
           }
         } else if (
           e.code === 'ArrowUp' ||
@@ -61,23 +62,27 @@ export const useFocusTrap = (
           (e.code === 'Tab' && e.shiftKey)
         ) {
           e.preventDefault()
+          e.stopPropagation()
           if (focusIndexRef.current == 0) {
-            focusableElRef.current[focusableElRef.current.length - 1].focus()
             focusIndexRef.current = focusableElRef.current.length - 1
+            focusableElRef.current[focusIndexRef.current].focus()
           } else {
-            focusableElRef.current[focusIndexRef.current - 1].focus()
-            focusIndexRef.current--
+            focusIndexRef.current = focusIndexRef.current - 1
+            focusableElRef.current[focusIndexRef.current].focus()
           }
         } else if (e.code === 'Home' || (e.code === 'ArrowLeft' && e.metaKey)) {
           e.preventDefault()
+          e.stopPropagation()
           focusableElRef.current[0].focus()
           focusIndexRef.current = 0
         } else if (e.code === 'End' || (e.code === 'ArrowRight' && e.metaKey)) {
           e.preventDefault()
+          e.stopPropagation()
           focusableElRef.current[focusableElRef.current.length - 1].focus()
           focusIndexRef.current = focusableElRef.current.length - 1
         } else if (e.code === 'Escape' && startRef.current) {
           e.preventDefault()
+          e.stopPropagation()
           startRef.current.focus()
           onClose()
         }
@@ -88,10 +93,9 @@ export const useFocusTrap = (
 
   useEffect(() => {
     if (componentRef.current && isActive && startRef.current) {
-      const element = componentRef.current
-      element.addEventListener('keydown', onKeyDown)
+      window.addEventListener('keydown', onKeyDown)
       return () => {
-        element.removeEventListener('keydown', onKeyDown)
+        window.removeEventListener('keydown', onKeyDown)
       }
     }
   }, [isActive, componentRef, onKeyDown, onClose])

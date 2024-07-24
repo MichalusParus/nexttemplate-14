@@ -49,7 +49,11 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
     ref,
   ) => {
     return (
-      <RatioWrap className={`overflow-hidden bg-overlay ${rounded}`} width={width} ratio={ratio}>
+      <RatioWrap
+        className={`bg-dark-950/25 overflow-hidden ${rounded}`}
+        width={width}
+        ratio={ratio}
+      >
         <NextImage
           className={cn(objectFit, objectPosition, className)}
           sizes="100%"

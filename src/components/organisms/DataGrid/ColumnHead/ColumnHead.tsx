@@ -112,6 +112,7 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
           size="none"
           role="columnheader"
           hideShadow
+          tabIndex={-1}
           aria-sort="none"
           aria-label={t('selectAll')}
           onClick={() => (isInteractive ? handleAll() : {})}

@@ -7,8 +7,15 @@ const meta: Meta<typeof Header> = {
   component: Header,
   tags: ['autodocs'],
   parameters: {
-    layout: 'padded',
+    layout: 'fullscreen',
   },
+  decorators: [
+    Story => (
+      <div className="h-96">
+        <Story />
+      </div>
+    ),
+  ],
 }
 
 export default meta

@@ -18,5 +18,19 @@ export default meta
 type Story = StoryObj<typeof Nav>
 
 export const Default: Story = {
+  parameters: {
+    backgrounds: {
+      default: 'primary',
+    },
+  },
   args: { className: '' },
+}
+
+export const Menu: Story = {
+  parameters: {
+    backgrounds: {
+      default: 'bg',
+    },
+  },
+  args: { ...Default.args, menu: true },
 }

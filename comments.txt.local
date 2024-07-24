@@ -9,10 +9,11 @@ Prepare repo for development, focus on code style unification.
 -select css library and prepare scheme
 -Prepare app routes,loadings and errors states
 
+TODO
+-docker
+-pipelines
 
 2. Parus Components
-tooltip
-great aria and role check
 Gallery,
 Calendar,
 Datepicker,
@@ -20,7 +21,6 @@ SnackBar,
 Breadcrumbs,
 LoadMore,
 infiniteScroll,
-serverside table
-adjust to mac screen reader
-hamburger fix
-pagination, tabs, menu focustrap
+Table
+screen reader support
+reseach modals outside main app

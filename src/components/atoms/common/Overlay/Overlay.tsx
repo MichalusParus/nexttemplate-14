@@ -25,7 +25,7 @@ export const Overlay = forwardRef<HTMLButtonElement, OverlayProps>(
           'Overlay',
           overlayClass,
           isOpen ? 'opacity-100' : 'invisible opacity-0',
-          dark && 'bg-overlay',
+          dark && 'bg-dark-950/25',
           className,
         )}
         type="button"

@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const ghostStyle = cn(
-  'relative block overflow-hidden rounded-lg bg-overlay',
+  'bg-dark-950/25 relative block overflow-hidden rounded-lg',
   'after:-skew-x-12 after:animate-ghostAnim after:bg-gradient-to-r after:from-transparent after:via-dark-900 after:to-transparent after:opacity-10 dark:after:via-dark-500',
   'after:content=[""] after:absolute after:bottom-0 after:left-0 after:right-0 after:top-0 after:translate-x-[-100%]',
 )

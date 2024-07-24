@@ -114,11 +114,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           ) : null}
           {type === 'search' && (value || inputRef?.current?.value) ? (
             <Button
-              className={cn('ClearButton', 'right-1', inputIconPosition, buttonIconSize[size])}
-              variant="text"
+              className={cn(
+                'ClearButton',
+                'right-1 border-none',
+                inputIconPosition,
+                buttonIconSize[size],
+              )}
+              variant={variant}
               color={color}
               size="none"
               startIcon={<XIcon />}
+              hideShadow
               aria-label={t('clear')}
               onClick={() => {
                 onChange('')

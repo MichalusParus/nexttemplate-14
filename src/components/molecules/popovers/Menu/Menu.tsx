@@ -68,7 +68,11 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
     })
 
     return (
-      <div className={cn('MenuWrap', menuPosition, className)} data-testid="MenuWrap">
+      <div
+        className={cn('MenuWrap', menuPosition, className)}
+        ref={componentRef}
+        data-testid="MenuWrap"
+      >
         {!setIsOpen ? (
           <Combobox
             name={name}
@@ -76,7 +80,6 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
             hasPopup="menu"
             variant={variant}
             color={color}
-            ref={startRef}
             onClick={handleClose}
             {...comboboxProps}
           />
@@ -88,7 +91,6 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
           color={color}
           width={width}
           padding="pt-1"
-          ref={componentRef}
           onClose={handleClose}
           {...dropdownProps}
         >

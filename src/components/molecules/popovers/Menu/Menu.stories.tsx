@@ -42,6 +42,7 @@ const ControlledMenu = (args: PropsWithChildren<MenuProps>) => {
   return (
     <div className="relative">
       <Combobox
+        className="abcd"
         name="menuStory"
         hasPopup="menu"
         isOpen={isOpen}

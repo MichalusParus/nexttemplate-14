@@ -16,10 +16,19 @@ export const Header = ({ className = '' }: HeaderProps) => {
   return (
     <OnScrollWrap>
       <header className={cn('Header', headerClass, mainXPadding, className)} data-testid="Header">
-        <div className={cn('HeaderContainer', 'flex items-center py-2 md:py-4', containerSize)}>
-          <HamburgerMenu className="md:hidden" />
-          <Logo />
-          <Nav className="hidden md:flex" />
+        <div
+          className={cn(
+            'HeaderContainer',
+            'flex items-center justify-between py-2 md:py-4',
+            containerSize,
+          )}
+        >
+          <div className={cn('LeftWrap', 'flex')}>
+            <HamburgerMenu className="md:hidden" />
+            <Logo />
+            <Nav className="hidden md:flex" />
+          </div>
+          <div className={cn('RightWrap', 'flex')}></div>
         </div>
       </header>
     </OnScrollWrap>

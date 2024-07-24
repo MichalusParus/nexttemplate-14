@@ -40,7 +40,6 @@ const AutocompleteWithFetch = (args: AutocompleteProps) => {
   const [isPending, startTransition] = useTransition()
 
   const getOptions = async (value: string) => {
-    console.log('setoptions', value)
     if (value.length > 2) {
       startTransition(async () => {
         await fetch(`https://freetestapi.com/api/v1/actresses?search=${value}`)

@@ -29,7 +29,7 @@ type Story = StoryObj<typeof DataGrid>
 
 export const PrimaryDefault: Story = {
   args: {
-    className: 'className',
+    className: '',
     name: 'dataGridDefaultStory',
     columns: gridColsDef,
     rows: gridData.slice(0, 10),

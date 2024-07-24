@@ -99,10 +99,12 @@ export const GridFooter = forwardRef<HTMLDivElement, GridFooterProps>(
               size={size}
               width="w-40"
               placeholder="Rows"
-              tabIndex={-1}
               hideError
               collapsed="never"
-              comboboxProps={{ className: 'border-transparent dark:border-transparent' }}
+              comboboxProps={{
+                className: 'border-transparent dark:border-transparent',
+                tabIndex: -1,
+              }}
               onChange={(value: string) => handleRowsPerPage(value)}
             />
             {!hideExport ? (
@@ -127,7 +129,7 @@ export const GridFooter = forwardRef<HTMLDivElement, GridFooterProps>(
             variant={variant}
             color={color}
             size={size}
-            buttonProps={{ className: 'border-transparent dark:border-transparent' }}
+            buttonProps={{ className: 'border-transparent dark:border-transparent', tabIndex: -1 }}
             setSelectedPage={setSelectedPage}
           />
         </div>

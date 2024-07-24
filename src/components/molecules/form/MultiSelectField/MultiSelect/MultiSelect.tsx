@@ -123,7 +123,6 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
             disabled={disabled}
             hideShadow
             disableUpperCase
-            ref={startRef}
             aria-labelledby={'label-' + name}
             aria-describedby={`${name}-description`}
             onClick={handleClose}
