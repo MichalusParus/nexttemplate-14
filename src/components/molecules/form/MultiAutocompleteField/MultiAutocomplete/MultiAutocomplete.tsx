@@ -92,7 +92,9 @@ export const MultiAutocomplete = forwardRef<
     )
 
     const handleClose = useCallback(() => {
-      focusableEl[0].focus()
+      if (focusableEl[0]) {
+        focusableEl[0].focus()
+      }
       setIsOpen(prev => !prev)
     }, [focusableEl, setIsOpen])
 
@@ -125,7 +127,9 @@ export const MultiAutocomplete = forwardRef<
       onInputChange('')
       setInputValue('')
       setSelectedOptions([])
-      focusableEl[0].focus()
+      if (focusableEl[0]) {
+        focusableEl[0].focus()
+      }
     }, [focusableEl, onChange, onInputChange])
 
     return (

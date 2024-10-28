@@ -105,7 +105,9 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
       } else {
         setIsLocallyOpen(prev => !prev)
       }
-      focusableEl[0].focus()
+      if (focusableEl[0]) {
+        focusableEl[0].focus()
+      }
     }
 
     useEffect(() => {

@@ -70,7 +70,9 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
     )
 
     const handleClose = () => {
-      focusableEl[0].focus()
+      if (focusableEl[0]) {
+        focusableEl[0].focus()
+      }
       setIsOpen(false)
     }
 

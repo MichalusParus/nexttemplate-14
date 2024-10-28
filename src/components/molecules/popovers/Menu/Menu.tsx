@@ -80,7 +80,9 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
       } else {
         setIsLocallyOpen(prev => !prev)
       }
-      focusableEl[0].focus()
+      if (focusableEl[0]) {
+        focusableEl[0].focus()
+      }
     }, [focusableEl, isOpen, setIsOpen])
 
     return (

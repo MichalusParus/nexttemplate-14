@@ -143,7 +143,9 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
         const target = e.target as HTMLDivElement
         if (isGridFocusOpen && !componentRef.current?.contains(target)) {
           setIsGridFocusOpen(false)
-          focusableEl[0].focus()
+          if (focusableEl[0]) {
+            focusableEl[0].focus()
+          }
         }
       },
       [isGridFocusOpen, componentRef, focusableEl],

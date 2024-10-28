@@ -88,7 +88,9 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
         const target = e.target as HTMLDivElement
         if (isActive && !componentRef.current?.contains(target)) {
           setIsActive(false)
-          focusableEl[0].focus()
+          if (focusableEl[0]) {
+            focusableEl[0].focus()
+          }
         }
       },
       [isActive, componentRef, focusableEl],

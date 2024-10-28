@@ -1,11 +1,11 @@
 import { MenuItem } from '@/components/atoms/common/MenuItem'
 import { PlusIcon } from '@/components/atoms/icons'
 import { Form } from '@/components/molecules/form/Form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { NextIntlClientProvider } from 'next-intl'
 import { PropsWithChildren } from 'react'
 import { useForm } from 'react-hook-form'
-import { array, date, InferType, mixed, number, object, string } from 'yup'
+import z from 'zod'
 
 export const textContent =
   'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Corrupti ex totam blanditiis maiores itaque earum eius, delectus perferendis commodi at cupiditate quos veritatis dolore, quas optio provident ipsam debitis dignissimos eos, modi perspiciatis aspernatur aperiam nemo magnam. Quasi ex at ad eaque distinctio porro natus vitae praesentium. Libero quidem vel deleniti possimus repellendus. In optio sint accusantium quidem aspernatur qui ut necessitatibus cum quam ratione veritatis beatae eos rerum vero natus atque, ea repellat! Nemo assumenda eos accusantium voluptatum itaque alias architecto quo magni repudiandae rem libero dignissimos, tempore adipisci et officia dolor voluptate odit iusto, repellat dolore, vitae sequi? Vitae eveniet totam doloremque necessitatibus, quo cumque quam harum pariatur rem praesentium possimus natus voluptate distinctio cupiditate ut officiis. Quibusdam cumque illo iusto dolorum harum tempora voluptate consequuntur ab? Accusantium officiis molestias, at non qui alias fugiat tempore mollitia assumenda quia ipsam quae! Reprehenderit, labore quas adipisci architecto, commodi laborum iusto odio obcaecati mollitia fugit qui debitis. Fuga quasi iusto id fugiat, alias officiis reprehenderit impedit soluta culpa ipsam, tenetur voluptas dolorum perferendis est, libero eaque qui ipsum. Neque aliquam esse explicabo commodi beatae, velit accusamus, magni modi quia suscipit odit nobis nemo aut iusto rerum ex delectus architecto exercitationem atque illum. Facere saepe quidem eaque dolores et expedita pariatur, unde eum dicta soluta! Quod mollitia enim, consectetur reprehenderit vitae asperiores quo. In eum quo neque nesciunt at voluptas, labore, blanditiis hic pariatur corporis tenetur voluptatum maxime doloribus, expedita beatae nulla temporibus alias suscipit obcaecati nostrum ex cupiditate. Sint repudiandae quod asperiores? Cupiditate ipsam pariatur, eos consectetur doloremque similique, dicta nobis veritatis explicabo officiis quos, deleniti sed asperiores repudiandae vero! Rem nihil impedit ducimus dolore molestiae, ex doloribus saepe aspernatur autem atque alias, sit quaerat quasi totam repudiandae delectus cumque! Esse nihil eligendi saepe repudiandae nulla cum id ea. Dolore recusandae veritatis quidem, accusantium optio dignissimos, vero facere architecto reprehenderit eius provident sapiente soluta expedita amet omnis quibusdam dolorem sint itaque. Dolorum laboriosam reprehenderit placeat iste repudiandae quod non esse? Quae repellat assumenda iste. Nulla odit quos deleniti voluptate nemo delectus accusantium porro, ducimus vel dolore ipsam velit minima maiores dolor! Consequatur necessitatibus vitae unde vel, aut aliquam repudiandae ad ullam minus dolores magni distinctio nemo expedita odit, quisquam voluptas reprehenderit, doloremque asperiores? Modi doloremque quidem voluptates perspiciatis dolore perferendis officiis, voluptas reprehenderit laboriosam ex dignissimos! Quam dolore exercitationem consequuntur eveniet atque recusandae dignissimos autem laboriosam aperiam. Ratione, aspernatur rerum, recusandae laboriosam magni numquam delectus distinctio saepe quo autem, unde quibusdam sed optio at consequuntur fugit. Minima, aliquam autem corporis nostrum nemo eius dolore alias placeat eum ratione expedita quas, perspiciatis reprehenderit in quisquam! Repudiandae illo qui voluptas quos quo iste, eaque, amet suscipit alias omnis quam minus reprehenderit, eum ea ullam voluptatum labore dignissimos eveniet nesciunt! Vel enim asperiores eum illo ullam! Quis animi recusandae laudantium ad excepturi, culpa velit. Molestias corporis quaerat blanditiis illo veritatis, dolore eius natus eveniet unde fugiat cupiditate, quos deserunt odio, cum culpa omnis odit voluptatum. Voluptatum eius iusto, quis distinctio voluptatibus fugiat non.'
@@ -221,21 +221,21 @@ export const titleSizeVariants: ('none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3
   '3xl',
 ]
 
-export const formScheme = object().shape({
-  inputStory: string().required(),
-  numberStory: number().required(),
-  searchStory: string().required(),
-  dateStory: date().required(),
-  textareaStory: string().required(),
-  rangeStory: number().min(20, 'min 20').required(),
-  checkboxStory: string().required(),
-  checkboxGroupStory: array().of(string()).min(1).min(1).required(),
-  switchGroupStory: array().of(string()).min(1).required(),
-  radioGroupStory: string().required(),
-  selectStory: string().required(),
-  multiSelectStory: array().of(string()).min(1).required(),
-  autocompleteStory: string().required(),
-  multiAutocompleteStory: array().of(string()).min(1).required(),
+export const formSchema = z.object({
+  inputStory: z.string().min(1),
+  numberStory: z.number().min(1),
+  searchStory: z.string().min(1),
+  dateStory: z.date(),
+  textareaStory: z.string().min(1),
+  rangeStory: z.number().min(20),
+  checkboxStory: z.string().min(1),
+  checkboxGroupStory: z.array(z.string()).min(1),
+  switchGroupStory: z.array(z.string()).min(1),
+  radioGroupStory: z.string().min(1),
+  selectStory: z.string().min(1),
+  multiSelectStory: z.array(z.string()).min(1),
+  autocompleteStory: z.string().min(1),
+  multiAutocompleteStory: z.array(z.string()).min(1),
 })
 
 export const initialValues = {
@@ -315,11 +315,12 @@ export const JestFormProvider = ({
   values?: any[]
   onSubmit?: (v: any) => void
 }>) => {
-  const formYup = Object.fromEntries(fields.map(field => [field, mixed().optional()]))
+  const zodFields = Object.fromEntries(fields.map(field => [field, z.unknown().optional()]))
+  const schema = z.object(zodFields)
+  console.log(schema)
   const formValues = Object.fromEntries(fields.map((field, i) => [field, values?.[i]]))
-  const schema = object().shape(formYup)
-  const form = useForm<InferType<typeof schema>>({
-    resolver: yupResolver(schema),
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: formValues,
   })
 

@@ -41,13 +41,13 @@ export const Tooltip = forwardRef<HTMLDivElement, PropsWithChildren<TooltipProps
     const { anchorRef, setPopoverEl } = usePopper(placement, offset)
     useImperativeHandle(ref, () => anchorRef.current!)
 
-    const handleVisible = () => {
+    const handleVisible = useCallback(() => {
       setIsVisible(true)
-    }
+    }, [setIsVisible])
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
       setIsVisible(false)
-    }
+    }, [setIsVisible])
 
     const handleClickOutside = useCallback(
       (e: MouseEvent) => {
@@ -56,7 +56,7 @@ export const Tooltip = forwardRef<HTMLDivElement, PropsWithChildren<TooltipProps
           handleClose()
         }
       },
-      [isVisible, handleClose],
+      [isVisible, anchorRef, handleClose],
     )
 
     useEffect(() => {
@@ -102,6 +102,7 @@ export const Tooltip = forwardRef<HTMLDivElement, PropsWithChildren<TooltipProps
                 className,
               )}
               role="tooltip"
+              data-testid="Tooltip"
               ref={setPopoverEl}
               {...rest}
             >

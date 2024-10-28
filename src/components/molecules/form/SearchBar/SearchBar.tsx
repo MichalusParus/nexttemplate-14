@@ -1,10 +1,10 @@
 'use client'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { forwardRef, useCallback } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
-import { InferType, object, string } from 'yup'
+import z from 'zod'
 
 import { Button } from '@/components/atoms/common/Button'
 import { SearchIcon } from '@/components/atoms/icons'
@@ -55,9 +55,11 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
   ) => {
     const t = useTranslations('Components')
     const { push } = useRouter()
-    const schema = object().shape({ [name]: string().optional() })
-    const form = useForm<InferType<typeof schema>>({
-      resolver: yupResolver(schema),
+    const searchSchema = z.object({
+      [name]: z.unknown(),
+    })
+    const form = useForm<z.infer<typeof searchSchema>>({
+      resolver: zodResolver(searchSchema),
       defaultValues: {},
     })
 

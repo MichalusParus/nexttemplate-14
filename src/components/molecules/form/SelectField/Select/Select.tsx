@@ -79,7 +79,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     )
 
     const handleClose = useCallback(() => {
-      focusableEl[0].focus()
+      if (focusableEl[0]) {
+        focusableEl[0].focus()
+      }
       setIsOpen(prev => !prev)
     }, [focusableEl])
 

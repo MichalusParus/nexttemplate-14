@@ -80,7 +80,9 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
     )
 
     const handleClose = () => {
-      focusableEl[0].focus()
+      if (focusableEl[0]) {
+        focusableEl[0].focus()
+      }
       onClose()
     }
 

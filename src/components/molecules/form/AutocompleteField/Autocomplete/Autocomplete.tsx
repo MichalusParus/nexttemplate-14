@@ -108,7 +108,9 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
       if (isOpen && inputValue !== selectedLabel) {
         onInputChange(selectedLabel || '')
       }
-      focusableEl[0].focus()
+      if (focusableEl[0]) {
+        focusableEl[0].focus()
+      }
       setIsOpen(prev => !prev)
     }, [isOpen, options, value, inputValue, focusableEl, onInputChange, setIsOpen])
 
@@ -117,7 +119,9 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
         const selectedOption = options.find(({ value }) => value === target) || options[0]
         onChange(selectedOption.value)
         setInputValue(selectedOption.label)
-        focusableEl[0].focus()
+        if (focusableEl[0]) {
+          focusableEl[0].focus()
+        }
         setIsOpen(prev => !prev)
       },
       [options, focusableEl, onChange, setIsOpen, setInputValue],
@@ -138,7 +142,9 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
       onChange('')
       onInputChange('')
       setInputValue('')
-      focusableEl[0].focus()
+      if (focusableEl[0]) {
+        focusableEl[0].focus()
+      }
     }, [focusableEl, onChange, onInputChange])
 
     return (

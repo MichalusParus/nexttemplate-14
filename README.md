@@ -18,7 +18,7 @@ Access my site at [futureProd.com](https://futureProd.com)
 ## Technologies and libraries
 
 - Main: `Next14`, `Typescript`
-- FrontEnd: `TailwindCSS`,`Yup`,`React Hook Form`,`NextIntl`
+- FrontEnd: `TailwindCSS`,`Zod`,`React Hook Form`,`NextIntl`
 - BackEnd: `ServerActions`,`MongoDB`,`Mongoose`
 - Auth: `Next Auth`,`bcrypt`
 - dev: `Prettier`, `Lint`, `Jest`, `Storybook`
@@ -65,7 +65,7 @@ ParusUI Components are built with focus on minimal size, reusability and customi
 
 - `Complex` - ParusUI contains 56 components and 7 hooks.
 
-- `LibraryFree` - ParusUI are lightweighted and fully custom builded with no additional libraries except React Hook Form, Yup and Popper.
+- `LibraryFree` - ParusUI are lightweighted and fully custom builded with no additional libraries except React Hook Form, Zod and Popper.
 
 - `Folder structure` - Components are modular and organized in atomic folder structure.
 

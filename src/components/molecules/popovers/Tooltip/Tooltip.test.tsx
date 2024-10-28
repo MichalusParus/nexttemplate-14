@@ -13,7 +13,7 @@ describe('Tooltip', () => {
     )
     fireEvent.mouseEnter(screen.getByTestId('TooltipWrap'))
     expect(screen.getByRole('tooltip')).toBeTruthy()
-    expect(screen.getByTestId('TooltipWrap')).toHaveClass('className')
+    expect(screen.getByTestId('Tooltip')).toHaveClass('className')
     expect(screen.getByTestId('TooltipWrap')).toHaveTextContent('Children')
     expect(screen.getByRole('tooltip')).toHaveTextContent('tooltip')
   })

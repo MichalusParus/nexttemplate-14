@@ -26,8 +26,6 @@ no overlay on menu and others, just as modal prop and better close handling with
 tabs close on url change
 make multiselect and multiautocomplete as wrapper around single version with support for multi
 Carousel autoplay with stop
-zod not yup
-no default imports
 searchinput and searchbar
 CHECK Tabs, Menu, Drawer, Carousel
 building block component folder

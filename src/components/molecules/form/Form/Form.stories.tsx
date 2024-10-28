@@ -1,13 +1,13 @@
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import type { Meta, StoryObj } from '@storybook/react'
 import { useForm } from 'react-hook-form'
-import { InferType } from 'yup'
+import z from 'zod'
 
 import { Button } from '@/components/atoms/common/Button'
 import { Label } from '@/components/atoms/common/Label'
 import { useFilterData } from '@/utils/hooks/useFilterData'
 
-import { formScheme, initialValues, options } from '../../../../../.storybook/helpers'
+import { formSchema, initialValues, options } from '../../../../../.storybook/helpers'
 import { AutocompleteField } from '../AutocompleteField'
 import { CheckboxField } from '../CheckboxField'
 import { CheckboxGroupField } from '../CheckboxGroupField'
@@ -39,8 +39,8 @@ export default meta
 type Story = StoryObj<typeof Form>
 
 const FormWithHooks = (args: FormProps<object>) => {
-  const form = useForm<InferType<typeof formScheme>>({
-    resolver: yupResolver(formScheme),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: initialValues,
   })
   const { filteredData: autocompleteOptions, setFilter: setAutocompleteFilter } =
