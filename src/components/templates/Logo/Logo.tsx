@@ -10,7 +10,7 @@ export type LogoProps = {
 }
 
 /** Main Logo component */
-export const Logo = ({ className = '' }: LogoProps) => {
+export const Logo = ({ className }: LogoProps) => {
   return (
     <Link
       className={cn('Logo', 'flex w-max items-center gap-2 border-none', className)}

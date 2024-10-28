@@ -1,19 +1,22 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import Ghost from '../../loaders/Ghost'
 import { ghostAligment, titleColor, titleSize } from './Title.style'
 
-export type TitleProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'color' | 'className'> & {
+type NativeHeadingProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'color' | 'className'>
+
+export type TitleProps = NativeHeadingProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** for choosing heading type */
   variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
   /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
+  color?: StyleProps['color']
   /** font size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'none'
+  size?: StyleProps['size'] | 'xl' | '2xl' | '3xl'
   /** align tailwind class enum */
   align?: 'text-left' | 'text-center' | 'text-right'
   /** ghost loading state for heading */
@@ -24,7 +27,7 @@ export type TitleProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'color' | 'cla
 export const Title = forwardRef<HTMLHeadingElement, TitleProps>(
   (
     {
-      className = '',
+      className,
       variant = 'h2',
       color = 'none',
       size = 'lg',

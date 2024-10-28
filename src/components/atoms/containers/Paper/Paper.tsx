@@ -1,31 +1,31 @@
 import { forwardRef, HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
 
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { paperVariant } from './Paper.style'
 
-export type PaperProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
-  /** for passing custom tailwind classes */
-  className?: string
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** optional padding tailwind class */
-  padding?: string
-  /** optional border-radius tailwind class */
-  rounded?: string
-  /** hide paper shadow */
-  hideShadow?: boolean
-  /** children */
-  children?: ReactNode
-}
+type NativePaperProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'>
+
+export type PaperProps = NativePaperProps &
+  Omit<StyleProps, 'size'> & {
+    /** for passing custom tailwind classes */
+    className?: string
+    /** optional padding tailwind class */
+    padding?: string
+    /** optional border-radius tailwind class */
+    rounded?: string
+    /** hide paper shadow */
+    hideShadow?: boolean
+    /** children */
+    children?: ReactNode
+  }
 
 /** Styled wrap. Default HTMLAttributes props supported. */
 export const Paper = forwardRef<HTMLDivElement, PropsWithChildren<PaperProps>>(
   (
     {
-      className = '',
+      className,
       variant = 'text',
       color = 'primary',
       padding = 'py-2 px-2 md:pt-2 md:pb-3 md:px-5',

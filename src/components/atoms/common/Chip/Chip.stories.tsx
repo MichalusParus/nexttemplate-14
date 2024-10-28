@@ -72,11 +72,7 @@ export const AvatarTitleChip: Story = {
     <Chip
       {...args}
       startIcon={
-        <Avatar
-          color={args.color === 'error' ? 'primary' : args.color}
-          size={args.size}
-          username="Jack Black"
-        />
+        <Avatar variant={args.variant} color={args.color} size={args.size} username="Jack Black" />
       }
     />
   ),
@@ -94,7 +90,7 @@ export const AvatarOnclickChip: Story = {
       {...args}
       startIcon={
         <Avatar
-          color={args.color === 'error' ? 'primary' : args.color}
+          color={args.color}
           size={args.size}
           username="Jack Black"
           src="https://xsgames.co/randomusers/avatar.php?g=male"

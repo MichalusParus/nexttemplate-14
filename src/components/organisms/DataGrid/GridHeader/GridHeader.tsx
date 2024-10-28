@@ -1,6 +1,7 @@
 'use client'
 import { forwardRef } from 'react'
 
+import { StyleProps } from '@/components/types'
 import { FilterDef, SortingDef } from '@/utils/hooks/useFilterData'
 import { cn } from '@/utils/utils'
 
@@ -8,19 +9,13 @@ import ColumnHead from '../ColumnHead'
 import { ColumnDef } from '../types'
 import { rowgroupVariant } from './GridHeader.style'
 
-type GridHeaderProps = {
+type GridHeaderProps = StyleProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** DataGrid name for id and aria purposes */
   name: string
   /** grid columns definition */
   columns: ColumnDef[]
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
   /** boolean for all rows selected */
   allSelected?: boolean
   /** current applied sort */
@@ -69,7 +64,7 @@ export const GridHeader = forwardRef<HTMLDivElement, GridHeaderProps>(
         ref={ref}
       >
         <div className="GridRow flex" role="row">
-          {handleAll ? (
+          {handleAll && (
             <ColumnHead
               className="rounded-none rounded-tl-md"
               name={name}
@@ -84,7 +79,7 @@ export const GridHeader = forwardRef<HTMLDivElement, GridHeaderProps>(
               handleSorting={haveSubColumns ? undefined : handleSorting}
               setFilter={haveSubColumns ? undefined : setFilter}
             />
-          ) : null}
+          )}
           {columns.map((col, i) => (
             <ColumnHead
               className={cn(
@@ -104,9 +99,9 @@ export const GridHeader = forwardRef<HTMLDivElement, GridHeaderProps>(
             />
           ))}
         </div>
-        {haveSubColumns ? (
+        {haveSubColumns && (
           <div className="GridRow flex" role="row">
-            {handleAll ? (
+            {handleAll && (
               <ColumnHead
                 className="rounded-none"
                 name={name}
@@ -121,7 +116,7 @@ export const GridHeader = forwardRef<HTMLDivElement, GridHeaderProps>(
                 handleSorting={handleSorting}
                 setFilter={setFilter}
               />
-            ) : null}
+            )}
             {mergedSubColumns.map(col => (
               <ColumnHead
                 key={col!.label}
@@ -137,7 +132,7 @@ export const GridHeader = forwardRef<HTMLDivElement, GridHeaderProps>(
               />
             ))}
           </div>
-        ) : null}
+        )}
       </div>
     )
   },

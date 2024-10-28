@@ -2,7 +2,7 @@ type Props = {
   className?: string
 }
 
-export default function DeleteIcon({ className = '' }: Props) {
+export default function DeleteIcon({ className }: Props) {
   return (
     <svg
       className={className}

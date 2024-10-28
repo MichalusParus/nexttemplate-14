@@ -9,13 +9,13 @@ type MultiSelectFieldProps = Omit<MultiSelectProps, 'value' | 'error' | 'onChang
 
 /** Form and style context wrapper for MultiSelect component. Combobox, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiSelectField = ({
-  className = '',
+  className,
   name,
   label,
   variant,
   color,
   size,
-  collapsed,
+  labelProps,
   ...rest
 }: MultiSelectFieldProps) => {
   const {
@@ -35,8 +35,8 @@ export const MultiSelectField = ({
           variant={variant || formVariant}
           color={color || formColor}
           size={size || formSize}
-          collapsed={collapsed || formCollapsed}
           error={(errors[name]?.message as string) || undefined}
+          labelProps={{ collapsed: labelProps?.collapsed || formCollapsed }}
           {...field}
           {...rest}
         />

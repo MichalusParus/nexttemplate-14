@@ -2,7 +2,7 @@ type Props = {
   className?: string
 }
 
-export default function XIcon({ className = '' }: Props) {
+export default function XIcon({ className }: Props) {
   return (
     <svg
       className={className}

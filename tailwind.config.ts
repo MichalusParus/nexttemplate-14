@@ -6,6 +6,10 @@ const config: Config = {
   future: {
     hoverOnlyWhenSupported: true,
   },
+  corePlugins: {
+    aspectRatio: false,
+  },
+  plugins: [require('@tailwindcss/aspect-ratio')],
   theme: {
     screens: {
       xs: '480px',
@@ -156,6 +160,7 @@ const config: Config = {
         paper: 'var(--shadow-paper)',
         modal: 'var(--shadow-modal)',
         error: 'var(--shadow-error)',
+        ring: 'var(--shadow-ring)',
       },
       transitionProperty: {
         colors:
@@ -175,6 +180,5 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
 }
 export default config

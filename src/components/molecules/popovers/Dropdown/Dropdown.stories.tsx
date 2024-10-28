@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import Combobox from '@/components/atoms/common/Combobox'
 
@@ -13,13 +13,19 @@ const meta: Meta<typeof Dropdown> = {
   parameters: {
     layout: 'padded',
   },
+  argTypes: {
+    placement: {
+      control: { type: 'radio' },
+    },
+  },
 }
 
 const DropdownWithHooks = (args: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
+  const parentRef = useRef<HTMLDivElement | null>(null)
   return (
     <div className="flex h-[50vh] w-full items-center justify-center">
-      <div className="relative">
+      <div className="relative" ref={parentRef}>
         <Combobox
           name="storybookDrawer"
           variant="text"
@@ -29,7 +35,7 @@ const DropdownWithHooks = (args: DropdownProps) => {
         >
           Combobox for Dropdown
         </Combobox>
-        <Dropdown {...args} isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <Dropdown {...args} isOpen={isOpen} onClose={() => setIsOpen(false)} parentRef={parentRef}>
           <div role="menu" aria-hidden={!isOpen}>
             {textContent.slice(0, 300)}
           </div>
@@ -46,7 +52,8 @@ export const PrimaryDefault: Story = {
   args: {
     className: '',
     isOpen: false,
-    placement: 'relative',
+    placement: 'bottom-start',
+    offset: undefined,
     variant: 'text',
     color: 'primary',
     width: 'w-full',
@@ -57,32 +64,6 @@ export const PrimaryDefault: Story = {
     paperProps: undefined,
     scrollShadowProps: undefined,
     onClose: () => {},
-  },
-  render: args => <DropdownWithHooks {...args} />,
-}
-
-export const Left: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    placement: 'left',
-    width: 'w-96',
-  },
-  render: args => <DropdownWithHooks {...args} />,
-}
-
-export const Right: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    placement: 'right',
-    width: 'w-96',
-  },
-  render: args => <DropdownWithHooks {...args} />,
-}
-
-export const Top: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    placement: 'top',
   },
   render: args => <DropdownWithHooks {...args} />,
 }

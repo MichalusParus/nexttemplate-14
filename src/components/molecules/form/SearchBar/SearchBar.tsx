@@ -1,12 +1,14 @@
 'use client'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { forwardRef, useCallback } from 'react'
-import { FieldValues } from 'react-hook-form'
-import { object } from 'yup'
+import { FieldValues, useForm } from 'react-hook-form'
+import { InferType, object, string } from 'yup'
 
 import Button from '@/components/atoms/common/Button'
 import SearchIcon from '@/components/atoms/icons/SearchIcon'
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import Form from '../Form'
@@ -14,17 +16,11 @@ import InputField from '../InputField'
 import Input from '../InputField/Input'
 import { searchColor, searchSize } from './SearchBar.style'
 
-export type SearchBarProps = {
+export type SearchBarProps = StyleProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** name of searchbar */
   name: string
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
   /** optional placeholder for search input */
   placeholder?: string
   /** width of component as tailwind class */
@@ -43,7 +39,7 @@ export type SearchBarProps = {
 export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
   (
     {
-      className = '',
+      className,
       name,
       variant = 'outlined',
       color = 'primary',
@@ -59,6 +55,11 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
   ) => {
     const t = useTranslations('Components')
     const { push } = useRouter()
+    const schema = object().shape({ [name]: string().optional() })
+    const form = useForm<InferType<typeof schema>>({
+      resolver: yupResolver(schema),
+      defaultValues: {},
+    })
 
     const handleOnSubmit = useCallback(
       (value: FieldValues) => {
@@ -83,11 +84,9 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
             variant={variant}
             color={color}
             size={size}
-            width={width}
             placeholder={placeholder}
             startIcon={<SearchIcon />}
-            hideLabel
-            hideError
+            labelProps={{ hideLabel: true, hideError: true, width: width }}
             ref={ref}
             disabled={disabled}
             onChange={value => onChange(String(value))}
@@ -99,8 +98,8 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     return (
       <Form
         className={cn('SearchBarForm', 'relative flex', className)}
-        initialValues={{ [name]: '' }}
-        validationSchema={object().shape({})}
+        name={`${name}Form`}
+        form={form}
         role="search"
         onSubmit={handleOnSubmit}
       >
@@ -113,7 +112,6 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
           variant={variant}
           color={color}
           size={size}
-          width={width}
           placeholder={placeholder}
           startIcon={
             <Button
@@ -127,8 +125,7 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
               aria-label={t('search')}
             />
           }
-          hideLabel
-          hideError
+          labelProps={{ hideLabel: true, hideError: true, width: width }}
           disabled={disabled}
         />
       </Form>

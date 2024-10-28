@@ -1,20 +1,23 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { ghostSize, ghostStyle } from './Ghost.style'
 
-export type GhostProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'> & {
+type NativeGhostProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'>
+
+export type GhostProps = NativeGhostProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** inline ghost size */
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'none'
+  size?: StyleProps['size'] | 'xl' | '2xl' | '3xl' | 'none'
 }
 
 /** Ghost is loading template for text, images, boxes and sections. Height and width must be set through className, for inline use theme heights. Default HTMLAttributes props supported. */
 export const Ghost = forwardRef<HTMLSpanElement, GhostProps>(
-  ({ className = '', size = 'none', ...rest }, ref) => {
+  ({ className, size = 'none', ...rest }, ref) => {
     const t = useTranslations('Components')
 
     return (

@@ -5,12 +5,14 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button/Button'
+import { StyleProps } from '@/components/types'
 import { useFilterData } from '@/utils/hooks/useFilterData'
-import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { useFocus } from '@/utils/hooks/useFocus'
 import { usePagination } from '@/utils/hooks/usePagination'
 import { cn } from '@/utils/utils'
 
@@ -20,7 +22,7 @@ import GridFooter from './GridFooter'
 import GridHeader from './GridHeader'
 import { ColDef, ColumnDef, RowDef } from './types'
 
-export type DataGridProps = {
+export type DataGridProps = StyleProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** DataGrid name for id and aria purposes */
@@ -29,12 +31,6 @@ export type DataGridProps = {
   columns: ColumnDef[]
   /** grid rows array */
   rows: RowDef[]
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
   /** loading ghost state */
   isLoading?: boolean
   /** default rowsPerPage option */
@@ -57,7 +53,7 @@ export type DataGridProps = {
 export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
   (
     {
-      className = '',
+      className,
       name,
       columns,
       rows,
@@ -81,26 +77,11 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
     },
     ref,
   ) => {
+    const componentRef = useRef<HTMLDivElement>(null)
+    useImperativeHandle(ref, () => componentRef.current!)
     const [selectedRows, setSelectedRows] = useState<RowDef[]>([])
     const [selectedRowsPerPage, setSelectedRowsPerPage] = useState(rowsPerPage)
     const [isGridFocusOpen, setIsGridFocusOpen] = useState(false)
-    const { componentRef, startRef } = useFocusTrap(
-      isGridFocusOpen,
-      () => setIsGridFocusOpen(false),
-      {
-        focusable: [
-          '.RowButton:not(.cursor-default)',
-          '.SubColButton',
-          '.Combobox',
-          '.ExportButton',
-          '.LeftChevronButton',
-          '.RightChevronButton',
-          '.SelectAll:not(.cursor-default)',
-        ],
-        focusSelected: '.RowButton.selected',
-      },
-    )
-    useImperativeHandle(ref, () => componentRef.current!)
     const { filteredData, sorting, filter, setFilter, handleSorting } = useFilterData(rows)
     const { pagedData, pages, selectedPage, setSelectedPage } = usePagination(
       filteredData,
@@ -110,6 +91,20 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
     const haveSubColumns = columns.some(col => col.columns && col.columns.length > 0)
     const mergedSubColumns = columns.map(c => c.columns).flat()
     const columnsInRow = haveSubColumns ? (mergedSubColumns as ColDef[]) : columns
+    const { focusableEl } = useFocus(
+      isGridFocusOpen,
+      componentRef,
+      [
+        '.RowButton:not(.cursor-default)',
+        '.SubColButton',
+        '.Combobox',
+        '.ExportButton',
+        '.LeftChevronButton',
+        '.RightChevronButton',
+        '.SelectAll:not(.cursor-default)',
+      ],
+      () => setIsGridFocusOpen(false),
+    )
 
     const handleAll = useCallback(() => {
       if (selectAll === 'none') {
@@ -148,10 +143,10 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
         const target = e.target as HTMLDivElement
         if (isGridFocusOpen && !componentRef.current?.contains(target)) {
           setIsGridFocusOpen(false)
-          startRef?.current?.focus()
+          focusableEl[0].focus()
         }
       },
-      [isGridFocusOpen, componentRef, startRef],
+      [isGridFocusOpen, componentRef, focusableEl],
     )
 
     const handleKeyDown = useCallback(
@@ -234,13 +229,13 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
             />
           </div>
         </div>
-        {onMultiselectSubmit ? (
+        {onMultiselectSubmit && (
           <Button
             {...multiselectButtonProps}
             onClick={() => onMultiselectSubmit(selectedRows)}
             data-testid="gridMultiselectSubmit"
           />
-        ) : null}
+        )}
       </>
     )
   },

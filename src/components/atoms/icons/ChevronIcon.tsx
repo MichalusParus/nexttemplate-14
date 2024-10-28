@@ -2,7 +2,7 @@ type Props = {
   className?: string
 }
 
-export default function ChevronIcon({ className = '' }: Props) {
+export default function ChevronIcon({ className }: Props) {
   return (
     <svg
       className={className}

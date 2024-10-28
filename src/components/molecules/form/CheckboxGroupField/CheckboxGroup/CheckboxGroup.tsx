@@ -1,31 +1,33 @@
 'use client'
 import { forwardRef, useCallback } from 'react'
 
-import { Label, LabelProps } from '@/components/atoms/common/Label/Label'
+import { Label } from '@/components/atoms/common/Label/Label'
 import { OptionType } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { Checkbox, CheckboxProps } from '../../CheckboxField/Checkbox/Checkbox'
 
-export type CheckboxGroupProps = Omit<CheckboxProps, 'value' | 'isChecked' | 'onChange' | 'fake'> &
-  LabelProps & {
-    /** name of form field */
-    name: string
-    /** checkboxGroup value */
-    value: string[]
-    /** group options for individual radio inputs */
-    options: OptionType[]
-    /** display radio inputs in column */
-    column?: boolean
-    /** onChange function */
-    onChange: (value: string[]) => void
-  }
+export type CheckboxGroupProps = Omit<
+  CheckboxProps,
+  'value' | 'isChecked' | 'onChange' | 'fake'
+> & {
+  /** name of form field */
+  name: string
+  /** checkboxGroup value */
+  value: string[]
+  /** group options for individual radio inputs */
+  options: OptionType[]
+  /** display radio inputs in column */
+  column?: boolean
+  /** onChange function */
+  onChange: (value: string[]) => void
+}
 
 /** Basic styled CheckboxGroup inside Label Component. For form purposes use CheckboxGroupField. Default InputHTMLAttributes props supported. USE CLIENT */
 export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
   (
     {
-      className = '',
+      className,
       name,
       label,
       value,
@@ -34,13 +36,9 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
       variant = 'outlined',
       color = 'primary',
       size = 'md',
-      width,
-      description,
-      hideLabel,
-      hideError,
-      collapsed,
       disabled,
       error,
+      labelProps,
       onChange,
       ...rest
     },
@@ -69,20 +67,11 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
     )
 
     return (
-      <Label
-        className={className}
-        name={name}
-        label={label}
-        size={size}
-        width={width}
-        error={error}
-        description={description}
-        hideLabel={hideLabel}
-        hideError={hideError}
-        collapsed={collapsed}
-        fakeLabel
-      >
-        <div className={cn('CheckboxGroupWrap', 'flex flex-wrap', column && 'flex-col')}>
+      <Label name={name} label={label} size={size} error={error} {...labelProps} fakeLabel>
+        <div
+          className={cn('CheckboxGroup', 'flex flex-wrap', column && 'flex-col', className)}
+          data-testid="CheckboxGroup"
+        >
           {options.map(({ value: checkboxValue, label, content }) => (
             <Checkbox
               key={checkboxValue}

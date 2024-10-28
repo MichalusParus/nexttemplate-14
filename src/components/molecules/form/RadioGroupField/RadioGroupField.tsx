@@ -9,13 +9,13 @@ export type RadioGroupFieldProps = Omit<RadioGroupProps, 'value' | 'error' | 'on
 
 /** Form and style context wrapper for RadioGroup component. Default InputHTMLAttributes props supported. USE CLIENT */
 export const RadioGroupField = ({
-  className = '',
+  className,
   name,
   label,
   variant,
   color,
   size,
-  collapsed,
+  labelProps,
   ...rest
 }: RadioGroupFieldProps) => {
   const {
@@ -35,8 +35,11 @@ export const RadioGroupField = ({
           variant={variant || formVariant}
           color={color || formColor}
           size={size || formSize}
-          collapsed={collapsed || formCollapsed}
           error={(errors[name]?.message as string) || undefined}
+          labelProps={{
+            ...labelProps,
+            collapsed: labelProps?.collapsed || formCollapsed,
+          }}
           autoComplete="off"
           {...field}
           {...rest}

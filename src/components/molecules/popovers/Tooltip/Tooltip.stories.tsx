@@ -12,6 +12,11 @@ const meta: Meta<typeof Tooltip> = {
   parameters: {
     layout: 'centered',
   },
+  argTypes: {
+    placement: {
+      control: 'radio',
+    },
+  },
 }
 
 export default meta
@@ -21,6 +26,7 @@ export const Default: Story = {
   args: {
     className: '',
     placement: 'top',
+    offset: undefined,
     title: 'tooltip',
     delay: 'delay-500',
     children: 'HoverMe',
@@ -30,19 +36,11 @@ export const Default: Story = {
 export const Element: Story = {
   args: {
     ...Default.args,
-    className: '[&>.Tooltip]:p-0',
-    title: (<Alert status="info">info</Alert>) as ReactNode,
+    className: '!p-0',
+    title: (
+      <Alert status="info" variant="contained">
+        info
+      </Alert>
+    ) as ReactNode,
   },
-}
-
-export const Right: Story = {
-  args: { ...Default.args, placement: 'right' },
-}
-
-export const Bottom: Story = {
-  args: { ...Default.args, placement: 'bottom' },
-}
-
-export const Left: Story = {
-  args: { ...Default.args, placement: 'left' },
 }

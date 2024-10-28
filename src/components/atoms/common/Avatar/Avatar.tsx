@@ -1,39 +1,29 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import ProfileIcon from '../../icons/ProfileIcon'
 import Image from '../Image'
 import { avatarClass, avatarSize, avatarVariant } from './Avatar.style'
 
-export type AvatarProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
-  /** for passing custom tailwind classes */
-  className?: string
-  /** source for profile picture, without src displays user initials  */
-  src?: string
-  /** username for avatar initials, without username displays profile icon  */
-  username?: string
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
-}
+type NativeAvatarProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'>
+
+export type AvatarProps = NativeAvatarProps &
+  StyleProps & {
+    /** for passing custom tailwind classes */
+    className?: string
+    /** source for profile picture, without src displays user initials  */
+    src?: string
+    /** username for avatar initials, without username displays profile icon  */
+    username?: string
+  }
 
 /** Avatar component for displaying user initials. By default shows profile icon. Default HTMLAttributes props supported. */
 export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
   (
-    {
-      className = '',
-      src,
-      username,
-      variant = 'outlined',
-      color = 'primary',
-      size = 'md',
-      ...rest
-    },
+    { className, src, username, variant = 'outlined', color = 'primary', size = 'md', ...rest },
     ref,
   ) => {
     const t = useTranslations('Components')
@@ -41,7 +31,14 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
 
     const AvatarType = () => {
       if (src) {
-        return <Image className="min-h-full min-w-full" src={src} alt={t('profile')} ratio={100} />
+        return (
+          <Image
+            className="min-h-full min-w-full"
+            src={src}
+            alt={t('profile')}
+            ratio="aspect-w-4 aspect-h-4"
+          />
+        )
       } else if (userInitials) {
         return <span>{userInitials}</span>
       } else {

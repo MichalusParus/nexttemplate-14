@@ -9,13 +9,13 @@ export type SelectFieldProps = Omit<SelectProps, 'value' | 'error' | 'onChange'>
 
 /** Form and style context wrapper for Select component. Combobox, Dropdown and ListBox props supported. USE CLIENT */
 export const SelectField = ({
-  className = '',
+  className,
   name,
   label,
   variant,
   color,
   size,
-  collapsed,
+  labelProps,
   ...rest
 }: SelectFieldProps) => {
   const {
@@ -35,8 +35,11 @@ export const SelectField = ({
           variant={variant || formVariant}
           color={color || formColor}
           size={size || formSize}
-          collapsed={collapsed || formCollapsed}
           error={(errors[name]?.message as string) || undefined}
+          labelProps={{
+            ...labelProps,
+            collapsed: labelProps?.collapsed || formCollapsed,
+          }}
           {...field}
           {...rest}
         />

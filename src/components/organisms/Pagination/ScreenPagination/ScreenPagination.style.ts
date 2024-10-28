@@ -1,6 +1,6 @@
 import { cn } from '@/utils/utils'
 
-export const buttonSize = {
+export const pageButtonSize = {
   sm: cn('mx-1 min-w-[2rem]'),
   md: cn('mx-1 min-w-[2.375rem] md:mx-1.5'),
   lg: cn('mx-1 min-w-[2.75rem] md:mx-2'),

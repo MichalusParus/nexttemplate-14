@@ -5,10 +5,12 @@ import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import Link from '@/components/atoms/common/Link'
 import { LinkProps } from '@/components/atoms/common/Link/Link'
 import Paper from '@/components/atoms/containers/Paper'
+import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import Disclosure from '../Disclosure'
-import { DisclosureProps } from '../Disclosure/Disclosure'
+import Menu from '../../popovers/Menu'
+import { MenuProps } from '../../popovers/Menu/Menu'
 
 type TabOption = {
   label: string
@@ -17,7 +19,7 @@ type TabOption = {
   isHidden?: boolean
 }
 
-export type TabsProps = {
+export type TabsProps = Omit<StyleProps, 'size'> & {
   /** for passing custom tailwind classes */
   className?: string
   /** name string serves as id for aria purposes and as secondary aria label */
@@ -26,12 +28,8 @@ export type TabsProps = {
   param: string
   /** tabs object list: tab label, searchparam slug, rendered component and hidden for hiding tab list */
   tabs: TabOption[]
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
   /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'inline' | 'none'
+  size?: StyleProps['size'] | 'inline'
   /** full width mode of tabs component */
   fullWidth?: boolean
   /** for passing aditional props to Button */
@@ -39,7 +37,7 @@ export type TabsProps = {
   /** for passing aditional props to Link */
   linkProps?: Partial<LinkProps>
   /** for passing aditional props to Disclosure */
-  disclosureProps?: Partial<DisclosureProps>
+  menuProps?: Partial<MenuProps>
   /** optional on tab click for external control. Must be inside use client parent */
   onTabClick?: (tab: TabOption) => void
 }
@@ -48,7 +46,7 @@ export type TabsProps = {
 export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
   (
     {
-      className = '',
+      className,
       name,
       param,
       tabs,
@@ -58,7 +56,7 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
       fullWidth,
       buttonProps,
       linkProps,
-      disclosureProps,
+      menuProps,
       onTabClick,
       children,
     },
@@ -71,6 +69,15 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
       (slug: string) => (selectedTab.slug === slug ? 'selected' : ''),
       [selectedTab.slug],
     )
+
+    const comboboxTitle = () => {
+      return (
+        <>
+          {selectedTab.label}
+          <ChevronIcon className={cn('text-inherit transition-transform')} />
+        </>
+      )
+    }
 
     return (
       <div className={cn('TabsWrap', 'relative w-full', className)} data-testid="Tabs">
@@ -91,64 +98,68 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
             ref={ref}
             aria-label={name}
           >
-            {tabs.map(tab =>
-              !tab.isHidden ? (
-                <li
-                  key={tab.slug}
-                  className={cn('Tab', 'w-full')}
-                  role="tab"
-                  aria-controls={tabPanelId}
-                  aria-selected={tab.slug === selectedTab.slug}
-                >
-                  {onTabClick ? (
-                    <Button
-                      className={cn(
-                        'TabButton',
-                        'rounded-none border-none',
-                        getSelectedClass(tab.slug),
-                      )}
-                      variant={variant}
-                      color={color}
-                      size={size}
-                      fullWidth
-                      disableUpperCase
-                      hideShadow
-                      onClick={() => onTabClick(tab)}
-                      {...buttonProps}
-                    >
-                      {tab.label}
-                    </Button>
-                  ) : (
-                    <Link
-                      className={cn(
-                        'TabLink',
-                        'rounded-none border-none',
-                        getSelectedClass(tab.slug),
-                      )}
-                      variant={variant}
-                      color={color}
-                      size={size}
-                      disableUpperCase
-                      hideShadow
-                      href={`?tab=${tab.slug}`}
-                      {...linkProps}
-                    >
-                      {tab.label}
-                    </Link>
-                  )}
-                </li>
-              ) : null,
+            {tabs.map(
+              tab =>
+                !tab.isHidden && (
+                  <li
+                    key={tab.slug}
+                    className={cn('Tab', 'w-full')}
+                    role="tab"
+                    aria-controls={tabPanelId}
+                    aria-selected={tab.slug === selectedTab.slug}
+                  >
+                    {onTabClick ? (
+                      <Button
+                        className={cn(
+                          'TabButton',
+                          'w-full rounded-none border-none',
+                          getSelectedClass(tab.slug),
+                        )}
+                        variant={variant}
+                        color={color}
+                        size={size}
+                        disableUpperCase
+                        hideShadow
+                        onClick={() => onTabClick(tab)}
+                        {...buttonProps}
+                      >
+                        {tab.label}
+                      </Button>
+                    ) : (
+                      <Link
+                        className={cn(
+                          'TabLink',
+                          'rounded-none border-none',
+                          getSelectedClass(tab.slug),
+                        )}
+                        variant={variant}
+                        color={color}
+                        size={size}
+                        disableUpperCase
+                        hideShadow
+                        href={`?tab=${tab.slug}`}
+                        {...linkProps}
+                      >
+                        {tab.label}
+                      </Link>
+                    )}
+                  </li>
+                ),
             )}
             {children}
           </ul>
         </Paper>
-        <Disclosure
-          className="w-full md:hidden"
-          title={selectedTab.label}
-          variant={variant}
-          color={color}
-          comboboxProps={{ color: color }}
-          {...disclosureProps}
+        <Menu
+          className="w-fill md:hidden"
+          name="tabsMenu"
+          comboboxProps={{
+            className: 'w-full justify-between',
+            children: comboboxTitle(),
+            variant: variant,
+            color: color,
+          }}
+          dropdownProps={{ variant: variant, color: color }}
+          {...menuProps}
         >
           <ul
             className={cn('TabList', 'flex w-full flex-col justify-center')}
@@ -156,46 +167,54 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
             ref={ref}
             aria-label={name}
           >
-            {tabs.map(tab => (
-              <li
-                key={tab.slug}
-                id={name + tab.slug}
-                className={cn('Tab', 'w-full')}
-                role="tab"
-                aria-controls={tabPanelId}
-                aria-selected={tab.slug === selectedTab.slug}
-              >
-                {onTabClick ? (
-                  <Button
-                    className={cn('TabButton', getSelectedClass(tab.slug))}
-                    variant={variant}
-                    color={color}
-                    size={size}
-                    fullWidth
-                    disableUpperCase
-                    onClick={() => onTabClick(tab)}
-                    {...buttonProps}
+            {tabs.map(
+              tab =>
+                !tab.isHidden && (
+                  <li
+                    key={tab.slug}
+                    id={name + tab.slug}
+                    className={cn('Tab', 'w-full')}
+                    role="tab"
+                    aria-controls={tabPanelId}
+                    aria-selected={tab.slug === selectedTab.slug}
                   >
-                    {tab.label}
-                  </Button>
-                ) : (
-                  <Link
-                    className={cn('TabLink', getSelectedClass(tab.slug))}
-                    variant={variant}
-                    color={color}
-                    size={size}
-                    disableUpperCase
-                    href={`?tab=${tab.slug}`}
-                    {...linkProps}
-                  >
-                    {tab.label}
-                  </Link>
-                )}
-              </li>
-            ))}
+                    {onTabClick ? (
+                      <Button
+                        className={cn(
+                          'TabButton',
+                          'w-full border-none',
+                          getSelectedClass(tab.slug),
+                        )}
+                        variant={variant}
+                        color={color}
+                        size={size}
+                        disableUpperCase
+                        hideShadow
+                        onClick={() => onTabClick(tab)}
+                        {...buttonProps}
+                      >
+                        {tab.label}
+                      </Button>
+                    ) : (
+                      <Link
+                        className={cn('TabLink', getSelectedClass(tab.slug))}
+                        variant={variant}
+                        color={color}
+                        size={size}
+                        disableUpperCase
+                        hideShadow
+                        href={`?tab=${tab.slug}`}
+                        {...linkProps}
+                      >
+                        {tab.label}
+                      </Link>
+                    )}
+                  </li>
+                ),
+            )}
             {children}
           </ul>
-        </Disclosure>
+        </Menu>
         <div
           id={tabPanelId}
           className={cn('TabPanel', 'w-full')}

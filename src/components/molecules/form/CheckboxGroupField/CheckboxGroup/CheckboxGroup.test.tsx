@@ -18,7 +18,7 @@ describe('CheckboxGroup', () => {
       />,
     )
     expect(screen.getByTestId('LabelWrap')).toBeTruthy()
-    expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    expect(screen.getByTestId('CheckboxGroup')).toHaveClass('className')
     expect(screen.getAllByRole('checkbox')[0]).toHaveAttribute('id', 'value1')
     expect(screen.getAllByRole('checkbox')[0]).toHaveAttribute('name', 'value1')
     expect(screen.getAllByRole('checkbox')[0]).toHaveAttribute('type', 'checkbox')
@@ -61,7 +61,7 @@ describe('CheckboxGroup', () => {
         label="label"
         value={[]}
         options={options}
-        description="description"
+        labelProps={{ description: 'description' }}
         onChange={() => {}}
       />,
     )

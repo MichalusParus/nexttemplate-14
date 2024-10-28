@@ -15,7 +15,7 @@ export type ComboboxProps = Omit<ButtonProps, 'name'> & {
 
 /** Modified button with role combobox for controling popovers. Default ButtonHTMLAttributes props supported. USE CLIENT */
 export const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
-  ({ className = '', name, hasPopup = 'dialog', isOpen, children, ...rest }, ref) => {
+  ({ className, name, hasPopup = 'dialog', isOpen, children, ...rest }, ref) => {
     return (
       <Button
         className={cn('Combobox', 'relative', isOpen ? 'selected z-40' : 'z-20', className)}

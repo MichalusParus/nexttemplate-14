@@ -1,21 +1,15 @@
 import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { object, string } from 'yup'
 
-import { JestMockProvider, options } from '../../../../../.storybook/helpers'
-import Form from '../Form'
+import { JestFormProvider, JestMockProvider, options } from '../../../../../.storybook/helpers'
 import AutocompleteField from '.'
 
 describe('AutocompleteField', () => {
   it('default', () => {
     render(
       <JestMockProvider>
-        <Form
-          initialValues={{ autocompleteTest: 'autocompleteTest' }}
-          validationSchema={object().shape({})}
-          onSubmit={() => {}}
-        >
+        <JestFormProvider fields={['autocompleteTest']}>
           <AutocompleteField
             className="className"
             name="autocompleteTest"
@@ -23,11 +17,12 @@ describe('AutocompleteField', () => {
             options={options}
             onInputChange={() => {}}
           />
-        </Form>
+        </JestFormProvider>
       </JestMockProvider>,
     )
+    fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeTruthy()
-    expect(screen.getAllByTestId('LabelWrap')[0]).toHaveClass('className')
+    expect(screen.getByTestId('Autocomplete')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'autocompleteTest')
     expect(screen.getAllByTestId('LabelWrap')[0]).toHaveTextContent('label')
   })
@@ -36,13 +31,7 @@ describe('AutocompleteField', () => {
     const spy = jest.fn()
     render(
       <JestMockProvider>
-        <Form
-          initialValues={{ autocompleteTest: 'autocompleteTest' }}
-          validationSchema={object().shape({
-            autocompleteTest: string().required('required'),
-          })}
-          onSubmit={spy}
-        >
+        <JestFormProvider fields={['autocompleteTest']} onSubmit={spy}>
           <AutocompleteField
             className="className"
             name="autocompleteTest"
@@ -51,7 +40,7 @@ describe('AutocompleteField', () => {
             onInputChange={() => {}}
           />
           <button type="submit" data-testid="submit" />
-        </Form>
+        </JestFormProvider>
       </JestMockProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy

@@ -22,8 +22,8 @@ export const searchColor = {
 }
 
 export const searchSize = {
-  sm: cn('[&_input]:pl-8'),
-  md: cn('[&_input]:pl-10'),
-  lg: cn('[&_input]:pl-12'),
+  sm: cn('pl-8'),
+  md: cn('pl-10'),
+  lg: cn('pl-12'),
   none: '',
 }

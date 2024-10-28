@@ -11,6 +11,8 @@ import P from '@/components/atoms/typography/P'
 import Checkbox from '@/components/molecules/form/CheckboxField/Checkbox'
 import SearchBar from '@/components/molecules/form/SearchBar'
 import Menu from '@/components/molecules/popovers/Menu'
+import Tooltip from '@/components/molecules/popovers/Tooltip'
+import { StyleProps } from '@/components/types'
 import { FilterDef, SortingDef } from '@/utils/hooks/useFilterData'
 import { cn } from '@/utils/utils'
 
@@ -30,19 +32,13 @@ enum AriaSort {
   none = 'none',
 }
 
-export type ColumnHeadProps = {
+export type ColumnHeadProps = StyleProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** DataGrid name for id and aria purposes */
   name: string
   /** grid column definition */
   column: ColumnDef
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
   /** boolean for all rows selected */
   allSelected?: boolean
   /** current applied sort */
@@ -61,7 +57,7 @@ export type ColumnHeadProps = {
 export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
   (
     {
-      className = '',
+      className,
       name,
       column,
       variant = 'outlined',
@@ -141,7 +137,6 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
           'group',
           column.shrink ? 'shrink-1' : 'shrink-0',
           column.grow ? 'grow' : 'grow-0',
-          isInteractive && !column.hideSort && buttonVariant[variant][color],
           isSelected && 'selected',
           className,
         )}
@@ -152,13 +147,17 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
         {handleSorting && setFilter && !column.hideSort ? (
           <div className={cn('SubColTitle', 'flex justify-between')}>
             <Button
-              className={cn('SubColButton', 'group pr-0', cellOverflow)}
-              variant="text"
-              color="none"
+              className={cn(
+                'SubColButton',
+                'group w-full rounded-none border-0 pr-0',
+                cellOverflow,
+              )}
+              variant={variant}
+              color={color}
               size={size}
               disableUpperCase
-              fullWidth
               role="columnheader"
+              hideShadow
               aria-label={t('sortIn', { field: column.label })}
               aria-sort={ariaSorted}
               tabIndex={-1}
@@ -169,14 +168,14 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
                 <ChevronIcon className={cn('transition-dropdown', getIconState())} />
               </div>
             </Button>
-            {!column.hideFilter ? (
-              <>
+            {!column.hideFilter && (
+              <Tooltip title={t('filterIn', { field: column.label })} placement="top">
                 <Combobox
                   className={cn(
                     'GridFilterCombobox',
                     'border-transparent dark:border-transparent',
                     filterMenuVisibility,
-                    !isFilterApplied ? 'opacity-0' : 'selected',
+                    !isFilterApplied ? 'opacity-30' : 'selected',
                   )}
                   name={`filter${name}${column.name}`}
                   isOpen={isFilterOpen}
@@ -208,8 +207,8 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
                     onChange={value => setFilter({ ...filter, [column.name]: value })}
                   />
                 </Menu>
-              </>
-            ) : null}
+              </Tooltip>
+            )}
           </div>
         ) : (
           <P className={cn('SubColTitle', 'font-semibold', cellSize[size])} size={size}>

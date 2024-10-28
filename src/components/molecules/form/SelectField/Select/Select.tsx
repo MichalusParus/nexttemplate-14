@@ -1,5 +1,5 @@
 'use client'
-import { forwardRef, useCallback, useImperativeHandle, useState } from 'react'
+import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react'
 
 import Combobox from '@/components/atoms/common/Combobox'
 import { ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
@@ -8,26 +8,21 @@ import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 import Dropdown from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
-import { OptionType } from '@/components/types'
-import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { FieldProps, OptionType, StyleProps } from '@/components/types'
+import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 
-import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
+import { Label } from '../../../../atoms/common/Label/Label'
 
 export type SelectProps = Pick<ComboboxProps, 'name' | 'disabled'> &
-  Omit<LabelProps, 'onClick'> & {
+  FieldProps &
+  StyleProps & {
     /** position of dropdown */
-    placement?: 'left' | 'top'
-    /** style variant of component */
-    variant?: 'text' | 'outlined' | 'contained'
-    /** theme color of component, none disable styles for custom styling via className */
-    color?: 'primary' | 'secondary' | 'terciary' | 'none'
+    placement?: 'bottom' | 'top'
     /** current value of component */
     value: string
     /** options for select to choose from */
     options: OptionType[]
-    /** optional placeholder */
-    placeholder?: string
     /** optional combobox props for select combobox */
     comboboxProps?: Partial<ComboboxProps>
     /** for passing aditional props to dropdown */
@@ -42,38 +37,41 @@ export type SelectProps = Pick<ComboboxProps, 'name' | 'disabled'> &
 export const Select = forwardRef<HTMLDivElement, SelectProps>(
   (
     {
-      className = '',
+      className,
       name,
       label,
       placeholder = label,
-      options,
       value,
+      options,
       variant = 'outlined',
       color = 'primary',
       size = 'md',
-      placement = 'left',
-      width,
-      description,
-      hideLabel,
-      hideError,
-      collapsed,
+      placement = 'bottom',
       disabled,
       error,
       comboboxProps = {},
       dropdownProps = {},
       listboxProps = {},
+      labelProps,
       onChange,
     },
     ref,
   ) => {
+    const componentRef = useRef<HTMLDivElement>(null)
+    const dropdownRef = useRef<HTMLDivElement>(null)
+    useImperativeHandle(ref, () => componentRef.current!)
     const [isOpen, setIsOpen] = useState(false)
     const sortedOptions = placement === 'top' ? options.reverse() : options
     const selectedOption = options.find(option => option.value === value)
-    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), {
-      focusable: ['.Option'],
-      focusSelected: '.selected.Option',
-    })
-    useImperativeHandle(ref, () => componentRef.current!)
+    const { focusableEl } = useFocus(
+      isOpen,
+      componentRef,
+      ['.SelectCombobox', '.Option'],
+      () => setIsOpen(false),
+      {
+        portalRef: dropdownRef,
+      },
+    )
     const comboboxTitle = selectedOption ? (
       selectedOption?.label
     ) : (
@@ -81,9 +79,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     )
 
     const handleClose = useCallback(() => {
-      startRef?.current?.focus()
+      focusableEl[0].focus()
       setIsOpen(prev => !prev)
-    }, [startRef])
+    }, [focusableEl])
 
     const handleOnChange = useCallback(
       (value: string) => {
@@ -94,28 +92,25 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     )
 
     return (
-      <Label
-        className={className}
-        name={name}
-        label={label}
-        size={size}
-        width={width}
-        error={error}
-        description={description}
-        hideLabel={hideLabel}
-        hideError={hideError}
-        collapsed={collapsed}
-      >
-        <div className={cn('Select', 'relative w-full')} ref={componentRef}>
+      <Label name={name} label={label} size={size} error={error} {...labelProps}>
+        <div
+          className={cn('Select', 'relative w-full', className)}
+          ref={componentRef}
+          data-testid="Select"
+        >
           <Combobox
             id={name}
-            className={cn('SelectCombobox', error && 'error', comboboxProps.className)}
+            className={cn(
+              'SelectCombobox',
+              'z-40 w-full',
+              error && 'error',
+              comboboxProps.className,
+            )}
             name={name}
             variant={variant}
             color={color}
             size={size}
             hasPopup="listbox"
-            fullWidth
             isOpen={isOpen}
             disabled={disabled}
             hideShadow
@@ -134,14 +129,17 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
           </Combobox>
           <Dropdown
             isOpen={isOpen}
+            parentRef={componentRef}
             placement={placement}
             variant={variant}
             color={color}
             onClose={handleClose}
+            scrollShadowProps={{ disableHorizontal: true }}
+            ref={dropdownRef}
             {...dropdownProps}
           >
             <ListBox
-              className={cn(placement === 'left' ? 'pt-1' : 'pb-1', listboxProps.className)}
+              className={cn(listboxProps.className)}
               name={name}
               value={[value]}
               options={sortedOptions}

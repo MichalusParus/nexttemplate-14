@@ -7,8 +7,10 @@ import {
   ReactNode,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from 'react'
+import { createPortal } from 'react-dom'
 
 import Button from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
@@ -21,22 +23,19 @@ import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
 import XIcon from '@/components/atoms/icons/XIcon'
 import Title from '@/components/atoms/typography/Title'
 import { TitleProps } from '@/components/atoms/typography/Title/Title'
-import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { StyleProps } from '@/components/types'
+import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 
 import { closeClass, modalPosition, openClass } from './Modal.style'
 
-export type ModalProps = {
+export type ModalProps = Omit<StyleProps, 'size'> & {
   /** for passing custom tailwind classes */
   className?: string
   /** name string serves as id for aria purposes and as secondary aria label */
   name: string
   /** boolean for open state */
   isOpen?: boolean
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
   /** optional title for modal window */
   title?: string
   /** for setting diffrent modal width than default value as tailwind class */
@@ -65,7 +64,7 @@ export type ModalProps = {
 export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
   (
     {
-      className = '',
+      className,
       name,
       isOpen,
       variant = 'outlined',
@@ -86,10 +85,19 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
     ref,
   ) => {
     const t = useTranslations('Components')
+    const componentRef = useRef<HTMLDivElement>(null)
+    useImperativeHandle(ref, () => componentRef.current!)
     const [isLocallyOpen, setIsLocallyOpen] = useState(Boolean(isOpen))
+    const [mounted, setMounted] = useState(false)
     const openState = setIsOpen ? Boolean(isOpen) : isLocallyOpen
     const modalOpenClass = openState ? openClass : closeClass
-    useImperativeHandle(ref, () => componentRef.current!)
+    const { focusableEl } = useFocus(
+      openState,
+      componentRef,
+      ['[tabindex]:not([tabindex="-1"])', '.Link'],
+      setIsOpen ? () => setIsOpen(!isOpen) : () => setIsLocallyOpen(prev => !prev),
+      { trap: true },
+    )
 
     const handleClose = () => {
       if (setIsOpen) {
@@ -97,10 +105,12 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
       } else {
         setIsLocallyOpen(prev => !prev)
       }
-      startRef?.current?.focus()
+      focusableEl[0].focus()
     }
 
-    const { componentRef, startRef } = useFocusTrap(openState, handleClose)
+    useEffect(() => {
+      setMounted(true)
+    }, [])
 
     useEffect(() => {
       document.body.style.overflow = openState ? 'hidden' : 'unset'
@@ -108,7 +118,7 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
 
     return (
       <>
-        {!setIsOpen ? (
+        {!setIsOpen && (
           <Combobox
             name={name}
             isOpen={openState}
@@ -118,65 +128,69 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
             onClick={handleClose}
             {...comboboxProps}
           />
-        ) : null}
-        <div
-          id={name}
-          className={cn('Modal', width, modalPosition, modalOpenClass, className)}
-          ref={componentRef}
-          role="dialog"
-          aria-modal="true"
-          aria-hidden={!openState}
-          aria-label={title || name}
-        >
-          <Paper
-            className={cn('relative h-full w-full shadow-modal', paperProps.className)}
-            variant={variant}
-            color={color}
-            padding={padding}
-            {...filterOutKeys(paperProps, ['className'])}
-          >
-            <div className={cn('ModalTitleWrap', 'pb-8')}>
-              {title ? (
-                <Title
-                  color={variant === 'contained' ? 'none' : color}
-                  align="text-center"
-                  size="xl"
-                  {...titleProps}
-                >
-                  {title}
-                </Title>
-              ) : null}
-              {!hideXButton ? (
-                <Button
-                  className={cn('XButton', 'absolute right-0 top-0 border-none')}
-                  variant={variant}
-                  color={color}
-                  size="lg"
-                  startIcon={<XIcon />}
-                  hideShadow
-                  onClick={handleClose}
-                  aria-label={t('close')}
-                />
-              ) : null}
-            </div>
-            <ScrollShadow height="max-h-[75vh]">{children}</ScrollShadow>
-            <div className={cn('ModalActions', 'flex justify-end gap-3 pt-8')}>
-              {closeButton ? (
-                <Button
-                  className={cn('CloseButton', 'border-none', buttonProps.className)}
-                  variant={variant}
-                  color={color}
-                  hideShadow
-                  onClick={handleClose}
-                  {...filterOutKeys(buttonProps, ['className'])}
-                >
-                  Close
-                </Button>
-              ) : null}
-              {modalActions}
-            </div>
-          </Paper>
-        </div>
+        )}
+        {mounted &&
+          createPortal(
+            <div
+              id={name}
+              className={cn('Modal', width, modalPosition, modalOpenClass, className)}
+              ref={componentRef}
+              role="dialog"
+              aria-modal="true"
+              aria-hidden={!openState}
+              aria-label={title || name}
+            >
+              <Paper
+                className={cn('relative h-full w-full shadow-modal', paperProps.className)}
+                variant={variant}
+                color={color}
+                padding={padding}
+                {...filterOutKeys(paperProps, ['className'])}
+              >
+                <div className={cn('ModalTitleWrap', 'pb-8')}>
+                  {title && (
+                    <Title
+                      color={variant === 'contained' ? 'none' : color}
+                      align="text-center"
+                      size="xl"
+                      {...titleProps}
+                    >
+                      {title}
+                    </Title>
+                  )}
+                  {!hideXButton && (
+                    <Button
+                      className={cn('XButton', 'absolute right-0 top-0 border-none')}
+                      variant={variant}
+                      color={color}
+                      size="lg"
+                      startIcon={<XIcon />}
+                      hideShadow
+                      onClick={handleClose}
+                      aria-label={t('close')}
+                    />
+                  )}
+                </div>
+                <ScrollShadow height="max-h-[75vh]">{children}</ScrollShadow>
+                <div className={cn('ModalActions', 'flex justify-end gap-3 pt-8')}>
+                  {closeButton && (
+                    <Button
+                      className={cn('CloseButton', 'border-none', buttonProps.className)}
+                      variant={variant}
+                      color={color}
+                      hideShadow
+                      onClick={handleClose}
+                      {...filterOutKeys(buttonProps, ['className'])}
+                    >
+                      Close
+                    </Button>
+                  )}
+                  {modalActions}
+                </div>
+              </Paper>
+            </div>,
+            document.body,
+          )}
         <Overlay isOpen={openState} onClose={handleClose} dark />
       </>
     )

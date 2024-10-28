@@ -1,53 +1,69 @@
-import { forwardRef, PropsWithChildren } from 'react'
+'use client'
+import { Placement } from '@popperjs/core'
+import {
+  forwardRef,
+  HTMLAttributes,
+  MutableRefObject,
+  PropsWithChildren,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react'
+import { createPortal } from 'react-dom'
 
 import Overlay from '@/components/atoms/common/Overlay'
 import Paper from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
+import { StyleProps } from '@/components/types'
+import { usePopper } from '@/utils/hooks/usePopper'
 import { cn, filterOutKeys } from '@/utils/utils'
 
-import { closeClass, dropdownClass, openClass } from './Dropdown.style'
+import { dropdownClass } from './Dropdown.style'
 
-export type DropdownProps = {
-  /** for passing custom tailwind classes */
-  className?: string
-  /** boolean for open state */
-  isOpen: boolean
-  /** position of dropdown */
-  placement?: 'relative' | 'left' | 'right' | 'top'
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** for setting component width as tailwind class */
-  width?: string
-  /** for setting component height or maxHeight as tailwind class */
-  height?: string
-  /** for setting internal padding of Paper component */
-  padding?: string
-  /** optional for disabling overlay */
-  hideOverlay?: boolean
-  /** hide dropdown shadow */
-  hideShadow?: boolean
-  /** for passing aditional props to Paper */
-  paperProps?: Partial<PaperProps>
-  /** for passing aditional props to Scrollshadow */
-  scrollShadowProps?: Partial<ScrollShadowProps>
-  /** dropdown closing function */
-  onClose: () => void
-}
+export type DropdownProps = HTMLAttributes<HTMLDivElement> &
+  Omit<StyleProps, 'size'> & {
+    /** for passing custom tailwind classes */
+    className?: string
+    /** boolean for open state */
+    isOpen: boolean
+    /** Parent ref for portal position */
+    parentRef: MutableRefObject<HTMLDivElement | null>
+    /** position of dropdown */
+    placement: Placement
+    /** offset of dropdown */
+    offset?: [number, number]
+    /** for setting component width as inline css style */
+    width?: number | string
+    /** for setting component height or maxHeight as tailwind class */
+    height?: string
+    /** for setting internal padding of Paper component */
+    padding?: string
+    /** optional for disabling overlay */
+    hideOverlay?: boolean
+    /** hide dropdown shadow */
+    hideShadow?: boolean
+    /** for passing aditional props to Paper */
+    paperProps?: Partial<PaperProps>
+    /** for passing aditional props to Scrollshadow */
+    scrollShadowProps?: Partial<ScrollShadowProps>
+    /** dropdown closing function */
+    onClose: () => void
+  }
 
-/** Multirole dropdown popover, dropping down from relative parent. Paper and ScrollShadow props supported. */
+/** Multirole dropdown popover, dropping down from relative parent. Paper and ScrollShadow props supported. USE CLIENT */
 export const Dropdown = forwardRef<HTMLDivElement, PropsWithChildren<DropdownProps>>(
   (
     {
-      className = '',
+      className,
       isOpen,
-      placement = 'relative',
+      parentRef,
+      placement = 'bottom-start',
+      offset = [0, 5],
       variant = 'text',
       color = 'primary',
-      width = 'w-full',
+      width,
       height = 'max-h-[40vh]',
       padding = 'p-0',
       hideOverlay,
@@ -56,38 +72,55 @@ export const Dropdown = forwardRef<HTMLDivElement, PropsWithChildren<DropdownPro
       scrollShadowProps = {},
       onClose,
       children,
+      ...rest
     },
     ref,
   ) => {
+    const [mounted, setMounted] = useState(false)
+    const { anchorRef, popoverEl, setPopoverEl } = usePopper(placement, offset)
+    useImperativeHandle(anchorRef, () => parentRef.current!)
+    useImperativeHandle(ref, () => popoverEl!)
+
+    useEffect(() => {
+      setMounted(true)
+    }, [])
+
     return (
       <>
-        <div
-          className={cn(
-            'Dropdown',
-            dropdownClass,
-            width,
-            isOpen ? openClass[placement] : closeClass[placement],
-            className,
+        {mounted &&
+          createPortal(
+            <>
+              <div
+                className={cn(
+                  'Dropdown',
+                  dropdownClass,
+                  isOpen ? 'visible z-50 opacity-100' : 'invisible opacity-0',
+                  className,
+                )}
+                style={{
+                  width: width ? width : parentRef.current?.clientWidth,
+                }}
+                ref={setPopoverEl}
+                data-testid="Dropdown"
+                {...rest}
+              >
+                <Paper
+                  className={cn('overflow-hidden', paperProps.className)}
+                  variant={variant}
+                  color={color}
+                  padding={padding}
+                  hideShadow={hideShadow}
+                  {...filterOutKeys(paperProps, ['className'])}
+                >
+                  <ScrollShadow height={height} {...scrollShadowProps}>
+                    {children}
+                  </ScrollShadow>
+                </Paper>
+              </div>
+            </>,
+            document.body,
           )}
-          ref={ref}
-          data-testid="Dropdown"
-        >
-          <Paper
-            className={cn('overflow-hidden', paperProps.className)}
-            variant={variant}
-            color={color}
-            padding={padding}
-            hideShadow={hideShadow}
-            {...filterOutKeys(paperProps, ['className'])}
-          >
-            <ScrollShadow height={height} {...scrollShadowProps}>
-              {children}
-            </ScrollShadow>
-          </Paper>
-        </div>
-        {hideOverlay || placement === 'relative' ? null : (
-          <Overlay isOpen={isOpen} onClose={onClose} />
-        )}
+        {!hideOverlay && <Overlay isOpen={isOpen} onClose={onClose} />}
       </>
     )
   },

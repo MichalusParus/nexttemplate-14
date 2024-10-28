@@ -1,6 +1,7 @@
 'use client'
 import { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react'
 
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import InlineLoader from '../../loaders/InlineLoader'
@@ -11,49 +12,66 @@ import {
   buttonIconSize,
   buttonVariant,
   iconOnlySize,
-  innerWrapClass,
 } from './Button.style'
 
-export type ButtonProps = Omit<
+type NativeButtonProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
-  'className' | 'color' | 'onClick'
-> & {
-  /** for passing custom tailwind classes, pass "selected" for active state style or "error" for error shadow */
-  className?: string
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'error' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'inline' | 'none'
-  /** pass svg icon before children, without children becomes iconOnly button */
-  startIcon?: ReactNode
-  /** pass svg icon after children, without children becomes iconOnly button */
-  endIcon?: ReactNode
-  /** loading state for async fn */
-  isLoading?: boolean
-  /** shortcut for width 100% */
-  fullWidth?: boolean
-  /** hide button shadow */
-  hideShadow?: boolean
-  /** disable auto upper case */
-  disableUpperCase?: boolean
-  /** onClick function */
-  onClick?: () => void
+  'className' | 'color' | 'onClick' | 'size'
+>
+
+export type ButtonProps = NativeButtonProps &
+  Pick<StyleProps, 'variant'> & {
+    /** for passing custom tailwind classes, pass "selected" for active state style or "error" for error shadow */
+    className?: string
+    /** theme color of component, none disable styles for custom styling via className */
+    color?: StyleProps['color'] | 'error'
+    /** size of component, none disable sizes for custom styling via className */
+    size?: StyleProps['size'] | 'inline'
+    /** pass svg icon before children, without children becomes iconOnly button */
+    startIcon?: ReactNode
+    /** pass svg icon after children, without children becomes iconOnly button */
+    endIcon?: ReactNode
+    /** loading state for async fn */
+    isLoading?: boolean
+    /** hide button shadow */
+    hideShadow?: boolean
+    /** disable auto upper case */
+    disableUpperCase?: boolean
+    /** onClick function */
+    onClick?: () => void
+  }
+
+/** Inner loading wrap for loading buttons*/
+const InnerLoadingWrap = ({
+  size = 'md',
+  startIcon,
+  endIcon,
+  isLoading,
+  children,
+}: Partial<ButtonProps>) => {
+  return (
+    <>
+      {isLoading && <InlineLoader className="absolute inset-0 justify-center" size={size} />}
+      <div className={cn('ContentInnerWrap', 'inline-flex')}>
+        {startIcon && startIcon}
+        {children}
+        {endIcon && endIcon}
+      </div>
+    </>
+  )
 }
 
 /** Basic Button with loading state and icon handling. Default ButtonHTMLAttributes props supported. USE CLIENT */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
-      className = '',
+      className,
       variant = 'contained',
       color = 'primary',
       size = 'md',
       startIcon,
       endIcon,
       isLoading,
-      fullWidth,
       hideShadow,
       disableUpperCase,
       children,
@@ -62,6 +80,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
+    const buttonFlex = size === 'inline' ? 'inline-flex' : 'flex'
     const iconOnly =
       (startIcon || endIcon) && (Array.isArray(children) ? !children.some(x => x) : !children)
     const endIconMargin = endIcon ? '[&_svg]:ml-2' : ''
@@ -75,12 +94,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           'Button',
           buttonClass,
+          buttonFlex,
           buttonVariant[variant][color],
           buttonSize,
           buttonDisabledVariant[variant],
+          !disableUpperCase && 'uppercase',
           isLoading && 'selected [&>div]:invisible',
           variant === 'contained' && !hideShadow && 'shadow-button active:shadow-none',
-          fullWidth && 'w-full',
           className,
         )}
         tabIndex={rest.disabled ? -1 : 0}
@@ -89,13 +109,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...rest}
       >
         {isLoading ? (
-          <InlineLoader className="absolute inset-0 justify-center" size={size} />
-        ) : null}
-        <div className={cn('ButtonInnerWrap', innerWrapClass, !disableUpperCase && 'uppercase')}>
-          {startIcon ? startIcon : null}
-          {children}
-          {endIcon ? endIcon : null}
-        </div>
+          <InnerLoadingWrap
+            size={size}
+            startIcon={startIcon}
+            endIcon={endIcon}
+            isLoading={isLoading}
+          >
+            {children}
+          </InnerLoadingWrap>
+        ) : (
+          <>
+            {startIcon && startIcon}
+            {children}
+            {endIcon && endIcon}
+          </>
+        )}
       </button>
     )
   },

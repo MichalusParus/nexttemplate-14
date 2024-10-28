@@ -4,47 +4,44 @@ import { forwardRef, KeyboardEvent, OlHTMLAttributes, useCallback } from 'react'
 import Checkbox from '@/components/molecules/form/CheckboxField/Checkbox'
 import { CheckboxProps } from '@/components/molecules/form/CheckboxField/Checkbox/Checkbox'
 import { checkboxSize } from '@/components/molecules/form/MultiSelectField/MultiSelect/MultiSelect.style'
-import { OptionType } from '@/components/types'
+import { OptionType, StyleProps } from '@/components/types'
 import { cn, filterOutKeys } from '@/utils/utils'
 
 import Ghost from '../../loaders/Ghost'
 import { buttonContentSize, buttonVariant } from '../Button/Button.style'
 
-export type ListBoxProps = Omit<
+type NativeListBoxProps = Omit<
   OlHTMLAttributes<HTMLUListElement>,
   'className' | 'onClick' | 'color'
-> & {
-  /** for passing custom tailwind classes */
-  className?: string
-  /** name of the listbox for aria-controls */
-  name: string
-  /** current values of selected options */
-  value: string[]
-  /** options for display */
-  options: OptionType[]
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
-  /** loading state for options fetching, loading is delayed for 1 second to prevent flickering */
-  isLoading?: boolean
-  /** label for no option */
-  noOptionLabel?: string
-  /** hide option checkbox */
-  hideCheckbox?: boolean
-  /** optional props for checkbox */
-  checkboxProps?: Partial<CheckboxProps>
-  /** on Option click function */
-  onClick: (value: string) => void
-}
+>
+
+export type ListBoxProps = NativeListBoxProps &
+  StyleProps & {
+    /** for passing custom tailwind classes */
+    className?: string
+    /** name of the listbox for aria-controls */
+    name: string
+    /** current values of selected options */
+    value: string[]
+    /** options for display */
+    options: OptionType[]
+    /** loading state for options fetching, loading is delayed for 1 second to prevent flickering */
+    isLoading?: boolean
+    /** label for no option */
+    noOptionLabel?: string
+    /** hide option checkbox */
+    hideCheckbox?: boolean
+    /** optional props for checkbox */
+    checkboxProps?: Partial<CheckboxProps>
+    /** on Option click function */
+    onClick: (value: string) => void
+  }
 
 /** Listbox Ul with selectable options. */
 export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
   (
     {
-      className = '',
+      className,
       name,
       value,
       options,
@@ -103,7 +100,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                 isLoading ? 'cursor-not-allowed' : 'cursor-pointer',
               )}
               role="option"
-              tabIndex={0}
+              tabIndex={-1}
               aria-selected={value.includes(optionValue)}
               onClick={() => !isLoading && onClick(optionValue)}
               onKeyDown={e => !isLoading && handleOnKeyDown(e, optionValue)}

@@ -5,7 +5,7 @@ type Props = {
   isOpen: boolean
 }
 
-export default function Hamburger({ className = '', isOpen }: Props) {
+export default function Hamburger({ className, isOpen }: Props) {
   return (
     <div className={cn('Hamburger', 'px-px', className)}>
       <div className="relative">

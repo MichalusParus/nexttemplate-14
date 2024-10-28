@@ -20,8 +20,9 @@ describe('MultiAutocomplete', () => {
         />
       </JestMockProvider>,
     )
+    fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeTruthy()
-    expect(screen.getAllByTestId('LabelWrap')[0]).toHaveClass('className')
+    expect(screen.getByTestId('MultiAutocomplete')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'MultiAutocompleteTest')
     expect(screen.getAllByTestId('LabelWrap')[0]).toHaveTextContent('label')
   })
@@ -41,7 +42,7 @@ describe('MultiAutocomplete', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('alert')).toHaveTextContent('error')
+    expect(screen.getAllByRole('alert')[1]).toHaveTextContent('error')
   })
 
   it('description', () => {
@@ -52,14 +53,14 @@ describe('MultiAutocomplete', () => {
           name="MultiAutocompleteTest"
           label="label"
           value={['value']}
-          description="description"
+          labelProps={{ description: 'description' }}
           options={options}
           onInputChange={() => {}}
           onChange={() => {}}
         />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('alert')).toHaveTextContent('description')
+    expect(screen.getAllByRole('alert')[1]).toHaveTextContent('description')
   })
 
   it('inputValue', () => {
@@ -76,6 +77,7 @@ describe('MultiAutocomplete', () => {
         />
       </JestMockProvider>,
     )
+    fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true')
   })
 

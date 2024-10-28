@@ -1,30 +1,24 @@
 import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { object, string } from 'yup'
 
-import { options } from '../../../../../.storybook/helpers'
-import Form from '../Form'
+import { JestFormProvider, options } from '../../../../../.storybook/helpers'
 import CheckboxGroupField from '.'
 
 describe('CheckboxGroupField', () => {
   it('default', () => {
     render(
-      <Form
-        initialValues={{ checkboxGroupFieldTest: 'checkboxGroupFieldTest' }}
-        validationSchema={object().shape({})}
-        onSubmit={() => {}}
-      >
+      <JestFormProvider fields={['checkboxGroupFieldTest']}>
         <CheckboxGroupField
           className="className"
           name="checkboxGroupFieldTest"
           label="label"
           options={options}
         />
-      </Form>,
+      </JestFormProvider>,
     )
     expect(screen.getAllByRole('checkbox')[0]).toBeTruthy()
-    expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    expect(screen.getByTestId('CheckboxGroup')).toHaveClass('className')
     expect(screen.getAllByRole('checkbox')[0]).toHaveAttribute('id', 'value1')
     expect(screen.getAllByRole('checkbox')[0]).toHaveAttribute('name', 'value1')
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
@@ -33,13 +27,7 @@ describe('CheckboxGroupField', () => {
   it('onSubmit', () => {
     const spy = jest.fn()
     render(
-      <Form
-        initialValues={{ checkboxGroupFieldTest: 'checkboxGroupFieldTest' }}
-        validationSchema={object().shape({
-          checkboxGroupFieldTest: string().required('required'),
-        })}
-        onSubmit={spy}
-      >
+      <JestFormProvider fields={['checkboxGroupFieldTest']} onSubmit={spy}>
         <CheckboxGroupField
           className="className"
           name="checkboxGroupFieldTest"
@@ -47,7 +35,7 @@ describe('CheckboxGroupField', () => {
           options={options}
         />
         <button type="submit" />
-      </Form>,
+      </JestFormProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByRole('button'))

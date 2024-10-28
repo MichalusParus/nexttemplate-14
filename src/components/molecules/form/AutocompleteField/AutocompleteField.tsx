@@ -9,13 +9,13 @@ export type AutocompleteFieldProps = Omit<AutocompleteProps, 'value' | 'error' |
 
 /** Form and style context wrapper for Autocomplete component. Input, Dropdown and ListBox props supported. USE CLIENT */
 export const AutocompleteField = ({
-  className = '',
+  className,
   name,
   label,
   variant,
   color,
   size,
-  collapsed,
+  labelProps,
   ...rest
 }: AutocompleteFieldProps) => {
   const {
@@ -35,8 +35,11 @@ export const AutocompleteField = ({
           variant={variant || formVariant}
           color={color || formColor}
           size={size || formSize}
-          collapsed={collapsed || formCollapsed}
           error={(errors[name]?.message as string) || undefined}
+          labelProps={{
+            ...labelProps,
+            collapsed: labelProps?.collapsed || formCollapsed,
+          }}
           {...field}
           {...rest}
         />

@@ -17,7 +17,7 @@ describe('RadioGroup', () => {
       />,
     )
     expect(screen.getByRole('radiogroup')).toBeTruthy()
-    expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    expect(screen.getByRole('radiogroup')).toHaveClass('className')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('id', 'value1')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('name', 'radioGroupTest')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('type', 'radio')
@@ -46,7 +46,7 @@ describe('RadioGroup', () => {
         name="textareaTest"
         label="label"
         options={options}
-        description="description"
+        labelProps={{ description: 'description' }}
         onChange={() => {}}
       />,
     )

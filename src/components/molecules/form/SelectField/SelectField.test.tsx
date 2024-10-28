@@ -1,27 +1,22 @@
 import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { object, string } from 'yup'
 
-import { JestMockProvider, options } from '../../../../../.storybook/helpers'
-import Form from '../Form'
+import { JestFormProvider, JestMockProvider, options } from '../../../../../.storybook/helpers'
 import SelectField from '.'
 
 describe('SelectField', () => {
   it('default', () => {
     render(
       <JestMockProvider>
-        <Form
-          initialValues={{ selectTest: 'selectTest' }}
-          validationSchema={object().shape({})}
-          onSubmit={() => {}}
-        >
+        <JestFormProvider fields={['selectTest']}>
           <SelectField className="className" name="selectTest" label="label" options={options} />
-        </Form>
+        </JestFormProvider>
       </JestMockProvider>,
     )
+    fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeTruthy()
-    expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    expect(screen.getByTestId('Select')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'selectTest')
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
   })
@@ -30,16 +25,10 @@ describe('SelectField', () => {
     const spy = jest.fn()
     render(
       <JestMockProvider>
-        <Form
-          initialValues={{ selectTest: 'selectTest' }}
-          validationSchema={object().shape({
-            selectTest: string().required('required'),
-          })}
-          onSubmit={spy}
-        >
+        <JestFormProvider fields={['selectTest']} onSubmit={spy}>
           <SelectField className="className" name="selectTest" label="label" options={options} />
           <button type="submit" data-testid="submit" />
-        </Form>
+        </JestFormProvider>
       </JestMockProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy

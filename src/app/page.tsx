@@ -1,8 +1,15 @@
+'use client'
 import P from '@/components/atoms/typography/P'
+import MultiDatePicker from '@/components/molecules/form/MultiDatePickerField/MultiDatePicker'
+import Select from '@/components/molecules/form/SelectField/Select'
+import Modal from '@/components/molecules/popovers/Modal'
+import { options } from '../../.storybook/helpers'
+import Tooltip from '@/components/molecules/popovers/Tooltip'
 
 export default function Home() {
   return (
     <div className="mt-12">
+      {/* <Modal name="name">vhghggvhvhgvh</Modal> */}
       <P>sefsefsefsefsef</P>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore dicta assumenda
       consequatur, corrupti libero consequuntur voluptatibus similique quis doloribus quos sed, hic,
@@ -30,6 +37,16 @@ export default function Home() {
       minus nostrum cumque pariatur fuga debitis mollitia obcaecati vero ut enim consectetur
       possimus sit. Velit qui dolor aut quasi, delectus odio totam doloribus error rerum voluptatem
       ratione ea blanditiis. Aspernatur, voluptatum distinctio exercitationem perferendis possimus
+      <MultiDatePicker
+        name="fggg"
+        label="fffff"
+        value={[new Date(), new Date(), new Date(), new Date(), new Date(), new Date(), new Date()]}
+        onChange={() => {}}
+      />
+      <Select name="hh" label="" options={options} value="" onChange={() => {}} />
+      <Tooltip title="tooltip" className="max-w-max">
+        buvvjghvjdvjhgevjefvgh
+      </Tooltip>
       earum ratione asperiores deleniti vitae. Fuga nam mollitia quo? Dolor debitis modi sint quos
       ullam non magni nostrum eius voluptatem aliquid amet, repudiandae necessitatibus harum
       delectus voluptatibus nobis vel iusto earum aspernatur aperiam expedita? Sunt iure

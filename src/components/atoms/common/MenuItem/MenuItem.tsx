@@ -15,7 +15,7 @@ export type MenuItemProps = {
 export const MenuItem = forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
   PropsWithChildren<MenuItemProps>
->(({ className = '', buttonProps, linkProps, children }, ref) => {
+>(({ className, buttonProps, linkProps, children }, ref) => {
   if (buttonProps) {
     return (
       <Button

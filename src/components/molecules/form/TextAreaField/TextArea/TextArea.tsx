@@ -1,9 +1,10 @@
 'use client'
 import { forwardRef, TextareaHTMLAttributes } from 'react'
 
+import { FieldProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
+import { Label } from '../../../../atoms/common/Label/Label'
 import {
   disabledVariant,
   inputClass,
@@ -11,19 +12,16 @@ import {
   inputVariant,
 } from '../../InputField/Input/Input.style'
 
-export type TextAreaProps = Omit<
+type NativeTextAreaProps = Omit<
   TextareaHTMLAttributes<HTMLTextAreaElement>,
-  'color' | 'size' | 'onChange' | 'name' | 'className' | 'width' | 'value'
-> &
-  Omit<LabelProps, 'name'> & {
-    /** name of form field */
-    name: string
+  'color' | 'size' | 'onChange' | 'name' | 'className' | 'value' | 'placeholder' | 'width'
+>
+
+export type TextAreaProps = NativeTextAreaProps &
+  FieldProps &
+  StyleProps & {
     /** value of textarea */
     value?: string
-    /** style variant of component */
-    variant?: 'text' | 'outlined' | 'contained'
-    /** theme color of component, none disable styles for custom styling via className */
-    color?: 'primary' | 'secondary' | 'terciary' | 'none'
     /** onChange function */
     onChange: (value: string) => void
   }
@@ -32,48 +30,34 @@ export type TextAreaProps = Omit<
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     {
-      className = '',
+      className,
       name,
       label,
+      value,
       variant = 'outlined',
       color = 'primary',
       size = 'md',
-      value,
-      width,
-      description,
-      hideLabel,
-      hideError,
-      collapsed,
-      disabled,
       error,
+      disabled,
+      labelProps,
       onChange,
       ...rest
     },
     ref,
   ) => {
     return (
-      <Label
-        className={className}
-        name={name}
-        label={label}
-        size={size}
-        width={width}
-        error={error}
-        description={description}
-        hideLabel={hideLabel}
-        hideError={hideError}
-        collapsed={collapsed}
-      >
+      <Label name={name} label={label} size={size} error={error} {...labelProps}>
         <textarea
+          id={name}
           className={cn(
             inputClass,
             inputVariant[variant][color],
             inputSize[size],
             disabledVariant[variant],
             error && 'border-error-800 shadow-error',
-            !hideError && 'mb-1',
+            !labelProps?.hideError && 'mb-1',
+            className,
           )}
-          id={name}
           name={name}
           value={value}
           disabled={disabled}

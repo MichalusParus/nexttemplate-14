@@ -45,14 +45,4 @@ describe('Modal', () => {
     )
     expect(screen.getByTestId('button')).toHaveTextContent('Action')
   })
-  it('closebutton', () => {
-    render(
-      <JestMockProvider>
-        <Modal className="className" name="test" isOpen closeButton>
-          Children
-        </Modal>
-      </JestMockProvider>,
-    )
-    expect(screen.getAllByRole('button')[1]).toHaveTextContent('Close')
-  })
 })

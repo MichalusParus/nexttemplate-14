@@ -1,30 +1,24 @@
 import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { object, string } from 'yup'
 
-import { options } from '../../../../../.storybook/helpers'
-import Form from '../Form'
+import { JestFormProvider, options } from '../../../../../.storybook/helpers'
 import RadioGroupField from '.'
 
 describe('RadioGroupField', () => {
   it('default', () => {
     render(
-      <Form
-        initialValues={{ radioGroupFieldTest: 'radioGroupFieldTest' }}
-        validationSchema={object().shape({})}
-        onSubmit={() => {}}
-      >
+      <JestFormProvider fields={['radioGroupFieldTest']}>
         <RadioGroupField
           className="className"
           name="radioGroupFieldTest"
           label="label"
           options={options}
         />
-      </Form>,
+      </JestFormProvider>,
     )
     expect(screen.getAllByRole('radio')[0]).toBeTruthy()
-    expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    expect(screen.getByRole('radiogroup')).toHaveClass('className')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('id', 'value1')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('name', 'radioGroupFieldTest')
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
@@ -33,13 +27,7 @@ describe('RadioGroupField', () => {
   it('onSubmit', () => {
     const spy = jest.fn()
     render(
-      <Form
-        initialValues={{ radioGroupFieldTest: 'radioGroupFieldTest' }}
-        validationSchema={object().shape({
-          RadioGroupFieldTest: string().required('required'),
-        })}
-        onSubmit={spy}
-      >
+      <JestFormProvider fields={['radioGroupFieldTest']} onSubmit={spy}>
         <RadioGroupField
           className="className"
           name="radioGroupFieldTest"
@@ -47,7 +35,7 @@ describe('RadioGroupField', () => {
           options={options}
         />
         <button type="submit" />
-      </Form>,
+      </JestFormProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByRole('button'))

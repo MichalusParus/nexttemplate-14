@@ -22,7 +22,7 @@ export type AccordionProps = Omit<DisclosureProps, 'title' | 'expanded' | 'child
 
 /** Serves as set of Disclosures. Have exclusive one open mode and can be nested. DisclosureProps supported. USE CLIENT */
 export const Accordion = forwardRef<HTMLButtonElement, AccordionProps>(
-  ({ className = '', options, exclusive, gap = 'gap-2', ...rest }, ref) => {
+  ({ className, options, exclusive, gap = 'gap-2', ...rest }, ref) => {
     const [openState, setOpenState] = useState<boolean[]>(
       options.map(({ expanded }) => Boolean(expanded)),
     )

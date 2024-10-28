@@ -15,7 +15,6 @@ describe('Tabs', () => {
     expect(screen.getByTestId('Tabs')).toBeTruthy()
     expect(screen.getByTestId('Tabs')).toHaveClass('className')
     expect(screen.getAllByRole('tablist')[0]).toHaveTextContent('Label 1Label 2Label 3')
-    expect(screen.getAllByRole('tablist')[1]).toHaveTextContent('Label 1Label 2Label 3')
     expect(screen.getByTestId('tab1Title')).toHaveTextContent('Content 1')
   })
 

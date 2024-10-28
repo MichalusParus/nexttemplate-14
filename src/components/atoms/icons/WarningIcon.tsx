@@ -2,7 +2,7 @@ type Props = {
   className?: string
 }
 
-export default function WarningIcon({ className = '' }: Props) {
+export default function WarningIcon({ className }: Props) {
   return (
     <svg
       className={className}

@@ -9,13 +9,13 @@ export type TextAreaFieldProps = Omit<TextAreaProps, 'value' | 'error' | 'onChan
 
 /** Form and style context wrapper for TextArea component. Default TextareaHTMLAttributes props supported. USE CLIENT */
 export const TextAreaField = ({
-  className = '',
+  className,
   name,
   label,
   variant,
   color,
   size,
-  collapsed,
+  labelProps,
   ...rest
 }: TextAreaFieldProps) => {
   const {
@@ -35,8 +35,11 @@ export const TextAreaField = ({
           variant={variant || formVariant}
           color={color || formColor}
           size={size || formSize}
-          collapsed={collapsed || formCollapsed}
-          error={(errors[name]?.message as string) || undefined}
+          error={errors[name]?.message as string}
+          labelProps={{
+            ...labelProps,
+            collapsed: labelProps?.collapsed || formCollapsed,
+          }}
           autoComplete="off"
           {...field}
           {...rest}

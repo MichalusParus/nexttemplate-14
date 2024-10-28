@@ -36,7 +36,7 @@ export const PrimaryDefault: Story = {
     variant: 'outlined',
     color: 'primary',
     comboboxProps: undefined,
-    dropdownProps: undefined,
+    paperProps: undefined,
   },
 }
 
@@ -66,7 +66,7 @@ export const Nested: Story = {
           color={args.color}
           chevronPosition={args.chevronPosition}
           title="Main Disclosure 1"
-          dropdownProps={{ height: '' }}
+          paperProps={undefined}
         >
           <div className="pl-4">
             <Accordion {...args} ariaLevel={2} options={accordionOptions} />
@@ -77,7 +77,7 @@ export const Nested: Story = {
           color={args.color}
           chevronPosition={args.chevronPosition}
           title="Main Disclosure 2"
-          dropdownProps={{ height: '' }}
+          paperProps={undefined}
         >
           <div className="pl-4">
             <Accordion {...args} ariaLevel={2} options={accordionOptions} />
@@ -88,7 +88,7 @@ export const Nested: Story = {
           color={args.color}
           chevronPosition={args.chevronPosition}
           title="Main Disclosure 3"
-          dropdownProps={{ height: '' }}
+          paperProps={undefined}
         >
           <div className="pl-4">
             <Accordion {...args} ariaLevel={2} options={accordionOptions} />

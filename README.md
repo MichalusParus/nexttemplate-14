@@ -65,7 +65,7 @@ ParusUI Components are built with focus on minimal size, reusability and customi
 
 - `Complex` - ParusUI contains 56 components and 7 hooks.
 
-- `LibraryFree` - ParusUI are lightweighted and fully custom builded with no additional libraries except React Hook Form and Yup.
+- `LibraryFree` - ParusUI are lightweighted and fully custom builded with no additional libraries except React Hook Form, Yup and Popper.
 
 - `Folder structure` - Components are modular and organized in atomic folder structure.
 
@@ -95,7 +95,7 @@ ParusUI Components are built with focus on minimal size, reusability and customi
 
 - `Screen readers support` - Currenctly only google SR supported.
 
-- `Touchscreen support` - Components have swipe support with useTouch Hook. Components have disabled hover on touchscreen devices by default.
+- `Touchscreen support` - Components have swipe support with useSwipe Hook. Components have disabled hover on touchscreen devices by default.
 
 Run Storybook for ParusUI documentation and presentation
 

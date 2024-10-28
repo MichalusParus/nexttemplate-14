@@ -31,13 +31,14 @@ type Story = StoryObj<typeof ImageViewer>
 export const Default: Story = {
   args: {
     className: '',
-    alt: 'Example img',
+    name: 'Example img',
     children: (
       <Image
         src="https://picsum.photos/2000/1250"
         alt="imageStory"
-        ratio={75}
+        ratio="aspect-w-16 aspect-h-9"
         objectFit="object-cover"
+        rounded="rounded-none"
       />
     ),
   },

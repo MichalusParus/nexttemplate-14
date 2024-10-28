@@ -7,7 +7,13 @@ import Dropdown from '.'
 describe('Dropdown', () => {
   it('default', () => {
     render(
-      <Dropdown className="className" isOpen={true} onClose={() => {}}>
+      <Dropdown
+        className="className"
+        parentRef={{ current: null }}
+        placement="bottom-start"
+        isOpen={true}
+        onClose={() => {}}
+      >
         Children
       </Dropdown>,
     )

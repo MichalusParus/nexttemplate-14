@@ -1,32 +1,27 @@
 import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { object, string } from 'yup'
 
-import { JestMockProvider, options } from '../../../../../.storybook/helpers'
-import Form from '../Form'
+import { JestFormProvider, JestMockProvider, options } from '../../../../../.storybook/helpers'
 import MultiSelectField from '.'
 
 describe('MultiSelectField', () => {
   it('default', () => {
     render(
       <JestMockProvider>
-        <Form
-          initialValues={{ multiSelectTest: ['multiSelectTest'] }}
-          validationSchema={object().shape({})}
-          onSubmit={() => {}}
-        >
+        <JestFormProvider fields={['multiSelectTest']} values={[[]]}>
           <MultiSelectField
             className="className"
             name="multiSelectTest"
             label="label"
             options={options}
           />
-        </Form>
+        </JestFormProvider>
       </JestMockProvider>,
     )
+    fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeTruthy()
-    expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    expect(screen.getByTestId('MultiSelect')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'multiSelectTest')
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
   })
@@ -35,13 +30,7 @@ describe('MultiSelectField', () => {
     const spy = jest.fn()
     render(
       <JestMockProvider>
-        <Form
-          initialValues={{ multiSelectTest: ['multiSelectTest'] }}
-          validationSchema={object().shape({
-            multiSelectTest: string().required('required'),
-          })}
-          onSubmit={spy}
-        >
+        <JestFormProvider fields={['multiSelectTest']} values={[[]]} onSubmit={spy}>
           <MultiSelectField
             className="className"
             name="multiSelectTest"
@@ -49,7 +38,7 @@ describe('MultiSelectField', () => {
             options={options}
           />
           <button type="submit" data-testid="submit" />
-        </Form>
+        </JestFormProvider>
       </JestMockProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy

@@ -20,3 +20,21 @@ export const filterOutKeys = (object: object, keys: string[]) => {
   )
   return newObject
 }
+
+// eslint-disable-next-line
+export const debounce = <F extends (...args: any[]) => void>(
+  fn: F,
+  delay: number,
+): ((...args: Parameters<F>) => void) => {
+  let timer: ReturnType<typeof setTimeout> | null
+
+  return (...args: Parameters<F>) => {
+    if (timer) {
+      clearTimeout(timer)
+    }
+
+    timer = setTimeout(() => {
+      fn(...args)
+    }, delay)
+  }
+}

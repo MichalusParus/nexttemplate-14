@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState, useTransition } from 'react'
 
 import Button from '@/components/atoms/common/Button'
-import { useDebounce } from '@/utils/hooks/useDebounce'
 import { useFilterData } from '@/utils/hooks/useFilterData'
+import { debounce } from '@/utils/utils'
 
 import { options } from '../../../../../../.storybook/helpers'
 import { Autocomplete, AutocompleteProps } from './Autocomplete'
@@ -55,7 +55,7 @@ const AutocompleteWithFetch = (args: AutocompleteProps) => {
     }
   }
 
-  const { debouncedFn } = useDebounce(getOptions, 500)
+  const debouncedFn = debounce(getOptions, 500)
 
   return (
     <div className={`flex h-96 justify-center ${args.placement === 'top' ? 'items-end' : ''}`}>
@@ -96,23 +96,19 @@ export const PrimaryDefault: Story = {
     className: 'className',
     name: 'autocompleteStory',
     label: 'Label',
+    placeholder: 'placeholder',
     value: '',
     options: options.slice(0, 5),
     variant: 'outlined',
     color: 'primary',
     size: 'md',
-    placeholder: 'placeholder',
-    description: '',
-    placement: 'left',
-    width: 'w-96',
+    placement: 'bottom',
     isLoading: false,
-    hideLabel: false,
-    hideError: false,
-    collapsed: 'default',
     error: '',
     inputProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
+    labelProps: { width: 'w-96' },
     onInputChange: () => {},
     onChange: value => console.log(value),
   },

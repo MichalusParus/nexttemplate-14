@@ -1,34 +1,30 @@
 'use client'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { createContext, FormHTMLAttributes } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { AnyObject, InferType, ObjectSchema } from 'yup'
+import { FieldValues, FormProvider, UseFormReturn } from 'react-hook-form'
 
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-export type FormProps = Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'color'> & {
-  /** for passing custom tailwind classes */
-  className?: string
-  /** object with initial form values */
-  initialValues: object
-  /** yup validation object */
-  validationSchema: ObjectSchema<object, AnyObject, object, ''>
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
-  /** set collapsed state of label. Default is "flex-col md:flex-row" */
-  collapsed?: 'always' | 'never' | 'default'
-  /** onSubmit function */
-  onSubmit: (values: object) => void
-}
+type NativeFormProps = Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'color' | 'name'>
+
+export type FormProps<T extends FieldValues> = NativeFormProps &
+  StyleProps & {
+    /** for passing custom tailwind classes */
+    className?: string
+    /** form name for id and aria purposes */
+    name: string
+    /** useForm hook */
+    form: UseFormReturn<T>
+    /** set collapsed state of label. Default is "flex-col md:flex-row" */
+    collapsed?: 'always' | 'never' | 'default'
+    /** onSubmit function */
+    onSubmit: (values: object) => void
+  }
 
 export const FormStyleContext = createContext<{
-  formVariant?: 'text' | 'outlined' | 'contained'
-  formColor?: 'primary' | 'secondary' | 'terciary' | 'none'
-  formSize?: 'sm' | 'md' | 'lg' | 'none'
+  formVariant?: StyleProps['variant']
+  formColor?: StyleProps['color']
+  formSize?: StyleProps['size']
   formCollapsed?: 'always' | 'never' | 'default'
 }>({
   formVariant: undefined,
@@ -38,10 +34,10 @@ export const FormStyleContext = createContext<{
 })
 
 /** Form with useForm and style context provider for form fields. Default FormHTMLAttributes props supported. USE CLIENT */
-export const Form = ({
-  className = '',
-  initialValues,
-  validationSchema,
+export const Form = <T extends FieldValues>({
+  className,
+  name,
+  form,
   variant,
   color,
   size,
@@ -49,14 +45,9 @@ export const Form = ({
   children,
   onSubmit,
   ...rest
-}: FormProps) => {
-  const methods = useForm<InferType<typeof validationSchema>>({
-    resolver: yupResolver(validationSchema),
-    defaultValues: initialValues,
-  })
-
+}: FormProps<T>) => {
   return (
-    <FormProvider {...methods}>
+    <FormProvider {...form}>
       <FormStyleContext.Provider
         value={{
           formVariant: variant,
@@ -66,8 +57,9 @@ export const Form = ({
         }}
       >
         <form
+          id={name}
           className={cn('Form', 'flex w-full flex-wrap items-center justify-center', className)}
-          onSubmit={methods.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmit)}
           data-testid="Form"
           {...rest}
         >

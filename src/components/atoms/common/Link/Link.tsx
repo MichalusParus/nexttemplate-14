@@ -2,6 +2,7 @@ import { LinkProps as NextLinkProps } from 'next/link'
 import NextLink from 'next/link'
 import { forwardRef, LinkHTMLAttributes, ReactNode } from 'react'
 
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import {
@@ -12,22 +13,21 @@ import {
 } from '../Button/Button.style'
 import { linkClass } from './Link.style'
 
-export type LinkProps = Omit<LinkHTMLAttributes<HTMLAnchorElement>, 'className' | 'color'> &
-  NextLinkProps & {
+type NativeAnchorProps = Omit<LinkHTMLAttributes<HTMLAnchorElement>, 'className' | 'color'>
+
+export type LinkProps = NativeAnchorProps &
+  NextLinkProps &
+  Pick<StyleProps, 'variant'> & {
     /** for passing custom tailwind classes */
     className?: string
-    /** style variant of component */
-    variant?: 'text' | 'outlined' | 'contained'
     /** theme color of component, none disable styles for custom styling via className */
-    color?: 'primary' | 'secondary' | 'terciary' | 'error' | 'none'
-    /** size of component, inline for links in text and none disable sizes for custom styling via className */
-    size?: 'sm' | 'md' | 'lg' | 'inline' | 'none'
+    color?: StyleProps['color'] | 'error'
+    /** size of component, none disable sizes for custom styling via className */
+    size?: StyleProps['size'] | 'inline'
     /** pass svg icon before children, without children becomes iconOnly button */
     startIcon?: ReactNode
     /** pass svg icon after children, without children becomes iconOnly button */
     endIcon?: ReactNode
-    /** shortcut for width 100% */
-    fullWidth?: boolean
     /** hide button shadow */
     hideShadow?: boolean
     /** disable auto upper case */
@@ -38,13 +38,12 @@ export type LinkProps = Omit<LinkHTMLAttributes<HTMLAnchorElement>, 'className' 
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
   (
     {
-      className = '',
+      className,
       variant = 'text',
       color = 'primary',
       size = 'md',
       startIcon,
       endIcon,
-      fullWidth,
       hideShadow,
       disableUpperCase,
       children,
@@ -69,7 +68,6 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
           linkFlex,
           buttonVariant[variant][color],
           linkSize,
-          fullWidth && 'w-full',
           variant === 'contained' && !hideShadow && 'shadow-button active:shadow-none',
           !disableUpperCase && 'uppercase',
           className,
@@ -77,9 +75,9 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
         ref={ref}
         {...rest}
       >
-        {startIcon ? startIcon : null}
+        {startIcon && startIcon}
         {children}
-        {endIcon ? endIcon : null}
+        {endIcon && endIcon}
       </NextLink>
     )
   },

@@ -2,6 +2,7 @@
 import { forwardRef, InputHTMLAttributes, ReactNode } from 'react'
 
 import CheckIcon from '@/components/atoms/icons/CheckIcon'
+import { FieldProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import {
@@ -19,39 +20,31 @@ import {
   thumbClass,
 } from './Checkbox.style'
 
-export type CheckboxProps = Omit<
+type NativeCheckboxProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  'color' | 'size' | 'onChange' | 'type' | 'className' | 'name' | 'content'
-> & {
-  /** for passing custom tailwind classes */
-  className?: string
-  /** name of form field */
-  name: string
-  /** text content of label */
-  label: string
-  /** optional element to display in label */
-  content?: ReactNode
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained' | 'switch'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
-  /** optional checked status for Group use */
-  isChecked: boolean
-  /** error state */
-  error?: string
-  /** for return fake styled checkbox without input */
-  fake?: boolean
-  /** onChange function */
-  onChange: (value: string) => void
-}
+  'color' | 'size' | 'onChange' | 'type' | 'className' | 'name' | 'content' | 'width'
+>
+
+export type CheckboxProps = NativeCheckboxProps &
+  FieldProps &
+  Omit<StyleProps, 'variant'> & {
+    /** style variant of component */
+    variant?: StyleProps['variant'] | 'switch'
+    /** optional element to display in label */
+    content?: ReactNode
+    /** optional checked status for Group use */
+    isChecked: boolean
+    /** error state */
+    fake?: boolean
+    /** onChange function */
+    onChange: (value: string) => void
+  }
 
 /** Basic styled Checkbox. For form purposes use CheckboxField. Default InputHTMLAttributes props supported. USE CLIENT */
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   (
     {
-      className = '',
+      className,
       name,
       label,
       content,

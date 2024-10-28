@@ -1,17 +1,20 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import Span from '../../typography/Span'
 import { dividerColor } from './Divider.style'
 
-export type DividerProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color' | 'label'> & {
+type NativeDividerProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color' | 'label'>
+
+export type DividerProps = NativeDividerProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** for label in the middle of divider */
   label?: string
   /** theme color of component, none disable colors for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
+  color?: StyleProps['color']
   /** size of divider, number in px */
   width?: number
   /** for vertical divider */
@@ -20,7 +23,7 @@ export type DividerProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'c
 
 /** Serves as visual divider with optional middle label. Default HTMLAttributes props supported. */
 export const Divider = forwardRef<HTMLDivElement, DividerProps>(
-  ({ className = '', label, color = 'primary', width = 2, vertical }, ref) => {
+  ({ className, label, color = 'primary', width = 2, vertical }, ref) => {
     const dividerStyle = vertical
       ? { height: '100%', width: width }
       : { height: width, width: '100%' }
@@ -38,7 +41,7 @@ export const Divider = forwardRef<HTMLDivElement, DividerProps>(
           style={dividerStyle}
           data-testid="Divider"
         />
-        {label ? (
+        {label && (
           <>
             <Span className={vertical ? 'my-2' : 'mx-4'}>{label}</Span>
             <div
@@ -47,7 +50,7 @@ export const Divider = forwardRef<HTMLDivElement, DividerProps>(
               data-testid="Divider"
             />
           </>
-        ) : null}
+        )}
       </div>
     )
   },

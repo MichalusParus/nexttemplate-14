@@ -22,7 +22,7 @@ export type ScrollShadowProps = Omit<HTMLAttributes<HTMLDivElement>, 'className'
 export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
   (
     {
-      className = '',
+      className,
       height = 'h-full',
       color = 'from-inherit',
       gutter,
@@ -81,7 +81,7 @@ export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
             {children}
           </div>
         </div>
-        {isVertical ? (
+        {isVertical && (
           <>
             <div className={cn('TopShadow', 'rounded-t-md', shadowPosition.top, shadowClass)} />
             <div
@@ -94,8 +94,8 @@ export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
               )}
             />
           </>
-        ) : null}
-        {isHorizontal ? (
+        )}
+        {isHorizontal && (
           <>
             <div className={cn('LeftShadow', 'rounded-l-md', shadowPosition.left, shadowClass)} />
             <div
@@ -108,7 +108,7 @@ export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
               )}
             />
           </>
-        ) : null}
+        )}
       </div>
     )
   },

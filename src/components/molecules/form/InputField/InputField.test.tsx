@@ -1,27 +1,26 @@
 import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { object, string } from 'yup'
 
-import { JestMockProvider } from '../../../../../.storybook/helpers'
-import Form from '../Form'
+import { JestFormProvider, JestMockProvider } from '../../../../../.storybook/helpers'
 import InputField from '.'
 
 describe('InputField', () => {
   it('default', () => {
     render(
       <JestMockProvider>
-        <Form
-          initialValues={{ inputTest: 'inputTest' }}
-          validationSchema={object().shape({})}
-          onSubmit={() => {}}
-        >
+        <JestFormProvider fields={['inputTest']}>
           <InputField className="className" type="text" name="inputTest" label="label" />
-        </Form>
+        </JestFormProvider>
       </JestMockProvider>,
     )
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: {
+        value: 'inputTest',
+      },
+    })
     expect(screen.getByRole('textbox')).toBeTruthy()
-    expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    expect(screen.getByRole('textbox')).toHaveClass('className')
     expect(screen.getByRole('textbox')).toHaveAttribute('id', 'inputTest')
     expect(screen.getByRole('textbox')).toHaveAttribute('name', 'inputTest')
     expect(screen.getByRole('textbox')).toHaveAttribute('type', 'text')
@@ -33,16 +32,10 @@ describe('InputField', () => {
     const spy = jest.fn()
     render(
       <JestMockProvider>
-        <Form
-          initialValues={{ inputTest: 'inputTest' }}
-          validationSchema={object().shape({
-            inputTest: string().required('required'),
-          })}
-          onSubmit={spy}
-        >
+        <JestFormProvider fields={['inputTest']} onSubmit={spy}>
           <InputField className="className" type="text" name="inputTest" label="label" />
           <button type="submit" />
-        </Form>
+        </JestFormProvider>
       </JestMockProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy

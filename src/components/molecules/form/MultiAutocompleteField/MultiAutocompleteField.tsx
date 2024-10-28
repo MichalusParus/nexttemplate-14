@@ -12,13 +12,13 @@ export type MultiAutocompleteFieldProps = Omit<
 
 /** Form and style context wrapper for MultiAutocomplete component. Input, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiAutocompleteField = ({
-  className = '',
+  className,
   name,
   label,
   variant,
   color,
   size,
-  collapsed,
+  labelProps,
   ...rest
 }: MultiAutocompleteFieldProps) => {
   const {
@@ -38,8 +38,8 @@ export const MultiAutocompleteField = ({
           variant={variant || formVariant}
           color={color || formColor}
           size={size || formSize}
-          collapsed={collapsed || formCollapsed}
           error={(errors[name]?.message as string) || undefined}
+          labelProps={{ collapsed: labelProps?.collapsed || formCollapsed }}
           {...field}
           {...rest}
         />

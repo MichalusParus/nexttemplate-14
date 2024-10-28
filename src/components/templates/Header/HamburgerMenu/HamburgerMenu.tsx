@@ -14,7 +14,7 @@ export type HamburgerMenuProps = {
 }
 
 /** Hamburger Main Menu component, build with drawer. USE CLIENT */
-export const HamburgerMenu = ({ className = '' }: HamburgerMenuProps) => {
+export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const navRef = useRef<HTMLDivElement | null>(null)
   const [isOpen, setIsOpen] = useState(false)
 

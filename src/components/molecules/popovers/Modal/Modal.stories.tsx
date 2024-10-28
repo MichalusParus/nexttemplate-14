@@ -5,6 +5,8 @@ import Button from '@/components/atoms/common/Button'
 import Combobox from '@/components/atoms/common/Combobox'
 
 import { textContent } from '../../../../../.storybook/helpers'
+import Menu from '../Menu'
+import Tooltip from '../Tooltip'
 import { Modal, ModalProps } from './Modal'
 
 const meta: Meta<typeof Modal> = {
@@ -84,13 +86,6 @@ export const PrimaryDefault: Story = {
     buttonProps: undefined,
     setIsOpen: undefined,
     children: textContent.slice(0, 600),
-  },
-}
-
-export const DefaultOpen: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    isOpen: true,
   },
 }
 

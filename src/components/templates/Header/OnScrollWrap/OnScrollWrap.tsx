@@ -11,10 +11,7 @@ export type OnScrollWrapProps = {
 }
 
 /** Client header wrap for displaying header on scroll. USE CLIENT */
-export const OnScrollWrap = ({
-  className = '',
-  children,
-}: PropsWithChildren<OnScrollWrapProps>) => {
+export const OnScrollWrap = ({ className, children }: PropsWithChildren<OnScrollWrapProps>) => {
   const [isTop, setIsTop] = useState(true)
 
   const handleScroll = useCallback(() => {
@@ -38,7 +35,7 @@ export const OnScrollWrap = ({
     <div
       className={cn(
         'OnScrollWrap',
-        'z-20 w-full transition-dropdown duration-300',
+        'z-40 w-full transition-dropdown duration-300',
         isTop ? 'fixed top-0' : 'fixed -top-20',
         className,
       )}

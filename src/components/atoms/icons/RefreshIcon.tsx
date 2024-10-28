@@ -2,7 +2,7 @@ type Props = {
   className?: string
 }
 
-export default function RefreshIcon({ className = '' }: Props) {
+export default function RefreshIcon({ className }: Props) {
   return (
     <svg
       className={className}

@@ -1,20 +1,23 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { dottClass, loaderSize } from './InlineLoader.style'
 
-export type InlineLoaderProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'> & {
+type NativeInlineLoaderProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'>
+
+export type InlineLoaderProps = NativeInlineLoaderProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'inline' | 'none'
+  size?: StyleProps['size'] | 'inline'
 }
 
 /** Serves as inline loader, takes current text color. Default HTMLAttributes props supported. */
 export const InlineLoader = forwardRef<HTMLSpanElement, InlineLoaderProps>(
-  ({ className = '', size = 'md', ...rest }, ref) => {
+  ({ className, size = 'md', ...rest }, ref) => {
     const t = useTranslations('Components')
 
     return (

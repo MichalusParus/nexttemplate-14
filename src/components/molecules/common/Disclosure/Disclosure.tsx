@@ -2,23 +2,24 @@
 import { forwardRef, PropsWithChildren, useState } from 'react'
 
 import { Combobox, ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
+import Paper from '@/components/atoms/containers/Paper'
+import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
+import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
+import { StyleProps } from '@/components/types'
 import { cn, filterOutKeys, slugify } from '@/utils/utils'
 
-import Dropdown from '../../popovers/Dropdown'
-import { DropdownProps } from '../../popovers/Dropdown/Dropdown'
-
-export type DisclosureProps = {
+export type DisclosureProps = Omit<StyleProps, 'size'> & {
   /** for passing custom tailwind classes */
   className?: string
   /** combobox title */
   title: string
   /** chevron position in Combobox */
   chevronPosition?: 'start' | 'end'
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
+  /** for setting component width as tailwind class */
+  width?: string
+  /** for setting component height or maxHeight as tailwind class */
+  height?: string
   /** boolean for default open state */
   expanded?: boolean
   /** aria level for heading, hierarchy in Accordion component */
@@ -26,24 +27,26 @@ export type DisclosureProps = {
   /** for passing aditional props to combobox */
   comboboxProps?: Partial<Omit<ComboboxProps, 'name' | 'hasPopup' | 'isOpen'>>
   /** for passing aditional props to dropdown */
-  dropdownProps?: Partial<Omit<DropdownProps, 'name'>>
+  paperProps?: Partial<PaperProps>
   /** optional setIsOpen for external state control, must be use with expanded prop */
   setIsOpen?: (isOpen: boolean) => void
 }
 
-/** Disclosure is dropdown for displaying additional info. Combobox and Dropdown props supported. USE CLIENT */
+/** Disclosure is dropdown for displaying additional info. Combobox and Paper props supported. USE CLIENT */
 export const Disclosure = forwardRef<HTMLButtonElement, PropsWithChildren<DisclosureProps>>(
   (
     {
-      className = '',
+      className,
       title,
       chevronPosition = 'end',
       variant = 'outlined',
       color = 'primary',
+      width = 'w-full',
+      height = 'max-h-[40vh]',
       expanded,
       ariaLevel,
       comboboxProps = {},
-      dropdownProps = {},
+      paperProps = { hideShadow: true },
       children,
       setIsOpen,
     },
@@ -92,35 +95,46 @@ export const Disclosure = forwardRef<HTMLButtonElement, PropsWithChildren<Disclo
           >
             <div className={cn('ComboboxInnerWrap', 'flex w-full justify-between')}>
               <div className={cn('ComboboxStartWrap', 'flex gap-1')}>
-                {chevronPosition === 'start' ? (
+                {chevronPosition === 'start' && (
                   <ChevronIcon
                     className={cn('text-inherit transition-transform', startIconOpenState)}
                   />
-                ) : null}
+                )}
                 {title}
               </div>
-              {chevronPosition === 'end' ? (
+              {chevronPosition === 'end' && (
                 <ChevronIcon
                   className={cn('text-inherit transition-transform', endIconOpenState)}
                 />
-              ) : null}
+              )}
             </div>
           </Combobox>
         </div>
-        <Dropdown
-          isOpen={Boolean(openState)}
-          placement="relative"
-          variant={variant}
-          color={color}
-          padding="pt-1"
-          hideShadow
-          onClose={handleChange}
-          {...dropdownProps}
+        <div
+          id={slugify(title)}
+          className={cn(
+            'Dropdown',
+            'transition-dropdown',
+            width,
+            openState
+              ? 'visible z-[35] -translate-y-1 opacity-100'
+              : 'invisible max-h-0 -translate-y-8 opacity-0',
+            className,
+          )}
         >
-          <div className="DisclosureContent" role="region" aria-labelledby={slugify(title)}>
-            {children}
-          </div>
-        </Dropdown>
+          <Paper
+            className={cn('overflow-hidden', paperProps.className)}
+            variant={variant}
+            color={color}
+            {...filterOutKeys(paperProps, ['className'])}
+          >
+            <ScrollShadow height={height}>
+              <div className="DisclosureContent" role="region" aria-labelledby={slugify(title)}>
+                {children}
+              </div>
+            </ScrollShadow>
+          </Paper>
+        </div>
       </div>
     )
   },

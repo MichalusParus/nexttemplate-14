@@ -19,7 +19,7 @@ const meta: Meta<typeof Tabs> = {
     tabs: { control: false },
     buttonProps: { control: false },
     linkProps: { control: false },
-    disclosureProps: { control: false },
+    menuProps: { control: false },
   },
 }
 
@@ -37,9 +37,9 @@ const TabsWithHooks = (args: TabsProps) => {
         tabs={args.tabs}
         onTabClick={tab => setParam(tab.slug)}
       />
-      {args.tabs.length === 4 ? (
+      {args.tabs.length === 4 && (
         <button onClick={() => setParam('hidden')}>Click to show hidden tab</button>
-      ) : null}
+      )}
     </div>
   )
 }
@@ -56,7 +56,7 @@ export const PrimaryDefault: Story = {
     fullWidth: false,
     buttonProps: {},
     linkProps: {},
-    disclosureProps: {},
+    menuProps: {},
     onTabClick: undefined,
     children: undefined,
   },

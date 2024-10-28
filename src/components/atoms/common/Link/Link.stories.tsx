@@ -27,7 +27,6 @@ export const PrimaryDefault: Story = {
     size: 'md',
     startIcon: undefined,
     endIcon: undefined,
-    fullWidth: false,
     hideShadow: false,
     disableUpperCase: false,
     href: '#',
@@ -54,6 +53,13 @@ export const EndIcon: Story = {
   args: {
     ...PrimaryDefault.args,
     endIcon: <ProfileIcon />,
+  },
+}
+
+export const FullWidth: Story = {
+  args: { ...PrimaryDefault.args, className: 'w-full' },
+  parameters: {
+    layout: 'padded',
   },
 }
 

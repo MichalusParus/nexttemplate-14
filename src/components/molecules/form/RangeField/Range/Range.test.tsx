@@ -17,7 +17,7 @@ describe('Range', () => {
       />,
     )
     expect(screen.getByRole('slider')).toBeTruthy()
-    expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    expect(screen.getByRole('slider')).toHaveClass('className')
     expect(screen.getByRole('slider')).toHaveAttribute('id', 'rangeTest')
     expect(screen.getByRole('slider')).toHaveAttribute('name', 'rangeTest')
     expect(screen.getByRole('slider')).toHaveAttribute('type', 'range')
@@ -45,7 +45,7 @@ describe('Range', () => {
         className="className"
         name="rangeTest"
         label="label"
-        description="description"
+        labelProps={{ description: 'description' }}
         onChange={() => {}}
       />,
     )
@@ -54,7 +54,7 @@ describe('Range', () => {
 
   it('value', () => {
     render(
-      <Range className="className" name="rangeTest" label="label" value={50} onChange={() => {}} />,
+      <Range className="className" name="rangeTest" label="label" value="50" onChange={() => {}} />,
     )
     expect(screen.getByRole('slider')).toHaveAttribute('value', '50')
   })

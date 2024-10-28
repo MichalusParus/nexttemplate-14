@@ -14,9 +14,7 @@ export const disabledVariant = {
   ),
 }
 
-export const clearButtonClass = cn(
-  'right-11 top-1/2 z-10 -translate-y-1/2 border-0 [&.ClearButton]:absolute',
-)
+export const clearButtonClass = cn('absolute right-11 top-1/2 z-10 -translate-y-1/2 border-0')
 
 export const chevronClass = cn(
   'absolute right-4 top-1/2 -translate-y-1/2 text-inherit transition-transform',

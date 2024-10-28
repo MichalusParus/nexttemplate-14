@@ -10,7 +10,7 @@ export type FooterProps = {
 }
 
 /** Footer component, semantic with layout container and basic styling. */
-export const Footer = ({ className = '' }: FooterProps) => {
+export const Footer = ({ className }: FooterProps) => {
   return (
     <footer className={cn('Footer', footerClass, mainXPadding, className)} data-testid="Footer">
       <div className={cn('FooterContent', 'py-1 md:py-2', containerSize)}>

@@ -1,5 +1,6 @@
 import { forwardRef, OlHTMLAttributes, ReactNode } from 'react'
 
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { buttonIconSize } from '../../common/Button/Button.style'
@@ -8,39 +9,38 @@ import P from '../P'
 import { Title, TitleProps } from '../Title/Title'
 import { listColor, listSize } from './List.style'
 
-export type ListProps = Omit<
+type NativeListProps = Omit<
   OlHTMLAttributes<HTMLOListElement>,
   'content' | 'color' | 'className' | 'title'
-> & {
-  /** for passing custom tailwind classes */
-  className?: string
-  /** Style type of list, new style types must be added to tailwind theme first */
-  listStyleType?: string
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
-  /** optional title for list component */
-  title?: string
-  /** for choosing heading type */
-  titleProps?: TitleProps
-  /** optional form component description */
-  description?: string
-  /** optional icon for li */
-  icon?: ReactNode
-  /** Optional content in string arrays for list component, otherwise use children */
-  content?: ReactNode[]
-  /** ghost loading state for list as tailwind class */
-  isLoading?: boolean
-  /** expected lines for ghost template */
-  expectedLines?: number
-}
+>
+
+export type ListProps = NativeListProps &
+  Omit<StyleProps, 'variant'> & {
+    /** for passing custom tailwind classes */
+    className?: string
+    /** Style type of list, new style types must be added to tailwind theme first */
+    listStyleType?: string
+    /** optional title for list component */
+    title?: string
+    /** for choosing heading type */
+    titleProps?: TitleProps
+    /** optional form component description */
+    description?: string
+    /** optional icon for li */
+    icon?: ReactNode
+    /** Optional content in string arrays for list component, otherwise use children */
+    content?: ReactNode[]
+    /** ghost loading state for list as tailwind class */
+    isLoading?: boolean
+    /** expected lines for ghost template */
+    expectedLines?: number
+  }
 
 /** List component with ghost loading and optional title. Default HTMLAttributes props supported. */
 export const List = forwardRef<HTMLOListElement, ListProps>(
   (
     {
-      className = '',
+      className,
       listStyleType = 'list-none',
       color = 'none',
       size = 'md',
@@ -58,16 +58,16 @@ export const List = forwardRef<HTMLOListElement, ListProps>(
   ) => {
     return (
       <div className={cn('ListWrap', className)} data-testid="ListWrap">
-        {title ? (
+        {title && (
           <Title className="ListTitle" color={color} size={size} {...titleProps}>
             {title}
           </Title>
-        ) : null}
-        {description ? (
+        )}
+        {description && (
           <P className="ListDescription" color={color} size={size}>
             {description}
           </P>
-        ) : null}
+        )}
         {isLoading ? (
           new Array(expectedLines)
             .fill(null)
@@ -91,7 +91,7 @@ export const List = forwardRef<HTMLOListElement, ListProps>(
 
 List.displayName = 'List'
 
-export const Li = ({ className = '', color = 'none', size = 'md', icon, children }: ListProps) => {
+export const Li = ({ className, color = 'none', size = 'md', icon, children }: ListProps) => {
   return (
     <li
       className={cn(

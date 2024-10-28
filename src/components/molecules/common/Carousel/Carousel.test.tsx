@@ -9,7 +9,7 @@ describe('Carousel', () => {
   it('default', () => {
     render(
       <JestMockProvider>
-        <Carousel pages={3} ratio={100} className="className">
+        <Carousel pages={3} className="className">
           <div className="h-full w-full" data-testid="panel" />
           <div className="h-full w-full" data-testid="panel" />
           <div className="h-full w-full" data-testid="panel" />

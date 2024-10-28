@@ -9,13 +9,13 @@ export type InputFieldProps = Omit<InputProps, 'value' | 'error' | 'onChange'>
 
 /** Form and style context wrapper for Input component. Default InputHTMLAttributes props supported. USE CLIENT  */
 export const InputField = ({
-  className = '',
+  className,
   name,
   label,
   variant,
   color,
   size,
-  collapsed,
+  labelProps,
   ...rest
 }: InputFieldProps) => {
   const {
@@ -35,8 +35,11 @@ export const InputField = ({
           variant={variant || formVariant}
           color={color || formColor}
           size={size || formSize}
-          collapsed={collapsed || formCollapsed}
           error={(errors[name]?.message as string) || undefined}
+          labelProps={{
+            ...labelProps,
+            collapsed: labelProps?.collapsed || formCollapsed,
+          }}
           autoComplete="off"
           {...field}
           {...rest}

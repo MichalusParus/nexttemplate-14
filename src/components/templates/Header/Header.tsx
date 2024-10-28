@@ -12,7 +12,7 @@ export type HeaderProps = {
 }
 
 /** Header component, semantic with layout container and basic styling. */
-export const Header = ({ className = '' }: HeaderProps) => {
+export const Header = ({ className }: HeaderProps) => {
   return (
     <OnScrollWrap>
       <header className={cn('Header', headerClass, mainXPadding, className)} data-testid="Header">

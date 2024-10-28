@@ -20,8 +20,8 @@ export const cellSize = {
 
 export const searchMenuClass = cn('rounded-md pt-0')
 
-export const closeIconState = cn('opacity-0 group-hover:opacity-70 group-focus-visible:opacity-70')
+export const closeIconState = cn('opacity-30 group-hover:opacity-70 group-focus-visible:opacity-70')
 
 export const filterMenuVisibility = cn(
-  'border-transparent transition-opacity focus-within:opacity-100 group-hover:bg-transparent group-hover:opacity-100',
+  'border-transparent transition-colors focus-within:opacity-70 group-hover:bg-transparent group-hover:opacity-70',
 )

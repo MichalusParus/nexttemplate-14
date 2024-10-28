@@ -34,7 +34,7 @@ export const PrimaryDefault: Story = {
     color: 'primary',
     expanded: false,
     comboboxProps: undefined,
-    dropdownProps: undefined,
+    paperProps: undefined,
     children: <div className="p-4">{textContent.slice(0, 500)}</div>,
   },
 }

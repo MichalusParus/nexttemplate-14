@@ -1,21 +1,15 @@
 import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
-import { object } from 'yup'
 
-import Form from '.'
+import { JestFormProvider } from '../../../../../.storybook/helpers'
 
 describe('Form', () => {
   it('default', () => {
     render(
-      <Form
-        initialValues={{}}
-        validationSchema={object().shape({})}
-        onSubmit={() => {}}
-        className="className"
-      >
+      <JestFormProvider className="className" fields={[]} onSubmit={() => {}}>
         Children
-      </Form>,
+      </JestFormProvider>,
     )
     expect(screen.getByTestId('Form')).toBeTruthy()
     expect(screen.getByTestId('Form')).toHaveClass('className')

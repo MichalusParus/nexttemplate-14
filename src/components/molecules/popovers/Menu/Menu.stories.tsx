@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { PropsWithChildren, useState } from 'react'
+import { PropsWithChildren, useRef, useState } from 'react'
 
 import Combobox from '@/components/atoms/common/Combobox'
 import SettingIcon from '@/components/atoms/icons/SettingIcon'
@@ -19,6 +19,9 @@ const meta: Meta<typeof Menu> = {
     children: { control: false },
     comboboxProps: { control: false },
     dropdownProps: { control: false },
+    placement: {
+      control: { type: 'radio' },
+    },
   },
 }
 
@@ -39,18 +42,19 @@ const UnControlledMenu = (args: PropsWithChildren<MenuProps>) => {
 
 const ControlledMenu = (args: PropsWithChildren<MenuProps>) => {
   const [isOpen, setIsOpen] = useState(false)
+  const parentRef = useRef<HTMLDivElement | null>(null)
   return (
-    <div className="relative">
+    <div className="relative" ref={parentRef}>
       <Combobox
-        className="abcd"
-        name="menuStory"
+        className=""
+        name={args.name}
         hasPopup="menu"
         isOpen={isOpen}
         onClick={() => setIsOpen(prev => !prev)}
       >
         Controled Combobox
       </Combobox>
-      <Menu {...args} isOpen={isOpen} setIsOpen={setIsOpen}>
+      <Menu {...args} isOpen={isOpen} parentRef={parentRef} setIsOpen={setIsOpen}>
         <MenuLinks variant={args.variant} color={args.color} />
       </Menu>
     </div>
@@ -59,13 +63,14 @@ const ControlledMenu = (args: PropsWithChildren<MenuProps>) => {
 
 export const PrimaryDefault: Story = {
   args: {
-    className: 'my-48',
+    className: '',
     name: 'menuStory',
     isOpen: undefined,
-    placement: 'left',
+    placement: 'bottom-start',
     variant: 'outlined',
     color: 'primary',
     width: 'min-w-96',
+    parentRef: undefined,
     comboboxProps: undefined,
     dropdownProps: undefined,
     setIsOpen: undefined,
@@ -76,7 +81,8 @@ export const PrimaryDefault: Story = {
 export const IconLeft: Story = {
   args: {
     ...PrimaryDefault.args,
-    className: 'mb-48',
+    className: '',
+    name: 'menuStory2',
     comboboxProps: { startIcon: <SettingIcon /> },
   },
   render: args => <UnControlledMenu {...args} />,
@@ -85,7 +91,8 @@ export const IconLeft: Story = {
 export const DefaultOpen: Story = {
   args: {
     ...PrimaryDefault.args,
-    className: 'mb-48',
+    className: '',
+    name: 'menuStory3',
     isOpen: true,
     comboboxProps: { startIcon: <SettingIcon /> },
   },
@@ -95,9 +102,10 @@ export const DefaultOpen: Story = {
 export const Right: Story = {
   args: {
     ...PrimaryDefault.args,
-    className: 'mb-48',
+    className: '',
+    name: 'menuStory4',
     comboboxProps: { startIcon: <SettingIcon /> },
-    placement: 'right',
+    placement: 'bottom-end',
   },
   render: args => <UnControlledMenu {...args} />,
 }
@@ -105,7 +113,8 @@ export const Right: Story = {
 export const Top: Story = {
   args: {
     ...PrimaryDefault.args,
-    className: 'mt-48',
+    className: '',
+    name: 'menuStory5',
     comboboxProps: { startIcon: <SettingIcon /> },
     placement: 'top',
   },
@@ -115,7 +124,8 @@ export const Top: Story = {
 export const Controled: Story = {
   args: {
     ...PrimaryDefault.args,
-    className: 'mb-48',
+    className: '',
+    name: 'menuStory6',
     comboboxProps: { startIcon: <SettingIcon /> },
   },
   render: args => <ControlledMenu {...args} />,
@@ -124,7 +134,8 @@ export const Controled: Story = {
 export const Scroll: Story = {
   args: {
     ...PrimaryDefault.args,
-    className: 'mb-80 scroll',
+    className: 'scroll',
+    name: 'menuStory7',
     children: <MenuLinks length={30} />,
   },
   render: args => <UnControlledMenu {...args} />,

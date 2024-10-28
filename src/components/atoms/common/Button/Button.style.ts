@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const buttonClass = cn(
-  'relative rounded-md border transition-activity focus:outline-none [&.error]:border-error-800 [&.error]:shadow-error',
+  'relative items-center justify-center whitespace-nowrap rounded-md border font-semibold transition-activity focus:outline-none [&.error]:border-error-800 [&.error]:shadow-error',
 )
 
 export const buttonVariant = {
@@ -129,7 +129,3 @@ export const buttonIconSize = {
   inline: cn('[&_svg]:h-sm [&_svg]:w-sm [&_svg]:min-w-sm'),
   none: '',
 }
-
-export const innerWrapClass = cn(
-  'flex w-full items-center justify-center whitespace-nowrap font-semibold',
-)

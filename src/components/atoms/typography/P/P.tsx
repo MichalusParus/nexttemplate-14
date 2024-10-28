@@ -1,30 +1,30 @@
 import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react'
 
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import Ghost from '../../loaders/Ghost'
 import { PColor, PSize } from './P.style'
 
-export type PProps = Omit<HTMLAttributes<HTMLParagraphElement>, 'color' | 'className'> & {
-  /** for passing custom tailwind classes */
-  className?: string
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** font size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
-  /** align tailwind class enum */
-  align?: 'text-left' | 'text-center' | 'text-right'
-  /** ghost loading state for heading */
-  isLoading?: boolean
-  /** expected lines for ghost template */
-  expectedLines?: number
-}
+type NativePProps = Omit<HTMLAttributes<HTMLParagraphElement>, 'color' | 'className'>
+
+export type PProps = NativePProps &
+  Omit<StyleProps, 'variant'> & {
+    /** for passing custom tailwind classes */
+    className?: string
+    /** align tailwind class enum */
+    align?: 'text-left' | 'text-center' | 'text-right'
+    /** ghost loading state for heading */
+    isLoading?: boolean
+    /** expected lines for ghost template */
+    expectedLines?: number
+  }
 
 /** Basic paragraph component with ghost loading. Default HTMLAttributes props supported. */
 export const P = forwardRef<HTMLParagraphElement, PropsWithChildren<PProps>>(
   (
     {
-      className = '',
+      className,
       color = 'none',
       size = 'md',
       align = 'text-left',

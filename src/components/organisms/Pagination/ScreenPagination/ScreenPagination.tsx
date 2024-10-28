@@ -6,17 +6,18 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
-import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 
 import { MobilePaginationProps } from '../MobilePagination/MobilePagination'
 import { chevronPosition } from '../MobilePagination/MobilePagination.style'
-import { buttonSize, dottColor } from './ScreenPagination.style'
+import { dottColor, pageButtonSize } from './ScreenPagination.style'
 
 export type ScreenPaginationProps = MobilePaginationProps & {
   /** name of the pagination component */
@@ -29,7 +30,7 @@ export type ScreenPaginationProps = MobilePaginationProps & {
 export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps>(
   (
     {
-      className = '',
+      className,
       name,
       pages,
       selectedPage,
@@ -44,13 +45,25 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
     ref,
   ) => {
     const t = useTranslations('Components')
-    const [isActive, setIsActive] = useState(false)
-    const { componentRef, startRef } = useFocusTrap(isActive, () => setIsActive(false), {
-      focusable: ['.LeftChevronButton', '.RightChevronButton', '.PageButton'],
-      focusSelected: '.PageButton.selected',
-    })
+    const componentRef = useRef<HTMLDivElement | null>(null)
     useImperativeHandle(ref, () => componentRef.current!)
+    const [isActive, setIsActive] = useState(false)
     const sidePagesCount = (pageSpread - 5) / 2
+
+    const handleClose = () => {
+      componentRef.current?.focus()
+      setIsActive(false)
+    }
+
+    const { focusableEl } = useFocus(
+      isActive,
+      componentRef,
+      ['.LeftChevronButton', '.RightChevronButton', '.PageButton'],
+      handleClose,
+      {
+        value: selectedPage,
+      },
+    )
 
     const aroundPages = useCallback(() => {
       if (selectedPage < sidePagesCount + 4) {
@@ -75,10 +88,10 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
         const target = e.target as HTMLDivElement
         if (isActive && !componentRef.current?.contains(target)) {
           setIsActive(false)
-          startRef?.current?.focus()
+          focusableEl[0].focus()
         }
       },
-      [isActive, componentRef, startRef],
+      [isActive, componentRef, focusableEl],
     )
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -114,7 +127,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
         onKeyDown={handleKeyDown}
         data-testid="ScreenPagination"
       >
-        {selectedPage !== 1 ? (
+        {selectedPage !== 1 && (
           <Button
             className={cn(
               'LeftChevronButton',
@@ -126,16 +139,15 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
             size={size}
             startIcon={<ChevronIcon />}
             onClick={() => setSelectedPage(selectedPage - 1)}
-            tabIndex={-1}
             aria-label={t('previousPage', { page: selectedPage - 1 })}
             {...filterOutKeys(buttonProps, ['className'])}
           />
-        ) : null}
-        {pages.length > sidePagesCount * 2 + 6 && selectedPage > sidePagesCount + 3 ? (
+        )}
+        {pages.length > sidePagesCount * 2 + 6 && selectedPage > sidePagesCount + 3 && (
           <Button
             className={cn(
               'PageButton',
-              buttonSize[size],
+              pageButtonSize[size],
               getSelectedClass(pages[0]),
               buttonProps.className,
             )}
@@ -148,20 +160,20 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
             aria-label={t('page', { page: pages[0] })}
             {...filterOutKeys(buttonProps, ['className'])}
           />
-        ) : null}
-        {pages.length > sidePagesCount * 2 + 6 && selectedPage > sidePagesCount + 3 ? (
-          <div className={cn('DottWrap', 'flex items-center justify-around', buttonSize[size])}>
+        )}
+        {pages.length > sidePagesCount * 2 + 6 && selectedPage > sidePagesCount + 3 && (
+          <div className={cn('DottWrap', 'flex items-center justify-around', pageButtonSize[size])}>
             <div className={dottColor[color]} />
             <div className={dottColor[color]} />
             <div className={dottColor[color]} />
           </div>
-        ) : null}
+        )}
         {displayablePages.map(page => (
           <Button
             key={page}
             className={cn(
               'PageButton',
-              buttonSize[size],
+              pageButtonSize[size],
               getSelectedClass(page),
               buttonProps.className,
             )}
@@ -176,33 +188,35 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
           />
         ))}
         {pages.length > sidePagesCount * 2 + 6 &&
-        selectedPage < pages.length - (sidePagesCount + 2) ? (
-          <div className={cn('DottWrap', 'flex items-center justify-around', buttonSize[size])}>
-            <div className={dottColor[color]} />
-            <div className={dottColor[color]} />
-            <div className={dottColor[color]} />
-          </div>
-        ) : null}
+          selectedPage < pages.length - (sidePagesCount + 2) && (
+            <div
+              className={cn('DottWrap', 'flex items-center justify-around', pageButtonSize[size])}
+            >
+              <div className={dottColor[color]} />
+              <div className={dottColor[color]} />
+              <div className={dottColor[color]} />
+            </div>
+          )}
         {pages.length > sidePagesCount * 2 + 6 &&
-        selectedPage < pages.length - (sidePagesCount + 2) ? (
-          <Button
-            className={cn(
-              'PageButton',
-              buttonSize[size],
-              getSelectedClass(pages[pages.length - 1]),
-              buttonProps.className,
-            )}
-            variant={variant}
-            color={color}
-            size={size}
-            startIcon={String(pages[pages.length - 1])}
-            onClick={() => setSelectedPage(pages[pages.length - 1])}
-            tabIndex={-1}
-            aria-label={t('page', { page: pages[pages.length - 1] })}
-            {...filterOutKeys(buttonProps, ['className'])}
-          />
-        ) : null}
-        {selectedPage + loadMoreCount < pages.length ? (
+          selectedPage < pages.length - (sidePagesCount + 2) && (
+            <Button
+              className={cn(
+                'PageButton',
+                pageButtonSize[size],
+                getSelectedClass(pages[pages.length - 1]),
+                buttonProps.className,
+              )}
+              variant={variant}
+              color={color}
+              size={size}
+              startIcon={String(pages[pages.length - 1])}
+              onClick={() => setSelectedPage(pages[pages.length - 1])}
+              tabIndex={-1}
+              aria-label={t('page', { page: pages[pages.length - 1] })}
+              {...filterOutKeys(buttonProps, ['className'])}
+            />
+          )}
+        {selectedPage + loadMoreCount < pages.length && (
           <Button
             className={cn(
               'RightChevronButton',
@@ -214,13 +228,12 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
             size={size}
             startIcon={<ChevronIcon />}
             onClick={() => setSelectedPage(selectedPage + loadMoreCount + 1)}
-            tabIndex={-1}
             aria-label={t('nextPage', {
               page: selectedPage + 1,
             })}
             {...filterOutKeys(buttonProps, ['className'])}
           />
-        ) : null}
+        )}
       </div>
     )
   },

@@ -9,7 +9,7 @@ import ListBox from '@/components/atoms/common/ListBox'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 import XIcon from '@/components/atoms/icons/XIcon'
 import Dropdown from '@/components/molecules/popovers/Dropdown'
-import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 
 import { Label } from '../../../../atoms/common/Label/Label'
@@ -23,35 +23,34 @@ export type MultiSelectProps = Omit<SelectProps, 'value' | 'onChange'> & {
   onChange: (value: string[]) => void
 }
 
-/** Basic custom MultiSelect inside Label Component. For form purposes use MultiSelectField. Combobox, Dropdown and ListBox supported. USE CLIENT */
+/** Basic custom MultiSelect inside Label Component. For form purposes use MultiSelectField. Combobox, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
   (
     {
-      className = '',
+      className,
       name,
       label,
       placeholder = label,
       options,
       value,
-      placement = 'left',
+      placement = 'bottom',
       variant = 'outlined',
       color = 'primary',
       size = 'md',
-      width,
-      description,
-      hideLabel,
-      hideError,
-      collapsed,
       disabled,
       error,
       comboboxProps = {},
       dropdownProps = {},
       listboxProps = {},
+      labelProps,
       onChange,
     },
     ref,
   ) => {
     const t = useTranslations('Components')
+    const componentRef = useRef<HTMLDivElement>(null)
+    const dropdownRef = useRef<HTMLDivElement>(null)
+    useImperativeHandle(ref, () => componentRef.current!)
     const [isOpen, setIsOpen] = useState(false)
     const [selectedOptionsSize, setSelectedOptionsSize] = useState<{
       width?: number
@@ -59,17 +58,22 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
     }>()
     const sortedOptions = placement === 'top' ? options.reverse() : options
     const selectedOptionsRef = useRef<HTMLDivElement>(null)
-    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), {
-      focusable: ['.Option', '.ChipAction', '.ClearButton'],
-      focusSelected: '.selected.Option',
-    })
-    useImperativeHandle(ref, () => componentRef.current!)
     const selectedOptions = options.filter(option => value.includes(option.value)) || options[0]
+    const { focusableEl } = useFocus(
+      isOpen,
+      componentRef,
+      ['.SelectCombobox', '.ChipAction', '.ClearButton', '.Option'],
+      () => setIsOpen(false),
+      {
+        portalRef: dropdownRef,
+        value: value,
+      },
+    )
 
-    const handleClose = useCallback(() => {
-      startRef?.current?.focus()
-      setIsOpen(prev => !prev)
-    }, [startRef])
+    const handleClose = () => {
+      focusableEl[0].focus()
+      setIsOpen(false)
+    }
 
     const handleOnChange = useCallback(
       (v: string) => {
@@ -84,8 +88,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
 
     const handleClear = useCallback(() => {
       onChange([])
-      startRef?.current?.focus()
-    }, [startRef, onChange])
+    }, [onChange])
 
     useEffect(() => {
       if (selectedOptions.length) {
@@ -97,35 +100,27 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
     }, [selectedOptions.length, selectedOptionsRef, setSelectedOptionsSize])
 
     return (
-      <Label
-        className={className}
-        name={name}
-        label={label}
-        size={size}
-        width={width}
-        error={error}
-        description={description}
-        hideLabel={hideLabel}
-        hideError={hideError}
-        collapsed={collapsed}
-      >
-        <div className={cn('MultiSelect', 'relative w-full')} ref={componentRef}>
+      <Label name={name} label={label} size={size} error={error} {...labelProps}>
+        <div
+          className={cn('MultiSelect', 'relative w-full', className)}
+          ref={componentRef}
+          data-testid="MultiSelect"
+        >
           <Combobox
             id={name}
-            className={cn('SelectCombobox', error && 'error', comboboxProps.className)}
+            className={cn('SelectCombobox', 'w-full', error && 'error', comboboxProps.className)}
             name={name}
             variant={variant}
             color={color}
             size={size}
             hasPopup="listbox"
-            fullWidth
             isOpen={isOpen}
             disabled={disabled}
             hideShadow
             disableUpperCase
             aria-labelledby={'label-' + name}
             aria-describedby={`${name}-description`}
-            onClick={handleClose}
+            onClick={() => setIsOpen(prev => !prev)}
             {...filterOutKeys(comboboxProps, ['className'])}
           >
             <div className={cn('ComboboxInnerWrap', 'flex w-full items-center justify-between')}>
@@ -171,7 +166,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
                 {option.label}
               </Chip>
             ))}
-            {value.length ? (
+            {Boolean(value.length) && (
               <Button
                 className={cn('ClearButton', 'shrink-0 border-0')}
                 type="button"
@@ -184,18 +179,20 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
                 tabIndex={-1}
                 onClick={handleClear}
               />
-            ) : null}
+            )}
           </div>
           <Dropdown
             isOpen={isOpen}
+            parentRef={componentRef}
             placement={placement}
             variant={variant}
             color={color}
             onClose={handleClose}
+            scrollShadowProps={{ disableHorizontal: true }}
+            ref={dropdownRef}
             {...dropdownProps}
           >
             <ListBox
-              className={cn(placement === 'left' ? 'pt-1' : 'pb-1', listboxProps.className)}
               name={name}
               value={value}
               options={sortedOptions}
@@ -204,7 +201,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
               size={size}
               aria-multiselectable={true}
               onClick={handleOnChange}
-              {...filterOutKeys(listboxProps, ['className'])}
+              {...listboxProps}
             />
           </Dropdown>
         </div>

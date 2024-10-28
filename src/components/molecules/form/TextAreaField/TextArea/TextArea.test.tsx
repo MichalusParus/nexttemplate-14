@@ -8,7 +8,7 @@ describe('TextArea', () => {
   it('default', () => {
     render(<TextArea className="className" name="textareaTest" label="label" onChange={() => {}} />)
     expect(screen.getByRole('textbox')).toBeTruthy()
-    expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    expect(screen.getByRole('textbox')).toHaveClass('className')
     expect(screen.getByRole('textbox')).toHaveAttribute('id', 'textareaTest')
     expect(screen.getByRole('textbox')).toHaveAttribute('name', 'textareaTest')
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
@@ -21,7 +21,12 @@ describe('TextArea', () => {
 
   it('description', () => {
     render(
-      <TextArea name="textareaTest" label="label" description="description" onChange={() => {}} />,
+      <TextArea
+        name="textareaTest"
+        label="label"
+        labelProps={{ description: 'description' }}
+        onChange={() => {}}
+      />,
     )
     expect(screen.getByRole('alert')).toHaveTextContent('description')
   })

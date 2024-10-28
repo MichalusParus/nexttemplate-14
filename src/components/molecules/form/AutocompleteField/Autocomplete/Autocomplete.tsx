@@ -1,22 +1,28 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, KeyboardEvent, useCallback, useState } from 'react'
+import {
+  forwardRef,
+  KeyboardEvent,
+  PropsWithChildren,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 
 import Button from '@/components/atoms/common/Button'
-import { ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
 import ListBox from '@/components/atoms/common/ListBox'
 import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
 import XIcon from '@/components/atoms/icons/XIcon'
 import Dropdown from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
-import { OptionType } from '@/components/types'
-import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { FieldProps, OptionType, StyleProps } from '@/components/types'
+import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 
-import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
-import Input from '../../InputField/Input'
-import { InputProps } from '../../InputField/Input/Input'
+import { Label } from '../../../../atoms/common/Label/Label'
+import { Input, InputProps } from '../../InputField/Input/Input'
 import { inputVariant } from '../../InputField/Input/Input.style'
 import { iconSize } from '../../MultiSelectField/MultiSelect/MultiSelect.style'
 import {
@@ -26,22 +32,17 @@ import {
   disabledVariant,
 } from './Autocomplete.style'
 
-export type AutocompleteProps = Pick<ComboboxProps, 'name' | 'disabled'> &
-  Omit<LabelProps, 'name' | 'onClick'> & {
+export type AutocompleteProps = Pick<InputProps, 'disabled'> &
+  FieldProps &
+  StyleProps & {
     /** position of dropdown */
-    placement?: 'left' | 'top'
-    /** style variant of component */
-    variant?: 'text' | 'outlined' | 'contained'
-    /** theme color of component, none disable styles for custom styling via className */
-    color?: 'primary' | 'secondary' | 'terciary' | 'none'
+    placement?: 'bottom' | 'top'
     /** current value of autocomplete */
     value: string
     /** options for select to choose from */
     options: OptionType[]
     /** loading state for options fetching, loading is delayed for 1 second to prevent flickering */
     isLoading?: boolean
-    /** optional placeholder */
-    placeholder?: string
     /** optional input props for autocomplete input */
     inputProps?: Partial<InputProps>
     /** for passing aditional props to dropdown */
@@ -55,30 +56,26 @@ export type AutocompleteProps = Pick<ComboboxProps, 'name' | 'disabled'> &
   }
 
 /** Basic custom Autocomplete inside Label Component. For form purposes use AutocompleteField. Input, Dropdown and ListBox props supported. USE CLIENT */
-export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
+export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<AutocompleteProps>>(
   (
     {
-      className = '',
+      className,
       name,
       label,
-      placement = 'left',
+      placeholder = label,
+      value,
+      options,
       variant = 'outlined',
       color = 'primary',
-      value,
-      isLoading,
-      options,
       size = 'md',
-      width,
-      placeholder = label,
-      description,
-      hideLabel,
-      hideError,
-      collapsed,
-      disabled,
+      placement = 'bottom',
+      isLoading,
       error,
+      disabled,
       inputProps = {},
       dropdownProps = {},
       listboxProps = {},
+      labelProps,
       onInputChange,
       onChange,
       children,
@@ -86,37 +83,45 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
     ref,
   ) => {
     const t = useTranslations('Components')
+    const componentRef = useRef<HTMLDivElement>(null)
+    const dropdownRef = useRef<HTMLDivElement>(null)
+    useImperativeHandle(ref, () => componentRef.current!)
     const [isOpen, setIsOpen] = useState(false)
     const [inputValue, setInputValue] = useState<string>('')
     const sortedOptions = placement === 'top' ? options.reverse() : options
-    const { componentRef, startRef } = useFocusTrap(isOpen, () => setIsOpen(false), {
-      focusable: ['.Option', '.ClearButton'],
-      focusSelected: '.selected.Option',
-    })
     const noOptionsLabel =
       inputValue.length <= 2 ? t('searchForOptions') : t('noOptionsMatch', { value: inputValue })
     const comboboxZIndex = isOpen ? 'z-40' : 'z-20'
     const selectedClass = isOpen ? 'selected' : ''
     const disabledClass = disabled ? 'disabled' : ''
+    const { focusableEl } = useFocus(
+      isOpen,
+      componentRef,
+      ['.AutocompleteCombobox', '.Option'],
+      () => setIsOpen(false),
+      {
+        portalRef: dropdownRef,
+      },
+    )
 
     const handleClose = useCallback(() => {
       const selectedLabel = options.find(option => option.value === value)?.label
       if (isOpen && inputValue !== selectedLabel) {
         onInputChange(selectedLabel || '')
       }
-      startRef?.current?.focus()
+      focusableEl[0].focus()
       setIsOpen(prev => !prev)
-    }, [startRef, isOpen, options, value, inputValue, onInputChange, setIsOpen])
+    }, [isOpen, options, value, inputValue, focusableEl, onInputChange, setIsOpen])
 
     const handleOnChange = useCallback(
       (target: string) => {
         const selectedOption = options.find(({ value }) => value === target) || options[0]
         onChange(selectedOption.value)
         setInputValue(selectedOption.label)
-        startRef?.current?.focus()
+        focusableEl[0].focus()
         setIsOpen(prev => !prev)
       },
-      [startRef, options, onChange, setIsOpen, setInputValue],
+      [options, focusableEl, onChange, setIsOpen, setInputValue],
     )
 
     const handleInputChange = useCallback(
@@ -134,23 +139,16 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
       onChange('')
       onInputChange('')
       setInputValue('')
-      startRef?.current?.focus()
-    }, [startRef, onChange, onInputChange])
+      focusableEl[0].focus()
+    }, [focusableEl, onChange, onInputChange])
 
     return (
-      <Label
-        className={className}
-        name={name}
-        label={label}
-        size={size}
-        width={width}
-        error={error}
-        description={description}
-        hideLabel={hideLabel}
-        hideError={hideError}
-        collapsed={collapsed}
-      >
-        <div className={cn('Autocomplete', 'relative flex w-full')} ref={componentRef}>
+      <Label name={name} label={label} size={size} error={error} {...labelProps}>
+        <div
+          className={cn('Autocomplete', 'relative flex w-full', className)}
+          ref={componentRef}
+          data-testid="Autocomplete"
+        >
           <div
             className={cn(
               'ComboboxWrap',
@@ -163,24 +161,25 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
               error && 'border-error-800 shadow-error',
             )}
           >
+            <ChevronIcon className={cn(chevronClass, comboboxZIndex, isOpen && 'rotate-180')} />
             <Input
               id={name}
               className={cn(
-                'w-full [&_input]:border-none [&_input]:bg-transparent [&_input]:pr-16',
+                'AutocompleteCombobox',
+                'w-full border-none bg-transparent pr-16',
+                comboboxZIndex,
                 inputProps.className,
               )}
               name={name}
-              label="AutoCompleteInput"
+              label="AutocompleteInput"
               value={inputValue}
               variant={variant}
               color="none"
               size={size}
               placeholder={placeholder}
               disabled={disabled}
-              hideLabel
-              hideError
+              labelProps={{ hideError: true, hideLabel: true }}
               autoComplete="off"
-              ref={ref}
               role="combobox"
               aria-haspopup="listbox"
               aria-describedby={`${name}-description`}
@@ -193,8 +192,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
               onChange={handleInputChange}
               {...filterOutKeys(inputProps, ['className'])}
             />
-            <ChevronIcon className={cn(chevronClass, comboboxZIndex, isOpen && 'rotate-180')} />
-            {inputValue ? (
+            {inputValue && (
               <Button
                 className={cn('ClearButton', clearButtonClass, comboboxZIndex, selectedClass)}
                 startIcon={<XIcon className={iconSize[size]} />}
@@ -205,18 +203,21 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                 aria-label={t('clear')}
                 onClick={handleClear}
               />
-            ) : null}
+            )}
           </div>
           <Dropdown
             isOpen={isOpen}
+            parentRef={componentRef}
             placement={placement}
             variant={variant}
             color={color}
             onClose={handleClose}
+            scrollShadowProps={{ disableHorizontal: true }}
+            ref={dropdownRef}
             {...dropdownProps}
           >
             <ListBox
-              className={cn(placement === 'left' ? 'pt-1' : 'pb-1', listboxProps.className)}
+              className={cn(placement === 'bottom' ? 'pt-1' : 'pb-1', listboxProps.className)}
               name={name}
               value={[value]}
               options={sortedOptions}

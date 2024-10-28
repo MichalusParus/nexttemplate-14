@@ -2,7 +2,7 @@ type Props = {
   className?: string
 }
 
-export default function FilterIcon({ className = '' }: Props) {
+export default function FilterIcon({ className }: Props) {
   return (
     <svg
       className={className}

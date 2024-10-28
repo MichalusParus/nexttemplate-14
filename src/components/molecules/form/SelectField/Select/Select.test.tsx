@@ -19,8 +19,9 @@ describe('Select', () => {
         />
       </JestMockProvider>,
     )
+    fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeTruthy()
-    expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    expect(screen.getByTestId('Select')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'selectTest')
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
   })
@@ -49,7 +50,7 @@ describe('Select', () => {
           label="label"
           value=""
           options={options}
-          description="description"
+          labelProps={{ description: 'description' }}
           onChange={() => {}}
         />
       </JestMockProvider>,
@@ -69,6 +70,7 @@ describe('Select', () => {
         />
       </JestMockProvider>,
     )
+    fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('combobox')).toHaveTextContent('label1')
     expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true')
   })

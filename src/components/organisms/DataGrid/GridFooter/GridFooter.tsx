@@ -5,6 +5,7 @@ import Button from '@/components/atoms/common/Button'
 import SignInIcon from '@/components/atoms/icons/SignInIcon'
 import Select from '@/components/molecules/form/SelectField/Select'
 import Tooltip from '@/components/molecules/popovers/Tooltip'
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import MobilePagination from '../../Pagination/MobilePagination'
@@ -12,7 +13,7 @@ import { rowgroupVariant } from '../GridHeader/GridHeader.style'
 import { RowDef } from '../types'
 import { gridRowPadding, paginationMarginClass, rowClass } from './GridFooter.style'
 
-export type GridFooterProps = {
+export type GridFooterProps = StyleProps & {
   /** filtered data for export */
   filteredData: RowDef[]
   /** current selected rowsPerPage */
@@ -21,12 +22,6 @@ export type GridFooterProps = {
   pages: number[]
   /** current selected page for pagination */
   selectedPage: number
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
   /** optional for hiding export */
   hideExport?: boolean
   /** page selecting function for pagination */
@@ -92,22 +87,20 @@ export const GridFooter = forwardRef<HTMLDivElement, GridFooterProps>(
               name="rowsPerPage"
               placement="top"
               label="rows:"
+              placeholder="Rows"
               value={String(selectedRowsPerPage)}
               options={rowPerPageOptions}
               variant={variant}
               color={color}
               size={size}
-              width="w-40"
-              placeholder="Rows"
-              hideError
-              collapsed="never"
+              labelProps={{ hideError: true, width: 'w-44', collapsed: 'never' }}
               comboboxProps={{
                 className: 'border-transparent dark:border-transparent',
                 tabIndex: -1,
               }}
               onChange={(value: string) => handleRowsPerPage(value)}
             />
-            {!hideExport ? (
+            {!hideExport && (
               <Tooltip title="Export">
                 <Button
                   className={cn('ExportButton', 'border-transparent dark:border-transparent')}
@@ -120,7 +113,7 @@ export const GridFooter = forwardRef<HTMLDivElement, GridFooterProps>(
                   onClick={handleExport}
                 />
               </Tooltip>
-            ) : null}
+            )}
           </div>
           <MobilePagination
             className={paginationMarginClass[size]}

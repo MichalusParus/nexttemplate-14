@@ -26,7 +26,6 @@ export const PrimaryDefault: Story = {
     startIcon: undefined,
     endIcon: undefined,
     isLoading: false,
-    fullWidth: false,
     hideShadow: false,
     disableUpperCase: false,
     onClick: () => console.log('Click'),

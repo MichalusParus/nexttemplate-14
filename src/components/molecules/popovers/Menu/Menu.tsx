@@ -1,14 +1,24 @@
 'use client'
-import { forwardRef, PropsWithChildren, useImperativeHandle, useState } from 'react'
+import { Placement } from '@popperjs/core'
+import {
+  forwardRef,
+  MutableRefObject,
+  PropsWithChildren,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 
 import { Combobox, ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
-import { useFocusTrap } from '@/utils/hooks/useFocusTrap'
+import { StyleProps } from '@/components/types'
+import { useFocus } from '@/utils/hooks/useFocus'
 import { cn } from '@/utils/utils'
 
 import Dropdown from '../Dropdown'
 import { DropdownProps } from '../Dropdown/Dropdown'
 
-export type MenuProps = {
+export type MenuProps = Omit<StyleProps, 'size'> & {
   /** for passing custom tailwind classes */
   className?: string
   /** name string serves as id for aria purposes and as secondary aria label */
@@ -16,13 +26,11 @@ export type MenuProps = {
   /** optional isOpen state for external state control, must be use with setIsOpen prop, or for setting default open state */
   isOpen?: boolean
   /** position of dropdown */
-  placement?: 'left' | 'right' | 'top'
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** for setting dropdown width */
-  width?: string
+  placement?: Placement
+  /** for setting dropdown width as inline css style */
+  width?: number | string
+  /** Parent ref of controled combobox */
+  parentRef?: MutableRefObject<HTMLDivElement | null>
   /** for passing aditional props to combobox */
   comboboxProps?: Partial<ComboboxProps>
   /** for passing aditional props to dropdown */
@@ -35,13 +43,14 @@ export type MenuProps = {
 export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
   (
     {
-      className = '',
+      className,
       name,
       isOpen,
-      placement = 'left',
+      placement = 'bottom-start',
       variant = 'outlined',
       color = 'primary',
-      width = 'min-w-96',
+      width,
+      parentRef,
       comboboxProps = { children: 'MenuCombobox' },
       dropdownProps,
       setIsOpen,
@@ -49,23 +58,30 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
     },
     ref,
   ) => {
+    const componentRef = useRef<HTMLDivElement>(null)
+    const dropdownRef = useRef<HTMLDivElement>(null)
+    useImperativeHandle(ref, () => componentRef.current!)
     const [isLocallyOpen, setIsLocallyOpen] = useState(Boolean(isOpen))
     const openState = setIsOpen ? Boolean(isOpen) : isLocallyOpen
-    useImperativeHandle(ref, () => componentRef.current!)
     const menuPosition = !setIsOpen ? 'relative' : ''
+    const { focusableEl } = useFocus(
+      openState,
+      componentRef,
+      ['button:not(.Overlay)', '[href]', 'input', '[tabindex]:not([tabindex="-1"])'],
+      setIsOpen ? () => setIsOpen(!isOpen) : () => setIsLocallyOpen(prev => !prev),
+      {
+        portalRef: dropdownRef,
+      },
+    )
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
       if (setIsOpen) {
         setIsOpen(!isOpen)
       } else {
         setIsLocallyOpen(prev => !prev)
       }
-      startRef?.current?.focus()
-    }
-
-    const { componentRef, startRef } = useFocusTrap(openState, handleClose, {
-      focusable: ['button:not(.Overlay)', '[href]', 'input', '[tabindex]:not([tabindex="-1"])'],
-    })
+      focusableEl[0].focus()
+    }, [focusableEl, isOpen, setIsOpen])
 
     return (
       <div
@@ -73,7 +89,7 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
         ref={componentRef}
         data-testid="MenuWrap"
       >
-        {!setIsOpen ? (
+        {!setIsOpen && (
           <Combobox
             name={name}
             isOpen={openState}
@@ -83,15 +99,16 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
             onClick={handleClose}
             {...comboboxProps}
           />
-        ) : null}
+        )}
         <Dropdown
           isOpen={openState}
+          parentRef={parentRef || componentRef}
           placement={placement}
           variant={variant}
           color={color}
           width={width}
-          padding="pt-1"
           onClose={handleClose}
+          ref={dropdownRef}
           {...dropdownProps}
         >
           <div id={name} role="menu" aria-hidden={!openState}>

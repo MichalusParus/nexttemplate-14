@@ -9,7 +9,7 @@ describe('ImageViewer', () => {
   it('default', () => {
     render(
       <JestMockProvider>
-        <ImageViewer alt="viewerTest" className="className">
+        <ImageViewer name="viewerTest" className="className">
           Image
         </ImageViewer>
       </JestMockProvider>,

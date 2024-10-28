@@ -1,19 +1,38 @@
 import { cn } from '@/utils/utils'
 
 export const tooltipClass = cn(
-  'shadow-paper rounded-md bg-dark-500 px-smPX py-smPY text-sm text-dark-100',
+  'absolute z-50 rounded-md bg-dark-500 px-smPX py-smPY text-sm text-dark-100 shadow-paper transition-dropdown',
 )
 
-export const tooltipPosition = {
-  top: cn('absolute bottom-full left-[50%] translate-x-[-50%]'),
-  right: cn('absolute left-full top-[50%] translate-y-[-50%]'),
-  bottom: cn('absolute left-[50%] top-full translate-x-[-50%]'),
-  left: cn('absolute right-full top-[50%] translate-y-[-50%]'),
+const topAfter = cn(
+  'after:absolute after:left-1/2 after:top-full after:-translate-x-1/2 after:border-8 after:border-b-transparent after:border-l-transparent after:border-r-transparent after:border-t-dark-500 after:content-[""]',
+)
+const rightAfter = cn(
+  'after:absolute after:right-full after:top-1/2 after:-translate-y-1/2 after:border-8 after:border-b-transparent after:border-l-transparent after:border-r-dark-500 after:border-t-transparent after:content-[""]',
+)
+const bottomAfter = cn(
+  'after:absolute after:bottom-full after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-b-dark-500 after:border-l-transparent after:border-r-transparent after:border-t-transparent after:content-[""]',
+)
+const leftAfter = cn(
+  'after:absolute after:left-full after:top-1/2 after:-translate-y-1/2 after:border-8 after:border-b-transparent after:border-l-dark-500 after:border-r-transparent after:border-t-transparent after:content-[""]',
+)
+
+export const tooltipPointer = {
+  top: topAfter,
+  'top-start': topAfter,
+  'top-end': topAfter,
+  right: rightAfter,
+  'right-start': rightAfter,
+  'right-end': rightAfter,
+  bottom: bottomAfter,
+  'bottom-start': bottomAfter,
+  'bottom-end': bottomAfter,
+  left: leftAfter,
+  'left-start': leftAfter,
+  'left-end': leftAfter,
+  auto: '',
+  'auto-start': '',
+  'auto-end': '',
 }
 
-export const tooltipVisibility = cn(
-  'invisible scale-75 opacity-0 transition-dropdown',
-  'hover:visible hover:scale-100 hover:opacity-100',
-  'group-hover/tooltip:visible group-hover/tooltip:scale-100 group-hover/tooltip:opacity-100',
-  'group-focus-within/tooltip:visible group-focus-within/tooltip:scale-100 group-focus-within/tooltip:opacity-100',
-)
+export const tooltipVisibility = cn('invisible opacity-0')

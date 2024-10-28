@@ -27,7 +27,7 @@ export type ComponentTemplateProps = Omit<HTMLAttributes<HTMLDivElement>, 'class
 
 /** Serves as a template for creating new components. Default HTMLAttributes props supported. */
 export const ComponentTemplate = forwardRef<HTMLDivElement, ComponentTemplateProps>(
-  ({ className = '', ...rest }, ref) => {
+  ({ className, ...rest }, ref) => {
     return (
       <div
         className={cn('ComponentTemplate', className)}

@@ -1,21 +1,15 @@
 import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { object, string } from 'yup'
 
-import { JestMockProvider, options } from '../../../../../.storybook/helpers'
-import Form from '../Form'
+import { JestFormProvider, JestMockProvider, options } from '../../../../../.storybook/helpers'
 import MultiAutocompleteField from '.'
 
 describe('MultiAutocompleteField', () => {
   it('default', () => {
     render(
       <JestMockProvider>
-        <Form
-          initialValues={{ MultiAutocompleteTest: ['MultiAutocompleteTest'] }}
-          validationSchema={object().shape({})}
-          onSubmit={() => {}}
-        >
+        <JestFormProvider fields={['MultiAutocompleteTest']} values={[[]]}>
           <MultiAutocompleteField
             className="className"
             name="MultiAutocompleteTest"
@@ -23,11 +17,12 @@ describe('MultiAutocompleteField', () => {
             options={options}
             onInputChange={() => {}}
           />
-        </Form>
+        </JestFormProvider>
       </JestMockProvider>,
     )
+    fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeTruthy()
-    expect(screen.getAllByTestId('LabelWrap')[0]).toHaveClass('className')
+    expect(screen.getByTestId('MultiAutocomplete')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'MultiAutocompleteTest')
     expect(screen.getAllByTestId('LabelWrap')[0]).toHaveTextContent('label')
   })
@@ -36,13 +31,7 @@ describe('MultiAutocompleteField', () => {
     const spy = jest.fn()
     render(
       <JestMockProvider>
-        <Form
-          initialValues={{ MultiAutocompleteTest: ['MultiAutocompleteTest'] }}
-          validationSchema={object().shape({
-            MultiAutocompleteTest: string().required('required'),
-          })}
-          onSubmit={spy}
-        >
+        <JestFormProvider fields={['MultiAutocompleteTest']} values={[[]]} onSubmit={spy}>
           <MultiAutocompleteField
             className="className"
             name="MultiAutocompleteTest"
@@ -51,7 +40,7 @@ describe('MultiAutocompleteField', () => {
             onInputChange={() => {}}
           />
           <button type="submit" data-testid="submit" />
-        </Form>
+        </JestFormProvider>
       </JestMockProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy

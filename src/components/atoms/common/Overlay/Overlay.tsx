@@ -18,7 +18,7 @@ export type OverlayProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'classN
 
 /** Overlay is used in popover components for closing popover on click outside. USE CLIENT */
 export const Overlay = forwardRef<HTMLButtonElement, OverlayProps>(
-  ({ className = '', isOpen, dark, onClose, ...rest }, ref) => {
+  ({ className, isOpen, dark, onClose, ...rest }, ref) => {
     return (
       <button
         className={cn(

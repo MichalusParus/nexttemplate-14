@@ -7,25 +7,20 @@ import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
 import Ghost from '@/components/atoms/loaders/Ghost'
 import P from '@/components/atoms/typography/P'
 import Checkbox from '@/components/molecules/form/CheckboxField/Checkbox'
+import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { cellOverflow, cellSize, selectCellSize } from '../ColumnHead/ColumnHead.style'
 import { checkboxSize, rowgroupVariant } from '../GridHeader/GridHeader.style'
 import { ColumnDef, RowDef } from '../types'
 
-export type GridBodyProps = {
+export type GridBodyProps = StyleProps & {
   /** grid columns definition */
   columns: ColumnDef[]
   /** paged data for display */
   pagedData: RowDef[]
   /** selected rows for multiselect */
   selectedRows: RowDef[]
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
   /** loading ghost state */
   isLoading?: boolean
   /** default rowsPerPage option for ghost loading */
@@ -105,7 +100,7 @@ export const GridBody = forwardRef<HTMLDivElement, GridBodyProps>(
                 <Button
                   className={cn(
                     'RowButton',
-                    'group rounded-none border-none',
+                    'group w-full rounded-none border-none',
                     selectedClass(String(row.id)),
                     isRowInteractive ? 'cursor-pointer' : 'cursor-default',
                   )}
@@ -114,13 +109,12 @@ export const GridBody = forwardRef<HTMLDivElement, GridBodyProps>(
                   size="none"
                   disableUpperCase
                   hideShadow
-                  fullWidth
                   tabIndex={-1}
                   aria-selected={selectedRows.some(row => row.id)}
                   onClick={() => (handleRowClick ? handleRowClick(row) : {})}
                 >
                   <div className={cn('RowInnerWrap', 'flex w-full')}>
-                    {multiselect ? (
+                    {multiselect && (
                       <div
                         role="gridcell"
                         className={cn(
@@ -141,7 +135,7 @@ export const GridBody = forwardRef<HTMLDivElement, GridBodyProps>(
                           onChange={() => {}}
                         />
                       </div>
-                    ) : null}
+                    )}
                     {columns.map((col, index) => (
                       <div
                         key={row.id + col!.name}

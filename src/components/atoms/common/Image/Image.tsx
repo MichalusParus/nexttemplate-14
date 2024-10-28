@@ -3,15 +3,20 @@ import { forwardRef, ImgHTMLAttributes } from 'react'
 
 import { cn } from '@/utils/utils'
 
-import { RatioWrap, RatioWrapProps } from '../../containers/RatioWrap/RatioWrap'
+type NativeImgProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'>
 
-export type ImageProps = RatioWrapProps &
-  Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'> &
-  Omit<NextImageProps, 'width' | 'objectFit' | 'objectPosition'> & {
+type NextImgProps = Omit<NextImageProps, 'width' | 'objectFit' | 'objectPosition'>
+
+export type ImageProps = NativeImgProps &
+  NextImgProps & {
     /** src of image */
     src: string
     /** alt text for image */
     alt: string
+    /** for setting width as tailwind class */
+    width?: string
+    /** aspect ratio of carousel as tailwind class  */
+    ratio?: string
     /** object fit tailwind class */
     objectFit?:
       | 'object-cover'
@@ -38,9 +43,9 @@ export type ImageProps = RatioWrapProps &
 export const Image = forwardRef<HTMLImageElement, ImageProps>(
   (
     {
-      className = '',
-      ratio,
-      width = '100%',
+      className,
+      ratio = 'aspect-w-16 aspect-h-9',
+      width = 'w-full',
       objectFit = 'object-contain',
       objectPosition = 'object-center',
       rounded = 'rounded-md',
@@ -49,10 +54,15 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
     ref,
   ) => {
     return (
-      <RatioWrap
-        className={`bg-dark-950/25 overflow-hidden ${rounded}`}
-        width={width}
-        ratio={ratio}
+      <div
+        className={cn(
+          'ImageRatioWrap',
+          'relative overflow-hidden bg-dark-950/25',
+          width,
+          ratio,
+          rounded,
+          className,
+        )}
       >
         <NextImage
           className={cn(objectFit, objectPosition, className)}
@@ -61,7 +71,7 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
           ref={ref}
           {...rest}
         />
-      </RatioWrap>
+      </div>
     )
   },
 )

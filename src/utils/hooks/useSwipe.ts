@@ -1,33 +1,23 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-/** useTouch hook is used for enabling swipe on touch devices or detecting long touch. Passed onSwipe fn is called with value {x,y} or onTouch fn is called. Negative or positive values indicates swipe vector. */
-export const useTouch = (
-  onSwipe?: (value: { x: number; y: number }) => void,
-  onTouch?: () => void,
-) => {
+/** useSwipe hook is used for enabling swipe on touch devices or detecting long touch. Passed onSwipe fn is called with value {x,y} or onTouch fn is called. Negative or positive values indicates swipe vector. */
+export const useSwipe = (onSwipe: (value: { x: number; y: number }) => void) => {
   const componentRef = useRef<HTMLDivElement | null>(null)
   const swipeStartRef = useRef({ x: 0, y: 0 })
   const touchStartTimeRef = useRef(0)
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
     const target = e.target as HTMLElement
-    if (!componentRef.current?.contains(target)) {
-      return
+    if (componentRef.current?.contains(target)) {
+      touchStartTimeRef.current = e.timeStamp
+      swipeStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
     }
-    touchStartTimeRef.current = e.timeStamp
-    swipeStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
   }, [])
 
   const handleTouchEnd = useCallback(
     (e: TouchEvent) => {
       const target = e.target as HTMLElement
-      if (!componentRef.current?.contains(target)) {
-        return
-      }
-      if (onTouch && e.timeStamp - touchStartTimeRef.current > 400) {
-        onTouch()
-      }
-      if (onSwipe) {
+      if (componentRef.current?.contains(target)) {
         const swipeVector = {
           x: e.changedTouches[0].clientX - swipeStartRef.current.x,
           y: e.changedTouches[0].clientY - swipeStartRef.current.y,
@@ -35,7 +25,7 @@ export const useTouch = (
         onSwipe(swipeVector)
       }
     },
-    [swipeStartRef, onSwipe, onTouch],
+    [swipeStartRef, onSwipe],
   )
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import { forwardRef } from 'react'
 
 import Button from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
+import { StyleProps } from '@/components/types'
 import { cn, filterOutKeys } from '@/utils/utils'
 
 import MobilePagination from './MobilePagination'
@@ -16,7 +17,7 @@ export type PaginationProps = MobilePaginationProps & {
   /** maximal page spread, affect component width */
   maxSpread?: 7 | 9 | 11 | 13 | 15 | 17
   /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
+  variant?: StyleProps['variant']
   /** optional props for load more button */
   loadMoreButtonProps?: Partial<ButtonProps>
   /** on Load More button fn */
@@ -27,7 +28,7 @@ export type PaginationProps = MobilePaginationProps & {
 export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
   (
     {
-      className = '',
+      className,
       name,
       pages,
       selectedPage,
@@ -62,7 +63,7 @@ export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
         className={cn('PaginationWrap', 'relative flex flex-col items-center', className)}
         data-testid="Pagination"
       >
-        {onLoadMore && selectedPage + loadMoreCount < pages.length ? (
+        {onLoadMore && selectedPage + loadMoreCount < pages.length && (
           <Button
             className={cn('LoadMoreButton', 'mb-6', loadMoreButtonProps.className)}
             variant={variant}
@@ -74,7 +75,7 @@ export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
           >
             {loadMoreButtonProps.children || t('loadMore')}
           </Button>
-        ) : null}
+        )}
         <div className={cn('PaginationInnerWrap', 'flex xs:hidden')}>
           <MobilePagination
             pages={pages}

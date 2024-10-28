@@ -20,8 +20,9 @@ describe('Autocomplete', () => {
         />
       </JestMockProvider>,
     )
+    fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeTruthy()
-    expect(screen.getAllByTestId('LabelWrap')[0]).toHaveClass('className')
+    expect(screen.getByTestId('Autocomplete')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'autocompleteTest')
     expect(screen.getAllByTestId('LabelWrap')[0]).toHaveTextContent('label')
   })
@@ -52,8 +53,8 @@ describe('Autocomplete', () => {
           name="autocompleteTest"
           label="label"
           value="value"
-          description="description"
           options={options}
+          labelProps={{ description: 'description' }}
           onInputChange={() => {}}
           onChange={() => {}}
         />
@@ -76,6 +77,7 @@ describe('Autocomplete', () => {
         />
       </JestMockProvider>,
     )
+    fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true')
   })
 

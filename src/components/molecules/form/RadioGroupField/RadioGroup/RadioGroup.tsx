@@ -1,25 +1,24 @@
 'use client'
 import { forwardRef, InputHTMLAttributes } from 'react'
 
-import { OptionType } from '@/components/types'
+import { FieldProps, OptionType, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
+import { Label } from '../../../../atoms/common/Label/Label'
 import { afterClass, disableVariant, radioClass, radioSize, radioVariant } from './RadioGroup.style'
 
-export type RadioGroupProps = Omit<
+type NativeRadioGroupProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  'color' | 'size' | 'onChange' | 'type' | 'className' | 'name' | 'width'
-> &
-  Omit<LabelProps, 'name'> & {
-    /** name of form field */
-    name: string
+  'color' | 'size' | 'onChange' | 'type' | 'className' | 'name' | 'width' | 'value'
+>
+
+export type RadioGroupProps = NativeRadioGroupProps &
+  FieldProps &
+  StyleProps & {
+    /** value of radiogroup */
+    value?: string
     /** group options for individual radio inputs */
     options: OptionType[]
-    /** style variant of component */
-    variant?: 'text' | 'outlined' | 'contained'
-    /** theme color of component, none disable styles for custom styling via className */
-    color?: 'primary' | 'secondary' | 'terciary' | 'none'
     /** display radio inputs in column */
     column?: boolean
     /** onChange function */
@@ -30,7 +29,7 @@ export type RadioGroupProps = Omit<
 export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
   (
     {
-      className = '',
+      className,
       name,
       label,
       value,
@@ -39,34 +38,18 @@ export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
       variant = 'outlined',
       color = 'primary',
       size = 'md',
-      width,
-      description,
-      hideLabel,
-      hideError,
-      collapsed,
       disabled,
       error,
+      labelProps,
       onChange,
       ...rest
     },
     ref,
   ) => {
     return (
-      <Label
-        className={className}
-        name={name}
-        label={label}
-        size={size}
-        width={width}
-        error={error}
-        description={description}
-        hideLabel={hideLabel}
-        hideError={hideError}
-        collapsed={collapsed}
-        fakeLabel
-      >
+      <Label name={name} label={label} size={size} error={error} {...labelProps} fakeLabel>
         <div
-          className={cn('RadioGroupWrap', 'flex flex-wrap', column && 'flex-col')}
+          className={cn('RadioGroupWrap', 'flex flex-wrap', column && 'flex-col', className)}
           role="radiogroup"
         >
           {options.map(({ value: radioValue, label: radioLabel, content }) => (

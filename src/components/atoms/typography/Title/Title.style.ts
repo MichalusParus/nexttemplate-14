@@ -19,6 +19,6 @@ export const titleSize = {
 
 export const ghostAligment = {
   left: cn(''),
-  center: cn('mx-auto'),
+  center: cn('ml-auto mr-auto'),
   right: cn('ml-auto'),
 }

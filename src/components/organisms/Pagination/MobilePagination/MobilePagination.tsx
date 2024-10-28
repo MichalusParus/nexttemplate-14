@@ -5,23 +5,18 @@ import { forwardRef } from 'react'
 import Button from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
+import { StyleProps } from '@/components/types'
 import { cn, filterOutKeys } from '@/utils/utils'
 
 import { arrowClass, chevronPosition } from './MobilePagination.style'
 
-export type MobilePaginationProps = {
+export type MobilePaginationProps = StyleProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** array of available pages */
   pages: number[]
   /** current selected page */
   selectedPage: number
-  /** style variant of component */
-  variant?: 'text' | 'outlined' | 'contained'
-  /** theme color of component, none disable styles for custom styling via className */
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  /** size of component, none disable sizes for custom styling via className */
-  size?: 'sm' | 'md' | 'lg' | 'none'
   /** count of load more button clicks */
   loadMoreCount?: number
   /** optional props for button component */
@@ -34,7 +29,7 @@ export type MobilePaginationProps = {
 export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps>(
   (
     {
-      className = '',
+      className,
       pages,
       selectedPage,
       variant = 'outlined',
@@ -59,7 +54,7 @@ export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps
         ref={ref}
         data-testid="MobilePagination"
       >
-        {selectedPage !== 1 ? (
+        {selectedPage !== 1 && (
           <Button
             className={cn('LeftChevronButton', 'rotate-90', arrowClass, buttonProps.className)}
             variant={variant}
@@ -71,7 +66,7 @@ export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps
             hideShadow
             {...filterOutKeys(buttonProps, ['className'])}
           />
-        ) : null}
+        )}
         <div
           className={cn('SelectedOutOff', 'cursor-default font-semibold')}
           data-testid="SelectedOutOff"
@@ -79,7 +74,7 @@ export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps
           {`${selectedPage}${loadMoreCount ? `-${selectedPage + loadMoreCount}` : ''}`} /{' '}
           {pages.length}
         </div>
-        {selectedPage + loadMoreCount < pages.length ? (
+        {selectedPage + loadMoreCount < pages.length && (
           <Button
             className={cn('RightChevronButton', '-rotate-90', arrowClass, buttonProps.className)}
             variant={variant}
@@ -93,7 +88,7 @@ export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps
             hideShadow
             {...filterOutKeys(buttonProps, ['className'])}
           />
-        ) : null}
+        )}
       </div>
     )
   },

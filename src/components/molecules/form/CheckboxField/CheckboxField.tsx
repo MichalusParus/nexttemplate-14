@@ -9,7 +9,7 @@ export type CheckboxFieldProps = Omit<CheckboxProps, 'value' | 'error' | 'isChec
 
 /** Form and style context wrapper for Checkbox component. Default InputHTMLAttributes props supported. USE CLIENT */
 export const CheckboxField = ({
-  className = '',
+  className,
   name,
   label,
   variant,

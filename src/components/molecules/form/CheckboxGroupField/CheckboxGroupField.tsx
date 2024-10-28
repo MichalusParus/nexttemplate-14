@@ -9,13 +9,13 @@ export type CheckboxGroupFieldProps = Omit<CheckboxGroupProps, 'value' | 'error'
 
 /** Form and style context wrapper for CheckboxGroup component. Default InputHTMLAttributes props supported. USE CLIENT */
 export const CheckboxGroupField = ({
-  className = '',
+  className,
   name,
   label,
   variant,
   color,
   size,
-  collapsed,
+  labelProps,
   ...rest
 }: CheckboxGroupFieldProps) => {
   const {
@@ -35,8 +35,11 @@ export const CheckboxGroupField = ({
           variant={variant || formVariant}
           color={color || formColor}
           size={size || formSize}
-          collapsed={collapsed || formCollapsed}
           error={(errors[name]?.message as string) || undefined}
+          labelProps={{
+            ...labelProps,
+            collapsed: labelProps?.collapsed || formCollapsed,
+          }}
           {...field}
           {...rest}
         />

@@ -2,7 +2,7 @@ type Props = {
   className?: string
 }
 
-export default function EditIcon({ className = '' }: Props) {
+export default function EditIcon({ className }: Props) {
   return (
     <svg
       className={className}

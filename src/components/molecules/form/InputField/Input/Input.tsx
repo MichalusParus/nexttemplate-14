@@ -5,9 +5,10 @@ import { forwardRef, InputHTMLAttributes, ReactNode, useImperativeHandle, useRef
 import Button from '@/components/atoms/common/Button'
 import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
 import XIcon from '@/components/atoms/icons/XIcon'
+import { FieldProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import { Label, LabelProps } from '../../../../atoms/common/Label/Label'
+import { Label } from '../../../../atoms/common/Label/Label'
 import { checkVariant } from '../../CheckboxField/Checkbox/Checkbox.style'
 import {
   disabledVariant,
@@ -17,19 +18,18 @@ import {
   inputVariant,
 } from './Input.style'
 
-export type InputProps = Omit<
+type NativeInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  'color' | 'size' | 'onChange' | 'name' | 'className' | 'width' | 'type'
-> &
-  Omit<LabelProps, 'name'> & {
+  'color' | 'size' | 'onChange' | 'name' | 'className' | 'value' | 'type' | 'placeholder' | 'width'
+>
+
+export type InputProps = NativeInputProps &
+  FieldProps &
+  StyleProps & {
     /** input type, text, number, password, search, date supported */
     type?: string
-    /** name of form field */
-    name: string
-    /** style variant of component */
-    variant?: 'text' | 'outlined' | 'contained'
-    /** theme color of component, none disable styles for custom styling via className */
-    color?: 'primary' | 'secondary' | 'terciary' | 'none'
+    /** value of input */
+    value?: string
     /** pass svg icon before input value */
     startIcon?: ReactNode
     /** onChange function */
@@ -40,7 +40,7 @@ export type InputProps = Omit<
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
-      className = '',
+      className,
       type = 'text',
       name,
       label,
@@ -48,14 +48,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       color = 'primary',
       size = 'md',
       value,
-      width,
-      description,
-      hideLabel,
-      hideError,
-      collapsed,
-      disabled,
       error,
+      disabled,
       startIcon,
+      labelProps,
       onChange,
       ...rest
     },
@@ -66,20 +62,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     useImperativeHandle(ref, () => inputRef.current!)
 
     return (
-      <Label
-        className={className}
-        name={name}
-        label={label}
-        size={size}
-        width={width}
-        error={error}
-        description={description}
-        hideLabel={hideLabel}
-        hideError={hideError}
-        collapsed={collapsed}
-      >
-        <div className={cn('InputWrap', 'relative w-full', !hideError && 'mb-1')}>
+      <Label name={name} label={label} size={size} error={error} {...labelProps}>
+        <div className={cn('InputWrap', 'relative w-full', !labelProps?.hideError && 'mb-1')}>
           <input
+            id={name}
             className={cn(
               inputClass,
               inputVariant[variant][color],
@@ -88,8 +74,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               error && 'border-error-800 shadow-error',
               startIcon && 'pl-9',
               type === 'search' && 'pr-7',
+              className,
             )}
-            id={name}
             name={name}
             type={type}
             value={value}
@@ -100,7 +86,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             onChange={e => onChange(e.target.value)}
             {...rest}
           />
-          {startIcon ? (
+          {startIcon && (
             <span
               className={cn(
                 'left-2 inline-flex',
@@ -111,8 +97,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             >
               {startIcon}
             </span>
-          ) : null}
-          {type === 'search' && (value || inputRef?.current?.value) ? (
+          )}
+          {type === 'search' && (value || inputRef?.current?.value) && (
             <Button
               className={cn(
                 'ClearButton',
@@ -131,7 +117,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 inputRef.current!.value = ''
               }}
             />
-          ) : null}
+          )}
         </div>
       </Label>
     )

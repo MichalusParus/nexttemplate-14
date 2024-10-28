@@ -11,7 +11,7 @@ export type MainProps = {
 }
 
 /** Main component, semantic with layout container and basic styling. */
-export const Main = ({ className = '', children }: PropsWithChildren<MainProps>) => {
+export const Main = ({ className, children }: PropsWithChildren<MainProps>) => {
   return (
     <main className={cn('Main', mainClass, mainXPadding, className)} data-testid="Main">
       <div className={cn('MainContent', containerSize)}>{children}</div>

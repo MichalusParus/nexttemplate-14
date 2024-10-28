@@ -1,4 +1,7 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import type { Meta, StoryObj } from '@storybook/react'
+import { useForm } from 'react-hook-form'
+import { InferType } from 'yup'
 
 import Button from '@/components/atoms/common/Button'
 import Label from '@/components/atoms/common/Label'
@@ -26,10 +29,7 @@ const meta: Meta<typeof Form> = {
     layout: 'centered',
   },
   argTypes: {
-    initialValues: {
-      control: false,
-    },
-    validationSchema: {
+    form: {
       control: false,
     },
   },
@@ -38,21 +38,25 @@ const meta: Meta<typeof Form> = {
 export default meta
 type Story = StoryObj<typeof Form>
 
-const FormWithHooks = (args: FormProps) => {
+const FormWithHooks = (args: FormProps<object>) => {
+  const form = useForm<InferType<typeof formScheme>>({
+    resolver: yupResolver(formScheme),
+    defaultValues: initialValues,
+  })
   const { filteredData: autocompleteOptions, setFilter: setAutocompleteFilter } =
     useFilterData(options)
   const { filteredData: multiAutocompleteOptions, setFilter: setMultiAutocompleteFilter } =
     useFilterData(options)
 
   return (
-    <Form {...args}>
+    <Form {...args} form={form}>
       <InputField name="inputStory" label="Input:" placeholder="input" />
       <InputField name="numberStory" type="number" label="Number:" placeholder="number" />
       <InputField name="searchStory" type="search" label="Search:" placeholder="Search" />
       <InputField name="dateStory" type="date" label="Date:" placeholder="date" />
       <TextAreaField name="textareaStory" label="Textarea:" placeholder="textarea" />
       <RangeField name="rangeStory" label="Range:" min={100} max={200} />
-      <Label label="Fake label:" collapsed={args.collapsed} fakeLabel>
+      <Label name="checkboxStory" label="Fake label:" collapsed={args.collapsed} fakeLabel>
         <CheckboxField name="checkboxStory" label="checkbox" />
       </Label>
       <CheckboxGroupField
@@ -107,8 +111,8 @@ const FormWithHooks = (args: FormProps) => {
 export const Default: Story = {
   args: {
     className: '',
-    initialValues: initialValues,
-    validationSchema: formScheme,
+    name: 'formStory',
+    form: undefined,
     variant: 'outlined',
     color: 'primary',
     size: 'md',

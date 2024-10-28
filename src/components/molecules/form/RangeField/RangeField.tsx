@@ -9,12 +9,12 @@ export type RangeFieldProps = Omit<RangeProps, 'value' | 'error' | 'onChange'>
 
 /** Form and style context wrapper for Input component. Default InputHTMLAttributes props supported. USE CLIENT */
 export const RangeField = ({
-  className = '',
+  className,
   name,
   label,
   color,
   size,
-  collapsed,
+  labelProps,
   ...rest
 }: RangeFieldProps) => {
   const {
@@ -33,8 +33,11 @@ export const RangeField = ({
           label={label}
           color={color || formColor}
           size={size || formSize}
-          collapsed={collapsed || formCollapsed}
           error={(errors[name]?.message as string) || undefined}
+          labelProps={{
+            ...labelProps,
+            collapsed: labelProps?.collapsed || formCollapsed,
+          }}
           autoComplete="off"
           {...field}
           {...rest}

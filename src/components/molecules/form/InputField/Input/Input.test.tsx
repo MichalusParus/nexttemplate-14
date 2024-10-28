@@ -19,7 +19,7 @@ describe('Input', () => {
       </JestMockProvider>,
     )
     expect(screen.getByRole('textbox')).toBeTruthy()
-    expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    expect(screen.getByRole('textbox')).toHaveClass('className')
     expect(screen.getByRole('textbox')).toHaveAttribute('id', 'inputTest')
     expect(screen.getByRole('textbox')).toHaveAttribute('name', 'inputTest')
     expect(screen.getByRole('textbox')).toHaveAttribute('type', 'text')
@@ -51,7 +51,7 @@ describe('Input', () => {
           type="text"
           name="inputTest"
           label="label"
-          description="description"
+          labelProps={{ description: 'description' }}
           onChange={() => {}}
         />
       </JestMockProvider>,
