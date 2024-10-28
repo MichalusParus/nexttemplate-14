@@ -2,7 +2,7 @@
 import { isSameDay } from 'date-fns'
 import { forwardRef } from 'react'
 
-import DatePicker from '../../DatePickerField/DatePicker'
+import { DatePicker } from '../../DatePickerField/DatePicker'
 import { DatePickerProps } from '../../DatePickerField/DatePicker/DatePicker'
 
 export type MultiDatePickerProps = Omit<DatePickerProps, 'value' | 'onChange'> & {

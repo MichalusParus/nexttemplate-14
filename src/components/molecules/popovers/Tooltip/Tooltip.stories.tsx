@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { ReactNode } from 'react'
 
-import Alert from '@/components/atoms/common/Alert'
+import { Alert } from '@/components/atoms/common/Alert'
 
-import Tooltip from '.'
+import { Tooltip } from '.'
 
 const meta: Meta<typeof Tooltip> = {
   title: 'Molecules/Popovers/Tooltip',

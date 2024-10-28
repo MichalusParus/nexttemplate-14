@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { PropsWithChildren, useRef, useState } from 'react'
 
-import Combobox from '@/components/atoms/common/Combobox'
-import SettingIcon from '@/components/atoms/icons/SettingIcon'
+import { Combobox } from '@/components/atoms/common/Combobox'
+import { SettingIcon } from '@/components/atoms/icons'
 
 import { MenuLinks } from '../../../../../.storybook/helpers'
-import Menu from '.'
+import { Menu } from '.'
 import { MenuProps } from './Menu'
 
 const meta: Meta<typeof Menu> = {

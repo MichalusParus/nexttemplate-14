@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
 import { optionsWithContent } from '../../../../../../.storybook/helpers'
-import Checkbox from '.'
+import { Checkbox } from '.'
 import { CheckboxProps } from './Checkbox'
 
 const meta: Meta<typeof Checkbox> = {

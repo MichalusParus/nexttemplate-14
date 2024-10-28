@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import MenuItem from '.'
+import { MenuItem } from '.'
 
 describe('MenuItem', () => {
   it('default', () => {

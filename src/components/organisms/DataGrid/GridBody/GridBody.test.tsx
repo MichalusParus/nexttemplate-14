@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { gridColsDef, gridData,JestMockProvider } from '../../../../../.storybook/helpers'
-import GridBody from '.'
+import { gridColsDef, gridData, JestMockProvider } from '../../../../../.storybook/helpers'
+import { GridBody } from '.'
 
 describe('GridBody', () => {
   it('default', () => {

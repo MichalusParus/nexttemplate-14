@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import SearchIcon from '@/components/atoms/icons/SearchIcon'
+import { SearchIcon } from '@/components/atoms/icons'
 
-import Input from '.'
+import { Input } from '.'
 
 const meta: Meta<typeof Input> = {
   title: 'Molecules/Form/Input',

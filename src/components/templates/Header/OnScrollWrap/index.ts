@@ -1,3 +1,1 @@
-import { OnScrollWrap } from './OnScrollWrap'
-
-export default OnScrollWrap
+export * from './OnScrollWrap'

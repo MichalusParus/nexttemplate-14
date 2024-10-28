@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { gridColsDef,JestMockProvider } from '../../../../../.storybook/helpers'
-import GridHeader from '.'
+import { gridColsDef, JestMockProvider } from '../../../../../.storybook/helpers'
+import { GridHeader } from '.'
 
 jest.mock('next/navigation', () => {
   const router = {

@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { PropsWithChildren, useState } from 'react'
 
-import Image from '@/components/atoms/common/Image'
-import Paper from '@/components/atoms/containers/Paper'
+import { Image } from '@/components/atoms/common/Image'
+import { Paper } from '@/components/atoms/containers/Paper'
 
 import { getGalleryItems } from '../../../../../.storybook/helpers'
-import Carousel from '.'
+import { Carousel } from '.'
 import { CarouselProps } from './Carousel'
 
 const meta: Meta<typeof Carousel> = {

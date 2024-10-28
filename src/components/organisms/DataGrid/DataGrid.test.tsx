@@ -8,7 +8,7 @@ import {
   gridData,
   JestMockProvider,
 } from '../../../../.storybook/helpers'
-import DataGrid from '.'
+import { DataGrid } from '.'
 
 jest.mock('next/navigation', () => {
   const router = {

@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { format } from 'date-fns'
 
 import { JestMockProvider } from '../../../../../../.storybook/helpers'
-import RangeDatePicker from '.'
+import { RangeDatePicker } from '.'
 
 describe('RangeDatePicker', () => {
   it('default', () => {

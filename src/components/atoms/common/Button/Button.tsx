@@ -4,7 +4,7 @@ import { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import InlineLoader from '../../loaders/InlineLoader'
+import { InlineLoader } from '../../loaders/InlineLoader'
 import {
   buttonClass,
   buttonContentSize,

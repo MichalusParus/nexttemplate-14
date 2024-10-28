@@ -28,6 +28,10 @@ make multiselect and multiautocomplete as wrapper around single version with sup
 Carousel autoplay with stop
 zod not yup
 no default imports
+searchinput and searchbar
+CHECK Tabs, Menu, Drawer, Carousel
+building block component folder
+foldre structure, so there can be added specialized versions of UI like concrete select witch fetching etc
 
 STORYBOOK
 -fix default text and dark:text colors on storybook

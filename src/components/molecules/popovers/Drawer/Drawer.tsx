@@ -9,10 +9,10 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 
-import Overlay from '@/components/atoms/common/Overlay'
-import Paper from '@/components/atoms/containers/Paper'
+import { Overlay } from '@/components/atoms/common/Overlay'
+import { Paper } from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
-import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
+import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
 import { StyleProps } from '@/components/types'
 import { useFocus } from '@/utils/hooks/useFocus'

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import Ghost from '.'
+import { Ghost } from '.'
 
 const meta: Meta<typeof Ghost> = {
   title: 'Atoms/Loaders/Ghost',

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { options } from '../../../../../../.storybook/helpers'
-import RadioGroup from '.'
+import { RadioGroup } from '.'
 
 describe('RadioGroup', () => {
   it('default', () => {

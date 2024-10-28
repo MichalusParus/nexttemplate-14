@@ -2,9 +2,8 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef, InputHTMLAttributes, ReactNode, useImperativeHandle, useRef } from 'react'
 
-import Button from '@/components/atoms/common/Button'
+import { Button } from '@/components/atoms/common/Button'
 import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
-import XIcon from '@/components/atoms/icons/XIcon'
 import { FieldProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
@@ -17,6 +16,7 @@ import {
   inputSize,
   inputVariant,
 } from './Input.style'
+import { XIcon } from '@/components/atoms/icons'
 
 type NativeInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,

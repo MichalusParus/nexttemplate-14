@@ -3,7 +3,7 @@ import { forwardRef, HTMLAttributes } from 'react'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import Ghost from '../../loaders/Ghost'
+import { Ghost } from '../../loaders/Ghost'
 import { ghostAligment, titleColor, titleSize } from './Title.style'
 
 type NativeHeadingProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'color' | 'className'>

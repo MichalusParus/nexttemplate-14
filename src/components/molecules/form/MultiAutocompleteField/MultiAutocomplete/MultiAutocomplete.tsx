@@ -10,12 +10,11 @@ import {
   useState,
 } from 'react'
 
-import Button from '@/components/atoms/common/Button'
-import Chip from '@/components/atoms/common/Chip'
-import ListBox from '@/components/atoms/common/ListBox'
-import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
-import XIcon from '@/components/atoms/icons/XIcon'
-import Dropdown from '@/components/molecules/popovers/Dropdown'
+import { Button } from '@/components/atoms/common/Button'
+import { Chip } from '@/components/atoms/common/Chip'
+import { ListBox } from '@/components/atoms/common/ListBox'
+import { ChevronIcon, XIcon } from '@/components/atoms/icons'
+import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 
@@ -27,7 +26,7 @@ import {
   comboboxWrapClass,
   disabledVariant,
 } from '../../AutocompleteField/Autocomplete/Autocomplete.style'
-import Input from '../../InputField/Input'
+import { Input } from '../../InputField/Input'
 import { inputSize, inputVariant } from '../../InputField/Input/Input.style'
 import { iconSize } from '../../MultiSelectField/MultiSelect/MultiSelect.style'
 

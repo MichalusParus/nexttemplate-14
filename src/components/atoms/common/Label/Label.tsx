@@ -1,6 +1,6 @@
 import { forwardRef, LabelHTMLAttributes } from 'react'
 
-import Alert from '@/components/atoms/common/Alert'
+import { Alert } from '@/components/atoms/common/Alert'
 import { FieldProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 

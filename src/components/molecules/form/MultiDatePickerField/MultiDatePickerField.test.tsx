@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { JestFormProvider, JestMockProvider } from '../../../../../.storybook/helpers'
-import MultiDatePickerField from '.'
+import { MultiDatePickerField } from '.'
 
 describe('MultiDatePicker', () => {
   it('default', () => {

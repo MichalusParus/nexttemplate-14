@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { JestMockProvider, options } from '../../../../../../.storybook/helpers'
-import MultiSelect from '.'
+import { MultiSelect } from '.'
 
 describe('MultiSelect', () => {
   it('default', () => {

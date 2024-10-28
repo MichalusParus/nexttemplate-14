@@ -3,13 +3,13 @@ import NextImage from 'next/image'
 import { useTranslations } from 'next-intl'
 import { forwardRef, useEffect, useRef, useState } from 'react'
 
-import Button from '@/components/atoms/common/Button'
-import Image from '@/components/atoms/common/Image'
-import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
+import { Button } from '@/components/atoms/common/Button'
+import { Image } from '@/components/atoms/common/Image'
+import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { cn } from '@/utils/utils'
 
-import ImageViewer from '../../popovers/ImageViewer'
-import Carousel from '../Carousel'
+import { ImageViewer } from '../../popovers/ImageViewer'
+import { Carousel } from '../Carousel'
 import { GalleryItem } from '../Carousel/Carousel'
 
 export type GalleryProps = {

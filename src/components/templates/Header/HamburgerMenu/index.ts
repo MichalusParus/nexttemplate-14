@@ -1,3 +1,1 @@
-import { HamburgerMenu } from './HamburgerMenu'
-
-export default HamburgerMenu
+export * from './HamburgerMenu'

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import MenuItem from '.'
+import { MenuItem } from '.'
 
 const meta: Meta<typeof MenuItem> = {
   title: 'Atoms/Common/MenuItem',

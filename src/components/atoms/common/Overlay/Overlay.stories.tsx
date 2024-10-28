@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import Combobox from '../Combobox'
-import Overlay from '.'
+import { Combobox } from '../Combobox'
+import { Overlay } from '.'
 
 const meta: Meta<typeof Overlay> = {
   title: 'Atoms/Common/Overlay',

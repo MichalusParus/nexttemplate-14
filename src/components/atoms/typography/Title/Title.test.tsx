@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 
 import { JestMockProvider } from '../../../../../.storybook/helpers'
-import Title from '.'
+import { Title } from '.'
 
 describe('Title', () => {
   it('default', () => {

@@ -1,7 +1,7 @@
 'use client'
 import { forwardRef, InputHTMLAttributes, ReactNode } from 'react'
 
-import CheckIcon from '@/components/atoms/icons/CheckIcon'
+import { CheckIcon } from '@/components/atoms/icons'
 import { FieldProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 

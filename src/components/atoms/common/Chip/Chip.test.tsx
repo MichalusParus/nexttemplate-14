@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { JestMockProvider } from '../../../../../.storybook/helpers'
-import Chip from '.'
+import { Chip } from '.'
 
 describe('Chip', () => {
   it('default', () => {

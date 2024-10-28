@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 
 import { accordionOptions } from '../../../../../.storybook/helpers'
-import Accordion from '.'
+import { Accordion } from '.'
 
 describe('Accordion', () => {
   it('default', () => {

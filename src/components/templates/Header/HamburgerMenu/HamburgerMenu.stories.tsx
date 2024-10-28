@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import HamburgerMenu from '.'
+import { HamburgerMenu } from '.'
 
 const meta: Meta<typeof HamburgerMenu> = {
   title: 'Templates/HamburgerMenu',

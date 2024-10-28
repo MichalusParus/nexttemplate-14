@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import Combobox from '.'
+import { Combobox } from '.'
 
 const meta: Meta<typeof Combobox> = {
   title: 'Atoms/Common/Combobox',

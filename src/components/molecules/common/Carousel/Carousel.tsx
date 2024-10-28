@@ -2,12 +2,12 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef, PropsWithChildren, useCallback, useImperativeHandle, useState } from 'react'
 
-import Button from '@/components/atoms/common/Button'
-import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
+import { Button } from '@/components/atoms/common/Button'
 import { useSwipe } from '@/utils/hooks/useSwipe'
 import { cn } from '@/utils/utils'
 
 import { arrowClass, controlClass, dottWrapClass, innerWrapClass } from './Carousel.style'
+import { ChevronIcon } from '@/components/atoms/icons'
 
 export type GalleryItem = {
   src: string

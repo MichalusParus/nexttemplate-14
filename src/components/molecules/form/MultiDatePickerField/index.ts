@@ -1,3 +1,1 @@
-import { MultiDatePickerField } from './MultiDatePickerField'
-
-export default MultiDatePickerField
+export * from './MultiDatePickerField'

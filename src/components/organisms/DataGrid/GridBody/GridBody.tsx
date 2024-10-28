@@ -2,11 +2,11 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef } from 'react'
 
-import Button from '@/components/atoms/common/Button'
-import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
-import Ghost from '@/components/atoms/loaders/Ghost'
-import P from '@/components/atoms/typography/P'
-import Checkbox from '@/components/molecules/form/CheckboxField/Checkbox'
+import { Button } from '@/components/atoms/common/Button'
+import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
+import { Ghost } from '@/components/atoms/loaders/Ghost'
+import { P } from '@/components/atoms/typography/P'
+import { Checkbox } from '@/components/molecules/form/CheckboxField/Checkbox'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 

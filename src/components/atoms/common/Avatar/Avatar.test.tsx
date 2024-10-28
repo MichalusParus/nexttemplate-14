@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 
 import { JestMockProvider } from '../../../../../.storybook/helpers'
-import Avatar from '.'
+import { Avatar } from '.'
 
 describe('Avatar', () => {
   it('default', () => {

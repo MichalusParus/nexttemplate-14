@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import InlineLoader from '.'
+import { InlineLoader } from '.'
 
 const meta: Meta<typeof InlineLoader> = {
   title: 'Atoms/Loaders/InlineLoader',

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import Range from '.'
+import { Range } from '.'
 
 describe('Range', () => {
   it('default', () => {

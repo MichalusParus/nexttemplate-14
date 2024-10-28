@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import CircularLoader from '.'
+import { CircularLoader } from '.'
 
 const meta: Meta<typeof CircularLoader> = {
   title: 'Atoms/Loaders/CircularLoader',

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { getGalleryItems } from '../../../../../.storybook/helpers'
-import Gallery from '.'
+import { Gallery } from '.'
 
 const meta: Meta<typeof Gallery> = {
   title: 'Molecules/Common/Gallery',

@@ -3,7 +3,7 @@ import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import Ghost from '../../loaders/Ghost'
+import { Ghost } from '../../loaders/Ghost'
 import { PColor, PSize } from './P.style'
 
 type NativePProps = Omit<HTMLAttributes<HTMLParagraphElement>, 'color' | 'className'>

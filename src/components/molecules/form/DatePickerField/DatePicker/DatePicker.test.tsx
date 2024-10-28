@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { format } from 'date-fns'
 
 import { JestMockProvider } from '../../../../../../.storybook/helpers'
-import DatePicker from '.'
+import { DatePicker } from '.'
 
 describe('DatePicker', () => {
   it('default', () => {

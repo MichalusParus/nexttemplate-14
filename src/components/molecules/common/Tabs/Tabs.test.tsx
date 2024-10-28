@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { tabs } from '../../../../../.storybook/helpers'
-import Tabs from '.'
+import { Tabs } from '.'
 
 jest.mock('next/navigation', () => ({
   useSearchParams: () => ({ get: () => 'label1' }),

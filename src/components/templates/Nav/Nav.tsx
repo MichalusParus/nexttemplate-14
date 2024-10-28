@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { forwardRef } from 'react'
 
-import Link from '@/components/atoms/common/Link'
+import { Link } from '@/components/atoms/common/Link'
 import { PUBLICROUTES } from '@/utils/routes'
 import { cn } from '@/utils/utils'
 

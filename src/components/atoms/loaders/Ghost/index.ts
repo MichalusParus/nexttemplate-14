@@ -1,3 +1,1 @@
-import { Ghost } from './Ghost'
-
-export default Ghost
+export * from './Ghost'

@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { format } from 'date-fns'
 
 import { JestMockProvider } from '../../../../../../.storybook/helpers'
-import MultiDatePicker from '.'
+import { MultiDatePicker } from '.'
 
 describe('MultiDatePicker', () => {
   it('default', () => {

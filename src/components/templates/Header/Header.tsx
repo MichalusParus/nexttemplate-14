@@ -1,10 +1,10 @@
 import { cn } from '@/utils/utils'
 
-import Logo from '../Logo'
-import Nav from '../Nav'
-import HamburgerMenu from './HamburgerMenu'
+import { Logo } from '../Logo'
+import { Nav } from '../Nav'
+import { HamburgerMenu } from './HamburgerMenu'
 import { containerSize, headerClass, mainXPadding } from './Header.style'
-import OnScrollWrap from './OnScrollWrap'
+import { OnScrollWrap } from './OnScrollWrap'
 
 export type HeaderProps = {
   /** for passing custom tailwind classes */

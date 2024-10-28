@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import Disclosure from '.'
+import { Disclosure } from '.'
 
 describe('Disclosure', () => {
   it('default', () => {

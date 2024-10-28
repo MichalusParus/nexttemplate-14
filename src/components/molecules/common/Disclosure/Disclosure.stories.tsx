@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { textContent } from '../../../../../.storybook/helpers'
-import Disclosure from '.'
+import { Disclosure } from '.'
 
 const meta: Meta<typeof Disclosure> = {
   title: 'Molecules/Common/Disclosure',

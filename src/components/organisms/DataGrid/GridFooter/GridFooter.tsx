@@ -1,17 +1,17 @@
 'use client'
 import { forwardRef } from 'react'
 
-import Button from '@/components/atoms/common/Button'
-import SignInIcon from '@/components/atoms/icons/SignInIcon'
-import Select from '@/components/molecules/form/SelectField/Select'
-import Tooltip from '@/components/molecules/popovers/Tooltip'
+import { Button } from '@/components/atoms/common/Button'
+import { Select } from '@/components/molecules/form/SelectField/Select'
+import { Tooltip } from '@/components/molecules/popovers/Tooltip'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import MobilePagination from '../../Pagination/MobilePagination'
+import { MobilePagination } from '../../Pagination/MobilePagination'
 import { rowgroupVariant } from '../GridHeader/GridHeader.style'
 import { RowDef } from '../types'
 import { gridRowPadding, paginationMarginClass, rowClass } from './GridFooter.style'
+import { SignInIcon } from '@/components/atoms/icons'
 
 export type GridFooterProps = StyleProps & {
   /** filtered data for export */

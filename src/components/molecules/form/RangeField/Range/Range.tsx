@@ -1,7 +1,7 @@
 import { forwardRef, InputHTMLAttributes } from 'react'
 
 import { Label } from '@/components/atoms/common/Label/Label'
-import Span from '@/components/atoms/typography/Span'
+import { Span } from '@/components/atoms/typography/Span'
 import { FieldProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 

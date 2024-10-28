@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import ProfileIcon from '../../icons/ProfileIcon'
-import Link from '.'
+import { Link } from '.'
+import { ProfileIcon } from '../../icons'
 
 const meta: Meta<typeof Link> = {
   title: 'Atoms/Common/Link',

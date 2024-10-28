@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { routerMock } from '../../../../../.storybook/helpers'
-import GridFooter from '.'
+import { GridFooter } from '.'
 
 const meta: Meta<typeof GridFooter> = {
   title: 'Organisms/DataGrid/GridFooter',

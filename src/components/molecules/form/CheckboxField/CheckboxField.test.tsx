@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { JestFormProvider } from '../../../../../.storybook/helpers'
-import CheckboxField from '.'
+import { CheckboxField } from '.'
 
 describe('CheckboxField', () => {
   it('default', () => {

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { textContent } from '../../../../../.storybook/helpers'
-import Divider from '.'
+import { Divider } from '.'
 
 const meta: Meta<typeof Divider> = {
   title: 'Atoms/Common/Divider',

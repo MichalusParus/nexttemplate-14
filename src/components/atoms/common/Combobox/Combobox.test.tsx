@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import Combobox from '.'
+import { Combobox } from '.'
 
 describe('Combobox', () => {
   it('default', () => {

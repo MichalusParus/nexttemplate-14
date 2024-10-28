@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
 import { options, optionsWithContent } from '../../../../../.storybook/helpers'
-import ListBox from '.'
+import { ListBox } from '.'
 import { ListBoxProps } from './ListBox'
 
 const meta: Meta<typeof ListBox> = {

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import OnScrollWrap from '.'
+import { OnScrollWrap } from '.'
 
 describe('OnScrollWrap', () => {
   it('default', () => {

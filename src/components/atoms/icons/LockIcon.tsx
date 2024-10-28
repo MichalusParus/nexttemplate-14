@@ -2,7 +2,7 @@ type Props = {
   className?: string
 }
 
-export default function LockIcon({ className }: Props) {
+export function LockIcon({ className }: Props) {
   return (
     <svg
       className={className}

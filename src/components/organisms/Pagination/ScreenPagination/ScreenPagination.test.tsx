@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 
 import { getPages, JestMockProvider } from '../../../../../.storybook/helpers'
-import ScreenPagination from '.'
+import { ScreenPagination } from '.'
 
 describe('ScreenPagination', () => {
   it('default', () => {

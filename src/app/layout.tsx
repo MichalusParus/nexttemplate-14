@@ -6,9 +6,9 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import { PropsWithChildren } from 'react'
 
-import Footer from '@/components/templates/Footer'
-import Header from '@/components/templates/Header'
-import Main from '@/components/templates/Main'
+import { Footer } from '@/components/templates/Footer'
+import { Header } from '@/components/templates/Header'
+import { Main } from '@/components/templates/Main'
 import { cn } from '@/utils/utils'
 
 // const inter = Inter({ subsets: ['latin'] })

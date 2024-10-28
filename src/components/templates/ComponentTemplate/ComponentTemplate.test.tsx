@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import ComponentTemplate from '.'
+import { ComponentTemplate } from '.'
 
 describe('ComponentTemplate', () => {
   it('default', () => {

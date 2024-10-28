@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
-import Link from '@/components/atoms/common/Link'
-import Title from '@/components/atoms/typography/Title'
+import { Link } from '@/components/atoms/common/Link'
+import { Title } from '@/components/atoms/typography/Title'
 import { cn } from '@/utils/utils'
 
 export type LogoProps = {

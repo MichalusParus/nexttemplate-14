@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { addDays, addMonths, isAfter, isBefore, isSameDay } from 'date-fns'
 import { useState } from 'react'
 
-import Calendar from '.'
+import { Calendar } from '.'
 import { CalendarProps } from './Calendar'
 
 const meta: Meta<typeof Calendar> = {

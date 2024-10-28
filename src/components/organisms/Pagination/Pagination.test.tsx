@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import { getPages,JestMockProvider } from '../../../../.storybook/helpers'
-import Pagination from '.'
+import { getPages, JestMockProvider } from '../../../../.storybook/helpers'
+import { Pagination } from '.'
 
 describe('Pagination', () => {
   it('default', () => {

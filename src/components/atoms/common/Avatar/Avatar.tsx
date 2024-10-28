@@ -4,9 +4,9 @@ import { forwardRef, HTMLAttributes } from 'react'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import ProfileIcon from '../../icons/ProfileIcon'
-import Image from '../Image'
+import { Image } from '../Image'
 import { avatarClass, avatarSize, avatarVariant } from './Avatar.style'
+import { ProfileIcon } from '../../icons'
 
 type NativeAvatarProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'>
 

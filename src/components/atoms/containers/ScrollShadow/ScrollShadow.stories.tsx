@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { textContent } from '../../../../../.storybook/helpers'
-import ScrollShadow from '.'
+import { ScrollShadow } from '.'
 
 const meta: Meta<typeof ScrollShadow> = {
   title: 'Atoms/Containers/ScrollShadow',

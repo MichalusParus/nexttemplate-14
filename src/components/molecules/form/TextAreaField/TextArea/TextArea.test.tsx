@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import TextArea from '.'
+import { TextArea } from '.'
 
 describe('TextArea', () => {
   it('default', () => {

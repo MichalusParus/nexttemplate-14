@@ -1,4 +1,4 @@
-import P from '@/components/atoms/typography/P'
+import { P } from '@/components/atoms/typography/P'
 import { cn } from '@/utils/utils'
 
 import { containerSize, mainXPadding } from '../Header/Header.style'

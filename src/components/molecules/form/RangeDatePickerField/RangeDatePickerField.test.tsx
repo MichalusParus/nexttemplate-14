@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { JestFormProvider, JestMockProvider } from '../../../../../.storybook/helpers'
-import RangeDatePickerField from '.'
+import { RangeDatePickerField } from '.'
 
 describe('RangeDatePicker', () => {
   it('default', () => {

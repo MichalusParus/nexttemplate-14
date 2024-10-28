@@ -1,3 +1,1 @@
-import { GridFooter } from './GridFooter'
-
-export default GridFooter
+export * from './GridFooter'

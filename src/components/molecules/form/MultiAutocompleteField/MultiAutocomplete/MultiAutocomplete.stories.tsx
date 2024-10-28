@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState, useTransition } from 'react'
 
-import Button from '@/components/atoms/common/Button'
+import { Button } from '@/components/atoms/common/Button'
 import { useFilterData } from '@/utils/hooks/useFilterData'
 import { debounce } from '@/utils/utils'
 

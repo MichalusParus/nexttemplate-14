@@ -1,3 +1,1 @@
-import { MobilePagination } from './MobilePagination'
-
-export default MobilePagination
+export * from './MobilePagination'

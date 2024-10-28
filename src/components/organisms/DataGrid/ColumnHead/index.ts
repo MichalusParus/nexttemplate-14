@@ -1,3 +1,1 @@
-import { ColumnHead } from './ColumnHead'
-
-export default ColumnHead
+export * from './ColumnHead'

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 
 import { JestMockProvider, options } from '../../../../../.storybook/helpers'
-import ListBox from '.'
+import { ListBox } from '.'
 
 describe('ListBox', () => {
   it('default', () => {

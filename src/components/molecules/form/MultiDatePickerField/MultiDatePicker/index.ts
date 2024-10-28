@@ -1,3 +1,1 @@
-import { MultiDatePicker } from './MultiDatePicker'
-
-export default MultiDatePicker
+export * from './MultiDatePicker'

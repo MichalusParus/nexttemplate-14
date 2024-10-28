@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import ComponentTemplate from '.'
+import { ComponentTemplate } from '.'
 
 const meta: Meta<typeof ComponentTemplate> = {
   title: 'Templates/ComponentTemplate',

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 
 import { JestMockProvider } from '../../../../../.storybook/helpers'
-import Carousel from '.'
+import { Carousel } from '.'
 
 describe('Carousel', () => {
   it('default', () => {

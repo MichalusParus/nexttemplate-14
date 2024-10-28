@@ -1,3 +1,1 @@
-import { CheckboxGroupField } from './CheckboxGroupField'
-
-export default CheckboxGroupField
+export * from './CheckboxGroupField'

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import ScrollShadow from '.'
+import { ScrollShadow } from '.'
 
 describe('ScrollShadow', () => {
   it('default', () => {

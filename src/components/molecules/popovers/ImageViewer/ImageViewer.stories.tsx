@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import Image from '@/components/atoms/common/Image'
+import { Image } from '@/components/atoms/common/Image'
 
-import ImageViewer from '.'
+import { ImageViewer } from '.'
 
 const meta: Meta<typeof ImageViewer> = {
   title: 'Molecules/Popovers/ImageViewer',

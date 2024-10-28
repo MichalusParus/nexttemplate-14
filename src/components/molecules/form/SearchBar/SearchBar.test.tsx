@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { JestMockProvider } from '../../../../../.storybook/helpers'
-import SearchBar from '.'
+import { SearchBar } from '.'
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: () => {} }),

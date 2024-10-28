@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useRef, useState } from 'react'
 
-import Combobox from '@/components/atoms/common/Combobox'
+import { Combobox } from '@/components/atoms/common/Combobox'
 
 import { textContent } from '../../../../../.storybook/helpers'
 import { Dropdown, DropdownProps } from './Dropdown'

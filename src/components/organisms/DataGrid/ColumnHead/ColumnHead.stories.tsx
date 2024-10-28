@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { routerMock } from '../../../../../.storybook/helpers'
-import ColumnHead from '.'
+import { ColumnHead } from '.'
 
 const meta: Meta<typeof ColumnHead> = {
   title: 'Organisms/DataGrid/ColumnHead',

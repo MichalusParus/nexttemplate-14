@@ -1,15 +1,15 @@
 import { forwardRef, PropsWithChildren, ReactNode, useCallback } from 'react'
 
-import Button from '@/components/atoms/common/Button'
+import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
-import Link from '@/components/atoms/common/Link'
+import { Link } from '@/components/atoms/common/Link'
 import { LinkProps } from '@/components/atoms/common/Link/Link'
-import Paper from '@/components/atoms/containers/Paper'
-import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
+import { Paper } from '@/components/atoms/containers/Paper'
+import { ChevronIcon } from '@/components/atoms/icons'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import Menu from '../../popovers/Menu'
+import { Menu } from '../../popovers/Menu'
 import { MenuProps } from '../../popovers/Menu/Menu'
 
 type TabOption = {

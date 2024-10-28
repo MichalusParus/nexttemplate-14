@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import ProgressBar from '.'
+import { ProgressBar } from '.'
 
 describe('ProgressBar', () => {
   it('default', () => {

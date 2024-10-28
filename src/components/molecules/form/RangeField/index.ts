@@ -1,3 +1,1 @@
-import { RangeField } from './RangeField'
-
-export default RangeField
+export * from './RangeField'

@@ -1,13 +1,13 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef, KeyboardEvent, OlHTMLAttributes, useCallback } from 'react'
 
-import Checkbox from '@/components/molecules/form/CheckboxField/Checkbox'
+import { Checkbox } from '@/components/molecules/form/CheckboxField/Checkbox'
 import { CheckboxProps } from '@/components/molecules/form/CheckboxField/Checkbox/Checkbox'
 import { checkboxSize } from '@/components/molecules/form/MultiSelectField/MultiSelect/MultiSelect.style'
 import { OptionType, StyleProps } from '@/components/types'
 import { cn, filterOutKeys } from '@/utils/utils'
 
-import Ghost from '../../loaders/Ghost'
+import { Ghost } from '../../loaders/Ghost'
 import { buttonContentSize, buttonVariant } from '../Button/Button.style'
 
 type NativeListBoxProps = Omit<

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { JestFormProvider, JestMockProvider, options } from '../../../../../.storybook/helpers'
-import MultiAutocompleteField from '.'
+import { MultiAutocompleteField } from '.'
 
 describe('MultiAutocompleteField', () => {
   it('default', () => {

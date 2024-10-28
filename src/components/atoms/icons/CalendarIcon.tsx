@@ -2,7 +2,7 @@ type Props = {
   className?: string
 }
 
-export default function CalendarIcon({ className }: Props) {
+export function CalendarIcon({ className }: Props) {
   return (
     <svg
       className={className}

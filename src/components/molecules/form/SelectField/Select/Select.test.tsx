@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { JestMockProvider, options } from '../../../../../../.storybook/helpers'
-import Select from '.'
+import { Select } from '.'
 
 describe('Select', () => {
   it('default', () => {

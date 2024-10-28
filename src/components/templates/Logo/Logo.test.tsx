@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import Logo from '.'
+import { Logo } from '.'
 
 describe('Logo', () => {
   it('default', () => {

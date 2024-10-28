@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { options, textContent, titleSizeVariants } from '../../../../../.storybook/helpers'
-import CheckIcon from '../../icons/CheckIcon'
+import { CheckIcon } from '../../icons'
 import { Li, List } from './List'
 
 const meta: Meta<typeof List> = {

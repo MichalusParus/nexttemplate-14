@@ -1,3 +1,1 @@
-import { MultiAutocompleteField } from './MultiAutocompleteField'
-
-export default MultiAutocompleteField
+export * from './MultiAutocompleteField'

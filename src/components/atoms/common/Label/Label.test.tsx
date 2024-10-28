@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import Label from '.'
+import { Label } from '.'
 
 describe('Label', () => {
   it('default', () => {

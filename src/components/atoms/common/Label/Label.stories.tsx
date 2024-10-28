@@ -6,7 +6,7 @@ import {
   inputVariant,
 } from '@/components/molecules/form/InputField/Input/Input.style'
 
-import Label from '.'
+import { Label } from '.'
 
 const meta: Meta<typeof Label> = {
   title: 'Atoms/Common/Label',

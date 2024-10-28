@@ -1,12 +1,12 @@
 'use client'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import Combobox from '@/components/atoms/common/Combobox'
-import Hamburger from '@/components/atoms/icons/Hamburger'
-import Drawer from '@/components/molecules/popovers/Drawer'
+import { Combobox } from '@/components/atoms/common/Combobox'
+import { HamburgerIcon } from '@/components/atoms/icons'
+import { Drawer } from '@/components/molecules/popovers/Drawer'
 import { cn } from '@/utils/utils'
 
-import Nav from '../../Nav'
+import { Nav } from '../../Nav'
 
 export type HamburgerMenuProps = {
   /** for passing custom tailwind classes */
@@ -47,7 +47,7 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
         hideShadow
         onClick={() => setIsOpen(prev => !prev)}
       >
-        <Hamburger className="h-9 w-9" isOpen={isOpen} />
+        <HamburgerIcon className="h-9 w-9" isOpen={isOpen} />
       </Combobox>
       <Drawer
         className="fixed"

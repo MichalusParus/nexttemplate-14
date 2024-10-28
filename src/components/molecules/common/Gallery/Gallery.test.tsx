@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 
 import { getGalleryItems, JestMockProvider } from '../../../../../.storybook/helpers'
-import Gallery from '.'
+import { Gallery } from '.'
 
 describe('Gallery', () => {
   it('default', () => {

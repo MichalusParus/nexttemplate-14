@@ -1,10 +1,10 @@
 'use client'
-import P from '@/components/atoms/typography/P'
-import MultiDatePicker from '@/components/molecules/form/MultiDatePickerField/MultiDatePicker'
-import Select from '@/components/molecules/form/SelectField/Select'
-import Modal from '@/components/molecules/popovers/Modal'
+import { P } from '@/components/atoms/typography/P'
+import { MultiDatePicker } from '@/components/molecules/form/MultiDatePickerField/MultiDatePicker'
+import { Select } from '@/components/molecules/form/SelectField/Select'
+import { Modal } from '@/components/molecules/popovers/Modal'
 import { options } from '../../.storybook/helpers'
-import Tooltip from '@/components/molecules/popovers/Tooltip'
+import { Tooltip } from '@/components/molecules/popovers/Tooltip'
 
 export default function Home() {
   return (

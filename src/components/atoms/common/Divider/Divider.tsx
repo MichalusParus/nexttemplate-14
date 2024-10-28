@@ -3,7 +3,7 @@ import { forwardRef, HTMLAttributes } from 'react'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import Span from '../../typography/Span'
+import { Span } from '../../typography/Span'
 import { dividerColor } from './Divider.style'
 
 type NativeDividerProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color' | 'label'>

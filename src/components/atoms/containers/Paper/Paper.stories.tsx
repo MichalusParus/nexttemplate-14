@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import Paper from '.'
+import { Paper } from '.'
 
 const meta: Meta<typeof Paper> = {
   title: 'Atoms/Containers/Paper',

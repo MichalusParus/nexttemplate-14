@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import Drawer from '.'
+import { Drawer } from '.'
 
 describe('Drawer', () => {
   it('default', () => {

@@ -1,3 +1,1 @@
-import { ScrollShadow } from './ScrollShadow'
-
-export default ScrollShadow
+export * from './ScrollShadow'

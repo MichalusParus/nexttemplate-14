@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import Span from '.'
+import { Span } from '.'
 
 const meta: Meta<typeof Span> = {
   title: 'Atoms/Typography/Span',

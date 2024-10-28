@@ -1,3 +1,1 @@
-import { RangeDatePickerField } from './RangeDatePickerField'
-
-export default RangeDatePickerField
+export * from './RangeDatePickerField'

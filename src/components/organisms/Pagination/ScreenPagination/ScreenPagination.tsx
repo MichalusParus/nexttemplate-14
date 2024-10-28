@@ -10,8 +10,8 @@ import {
   useState,
 } from 'react'
 
-import Button from '@/components/atoms/common/Button'
-import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
+import { Button } from '@/components/atoms/common/Button'
+import { ChevronIcon } from '@/components/atoms/icons'
 import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 

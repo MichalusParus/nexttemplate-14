@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
 import { getPages } from '../../../../../.storybook/helpers'
-import ScreenPagination from '.'
+import { ScreenPagination } from '.'
 import { ScreenPaginationProps } from './ScreenPagination'
 
 const meta: Meta<typeof ScreenPagination> = {

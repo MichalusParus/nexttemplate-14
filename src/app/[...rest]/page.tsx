@@ -2,8 +2,8 @@
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
-import Alert from '@/components/atoms/common/Alert'
-import Button from '@/components/atoms/common/Button'
+import { Alert } from '@/components/atoms/common/Alert'
+import { Button } from '@/components/atoms/common/Button'
 import { PageProps } from '@/utils/types'
 import { cn } from '@/utils/utils'
 

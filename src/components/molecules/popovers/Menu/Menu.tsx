@@ -15,7 +15,7 @@ import { StyleProps } from '@/components/types'
 import { useFocus } from '@/utils/hooks/useFocus'
 import { cn } from '@/utils/utils'
 
-import Dropdown from '../Dropdown'
+import { Dropdown } from '../Dropdown'
 import { DropdownProps } from '../Dropdown/Dropdown'
 
 export type MenuProps = Omit<StyleProps, 'size'> & {

@@ -2,7 +2,7 @@ type Props = {
   className?: string
 }
 
-export default function SignOutIcon({ className }: Props) {
+export function SignOutIcon({ className }: Props) {
   return (
     <svg
       className={className}

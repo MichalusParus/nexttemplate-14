@@ -10,12 +10,11 @@ import {
   useState,
 } from 'react'
 
-import Button from '@/components/atoms/common/Button'
-import ListBox from '@/components/atoms/common/ListBox'
+import { Button } from '@/components/atoms/common/Button'
+import { ListBox } from '@/components/atoms/common/ListBox'
 import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
-import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
-import XIcon from '@/components/atoms/icons/XIcon'
-import Dropdown from '@/components/molecules/popovers/Dropdown'
+import { ChevronIcon, XIcon } from '@/components/atoms/icons'
+import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
 import { FieldProps, OptionType, StyleProps } from '@/components/types'
 import { useFocus } from '@/utils/hooks/useFocus'

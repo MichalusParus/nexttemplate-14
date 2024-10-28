@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { options } from '../../../../../../.storybook/helpers'
-import CheckboxGroup from '.'
+import { CheckboxGroup } from '.'
 
 describe('CheckboxGroup', () => {
   it('default', () => {

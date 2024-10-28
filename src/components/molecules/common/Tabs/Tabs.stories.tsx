@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import Button from '@/components/atoms/common/Button'
-import PlusIcon from '@/components/atoms/icons/PlusIcon'
+import { Button } from '@/components/atoms/common/Button'
+import { PlusIcon } from '@/components/atoms/icons'
 
 import { tabs, textContent } from '../../../../../.storybook/helpers'
-import Tabs from '.'
+import { Tabs } from '.'
 import { TabsProps } from './Tabs'
 
 const meta: Meta<typeof Tabs> = {

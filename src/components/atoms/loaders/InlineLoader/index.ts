@@ -1,3 +1,1 @@
-import { InlineLoader } from './InlineLoader'
-
-export default InlineLoader
+export * from './InlineLoader'

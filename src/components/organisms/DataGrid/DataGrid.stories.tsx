@@ -7,7 +7,7 @@ import {
   gridDoubleColsDef,
   routerMock,
 } from '../../../../.storybook/helpers'
-import DataGrid from '.'
+import { DataGrid } from '.'
 
 const meta: Meta<typeof DataGrid> = {
   title: 'Organisms/DataGrid',

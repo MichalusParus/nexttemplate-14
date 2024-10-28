@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { PropsWithChildren, useState } from 'react'
 
-import Combobox from '@/components/atoms/common/Combobox'
+import { Combobox } from '@/components/atoms/common/Combobox'
 
 import { MenuLinks } from '../../../../../.storybook/helpers'
 import { Drawer, DrawerProps } from './Drawer'

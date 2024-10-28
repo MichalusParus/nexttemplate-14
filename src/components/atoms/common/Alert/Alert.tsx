@@ -3,11 +3,8 @@ import { forwardRef, HTMLAttributes, ReactNode } from 'react'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import ErrorIcon from '../../icons/ErrorIcon'
-import InfoIcon from '../../icons/InfoIcon'
-import SuccessIcon from '../../icons/SuccessIcon'
-import WarningIcon from '../../icons/WarningIcon'
-import Span from '../../typography/Span'
+import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from '../../icons'
+import { Span } from '../../typography/Span'
 import { alertClass, alertIconSize, alertSize, alertVariant } from './Alert.style'
 
 type NativeAlertProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'title'>

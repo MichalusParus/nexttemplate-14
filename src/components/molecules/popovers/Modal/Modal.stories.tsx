@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import Button from '@/components/atoms/common/Button'
-import Combobox from '@/components/atoms/common/Combobox'
+import { Button } from '@/components/atoms/common/Button'
+import { Combobox } from '@/components/atoms/common/Combobox'
 
 import { textContent } from '../../../../../.storybook/helpers'
-import Menu from '../Menu'
-import Tooltip from '../Tooltip'
+import { Menu } from '../Menu'
+import { Tooltip } from '../Tooltip'
 import { Modal, ModalProps } from './Modal'
 
 const meta: Meta<typeof Modal> = {

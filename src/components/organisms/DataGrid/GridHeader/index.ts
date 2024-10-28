@@ -1,3 +1,1 @@
-import { GridHeader } from './GridHeader'
-
-export default GridHeader
+export * from './GridHeader'

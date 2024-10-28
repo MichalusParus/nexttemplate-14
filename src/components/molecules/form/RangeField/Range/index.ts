@@ -1,3 +1,1 @@
-import { Range } from './Range'
-
-export default Range
+export * from './Range'

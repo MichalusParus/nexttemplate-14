@@ -17,9 +17,9 @@ import { usePagination } from '@/utils/hooks/usePagination'
 import { cn } from '@/utils/utils'
 
 import { tableFocus } from './DataGrid.style'
-import GridBody from './GridBody'
-import GridFooter from './GridFooter'
-import GridHeader from './GridHeader'
+import { GridBody } from './GridBody'
+import { GridFooter } from './GridFooter'
+import { GridHeader } from './GridHeader'
 import { ColDef, ColumnDef, RowDef } from './types'
 
 export type DataGridProps = StyleProps & {

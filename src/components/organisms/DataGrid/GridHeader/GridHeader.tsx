@@ -5,7 +5,7 @@ import { StyleProps } from '@/components/types'
 import { FilterDef, SortingDef } from '@/utils/hooks/useFilterData'
 import { cn } from '@/utils/utils'
 
-import ColumnHead from '../ColumnHead'
+import { ColumnHead } from '../ColumnHead'
 import { ColumnDef } from '../types'
 import { rowgroupVariant } from './GridHeader.style'
 

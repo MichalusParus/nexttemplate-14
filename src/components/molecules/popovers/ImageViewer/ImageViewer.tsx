@@ -12,8 +12,8 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 
-import Button from '@/components/atoms/common/Button'
-import XIcon from '@/components/atoms/icons/XIcon'
+import { Button } from '@/components/atoms/common/Button'
+import { XIcon } from '@/components/atoms/icons'
 import { useFocus } from '@/utils/hooks/useFocus'
 import { cn } from '@/utils/utils'
 

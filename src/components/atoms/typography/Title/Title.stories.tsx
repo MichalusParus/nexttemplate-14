@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { titleSizeVariants } from '../../../../../.storybook/helpers'
-import Title from '.'
+import { Title } from '.'
 
 const meta: Meta<typeof Title> = {
   title: 'Atoms/Typography/Title',

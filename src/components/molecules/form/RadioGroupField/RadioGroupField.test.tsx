@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { JestFormProvider, options } from '../../../../../.storybook/helpers'
-import RadioGroupField from '.'
+import { RadioGroupField } from '.'
 
 describe('RadioGroupField', () => {
   it('default', () => {

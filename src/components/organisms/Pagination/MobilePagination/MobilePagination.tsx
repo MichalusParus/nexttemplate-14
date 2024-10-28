@@ -2,9 +2,9 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef } from 'react'
 
-import Button from '@/components/atoms/common/Button'
+import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
-import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
+import { ChevronIcon } from '@/components/atoms/icons'
 import { StyleProps } from '@/components/types'
 import { cn, filterOutKeys } from '@/utils/utils'
 

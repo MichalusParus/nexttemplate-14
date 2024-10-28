@@ -1,3 +1,1 @@
-import { CircularLoader } from './CircularLoader'
-
-export default CircularLoader
+export * from './CircularLoader'

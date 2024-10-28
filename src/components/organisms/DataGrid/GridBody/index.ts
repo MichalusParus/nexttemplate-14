@@ -1,3 +1,1 @@
-import { GridBody } from './GridBody'
-
-export default GridBody
+export * from './GridBody'

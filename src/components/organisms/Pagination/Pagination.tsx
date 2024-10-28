@@ -2,14 +2,14 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef } from 'react'
 
-import Button from '@/components/atoms/common/Button'
+import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import { StyleProps } from '@/components/types'
 import { cn, filterOutKeys } from '@/utils/utils'
 
-import MobilePagination from './MobilePagination'
+import { MobilePagination } from './MobilePagination'
 import { MobilePaginationProps } from './MobilePagination/MobilePagination'
-import ScreenPagination from './ScreenPagination'
+import { ScreenPagination } from './ScreenPagination'
 
 export type PaginationProps = MobilePaginationProps & {
   /** name of the pagination component */

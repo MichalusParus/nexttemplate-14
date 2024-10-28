@@ -2,12 +2,12 @@
 import { forwardRef, PropsWithChildren, useState } from 'react'
 
 import { Combobox, ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
-import Paper from '@/components/atoms/containers/Paper'
+import { Paper } from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
-import ScrollShadow from '@/components/atoms/containers/ScrollShadow'
-import ChevronIcon from '@/components/atoms/icons/ChevronIcon'
+import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { StyleProps } from '@/components/types'
 import { cn, filterOutKeys, slugify } from '@/utils/utils'
+import { ChevronIcon } from '@/components/atoms/icons'
 
 export type DisclosureProps = Omit<StyleProps, 'size'> & {
   /** for passing custom tailwind classes */

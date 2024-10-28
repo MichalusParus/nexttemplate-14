@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { gridColsDef, gridDoubleColsDef, routerMock } from '../../../../../.storybook/helpers'
-import GridHeader from '.'
+import { GridHeader } from '.'
 
 const meta: Meta<typeof GridHeader> = {
   title: 'Organisms/DataGrid/GridHeader',

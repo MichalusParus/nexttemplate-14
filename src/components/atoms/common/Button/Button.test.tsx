@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { JestMockProvider } from '../../../../../.storybook/helpers'
-import Button from '.'
+import { Button } from '.'
 
 describe('Button', () => {
   it('default', () => {

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import Span from '.'
+import { Span } from '.'
 
 describe('Span', () => {
   it('default', () => {

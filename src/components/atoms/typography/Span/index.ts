@@ -1,3 +1,1 @@
-import { Span } from './Span'
-
-export default Span
+export * from './Span'
