@@ -21,7 +21,6 @@ LoadMore,
 infiniteScroll,
 Table
 
-big useFocus refactor
 no overlay on menu and others, just as modal prop and better close handling without overlay
 tabs close on url change
 make multiselect and multiautocomplete as wrapper around single version with support for multi
@@ -31,22 +30,6 @@ CHECK Tabs, Menu, Drawer, Carousel
 building block component folder
 foldre structure, so there can be added specialized versions of UI like concrete select witch fetching etc
 
-STORYBOOK
--fix default text and dark:text colors on storybook
--fix storybook fonts
--fix autocomplete debounce fetching in stories
--labelprops args for storybook
-
-ARIA BOBO FIXES
--h1 get out of logo
--aria-hidden pro error svg kdyz neniu viditelny
--progressbar fix, role a info o naplneni
--span bold, must have strong html
--link inline underline must be
--input autocomplete attr https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill
-
-
-
+big useFocus refactor
 screen reader support
-
 

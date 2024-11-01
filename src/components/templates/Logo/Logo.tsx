@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
 import { Link } from '@/components/atoms/common/Link'
-import { Title } from '@/components/atoms/typography/Title'
+import { Span } from '@/components/atoms/typography/Span'
 import { cn } from '@/utils/utils'
 
 export type LogoProps = {
@@ -28,9 +28,7 @@ export const Logo = ({ className }: LogoProps) => {
       >
         <Image src="/images/favicon.ico" alt="Logo" fill />
       </div>
-      <Title variant="h1" size="none" className={cn('text-lg text-dark-50 md:text-xl lg:text-2xl')}>
-        NextTemplate14
-      </Title>
+      <Span className={cn('text-lg text-dark-50 md:text-xl lg:text-2xl')}>NextTemplate14</Span>
     </Link>
   )
 }

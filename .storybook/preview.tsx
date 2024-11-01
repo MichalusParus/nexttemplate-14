@@ -4,9 +4,9 @@ import type { Preview } from '@storybook/react'
 import { NextIntlClientProvider } from 'next-intl'
 import messages from '../messages/en.json'
 import { withThemeByClassName } from '@storybook/addon-themes'
-// import { Inter } from 'next/font/google'
+import { Inter } from 'next/font/google'
 
-// const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] })
 
 const preview: Preview = {
   tags: ['autodocs'],
@@ -48,9 +48,11 @@ const preview: Preview = {
     }),
     Story => (
       <NextIntlClientProvider messages={messages} locale="en">
-        {/* <div className={inter.className}> */}
-        <Story />
-        {/* </div> */}
+        <div className={inter.className}>
+          <div className="text-dark-950 dark:text-darkText">
+            <Story />
+          </div>
+        </div>
       </NextIntlClientProvider>
     ),
   ],

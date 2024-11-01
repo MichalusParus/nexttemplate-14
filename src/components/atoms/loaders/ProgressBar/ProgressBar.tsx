@@ -24,6 +24,10 @@ export const ProgressBar = forwardRef<HTMLDivElement, ProgressBarProps>(
     return (
       <div
         className={cn('ProgressBar', progressClass, progressColor[color], className)}
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={progress}
         data-testid="ProgressBar"
         ref={ref}
         {...rest}

@@ -40,7 +40,6 @@ export const TextAreaField = ({
             ...labelProps,
             collapsed: labelProps?.collapsed || formCollapsed,
           }}
-          autoComplete="off"
           {...field}
           {...rest}
         />

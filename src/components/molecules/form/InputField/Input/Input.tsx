@@ -4,6 +4,7 @@ import { forwardRef, InputHTMLAttributes, ReactNode, useImperativeHandle, useRef
 
 import { Button } from '@/components/atoms/common/Button'
 import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
+import { XIcon } from '@/components/atoms/icons'
 import { FieldProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
@@ -16,7 +17,6 @@ import {
   inputSize,
   inputVariant,
 } from './Input.style'
-import { XIcon } from '@/components/atoms/icons'
 
 type NativeInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,

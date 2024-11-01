@@ -118,7 +118,7 @@ export const buttonContentSize = {
   sm: cn('px-smPX py-smPY text-sm'),
   md: cn('px-mdPX py-mdPY text-base'),
   lg: cn('px-lgPX py-lgPY text-lg'),
-  inline: cn('border-0 px-1'),
+  inline: cn('border-0 px-1 hover:underline focus-visible:underline'),
   none: '',
 }
 

@@ -40,7 +40,6 @@ export const InputField = ({
             ...labelProps,
             collapsed: labelProps?.collapsed || formCollapsed,
           }}
-          autoComplete="off"
           {...field}
           {...rest}
         />

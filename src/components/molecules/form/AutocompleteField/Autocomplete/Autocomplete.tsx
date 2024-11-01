@@ -184,7 +184,6 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
               placeholder={placeholder}
               disabled={disabled}
               labelProps={{ hideError: true, hideLabel: true }}
-              autoComplete="off"
               role="combobox"
               aria-haspopup="listbox"
               aria-describedby={`${name}-description`}

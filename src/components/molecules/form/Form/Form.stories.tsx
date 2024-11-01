@@ -52,8 +52,20 @@ const FormWithHooks = (args: FormProps<object>) => {
     <Form {...args} form={form}>
       <InputField name="inputStory" label="Input:" placeholder="input" />
       <InputField name="numberStory" type="number" label="Number:" placeholder="number" />
-      <InputField name="searchStory" type="search" label="Search:" placeholder="Search" />
-      <InputField name="dateStory" type="date" label="Date:" placeholder="date" />
+      <InputField
+        name="searchStory"
+        type="search"
+        label="Search:"
+        placeholder="Search"
+        labelProps={{ description: 'Some description' }}
+      />
+      <InputField
+        name="dateStory"
+        type="date"
+        label="Date:"
+        placeholder="date"
+        labelProps={{ description: 'Some description' }}
+      />
       <TextAreaField name="textareaStory" label="Textarea:" placeholder="textarea" />
       <RangeField name="rangeStory" label="Range:" min={100} max={200} />
       <Label name="checkboxStory" label="Fake label:" collapsed={args.collapsed} fakeLabel>

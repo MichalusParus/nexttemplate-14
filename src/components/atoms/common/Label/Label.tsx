@@ -87,6 +87,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
               variant="text"
               status={description && !error ? 'info' : 'error'}
               size="sm"
+              aria-hidden={!description && !error}
             >
               {description && !error ? description : error}
             </Alert>

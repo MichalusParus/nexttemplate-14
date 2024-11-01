@@ -42,11 +42,14 @@ const AutocompleteWithFetch = (args: AutocompleteProps) => {
   const getOptions = async (value: string) => {
     if (value.length > 2) {
       startTransition(async () => {
-        await fetch(`https://freetestapi.com/api/v1/actresses?search=${value}`)
+        await fetch(`https://restcountries.com/v3.1/name/${value}`)
           .then(res => res.json())
           .then(res =>
             setOptions(
-              res.map((o: { name: string; id: string }) => ({ label: o.name, value: o.id })),
+              res.map((o: { name: { common: string }; id: string }) => ({
+                label: o.name.common,
+                value: o.name.common,
+              })),
             ),
           )
       })
