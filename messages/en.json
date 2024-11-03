@@ -28,6 +28,8 @@
       "sortIn": "sort in {field}",
       "filterIn": "filter in {field}",
       "searchIn": "search in {field}",
-      "noRows": "No rows found"
+      "noRows": "No rows found",
+      "pause": "Pause",
+      "play": "Play"
     }
 }

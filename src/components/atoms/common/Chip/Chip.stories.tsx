@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
+import { PlusIcon, ProfileIcon } from '../../icons'
 import { Avatar } from '../Avatar'
 import { Chip } from '.'
-import { PlusIcon, ProfileIcon } from '../../icons'
 
 const meta: Meta<typeof Chip> = {
   title: 'Atoms/Common/Chip',

@@ -40,8 +40,8 @@ export type DropdownProps = HTMLAttributes<HTMLDivElement> &
     height?: string
     /** for setting internal padding of Paper component */
     padding?: string
-    /** optional for disabling overlay */
-    hideOverlay?: boolean
+    /** optional for modal overlay */
+    modal?: boolean
     /** hide dropdown shadow */
     hideShadow?: boolean
     /** for passing aditional props to Paper */
@@ -66,7 +66,7 @@ export const Dropdown = forwardRef<HTMLDivElement, PropsWithChildren<DropdownPro
       width,
       height = 'max-h-[40vh]',
       padding = 'p-0',
-      hideOverlay,
+      modal,
       hideShadow,
       paperProps = {},
       scrollShadowProps = {},
@@ -84,6 +84,24 @@ export const Dropdown = forwardRef<HTMLDivElement, PropsWithChildren<DropdownPro
     useEffect(() => {
       setMounted(true)
     }, [])
+
+    useEffect(() => {
+      if (isOpen && !modal) {
+        const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+          const target = e.target as HTMLElement
+          if (popoverEl && !popoverEl.contains(target) && !anchorRef.current?.contains(target)) {
+            onClose()
+          }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside)
+        document.addEventListener('touchstart', handleClickOutside)
+        return () => {
+          document.removeEventListener('mousedown', handleClickOutside)
+          document.removeEventListener('touchstart', handleClickOutside)
+        }
+      }
+    }, [popoverEl, modal, isOpen, anchorRef, onClose])
 
     return (
       <>
@@ -120,7 +138,7 @@ export const Dropdown = forwardRef<HTMLDivElement, PropsWithChildren<DropdownPro
             </>,
             document.body,
           )}
-        {!hideOverlay && <Overlay isOpen={isOpen} onClose={onClose} />}
+        {modal && <Overlay isOpen={isOpen} onClose={onClose} />}
       </>
     )
   },

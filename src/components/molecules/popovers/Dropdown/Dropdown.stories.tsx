@@ -59,7 +59,7 @@ export const PrimaryDefault: Story = {
     width: 'w-full',
     height: 'max-h-[40vh]',
     padding: 'p-0',
-    hideOverlay: false,
+    modal: false,
     hideShadow: false,
     paperProps: undefined,
     scrollShadowProps: undefined,

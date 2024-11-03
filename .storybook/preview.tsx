@@ -49,7 +49,7 @@ const preview: Preview = {
     Story => (
       <NextIntlClientProvider messages={messages} locale="en">
         <div className={inter.className}>
-          <div className="text-dark-950 dark:text-darkText">
+          <div className="text-dark-950 dark:text-contrast">
             <Story />
           </div>
         </div>

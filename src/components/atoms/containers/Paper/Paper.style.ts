@@ -9,13 +9,13 @@ export const paperVariant = {
   },
   outlined: {
     primary: cn(
-      'dark:bg-darkBg border border-primary-800 bg-bg from-bg dark:border-primary-100 dark:from-dark-800',
+      'border border-primary-800 bg-bg from-bg dark:border-primary-100 dark:bg-darkBg dark:from-dark-800',
     ),
     secondary: cn(
-      'dark:bg-darkBg border border-secondary-800 bg-bg from-bg dark:border-secondary-100 dark:from-dark-800',
+      'border border-secondary-800 bg-bg from-bg dark:border-secondary-100 dark:bg-darkBg dark:from-dark-800',
     ),
     terciary: cn(
-      'dark:bg-darkBg border border-terciary-800 bg-bg from-bg dark:border-terciary-100 dark:from-dark-800',
+      'border border-terciary-800 bg-bg from-bg dark:border-terciary-100 dark:bg-darkBg dark:from-dark-800',
     ),
     none: '',
   },

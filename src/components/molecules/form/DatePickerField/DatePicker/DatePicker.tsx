@@ -4,6 +4,7 @@ import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 
 import { Combobox } from '@/components/atoms/common/Combobox'
 import { ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
+import { CalendarIcon } from '@/components/atoms/icons'
 import { Calendar } from '@/components/molecules/common/Calendar'
 import { CalendarProps } from '@/components/molecules/common/Calendar/Calendar'
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
@@ -13,7 +14,6 @@ import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 
 import { Label } from '../../../../atoms/common/Label/Label'
-import { CalendarIcon } from '@/components/atoms/icons'
 
 export type DatePickerProps = Pick<ComboboxProps, 'name' | 'disabled'> &
   FieldProps &

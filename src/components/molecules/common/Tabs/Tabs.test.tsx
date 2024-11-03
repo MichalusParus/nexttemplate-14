@@ -6,7 +6,7 @@ import { tabs } from '../../../../../.storybook/helpers'
 import { Tabs } from '.'
 
 jest.mock('next/navigation', () => ({
-  useSearchParams: () => ({ get: () => 'label1' }),
+  usePathname: () => ({ get: () => 'label1' }),
 }))
 
 describe('Tabs', () => {

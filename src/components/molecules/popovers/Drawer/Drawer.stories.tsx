@@ -57,7 +57,7 @@ export const PrimaryDefault: Story = {
     offsetY: 'top-0 bottom-0',
     width: 'w-1/3',
     padding: 'p-0',
-    hideOverlay: false,
+    modal: false,
     paperProps: {},
     scrollShadowProps: {},
     onClose: () => {},
@@ -73,8 +73,8 @@ export const Offset: Story = {
   render: args => <DrawerWithHooks {...args} />,
 }
 
-export const HideOverlay: Story = {
-  args: { ...PrimaryDefault.args, hideOverlay: true },
+export const Modal: Story = {
+  args: { ...PrimaryDefault.args, modal: true },
   render: args => <DrawerWithHooks {...args} />,
 }
 

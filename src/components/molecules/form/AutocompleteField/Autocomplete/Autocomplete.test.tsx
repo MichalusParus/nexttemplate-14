@@ -120,7 +120,7 @@ describe('Autocomplete', () => {
       </JestMockProvider>,
     )
     fireEvent.click(screen.getByRole('combobox'))
-    fireEvent.click(screen.getAllByRole('button')[0])
+    fireEvent.click(screen.getAllByRole('option')[0])
     expect(spy).toHaveBeenCalledTimes(1)
   })
 

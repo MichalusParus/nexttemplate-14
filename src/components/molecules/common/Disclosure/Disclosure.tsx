@@ -5,9 +5,9 @@ import { Combobox, ComboboxProps } from '@/components/atoms/common/Combobox/Comb
 import { Paper } from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
+import { ChevronIcon } from '@/components/atoms/icons'
 import { StyleProps } from '@/components/types'
 import { cn, filterOutKeys, slugify } from '@/utils/utils'
-import { ChevronIcon } from '@/components/atoms/icons'
 
 export type DisclosureProps = Omit<StyleProps, 'size'> & {
   /** for passing custom tailwind classes */
@@ -114,11 +114,9 @@ export const Disclosure = forwardRef<HTMLButtonElement, PropsWithChildren<Disclo
           id={slugify(title)}
           className={cn(
             'Dropdown',
-            'transition-dropdown',
+            'translate-y-1.5 transition-dropdown',
             width,
-            openState
-              ? 'visible z-[35] -translate-y-1 opacity-100'
-              : 'invisible max-h-0 -translate-y-8 opacity-0',
+            openState ? 'visible z-[35] opacity-100' : 'invisible max-h-0 opacity-50',
             className,
           )}
         >

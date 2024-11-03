@@ -234,7 +234,9 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
                   key={day.toDateString()}
                   className="flex items-center justify-center px-0.5 font-semibold"
                 >
-                  <P size={size}>{format(day, 'eee')}</P>
+                  <P className={cn(variant === 'contained' && 'text-contrast')} size={size}>
+                    {format(day, 'eee')}
+                  </P>
                 </div>
               ))}
             {calendarState === 'days' &&

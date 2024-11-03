@@ -1,17 +1,18 @@
 import './globals.css'
 
 import type { Metadata } from 'next'
-// import { Inter } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import { PropsWithChildren } from 'react'
 
+import { ToastProvider } from '@/components/molecules/popovers/ToastProvider'
 import { Footer } from '@/components/templates/Footer'
 import { Header } from '@/components/templates/Header'
 import { Main } from '@/components/templates/Main'
 import { cn } from '@/utils/utils'
 
-// const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'NextTemplate 14',
@@ -34,14 +35,16 @@ export default async function RootLayout(props: PropsWithChildren) {
     <html lang={locale}>
       <body
         className={cn(
-          'flex min-h-[100vh] flex-col bg-primary-800 text-dark-950 dark:bg-dark-900 dark:text-darkText',
-          // inter.className,
+          'flex min-h-[100vh] flex-col bg-primary-800 text-dark-950 dark:bg-dark-900 dark:text-contrast',
+          inter.className,
         )}
       >
         <NextIntlClientProvider messages={messages}>
-          <Header />
-          <Main>{children}</Main>
-          <Footer />
+          <ToastProvider>
+            <Header />
+            <Main>{children}</Main>
+            <Footer />
+          </ToastProvider>
         </NextIntlClientProvider>
       </body>
     </html>

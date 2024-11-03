@@ -33,8 +33,8 @@ export const Gallery = forwardRef<HTMLDivElement, GalleryProps>(
     const [currentPage, setCurrentPage] = useState(1)
 
     useEffect(() => {
-      const selectedTab = galleryControlsRef?.current?.querySelector('.selected')
-      selectedTab?.scrollIntoView({ behavior: 'smooth', inline: 'center' })
+      // const selectedTab = galleryControlsRef?.current?.querySelector('.selected')
+      // selectedTab?.scrollIntoView({ behavior: 'smooth', inline: 'center' })
     }, [currentPage])
 
     return (

@@ -1,7 +1,17 @@
-import { forwardRef, PropsWithChildren, ReactNode, useCallback } from 'react'
+import { usePathname } from 'next/navigation'
+import {
+  forwardRef,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
+import { Combobox, ComboboxProps } from '@/components/atoms/common/Combobox'
 import { Link } from '@/components/atoms/common/Link'
 import { LinkProps } from '@/components/atoms/common/Link/Link'
 import { Paper } from '@/components/atoms/containers/Paper'
@@ -9,7 +19,7 @@ import { ChevronIcon } from '@/components/atoms/icons'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import { Menu } from '../../popovers/Menu'
+import { Dropdown } from '../../popovers/Dropdown'
 import { MenuProps } from '../../popovers/Menu/Menu'
 
 type TabOption = {
@@ -34,16 +44,18 @@ export type TabsProps = Omit<StyleProps, 'size'> & {
   fullWidth?: boolean
   /** for passing aditional props to Button */
   buttonProps?: Partial<ButtonProps>
+  /** for passing aditional props to Combobox */
+  comboboxProps?: Partial<ComboboxProps>
   /** for passing aditional props to Link */
   linkProps?: Partial<LinkProps>
-  /** for passing aditional props to Disclosure */
-  menuProps?: Partial<MenuProps>
+  /** for passing aditional props to dropdown */
+  dropdownProps?: Partial<MenuProps>
   /** optional on tab click for external control. Must be inside use client parent */
   onTabClick?: (tab: TabOption) => void
 }
 
 /** Tabs component for switching panels with content. Link, Button and Disclosure props supported. Default server component with optional client side control. */
-export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
+export const Tabs = forwardRef<HTMLDivElement, PropsWithChildren<TabsProps>>(
   (
     {
       className,
@@ -55,13 +67,17 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
       size = 'md',
       fullWidth,
       buttonProps,
+      comboboxProps,
       linkProps,
-      menuProps,
+      dropdownProps,
       onTabClick,
       children,
     },
     ref,
   ) => {
+    const pathName = usePathname()
+    const comboboxRef = useRef<HTMLDivElement>(null)
+    const [isOpen, setIsOpen] = useState(false)
     const selectedTab = tabs.find(tab => tab.slug === param) || tabs[0]
     const tabPanelId = `${selectedTab.slug}-tabpanel`
     const tabsWidth = fullWidth ? 'w-full' : 'w-max'
@@ -70,17 +86,14 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
       [selectedTab.slug],
     )
 
-    const comboboxTitle = () => {
-      return (
-        <>
-          {selectedTab.label}
-          <ChevronIcon className={cn('text-inherit transition-transform')} />
-        </>
-      )
-    }
+    useEffect(() => {
+      if (pathName) {
+        setIsOpen(false)
+      }
+    }, [pathName])
 
     return (
-      <div className={cn('TabsWrap', 'relative w-full', className)} data-testid="Tabs">
+      <div className={cn('TabsWrap', 'relative w-full', className)} ref={ref} data-testid="Tabs">
         <Paper
           className={`hidden md:block ${tabsWidth}`}
           variant={variant}
@@ -95,7 +108,6 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
               'flex overflow-hidden rounded-md focus:outline-offset-8 focus:outline-text',
             )}
             role="tablist"
-            ref={ref}
             aria-label={name}
           >
             {tabs.map(
@@ -149,22 +161,37 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
             {children}
           </ul>
         </Paper>
-        <Menu
-          className="w-fill md:hidden"
-          name="tabsMenu"
-          comboboxProps={{
-            className: 'w-full justify-between',
-            children: comboboxTitle(),
-            variant: variant,
-            color: color,
-          }}
-          dropdownProps={{ variant: variant, color: color }}
-          {...menuProps}
+        <div className="w-full" ref={comboboxRef}>
+          <Combobox
+            className="w-full justify-between md:hidden"
+            name={name}
+            isOpen={isOpen}
+            hasPopup="menu"
+            variant={variant}
+            color={color}
+            disableUpperCase
+            onClick={() => setIsOpen(prev => !prev)}
+            {...comboboxProps}
+          >
+            {selectedTab.label}
+            <ChevronIcon
+              className={cn('text-inherit transition-transform', isOpen && 'rotate-180')}
+            />
+          </Combobox>
+        </div>
+        <Dropdown
+          isOpen={isOpen}
+          parentRef={comboboxRef}
+          placement="bottom"
+          variant={variant}
+          color={color}
+          modal
+          onClose={() => setIsOpen(false)}
+          {...dropdownProps}
         >
           <ul
             className={cn('TabList', 'flex w-full flex-col justify-center')}
             role="tablist"
-            ref={ref}
             aria-label={name}
           >
             {tabs.map(
@@ -214,7 +241,7 @@ export const Tabs = forwardRef<HTMLUListElement, PropsWithChildren<TabsProps>>(
             )}
             {children}
           </ul>
-        </Menu>
+        </Dropdown>
         <div
           id={tabPanelId}
           className={cn('TabPanel', 'w-full')}

@@ -9,12 +9,14 @@ import { alertClass, alertIconSize, alertSize, alertVariant } from './Alert.styl
 
 type NativeAlertProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'title'>
 
+export type AlertStatusType = 'success' | 'info' | 'warning' | 'error' | 'none'
+
 export type AlertProps = NativeAlertProps &
   Omit<StyleProps, 'color'> & {
     /** for passing custom tailwind classes */
     className?: string
     /** status color and icon of component, none disable styles for custom styling via className */
-    status?: 'success' | 'info' | 'warning' | 'error' | 'none'
+    status?: AlertStatusType
     /** Optional alert heading */
     title?: string
     /** choose status or pass custom svg icon  */

@@ -1,5 +1,5 @@
 {
-  "plugins": ["@typescript-eslint", "simple-import-sort"],
+  "plugins": ["@typescript-eslint", "simple-import-sort","prettier"],
   "extends": [
     "eslint:recommended",
     "next",
@@ -7,7 +7,8 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:jsx-a11y/recommended",
-    "plugin:storybook/recommended"
+    "plugin:storybook/recommended",
+    "prettier"
   ],
   "rules": {
     "quotes": ["error", "single", { "avoidEscape": true }],

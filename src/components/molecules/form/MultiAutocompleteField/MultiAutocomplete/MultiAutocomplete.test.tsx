@@ -42,7 +42,7 @@ describe('MultiAutocomplete', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getAllByRole('alert')[1]).toHaveTextContent('error')
+    expect(screen.getAllByRole('alert')[0]).toHaveTextContent('error')
   })
 
   it('description', () => {
@@ -60,7 +60,7 @@ describe('MultiAutocomplete', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getAllByRole('alert')[1]).toHaveTextContent('description')
+    expect(screen.getAllByRole('alert')[0]).toHaveTextContent('description')
   })
 
   it('inputValue', () => {

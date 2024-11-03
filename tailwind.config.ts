@@ -23,7 +23,7 @@ const config: Config = {
     extend: {
       colors: {
         text: 'rgb(var(--color-dark-950) / <alpha-value>)',
-        darkText: 'rgb(var(--color-dark-50) / <alpha-value>)',
+        contrast: 'rgb(var(--color-dark-50) / <alpha-value>)',
         bg: 'rgb(var(--color-dark-50) / <alpha-value>)',
         darkBg: 'rgb(var(--color-dark-800) / <alpha-value>)',
         primary: {

@@ -36,9 +36,7 @@ export type DrawerProps = Omit<StyleProps, 'size'> & {
   /** for setting internal padding of Paper component */
   padding?: string
   /** optional boolean for setting modal behavior */
-  isModal?: boolean
-  /** optional for disabling overlay */
-  hideOverlay?: boolean
+  modal?: boolean
   /** for passing aditional props to Paper */
   paperProps?: Partial<PaperProps>
   /** for passing aditional props to Scrollshadow */
@@ -60,8 +58,7 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
       offsetY = 'top-0 bottom-0',
       width = 'w-1/3',
       padding = 'p-0',
-      isModal,
-      hideOverlay,
+      modal,
       paperProps = {},
       scrollShadowProps = {},
       children,
@@ -87,14 +84,31 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
     }
 
     useEffect(() => {
-      if (isModal) {
+      if (modal) {
         document.body.style.overflow = isOpen ? 'hidden' : 'unset'
       }
-    }, [isOpen, isModal])
+    }, [isOpen, modal])
 
     useEffect(() => {
       setMounted(true)
     }, [])
+
+    useEffect(() => {
+      if (isOpen && !modal) {
+        const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+          const target = e.target as HTMLElement
+          if (componentRef.current && !componentRef.current.contains(target)) {
+            onClose()
+          }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        document.addEventListener('touchstart', handleClickOutside)
+        return () => {
+          document.removeEventListener('mousedown', handleClickOutside)
+          document.removeEventListener('touchstart', handleClickOutside)
+        }
+      }
+    }, [modal, isOpen, componentRef, onClose])
 
     return (
       <>
@@ -127,7 +141,7 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
                   <ScrollShadow {...scrollShadowProps}>{children}</ScrollShadow>
                 </Paper>
               </div>
-              {!hideOverlay && <Overlay isOpen={isOpen} onClose={handleClose} dark />}
+              {modal && <Overlay isOpen={isOpen} onClose={handleClose} dark />}
             </>,
             document.body,
           )}

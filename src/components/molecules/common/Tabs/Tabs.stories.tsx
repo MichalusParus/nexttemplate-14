@@ -19,7 +19,7 @@ const meta: Meta<typeof Tabs> = {
     tabs: { control: false },
     buttonProps: { control: false },
     linkProps: { control: false },
-    menuProps: { control: false },
+    dropdownProps: { control: false },
   },
 }
 
@@ -56,7 +56,7 @@ export const PrimaryDefault: Story = {
     fullWidth: false,
     buttonProps: {},
     linkProps: {},
-    menuProps: {},
+    dropdownProps: {},
     onTabClick: undefined,
     children: undefined,
   },
@@ -92,7 +92,7 @@ export const HiddenTab: Story = {
         label: 'Hidden',
         isHidden: true,
         component: (
-          <div className="flex h-96 flex-col items-center justify-center">
+          <div className="flex h-96 flex-col items-center justify-start">
             <h2 className="text-2xl">Hidden content</h2>
             <p>{textContent.slice(0, 800)}</p>
           </div>

@@ -1,12 +1,15 @@
 'use client'
+import { Button } from '@/components/atoms/common/Button'
 import { P } from '@/components/atoms/typography/P'
 import { MultiDatePicker } from '@/components/molecules/form/MultiDatePickerField/MultiDatePicker'
 import { Select } from '@/components/molecules/form/SelectField/Select'
-import { Modal } from '@/components/molecules/popovers/Modal'
-import { options } from '../../.storybook/helpers'
+import { useToast } from '@/components/molecules/popovers/ToastProvider'
 import { Tooltip } from '@/components/molecules/popovers/Tooltip'
 
+import { options } from '../../.storybook/helpers'
+let i = 0
 export default function Home() {
+  const { addToast } = useToast()
   return (
     <div className="mt-12">
       {/* <Modal name="name">vhghggvhvhgvh</Modal> */}
@@ -37,6 +40,14 @@ export default function Home() {
       minus nostrum cumque pariatur fuga debitis mollitia obcaecati vero ut enim consectetur
       possimus sit. Velit qui dolor aut quasi, delectus odio totam doloribus error rerum voluptatem
       ratione ea blanditiis. Aspernatur, voluptatum distinctio exercitationem perferendis possimus
+      <Button
+        onClick={() => {
+          addToast('success', 'success message' + i)
+          i++
+        }}
+      >
+        success
+      </Button>
       <MultiDatePicker
         name="fggg"
         label="fffff"

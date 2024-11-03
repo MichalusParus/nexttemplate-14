@@ -260,7 +260,7 @@ export const tabs = [
     label: 'Label 1',
     slug: 'label1',
     component: (
-      <div className="flex h-96 flex-col items-center justify-center">
+      <div className="flex h-96 flex-col items-center justify-start">
         <h2 className="text-2xl" data-testid="tab1Title">
           Content 1
         </h2>
@@ -272,7 +272,7 @@ export const tabs = [
     label: 'Label 2',
     slug: 'label2',
     component: (
-      <div className="flex h-96 flex-col items-center justify-center">
+      <div className="flex h-96 flex-col items-center justify-start">
         <h2 className="text-2xl" data-testid="tab2Title">
           Content 2
         </h2>
@@ -284,7 +284,7 @@ export const tabs = [
     label: 'Label 3',
     slug: 'label3',
     component: (
-      <div className="flex h-96 flex-col items-center justify-center">
+      <div className="flex h-96 flex-col items-center justify-start">
         <h2 className="text-2xl" data-testid="tab3Title">
           Content 3
         </h2>
@@ -294,7 +294,13 @@ export const tabs = [
   },
 ]
 
-export const JestMockProvider = ({ children }: PropsWithChildren<object>) => {
+export const breadcrumbOptions = [
+  { label: 'Users', href: '/' },
+  { label: 'Favourite', href: '/favourite' },
+  { label: 'Bffs', href: '/bffs' },
+]
+
+export const JestMockProvider = ({ children }: PropsWithChildren<Record<never, never>>) => {
   const messages = require(`../messages/en.json`)
   return (
     <NextIntlClientProvider messages={messages} locale={'en'}>
