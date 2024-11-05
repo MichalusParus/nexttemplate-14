@@ -4,7 +4,6 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useSta
 
 import { Button } from '@/components/atoms/common/Button'
 import { Chip } from '@/components/atoms/common/Chip'
-import { Combobox } from '@/components/atoms/common/Combobox'
 import { ListBox } from '@/components/atoms/common/ListBox'
 import { ChevronIcon, XIcon } from '@/components/atoms/icons'
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
@@ -22,7 +21,7 @@ export type MultiSelectProps = Omit<SelectProps, 'value' | 'onChange'> & {
   onChange: (value: string[]) => void
 }
 
-/** Basic custom MultiSelect inside Label Component. For form purposes use MultiSelectField. Combobox, Dropdown and ListBox props supported. USE CLIENT */
+/** Basic custom MultiSelect inside Label Component. For form purposes use MultiSelectField. Button, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
   (
     {
@@ -38,7 +37,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
       size = 'md',
       disabled,
       error,
-      comboboxProps = {},
+      buttonProps = {},
       dropdownProps = {},
       listboxProps = {},
       labelProps,
@@ -107,22 +106,23 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
           ref={componentRef}
           data-testid="MultiSelect"
         >
-          <Combobox
-            id={name}
-            className={cn('SelectCombobox', 'w-full', error && 'error', comboboxProps.className)}
-            name={name}
+          <Button
+            className={cn('MultiSelectCombobox', 'w-full', error && 'error', buttonProps.className)}
             variant={variant}
             color={color}
             size={size}
-            hasPopup="listbox"
-            isOpen={isOpen}
             disabled={disabled}
             hideShadow
             disableUpperCase
+            role="combobox"
             aria-labelledby={'label-' + name}
             aria-describedby={`${name}-description`}
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
+            aria-controls={name}
+            aria-owns={name}
             onClick={() => setIsOpen(prev => !prev)}
-            {...filterOutKeys(comboboxProps, ['className'])}
+            {...filterOutKeys(buttonProps, ['className'])}
           >
             <div className={cn('ComboboxInnerWrap', 'flex w-full items-center justify-between')}>
               {selectedOptions.length ? (
@@ -144,7 +144,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
                 )}
               />
             </div>
-          </Combobox>
+          </Button>
           <div
             className={cn(
               'SelectedOptionsWrap',
@@ -201,6 +201,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
               color={color}
               size={size}
               aria-multiselectable={true}
+              aria-hidden={!isOpen}
               onClick={handleOnChange}
               {...listboxProps}
             />

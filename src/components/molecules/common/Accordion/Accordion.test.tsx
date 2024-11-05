@@ -11,7 +11,7 @@ describe('Accordion', () => {
     expect(screen.getByTestId('Accordion')).toBeTruthy()
     expect(screen.getByTestId('Accordion')).toHaveClass('className')
     expect(screen.getAllByRole('button')).toHaveLength(5)
-    expect(screen.getAllByRole('region')[0]).toHaveTextContent(
+    expect(screen.getAllByTestId('DisclosureDropdown')[0]).toHaveTextContent(
       accordionOptions[0].content.props.children,
     )
   })

@@ -9,9 +9,7 @@ import {
   useState,
 } from 'react'
 
-import { Button } from '@/components/atoms/common/Button'
-import { ButtonProps } from '@/components/atoms/common/Button/Button'
-import { Combobox, ComboboxProps } from '@/components/atoms/common/Combobox'
+import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { Link } from '@/components/atoms/common/Link'
 import { LinkProps } from '@/components/atoms/common/Link/Link'
 import { Paper } from '@/components/atoms/containers/Paper'
@@ -42,16 +40,12 @@ export type TabsProps = Omit<StyleProps, 'size'> & {
   size?: StyleProps['size'] | 'inline'
   /** full width mode of tabs component */
   fullWidth?: boolean
-  /** for passing aditional props to Button */
+  /** for passing aditional props to Dropdown Button */
   buttonProps?: Partial<ButtonProps>
-  /** for passing aditional props to Combobox */
-  comboboxProps?: Partial<ComboboxProps>
   /** for passing aditional props to Link */
   linkProps?: Partial<LinkProps>
-  /** for passing aditional props to dropdown */
+  /** for passing aditional props to Dropdown */
   dropdownProps?: Partial<MenuProps>
-  /** optional on tab click for external control. Must be inside use client parent */
-  onTabClick?: (tab: TabOption) => void
 }
 
 /** Tabs component for switching panels with content. Link, Button and Disclosure props supported. Default server component with optional client side control. */
@@ -67,10 +61,8 @@ export const Tabs = forwardRef<HTMLDivElement, PropsWithChildren<TabsProps>>(
       size = 'md',
       fullWidth,
       buttonProps,
-      comboboxProps,
       linkProps,
       dropdownProps,
-      onTabClick,
       children,
     },
     ref,
@@ -113,48 +105,22 @@ export const Tabs = forwardRef<HTMLDivElement, PropsWithChildren<TabsProps>>(
             {tabs.map(
               tab =>
                 !tab.isHidden && (
-                  <li
-                    key={tab.slug}
-                    className={cn('Tab', 'w-full')}
-                    role="tab"
-                    aria-controls={tabPanelId}
-                    aria-selected={tab.slug === selectedTab.slug}
-                  >
-                    {onTabClick ? (
-                      <Button
-                        className={cn(
-                          'TabButton',
-                          'w-full rounded-none border-none',
-                          getSelectedClass(tab.slug),
-                        )}
-                        variant={variant}
-                        color={color}
-                        size={size}
-                        disableUpperCase
-                        hideShadow
-                        onClick={() => onTabClick(tab)}
-                        {...buttonProps}
-                      >
-                        {tab.label}
-                      </Button>
-                    ) : (
-                      <Link
-                        className={cn(
-                          'TabLink',
-                          'rounded-none border-none',
-                          getSelectedClass(tab.slug),
-                        )}
-                        variant={variant}
-                        color={color}
-                        size={size}
-                        disableUpperCase
-                        hideShadow
-                        href={`?tab=${tab.slug}`}
-                        {...linkProps}
-                      >
-                        {tab.label}
-                      </Link>
-                    )}
+                  <li key={tab.slug} className="w-full" role="presentation">
+                    <Link
+                      className={cn('Tab', 'rounded-none border-none', getSelectedClass(tab.slug))}
+                      variant={variant}
+                      color={color}
+                      size={size}
+                      disableUpperCase
+                      hideShadow
+                      role="tab"
+                      aria-controls={tabPanelId}
+                      aria-selected={tab.slug === selectedTab.slug}
+                      href={`?tab=${tab.slug}`}
+                      {...linkProps}
+                    >
+                      {tab.label}
+                    </Link>
                   </li>
                 ),
             )}
@@ -162,22 +128,24 @@ export const Tabs = forwardRef<HTMLDivElement, PropsWithChildren<TabsProps>>(
           </ul>
         </Paper>
         <div className="w-full" ref={comboboxRef}>
-          <Combobox
-            className="w-full justify-between md:hidden"
-            name={name}
-            isOpen={isOpen}
-            hasPopup="menu"
+          <Button
+            className={cn('TabsDropdownCombobox', 'w-full justify-between md:hidden')}
             variant={variant}
             color={color}
             disableUpperCase
+            role="combobox"
+            aria-expanded={isOpen}
+            aria-haspopup="true"
+            aria-controls={name}
+            aria-owns={name}
             onClick={() => setIsOpen(prev => !prev)}
-            {...comboboxProps}
+            {...buttonProps}
           >
             {selectedTab.label}
             <ChevronIcon
               className={cn('text-inherit transition-transform', isOpen && 'rotate-180')}
             />
-          </Combobox>
+          </Button>
         </div>
         <Dropdown
           isOpen={isOpen}
@@ -190,52 +158,31 @@ export const Tabs = forwardRef<HTMLDivElement, PropsWithChildren<TabsProps>>(
           {...dropdownProps}
         >
           <ul
+            id={name}
             className={cn('TabList', 'flex w-full flex-col justify-center')}
             role="tablist"
+            aria-hidden={!isOpen}
             aria-label={name}
           >
             {tabs.map(
               tab =>
                 !tab.isHidden && (
-                  <li
-                    key={tab.slug}
-                    id={name + tab.slug}
-                    className={cn('Tab', 'w-full')}
-                    role="tab"
-                    aria-controls={tabPanelId}
-                    aria-selected={tab.slug === selectedTab.slug}
-                  >
-                    {onTabClick ? (
-                      <Button
-                        className={cn(
-                          'TabButton',
-                          'w-full border-none',
-                          getSelectedClass(tab.slug),
-                        )}
-                        variant={variant}
-                        color={color}
-                        size={size}
-                        disableUpperCase
-                        hideShadow
-                        onClick={() => onTabClick(tab)}
-                        {...buttonProps}
-                      >
-                        {tab.label}
-                      </Button>
-                    ) : (
-                      <Link
-                        className={cn('TabLink', getSelectedClass(tab.slug))}
-                        variant={variant}
-                        color={color}
-                        size={size}
-                        disableUpperCase
-                        hideShadow
-                        href={`?tab=${tab.slug}`}
-                        {...linkProps}
-                      >
-                        {tab.label}
-                      </Link>
-                    )}
+                  <li key={tab.slug} className="w-full" role="presentation">
+                    <Link
+                      className={cn('Tab', 'rounded-none border-none', getSelectedClass(tab.slug))}
+                      variant={variant}
+                      color={color}
+                      size={size}
+                      disableUpperCase
+                      hideShadow
+                      role="tab"
+                      aria-controls={tabPanelId}
+                      aria-selected={tab.slug === selectedTab.slug}
+                      href={`?tab=${tab.slug}`}
+                      {...linkProps}
+                    >
+                      {tab.label}
+                    </Link>
                   </li>
                 ),
             )}

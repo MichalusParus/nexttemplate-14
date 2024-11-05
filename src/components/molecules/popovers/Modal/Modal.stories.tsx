@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
-import { Combobox } from '@/components/atoms/common/Combobox'
 
 import { textContent } from '../../../../../.storybook/helpers'
 import { Modal, ModalProps } from './Modal'
@@ -16,9 +15,6 @@ const meta: Meta<typeof Modal> = {
   },
   argTypes: {
     modalActions: {
-      control: false,
-    },
-    comboboxProps: {
       control: false,
     },
     titleProps: {
@@ -47,14 +43,15 @@ const ControlledModal = (args: ModalProps) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <>
-      <Combobox
+      <Button
         name="storybookModal"
-        hasPopup="dialog"
-        isOpen={isOpen}
+        aria-haspopup="dialog"
+        aria-expanded={isOpen}
+        aria-controls="storybookModal"
         onClick={() => setIsOpen(prev => !prev)}
       >
-        Controlled Combobox
-      </Combobox>
+        Controlled Button
+      </Button>
       <Modal {...args} isOpen={isOpen} setIsOpen={() => setIsOpen(false)}>
         {textContent.slice(0, 600)}
       </Modal>
@@ -78,7 +75,6 @@ export const PrimaryDefault: Story = {
     modalActions: <Button>Action</Button>,
     closeButton: false,
     hideXButton: false,
-    comboboxProps: undefined,
     paperProps: undefined,
     titleProps: undefined,
     buttonProps: undefined,

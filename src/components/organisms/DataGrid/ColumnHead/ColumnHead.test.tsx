@@ -42,7 +42,7 @@ describe('ColumnHead', () => {
     )
     expect(screen.getByRole('columnheader')).toBeInTheDocument()
     expect(screen.getByTestId('MenuWrap')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('combobox'))
+    fireEvent.click(screen.getByRole('button'))
     expect(screen.getByRole('search')).toBeInTheDocument()
     expect(screen.getByRole('menu')).toHaveAttribute('id', 'filterColumnHeadTestname1')
     fireEvent.change(screen.getByRole('searchbox'), {

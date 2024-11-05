@@ -87,6 +87,7 @@ export const Tooltip = forwardRef<HTMLDivElement, PropsWithChildren<TooltipProps
         aria-describedby={String(title)}
         data-testid="TooltipWrap"
         ref={anchorRef}
+        aria-owns={String(title)}
       >
         {mounted &&
           createPortal(
@@ -102,6 +103,7 @@ export const Tooltip = forwardRef<HTMLDivElement, PropsWithChildren<TooltipProps
                 className,
               )}
               role="tooltip"
+              aria-hidden={!isVisible}
               data-testid="Tooltip"
               ref={setPopoverEl}
               {...rest}

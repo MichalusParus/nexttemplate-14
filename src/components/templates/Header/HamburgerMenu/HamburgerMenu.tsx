@@ -1,7 +1,7 @@
 'use client'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Combobox } from '@/components/atoms/common/Combobox'
+import { Button } from '@/components/atoms/common/Button'
 import { HamburgerIcon } from '@/components/atoms/icons'
 import { Drawer } from '@/components/molecules/popovers/Drawer'
 import { cn } from '@/utils/utils'
@@ -37,18 +37,19 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
       className={cn('HamburgerMenu', 'flex items-center justify-center pr-3', className)}
       data-testid="HamburgerMenu"
     >
-      <Combobox
+      <Button
         className="border-0 bg-transparent"
-        name="hamburgerMainMenu"
-        isOpen={isOpen}
-        hasPopup="menu"
         variant="contained"
         size="none"
         hideShadow
+        aria-expanded={isOpen}
+        aria-haspopup="menu"
+        aria-controls="hamburgerMainMenu"
+        aria-owns="hamburgerMainMenu"
         onClick={() => setIsOpen(prev => !prev)}
       >
         <HamburgerIcon className="h-9 w-9" isOpen={isOpen} />
-      </Combobox>
+      </Button>
       <Drawer
         className="fixed"
         name="hamburgerMainMenu"

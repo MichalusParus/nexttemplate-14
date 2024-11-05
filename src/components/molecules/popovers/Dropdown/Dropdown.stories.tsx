@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useRef, useState } from 'react'
 
-import { Combobox } from '@/components/atoms/common/Combobox'
+import { Button } from '@/components/atoms/common/Button'
 
 import { textContent } from '../../../../../.storybook/helpers'
 import { Dropdown, DropdownProps } from './Dropdown'
@@ -26,17 +26,18 @@ const DropdownWithHooks = (args: DropdownProps) => {
   return (
     <div className="flex h-[50vh] w-full items-center justify-center">
       <div className="relative" ref={parentRef}>
-        <Combobox
-          name="storybookDrawer"
+        <Button
           variant="text"
-          hasPopup="menu"
-          isOpen={isOpen}
+          aria-haspopup="true"
+          aria-expanded={isOpen}
+          aria-controls="storybookDrawer"
+          aria-owns="storybookDrawer"
           onClick={() => setIsOpen(prev => !prev)}
         >
-          Combobox for Dropdown
-        </Combobox>
+          Button for Dropdown
+        </Button>
         <Dropdown {...args} isOpen={isOpen} onClose={() => setIsOpen(false)} parentRef={parentRef}>
-          <div role="menu" aria-hidden={!isOpen}>
+          <div id="storybookDrawer" aria-hidden={!isOpen}>
             {textContent.slice(0, 300)}
           </div>
         </Dropdown>

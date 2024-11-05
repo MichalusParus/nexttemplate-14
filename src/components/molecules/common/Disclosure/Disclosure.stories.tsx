@@ -33,7 +33,7 @@ export const PrimaryDefault: Story = {
     variant: 'outlined',
     color: 'primary',
     expanded: false,
-    comboboxProps: undefined,
+    buttonProps: undefined,
     paperProps: undefined,
     children: <div className="p-4">{textContent.slice(0, 500)}</div>,
   },

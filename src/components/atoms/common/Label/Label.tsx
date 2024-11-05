@@ -78,7 +78,13 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
             {label}
           </label>
         )}
-        <div className={cn('FieldWrap', fieldWrapClass)}>
+        <div
+          className={cn(
+            'FieldWrap',
+            fieldWrapClass,
+            collapsed === 'always' ? 'w-full' : 'w-[60%] ',
+          )}
+        >
           {children}
           {!hideError && (
             <Alert

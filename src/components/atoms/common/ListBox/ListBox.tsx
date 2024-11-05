@@ -3,7 +3,6 @@ import { forwardRef, KeyboardEvent, OlHTMLAttributes, useCallback } from 'react'
 
 import { Checkbox } from '@/components/molecules/form/CheckboxField/Checkbox'
 import { CheckboxProps } from '@/components/molecules/form/CheckboxField/Checkbox/Checkbox'
-import { checkboxSize } from '@/components/molecules/form/MultiSelectField/MultiSelect/MultiSelect.style'
 import { OptionType, StyleProps } from '@/components/types'
 import { cn, filterOutKeys } from '@/utils/utils'
 
@@ -90,12 +89,11 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
           [...options, ...ghostOptions].map(({ value: optionValue, label, content }) => (
             <li
               key={optionValue}
-              id={optionValue}
               className={cn(
                 'Option',
-                'flex items-center focus:outline-none',
+                'flex items-center border focus:outline-none',
                 getSelectedClass(optionValue),
-                buttonVariant[variant][color],
+                buttonVariant[variant][color] + ' border-transparent',
                 buttonContentSize[size],
                 isLoading ? 'cursor-not-allowed' : 'cursor-pointer',
               )}
@@ -109,7 +107,6 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                 <Checkbox
                   className={cn(
                     'mr-4',
-                    checkboxSize[size],
                     hideCheckbox ? 'hidden' : 'block',
                     checkboxProps?.className,
                   )}
@@ -118,7 +115,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                   value={optionValue}
                   variant={variant}
                   color={color}
-                  size="none"
+                  size={size}
                   isChecked={value.includes(optionValue)}
                   disabled={isLoading}
                   fake

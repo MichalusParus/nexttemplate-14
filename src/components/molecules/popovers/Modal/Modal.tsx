@@ -14,8 +14,6 @@ import { createPortal } from 'react-dom'
 
 import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
-import { Combobox } from '@/components/atoms/common/Combobox'
-import { ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
 import { Overlay } from '@/components/atoms/common/Overlay'
 import { Paper } from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
@@ -49,18 +47,16 @@ export type ModalProps = Omit<StyleProps, 'size'> & {
   /** boolean for hiding closing XIcon button */
   hideXButton?: boolean
   /** for passing aditional props to combobox */
-  comboboxProps?: Partial<ComboboxProps>
+  buttonProps?: Partial<ButtonProps>
   /** for passing aditional props to paper */
   paperProps?: Partial<PaperProps>
   /** for passing aditional props to title */
   titleProps?: Partial<TitleProps>
-  /** for passing aditional props to action close button */
-  buttonProps?: Partial<ButtonProps>
   /** modal closing function */
   setIsOpen?: (value: boolean) => void
 }
 
-/** Popover dialog modal component with customizable actions. Combobox, Paper, Title and Button props supported. USE CLIENT */
+/** Popover dialog modal component with customizable actions. Paper, Title and Button props supported. USE CLIENT */
 export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
   (
     {
@@ -75,10 +71,9 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
       modalActions,
       closeButton,
       hideXButton,
-      comboboxProps = { children: 'ModalCombobox' },
+      buttonProps = { children: 'ModalButton' },
       paperProps = {},
       titleProps = {},
-      buttonProps = {},
       setIsOpen,
       children,
     },
@@ -121,14 +116,15 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
     return (
       <>
         {!setIsOpen && (
-          <Combobox
+          <Button
             name={name}
-            isOpen={openState}
-            hasPopup="menu"
             variant={variant}
             color={color}
+            aria-expanded={openState}
+            aria-haspopup="dialog"
+            aria-controls={name}
             onClick={handleClose}
-            {...comboboxProps}
+            {...buttonProps}
           />
         )}
         {mounted &&
@@ -177,12 +173,11 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
                 <div className={cn('ModalActions', 'flex justify-end gap-3 pt-8')}>
                   {closeButton && (
                     <Button
-                      className={cn('CloseButton', 'border-none', buttonProps.className)}
+                      className={cn('CloseButton', 'border-none')}
                       variant={variant}
                       color={color}
                       hideShadow
                       onClick={handleClose}
-                      {...filterOutKeys(buttonProps, ['className'])}
                     >
                       Close
                     </Button>

@@ -172,7 +172,7 @@ export const MultiAutocomplete = forwardRef<
               id={name}
               className={cn(
                 'AutocompleteCombobox',
-                'grow basis-40 border-none bg-transparent',
+                'w-auto grow basis-40 border-none bg-transparent pr-16',
                 comboboxZIndex,
                 inputProps.className,
               )}
@@ -182,13 +182,14 @@ export const MultiAutocomplete = forwardRef<
               variant={variant}
               color="none"
               size={size}
-              labelProps={{ hideError: true, hideLabel: true }}
+              labelProps={{ hideError: true, hideLabel: true, collapsed: 'always' }}
               placeholder={placeholder}
               disabled={disabled}
               role="combobox"
               aria-haspopup="listbox"
               aria-expanded={isOpen}
               aria-controls={name}
+              aria-owns={name}
               aria-describedby={`${name}-description`}
               onKeyDown={(e: KeyboardEvent) =>
                 e.code === 'Enter' || e.code === 'Space' ? setIsOpen(true) : null
@@ -234,6 +235,7 @@ export const MultiAutocomplete = forwardRef<
               aria-multiselectable={true}
               isLoading={isLoading}
               noOptionLabel={noOptionsLabel}
+              aria-hidden={!isOpen}
               onClick={handleOnChange}
               {...filterOutKeys(listboxProps, ['className'])}
             />

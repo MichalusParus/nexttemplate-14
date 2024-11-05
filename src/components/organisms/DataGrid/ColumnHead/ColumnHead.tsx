@@ -4,7 +4,6 @@ import { forwardRef, useCallback, useState } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { buttonVariant } from '@/components/atoms/common/Button/Button.style'
-import { Combobox } from '@/components/atoms/common/Combobox'
 import { ChevronIcon, FilterIcon } from '@/components/atoms/icons'
 import { P } from '@/components/atoms/typography/P'
 import { Checkbox } from '@/components/molecules/form/CheckboxField/Checkbox'
@@ -164,27 +163,28 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
             >
               <div className="flex w-full justify-start">
                 {column.label}
-                <ChevronIcon className={cn('transition-dropdown', getIconState())} />
+                <ChevronIcon className={cn('transition-transform', getIconState())} />
               </div>
             </Button>
             {!column.hideFilter && (
               <Tooltip title={t('filterIn', { field: column.label })} placement="top">
-                <Combobox
+                <Button
                   className={cn(
                     'GridFilterCombobox',
                     'border-transparent dark:border-transparent',
                     filterMenuVisibility,
                     !isFilterApplied ? 'opacity-30' : 'selected',
                   )}
-                  name={`filter${name}${column.name}`}
-                  isOpen={isFilterOpen}
-                  hasPopup="menu"
                   startIcon={<FilterIcon />}
                   variant={variant}
                   color={color}
                   size={size}
                   hideShadow
                   aria-label={t('filterIn', { field: column.label })}
+                  aria-expanded={isFilterOpen}
+                  aria-haspopup="menu"
+                  aria-controls={`filter${name}${column.name}`}
+                  aria-owns={`filter${name}${column.name}`}
                   tabIndex={-1}
                   onClick={() => setIsFilterOpen(prev => !prev)}
                 />

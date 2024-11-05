@@ -44,7 +44,7 @@ describe('GridHeader', () => {
     )
     expect(screen.getByRole('rowgroup')).toBeInTheDocument()
     expect(screen.getAllByTestId('MenuWrap')).toHaveLength(4)
-    fireEvent.click(screen.getAllByRole('combobox')[0])
+    fireEvent.click(screen.getAllByRole('button')[0])
     expect(screen.getAllByRole('search')).toHaveLength(1)
     expect(screen.getAllByRole('menu')[0]).toHaveAttribute('id', 'filterColumnHeadTestname1')
     fireEvent.change(screen.getAllByRole('searchbox')[0], {

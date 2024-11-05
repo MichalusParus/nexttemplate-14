@@ -1,7 +1,7 @@
 'use client'
 import { forwardRef, PropsWithChildren, useState } from 'react'
 
-import { Combobox, ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
+import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { Paper } from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
@@ -25,7 +25,7 @@ export type DisclosureProps = Omit<StyleProps, 'size'> & {
   /** aria level for heading, hierarchy in Accordion component */
   ariaLevel?: number
   /** for passing aditional props to combobox */
-  comboboxProps?: Partial<Omit<ComboboxProps, 'name' | 'hasPopup' | 'isOpen'>>
+  buttonProps?: Partial<Omit<ButtonProps, 'name' | 'hasPopup' | 'isOpen'>>
   /** for passing aditional props to dropdown */
   paperProps?: Partial<PaperProps>
   /** optional setIsOpen for external state control, must be use with expanded prop */
@@ -45,7 +45,7 @@ export const Disclosure = forwardRef<HTMLButtonElement, PropsWithChildren<Disclo
       height = 'max-h-[40vh]',
       expanded,
       ariaLevel,
-      comboboxProps = {},
+      buttonProps = {},
       paperProps = { hideShadow: true },
       children,
       setIsOpen,
@@ -54,7 +54,6 @@ export const Disclosure = forwardRef<HTMLButtonElement, PropsWithChildren<Disclo
   ) => {
     const [isLocallyOpen, setIsLocallyOpen] = useState(Boolean(expanded))
     const openState = setIsOpen ? expanded : isLocallyOpen
-    const disclosureOpenState = openState ? 'max-h-full' : ' max-h-[3rem]'
     const startIconOpenState = !openState ? '-rotate-90' : ''
     const endIconOpenState = openState ? 'rotate-180' : ''
 
@@ -68,30 +67,25 @@ export const Disclosure = forwardRef<HTMLButtonElement, PropsWithChildren<Disclo
 
     return (
       <div
-        className={cn(
-          'Disclosure',
-          'relative w-full transition-maxHeight',
-          disclosureOpenState,
-          className,
-        )}
+        className={cn('Disclosure', 'relative w-full', className)}
         data-testid="Disclosure"
         data-accordion="collapse"
       >
         <div className="DisclosureHeading" role="heading" aria-level={ariaLevel}>
-          <Combobox
-            id={slugify(title)}
-            className={cn('w-full', comboboxProps.className)}
+          <Button
+            className={cn('w-full', buttonProps.className)}
             name={slugify(title)}
-            isOpen={Boolean(openState)}
             variant={variant}
             color={color}
             disableUpperCase
             hideShadow
-            hasPopup="true"
             role="button"
+            aria-expanded={openState}
+            aria-haspopup="true"
+            aria-controls={slugify(title)}
             ref={ref}
             onClick={handleChange}
-            {...filterOutKeys(comboboxProps, ['className'])}
+            {...filterOutKeys(buttonProps, ['className'])}
           >
             <div className={cn('ComboboxInnerWrap', 'flex w-full justify-between')}>
               <div className={cn('ComboboxStartWrap', 'flex gap-1')}>
@@ -108,17 +102,19 @@ export const Disclosure = forwardRef<HTMLButtonElement, PropsWithChildren<Disclo
                 />
               )}
             </div>
-          </Combobox>
+          </Button>
         </div>
         <div
           id={slugify(title)}
           className={cn(
             'Dropdown',
-            'translate-y-1.5 transition-dropdown',
+            'translate-y-1.5 overflow-hidden transition-maxHeight',
             width,
-            openState ? 'visible z-[35] opacity-100' : 'invisible max-h-0 opacity-50',
+            openState ? 'visible z-[35] max-h-screen opacity-100' : 'invisible max-h-0 opacity-50',
             className,
           )}
+          aria-hidden={!openState}
+          data-testid="DisclosureDropdown"
         >
           <Paper
             className={cn('overflow-hidden', paperProps.className)}

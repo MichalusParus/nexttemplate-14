@@ -23,7 +23,7 @@ export const usePopper = (placement?: Placement, offset?: [number, number]) => {
         popperRef.current = null
       }
     }
-  }, [popoverEl, placement, offset])
+  }, [popoverEl, anchorRef, placement, offset])
 
   return {
     anchorRef: anchorRef,

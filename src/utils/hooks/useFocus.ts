@@ -40,7 +40,6 @@ export const useFocus = (
         el => el.className.includes(' selected ') && el.role !== 'combobox',
       )
       const newIndex = completeSelectableList.indexOf(focusableEl[focusIndexRef.current])
-      console.log(newIndex, completeSelectableList, focusableEl[focusIndexRef.current])
       if (newIndex === -1) {
         focusIndexRef.current = 0
       } else if (newIndex !== 0) {

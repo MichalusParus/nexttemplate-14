@@ -11,7 +11,7 @@ const meta: Meta<typeof RangeDatePicker> = {
     layout: 'padded',
   },
   argTypes: {
-    comboboxProps: {
+    buttonProps: {
       control: false,
     },
     dropdownProps: {
@@ -52,7 +52,7 @@ export const PrimaryDefault: Story = {
     size: 'md',
     placement: 'bottom-start',
     error: '',
-    comboboxProps: undefined,
+    buttonProps: undefined,
     dropdownProps: undefined,
     calendarProps: undefined,
     labelProps: undefined,

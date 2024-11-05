@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { PropsWithChildren, useState } from 'react'
 
-import { Combobox } from '@/components/atoms/common/Combobox'
+import { Button } from '@/components/atoms/common/Button'
 
 import { MenuLinks } from '../../../../../.storybook/helpers'
 import { Drawer, DrawerProps } from './Drawer'
@@ -24,15 +24,17 @@ const DrawerWithHooks = (args: PropsWithChildren<DrawerProps>) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <div className="relative flex h-[50vh] items-center justify-center overflow-hidden">
-      <Combobox
+      <Button
         name="drawerStory"
-        hasPopup="menu"
-        isOpen={isOpen}
+        aria-haspopup="true"
+        aria-controls="drawerStory"
+        aria-expanded={isOpen}
+        aria-owns="drawerStory"
         onClick={() => setIsOpen(prev => !prev)}
       >
-        Drawer Combobox
-      </Combobox>
-      <Drawer {...args} name="storybookDrawer" isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        Drawer button
+      </Button>
+      <Drawer {...args} name="drawerStory" isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <MenuLinks
           length={args.className === 'scroll' ? 20 : undefined}
           variant={args.variant}

@@ -1,9 +1,14 @@
-import { MenuItem } from '@/components/atoms/common/MenuItem'
+import { Divider } from '@/components/atoms/common/Divider'
 import { PlusIcon } from '@/components/atoms/icons'
 import { Form } from '@/components/molecules/form/Form'
+import {
+  MenuItemButton,
+  MenuItemCheckbox,
+  MenuItemRadioGroup,
+} from '@/components/molecules/popovers/Menu/items'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { NextIntlClientProvider } from 'next-intl'
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 
@@ -11,7 +16,7 @@ export const textContent =
   'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Corrupti ex totam blanditiis maiores itaque earum eius, delectus perferendis commodi at cupiditate quos veritatis dolore, quas optio provident ipsam debitis dignissimos eos, modi perspiciatis aspernatur aperiam nemo magnam. Quasi ex at ad eaque distinctio porro natus vitae praesentium. Libero quidem vel deleniti possimus repellendus. In optio sint accusantium quidem aspernatur qui ut necessitatibus cum quam ratione veritatis beatae eos rerum vero natus atque, ea repellat! Nemo assumenda eos accusantium voluptatum itaque alias architecto quo magni repudiandae rem libero dignissimos, tempore adipisci et officia dolor voluptate odit iusto, repellat dolore, vitae sequi? Vitae eveniet totam doloremque necessitatibus, quo cumque quam harum pariatur rem praesentium possimus natus voluptate distinctio cupiditate ut officiis. Quibusdam cumque illo iusto dolorum harum tempora voluptate consequuntur ab? Accusantium officiis molestias, at non qui alias fugiat tempore mollitia assumenda quia ipsam quae! Reprehenderit, labore quas adipisci architecto, commodi laborum iusto odio obcaecati mollitia fugit qui debitis. Fuga quasi iusto id fugiat, alias officiis reprehenderit impedit soluta culpa ipsam, tenetur voluptas dolorum perferendis est, libero eaque qui ipsum. Neque aliquam esse explicabo commodi beatae, velit accusamus, magni modi quia suscipit odit nobis nemo aut iusto rerum ex delectus architecto exercitationem atque illum. Facere saepe quidem eaque dolores et expedita pariatur, unde eum dicta soluta! Quod mollitia enim, consectetur reprehenderit vitae asperiores quo. In eum quo neque nesciunt at voluptas, labore, blanditiis hic pariatur corporis tenetur voluptatum maxime doloribus, expedita beatae nulla temporibus alias suscipit obcaecati nostrum ex cupiditate. Sint repudiandae quod asperiores? Cupiditate ipsam pariatur, eos consectetur doloremque similique, dicta nobis veritatis explicabo officiis quos, deleniti sed asperiores repudiandae vero! Rem nihil impedit ducimus dolore molestiae, ex doloribus saepe aspernatur autem atque alias, sit quaerat quasi totam repudiandae delectus cumque! Esse nihil eligendi saepe repudiandae nulla cum id ea. Dolore recusandae veritatis quidem, accusantium optio dignissimos, vero facere architecto reprehenderit eius provident sapiente soluta expedita amet omnis quibusdam dolorem sint itaque. Dolorum laboriosam reprehenderit placeat iste repudiandae quod non esse? Quae repellat assumenda iste. Nulla odit quos deleniti voluptate nemo delectus accusantium porro, ducimus vel dolore ipsam velit minima maiores dolor! Consequatur necessitatibus vitae unde vel, aut aliquam repudiandae ad ullam minus dolores magni distinctio nemo expedita odit, quisquam voluptas reprehenderit, doloremque asperiores? Modi doloremque quidem voluptates perspiciatis dolore perferendis officiis, voluptas reprehenderit laboriosam ex dignissimos! Quam dolore exercitationem consequuntur eveniet atque recusandae dignissimos autem laboriosam aperiam. Ratione, aspernatur rerum, recusandae laboriosam magni numquam delectus distinctio saepe quo autem, unde quibusdam sed optio at consequuntur fugit. Minima, aliquam autem corporis nostrum nemo eius dolore alias placeat eum ratione expedita quas, perspiciatis reprehenderit in quisquam! Repudiandae illo qui voluptas quos quo iste, eaque, amet suscipit alias omnis quam minus reprehenderit, eum ea ullam voluptatum labore dignissimos eveniet nesciunt! Vel enim asperiores eum illo ullam! Quis animi recusandae laudantium ad excepturi, culpa velit. Molestias corporis quaerat blanditiis illo veritatis, dolore eius natus eveniet unde fugiat cupiditate, quos deserunt odio, cum culpa omnis odit voluptatum. Voluptatum eius iusto, quis distinctio voluptatibus fugiat non.'
 
 export const options = new Array(20).fill(null).map((opt, index) => ({
-  label: index % 3 === 0 ? 'very long label' + (index + 1) : 'label' + (index + 1),
+  label: index % 3 === 0 ? 'Very long label' + (index + 1) : 'Label' + (index + 1),
   value: 'value' + (index + 1),
 }))
 
@@ -38,20 +43,70 @@ export const MenuLinks = ({
   length = 5,
   variant,
   color,
+  index,
 }: {
+  index?: number
   length?: number
   variant?: 'text' | 'outlined' | 'contained'
   color?: 'primary' | 'secondary' | 'terciary' | 'none'
+  size?: 'sm' | 'md' | 'lg' | 'inline' | 'none'
 }) => {
+  const [value, setValue] = useState<string[]>([])
+  const [radioValue, setRadioValue] = useState<string>('label2')
+
   return (
     <>
-      {new Array(length).fill(null).map((item, index) => (
-        <MenuItem
-          key={index}
-          linkProps={{ href: '#', variant: variant, color: color, hideShadow: true }}
-        >
-          {'MenuItemLink' + index}
-        </MenuItem>
+      <MenuItemRadioGroup
+        name={'menuRadioStory' + index}
+        options={options.slice(0, 5).map(o => ({ label: o.label, value: o.value + index }))}
+        value={radioValue}
+        variant={variant}
+        color={color}
+        onChange={v => setRadioValue(v)}
+      />
+      <li className="py-4" role="presentation">
+        <Divider />
+      </li>
+      <MenuItemCheckbox
+        name={'menuCheckboxStory1' + index}
+        variant={variant}
+        color={color}
+        isChecked={value.includes('1')}
+        onClick={() =>
+          setValue(value.includes('1') ? value.filter(v => v !== '1') : [...value, '1'])
+        }
+      >
+        MenuCheckbox1
+      </MenuItemCheckbox>
+      <MenuItemCheckbox
+        name={'menuCheckboxStory2' + index}
+        variant={variant}
+        color={color}
+        isChecked={value.includes('2')}
+        onClick={() =>
+          setValue(value.includes('2') ? value.filter(v => v !== '2') : [...value, '2'])
+        }
+      >
+        MenuCheckbox2
+      </MenuItemCheckbox>
+      <MenuItemCheckbox
+        name={'menuCheckboxStory3' + index}
+        variant={variant}
+        color={color}
+        isChecked={value.includes('3')}
+        onClick={() =>
+          setValue(value.includes('3') ? value.filter(v => v !== '3') : [...value, '3'])
+        }
+      >
+        MenuCheckbox3
+      </MenuItemCheckbox>
+      <li className="py-4" role="presentation">
+        <Divider />
+      </li>
+      {new Array(length).fill(null).map((item, i) => (
+        <MenuItemButton key={i + 'btn' + index} variant={variant} color={color} hideShadow>
+          {'MenuItemButton' + i}
+        </MenuItemButton>
       ))}
     </>
   )
@@ -323,7 +378,6 @@ export const JestFormProvider = ({
 }>) => {
   const zodFields = Object.fromEntries(fields.map(field => [field, z.unknown().optional()]))
   const schema = z.object(zodFields)
-  console.log(schema)
   const formValues = Object.fromEntries(fields.map((field, i) => [field, values?.[i]]))
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),

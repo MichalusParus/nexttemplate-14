@@ -1,8 +1,7 @@
 'use client'
 import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react'
 
-import { Combobox } from '@/components/atoms/common/Combobox'
-import { ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
+import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { ListBox } from '@/components/atoms/common/ListBox'
 import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 import { ChevronIcon } from '@/components/atoms/icons'
@@ -14,7 +13,7 @@ import { cn, filterOutKeys } from '@/utils/utils'
 
 import { Label } from '../../../../atoms/common/Label/Label'
 
-export type SelectProps = Pick<ComboboxProps, 'name' | 'disabled'> &
+export type SelectProps = Pick<ButtonProps, 'disabled'> &
   FieldProps &
   StyleProps & {
     /** position of dropdown */
@@ -23,8 +22,8 @@ export type SelectProps = Pick<ComboboxProps, 'name' | 'disabled'> &
     value: string
     /** options for select to choose from */
     options: OptionType[]
-    /** optional combobox props for select combobox */
-    comboboxProps?: Partial<ComboboxProps>
+    /** optional button props for select combobox */
+    buttonProps?: Partial<ButtonProps>
     /** for passing aditional props to dropdown */
     dropdownProps?: Partial<DropdownProps>
     /** for passing aditional props to listbox */
@@ -33,7 +32,7 @@ export type SelectProps = Pick<ComboboxProps, 'name' | 'disabled'> &
     onChange: (value: string) => void
   }
 
-/** Basic custom Select inside Label Component. For form purposes use SelectField. Combobox, Dropdown and ListBox props supported. USE CLIENT */
+/** Basic custom Select inside Label Component. For form purposes use SelectField. Button, Dropdown and ListBox props supported. USE CLIENT */
 export const Select = forwardRef<HTMLDivElement, SelectProps>(
   (
     {
@@ -49,7 +48,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       placement = 'bottom',
       disabled,
       error,
-      comboboxProps = {},
+      buttonProps = {},
       dropdownProps = {},
       listboxProps = {},
       labelProps,
@@ -100,27 +99,23 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
           ref={componentRef}
           data-testid="Select"
         >
-          <Combobox
-            id={name}
-            className={cn(
-              'SelectCombobox',
-              'z-40 w-full',
-              error && 'error',
-              comboboxProps.className,
-            )}
-            name={name}
+          <Button
+            className={cn('SelectCombobox', 'z-40 w-full', error && 'error', buttonProps.className)}
             variant={variant}
             color={color}
             size={size}
-            hasPopup="listbox"
-            isOpen={isOpen}
             disabled={disabled}
             hideShadow
             disableUpperCase
+            role="combobox"
             aria-labelledby={'label-' + name}
             aria-describedby={`${name}-description`}
+            aria-haspopup="listbox"
+            aria-expanded={isOpen}
+            aria-controls={name}
+            aria-owns={name}
             onClick={handleClose}
-            {...filterOutKeys(comboboxProps, ['className'])}
+            {...filterOutKeys(buttonProps, ['className'])}
           >
             <div className={cn('ComboboxInnerWrap', 'flex w-full justify-between gap-2')}>
               {comboboxTitle}
@@ -128,7 +123,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                 className={cn('text-inherit transition-transform', isOpen && 'rotate-180')}
               />
             </div>
-          </Combobox>
+          </Button>
           <Dropdown
             isOpen={isOpen}
             parentRef={componentRef}
@@ -149,6 +144,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
               color={color}
               size={size}
               hideCheckbox
+              aria-hidden={!isOpen}
               onClick={handleOnChange}
               {...filterOutKeys(listboxProps, ['className'])}
             />

@@ -55,7 +55,7 @@ describe('DataGrid', () => {
     )
     expect(screen.getAllByRole('rowgroup')[1]).toBeInTheDocument()
     expect(screen.getAllByTestId('MenuWrap')).toHaveLength(4)
-    fireEvent.click(screen.getAllByRole('combobox')[0])
+    fireEvent.click(screen.getAllByRole('button')[0])
     expect(screen.getAllByRole('search')).toHaveLength(1)
     expect(screen.getAllByRole('menu')[0]).toHaveAttribute('id', 'filterdataGridTestname1')
   })

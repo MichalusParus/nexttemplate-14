@@ -35,7 +35,7 @@ export const PrimaryDefault: Story = {
     chevronPosition: 'end',
     variant: 'outlined',
     color: 'primary',
-    comboboxProps: undefined,
+    buttonProps: undefined,
     paperProps: undefined,
   },
 }

@@ -11,7 +11,7 @@ const meta: Meta<typeof MultiDatePicker> = {
     layout: 'padded',
   },
   argTypes: {
-    comboboxProps: {
+    buttonProps: {
       control: false,
     },
     dropdownProps: {
@@ -49,7 +49,7 @@ export const PrimaryDefault: Story = {
     size: 'md',
     placement: 'bottom-start',
     error: '',
-    comboboxProps: undefined,
+    buttonProps: undefined,
     dropdownProps: undefined,
     calendarProps: undefined,
     labelProps: undefined,

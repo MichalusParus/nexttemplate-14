@@ -55,17 +55,17 @@ export const radioVariant = {
   },
   contained: {
     primary: cn(
-      'border border-primary-900 bg-primary-800 after:bg-primary-50',
+      'border border-primary-50 bg-primary-800 after:bg-primary-50',
       'hover:bg-primary-900 focus-visible:bg-primary-900',
       'checked:bg-primary-700 active:bg-primary-700',
     ),
     secondary: cn(
-      'border border-secondary-900 bg-secondary-800 after:bg-secondary-50',
+      'border border-secondary-50 bg-secondary-800 after:bg-secondary-50',
       'hover:bg-secondary-900 focus-visible:bg-secondary-900',
       'checked:bg-secondary-700 active:bg-secondary-700',
     ),
     terciary: cn(
-      'border border-terciary-900 bg-terciary-800 after:bg-terciary-50',
+      'border border-terciary-50 bg-terciary-800 after:bg-terciary-50',
       'hover:bg-terciary-900 focus-visible:bg-terciary-900',
       'checked:bg-terciary-700 active:bg-terciary-700',
     ),

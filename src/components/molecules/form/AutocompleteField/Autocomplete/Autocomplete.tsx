@@ -183,12 +183,13 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
               size={size}
               placeholder={placeholder}
               disabled={disabled}
-              labelProps={{ hideError: true, hideLabel: true }}
+              labelProps={{ hideError: true, hideLabel: true, collapsed: 'always' }}
               role="combobox"
               aria-haspopup="listbox"
               aria-describedby={`${name}-description`}
               aria-expanded={isOpen}
               aria-controls={name}
+              aria-owns={name}
               onKeyDown={(e: KeyboardEvent) =>
                 e.code === 'Enter' || e.code === 'Space' ? setIsOpen(true) : null
               }
@@ -231,6 +232,7 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
               isLoading={isLoading}
               hideCheckbox
               noOptionLabel={noOptionsLabel}
+              aria-hidden={!isOpen}
               onClick={handleOnChange}
               {...filterOutKeys(listboxProps, ['className'])}
             />

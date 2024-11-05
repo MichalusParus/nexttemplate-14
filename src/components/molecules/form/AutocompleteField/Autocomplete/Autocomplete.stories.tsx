@@ -156,7 +156,6 @@ export const IsLoading: Story = {
 export const CreateNew: Story = {
   args: {
     ...PrimaryDefault.args,
-    isLoading: true,
     name: 'autocompleteStory5',
     children: (
       <Button

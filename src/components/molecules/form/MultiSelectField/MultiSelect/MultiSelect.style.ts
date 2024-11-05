@@ -15,10 +15,3 @@ export const iconSize = {
   lg: cn('h-lgIcon w-lgIcon min-w-lgIcon'),
   none: '',
 }
-
-export const checkboxSize = {
-  sm: cn('[&>*]:h-5 [&>*]:w-5'),
-  md: cn('[&>*]:h-6 [&>*]:w-6'),
-  lg: cn('[&>*]:h-7 [&>*]:w-7'),
-  none: '',
-}

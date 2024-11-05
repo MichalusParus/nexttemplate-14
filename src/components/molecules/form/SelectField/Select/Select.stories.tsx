@@ -15,7 +15,7 @@ const meta: Meta<typeof Select> = {
     options: {
       control: false,
     },
-    comboboxProps: {
+    buttonProps: {
       control: false,
     },
     dropdownProps: {
@@ -52,7 +52,7 @@ export const PrimaryDefault: Story = {
     size: 'md',
     placement: 'bottom',
     error: '',
-    comboboxProps: undefined,
+    buttonProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
     labelProps: undefined,

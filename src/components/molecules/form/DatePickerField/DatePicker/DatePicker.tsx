@@ -2,8 +2,7 @@
 import { format } from 'date-fns'
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 
-import { Combobox } from '@/components/atoms/common/Combobox'
-import { ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
+import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { CalendarIcon } from '@/components/atoms/icons'
 import { Calendar } from '@/components/molecules/common/Calendar'
 import { CalendarProps } from '@/components/molecules/common/Calendar/Calendar'
@@ -15,15 +14,15 @@ import { cn, filterOutKeys } from '@/utils/utils'
 
 import { Label } from '../../../../atoms/common/Label/Label'
 
-export type DatePickerProps = Pick<ComboboxProps, 'name' | 'disabled'> &
+export type DatePickerProps = Pick<ButtonProps, 'name' | 'disabled'> &
   FieldProps &
   StyleProps & {
     /** position of dropdown */
     placement?: 'bottom-start' | 'top-start'
     /** current value of component */
     value?: Date
-    /** optional combobox props for datePicker combobox */
-    comboboxProps?: Partial<ComboboxProps>
+    /** optional button props for datePicker combobox */
+    buttonProps?: Partial<ButtonProps>
     /** for passing aditional props to dropdown */
     dropdownProps?: Partial<DropdownProps>
     /** for passing aditional props to calendar */
@@ -32,7 +31,7 @@ export type DatePickerProps = Pick<ComboboxProps, 'name' | 'disabled'> &
     onChange: (value: Date) => void
   }
 
-/** Basic custom DatePicker inside Label Component. For form purposes use DatePickerField. Combobox, Dropdown and Calendar props supported. USE CLIENT */
+/** Basic custom DatePicker inside Label Component. For form purposes use DatePickerField. Button, Dropdown and Calendar props supported. USE CLIENT */
 export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
   (
     {
@@ -47,7 +46,7 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       placement = 'bottom-start',
       disabled,
       error,
-      comboboxProps = {},
+      buttonProps = {},
       dropdownProps = {},
       calendarProps = {},
       labelProps,
@@ -114,33 +113,34 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           ref={componentRef}
           data-testid="DatePicker"
         >
-          <Combobox
-            id={name}
+          <Button
             className={cn(
               'DatePickerCombobox',
               'z-40 w-full',
               error && 'error',
-              comboboxProps.className,
+              buttonProps.className,
             )}
-            name={name}
             variant={variant}
             color={color}
             size={size}
-            hasPopup="true"
-            isOpen={isOpen}
             disabled={disabled}
             hideShadow
             disableUpperCase
+            role="combobox"
             aria-labelledby={'label-' + name}
             aria-describedby={`${name}-description`}
+            aria-expanded={isOpen}
+            aria-haspopup="true"
+            aria-controls={name}
+            aria-owns={name}
             onClick={() => setIsOpen(prev => !prev)}
-            {...filterOutKeys(comboboxProps, ['className'])}
+            {...filterOutKeys(buttonProps, ['className'])}
           >
             <div className={cn('ComboboxInnerWrap', 'flex w-full justify-between gap-2')}>
               <div className="truncate">{getComboboxTitle()}</div>
               <CalendarIcon className={cn('text-inherit transition-transform')} />
             </div>
-          </Combobox>
+          </Button>
           <Dropdown
             isOpen={isOpen}
             parentRef={componentRef}
@@ -164,6 +164,7 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
               color={color}
               size={size}
               enableUseFocus={isOpen}
+              aria-hidden={!isOpen}
               paperProps={{ className: 'border-none' }}
               onChange={handleOnChange}
               {...calendarProps}

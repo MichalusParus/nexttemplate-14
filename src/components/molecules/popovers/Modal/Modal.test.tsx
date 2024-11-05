@@ -18,7 +18,7 @@ describe('Modal', () => {
     expect(screen.getByRole('dialog')).toHaveClass('className')
     expect(screen.getByRole('dialog')).toHaveAttribute('id', 'test')
     expect(screen.getByRole('dialog')).toHaveTextContent('Children')
-    expect(screen.getByRole('combobox')).toHaveTextContent('ModalCombobox')
+    expect(screen.getAllByRole('button')[0]).toHaveTextContent('ModalButton')
   })
   it('title', () => {
     render(

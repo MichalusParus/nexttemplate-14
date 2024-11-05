@@ -75,10 +75,12 @@ export const ImageViewer = forwardRef<HTMLDivElement, PropsWithChildren<ImageVie
         <div
           className="h-full w-full cursor-zoom-in items-start justify-start"
           role="combobox"
+          aria-haspopup="true"
           aria-controls={name}
+          aria-owns={name}
           aria-expanded={isOpen}
-          tabIndex={0}
           aria-label={name}
+          tabIndex={0}
           onClick={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
         >

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { Combobox } from '../Combobox'
+import { Button } from '../Button'
 import { Overlay } from '.'
 
 const meta: Meta<typeof Overlay> = {
@@ -20,14 +20,9 @@ const OverlayWithHooks = ({ dark }: { dark?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <div className="h-96">
-      <Combobox
-        name="overlayStory"
-        isOpen={isOpen}
-        hasPopup="dialog"
-        onClick={() => setIsOpen(true)}
-      >
+      <Button aria-expanded={isOpen} onClick={() => setIsOpen(true)}>
         Overlay {isOpen ? 'open' : 'closed'}
-      </Combobox>
+      </Button>
       <Overlay isOpen={isOpen} onClose={() => setIsOpen(false)} dark={dark} />
     </div>
   )

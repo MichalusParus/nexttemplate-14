@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react'
 
-import { Combobox, ComboboxProps } from '@/components/atoms/common/Combobox/Combobox'
+import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { StyleProps } from '@/components/types'
 import { useFocus } from '@/utils/hooks/useFocus'
 import { cn } from '@/utils/utils'
@@ -29,17 +29,17 @@ export type MenuProps = Omit<StyleProps, 'size'> & {
   placement?: Placement
   /** for setting dropdown width as inline css style */
   width?: number | string
-  /** Parent ref of controled combobox */
+  /** Parent ref of controled anchor button */
   parentRef?: MutableRefObject<HTMLDivElement | null>
   /** for passing aditional props to combobox */
-  comboboxProps?: Partial<ComboboxProps>
+  buttonProps?: Partial<ButtonProps>
   /** for passing aditional props to dropdown */
   dropdownProps?: Partial<DropdownProps>
   /** optional setIsOpen function, if set, menu becomes controlled component */
   setIsOpen?: (value: boolean) => void
 }
 
-/** Menu is dropdown popover for displaying additional settings. Uncontroled by default or controled with isOpen and onClose props. Should contain somponents with role menuitem. Combobox and Dropdown props supported. USE CLIENT */
+/** Menu is dropdown popover for displaying additional settings. Uncontroled by default or controled with isOpen and onClose props. Should contain somponents with role menuitem. Button and Dropdown props supported. USE CLIENT */
 export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
   (
     {
@@ -51,7 +51,7 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
       color = 'primary',
       width,
       parentRef,
-      comboboxProps = { children: 'MenuCombobox' },
+      buttonProps = { children: 'MenuButton' },
       dropdownProps,
       setIsOpen,
       children,
@@ -74,16 +74,16 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
       },
     )
 
-    const handleClose = useCallback(() => {
+    const handleOpenState = useCallback(() => {
       if (setIsOpen) {
         setIsOpen(!isOpen)
       } else {
         setIsLocallyOpen(prev => !prev)
       }
-      if (focusableEl[0]) {
+      if (focusableEl[0] && openState) {
         focusableEl[0].focus()
       }
-    }, [focusableEl, isOpen, setIsOpen])
+    }, [openState, isOpen, focusableEl, setIsOpen])
 
     return (
       <div
@@ -92,14 +92,16 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
         data-testid="MenuWrap"
       >
         {!setIsOpen && (
-          <Combobox
-            name={name}
-            isOpen={openState}
-            hasPopup="menu"
+          <Button
             variant={variant}
             color={color}
-            onClick={handleClose}
-            {...comboboxProps}
+            disableUpperCase
+            aria-expanded={openState}
+            aria-haspopup="menu"
+            aria-controls={name}
+            aria-owns={name}
+            onClick={handleOpenState}
+            {...buttonProps}
           />
         )}
         <Dropdown
@@ -109,13 +111,13 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
           variant={variant}
           color={color}
           width={width}
-          onClose={handleClose}
+          onClose={handleOpenState}
           ref={dropdownRef}
           {...dropdownProps}
         >
-          <div id={name} role="menu" aria-hidden={!openState}>
+          <ul id={name} role="menu" aria-hidden={!openState}>
             {children}
-          </div>
+          </ul>
         </Dropdown>
       </div>
     )

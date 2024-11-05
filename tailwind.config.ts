@@ -165,9 +165,9 @@ const config: Config = {
       transitionProperty: {
         colors:
           'color, background-color, border-color, text-decoration-color, fill, stroke, opacity',
-        dropdown: 'top, left, bottom, right, transform, opacity',
+        position: 'top, left, bottom, right, transform, opacity',
         activity: 'background-color, color, box-shadow, border-color',
-        maxHeight: 'max-height',
+        maxHeight: 'max-height, opacity',
         width: 'width',
         margin: 'margin',
         disableAutofill: 'backgroundColor 600000s 0s, color 600000s 0s',

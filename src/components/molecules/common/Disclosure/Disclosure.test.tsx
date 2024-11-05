@@ -14,6 +14,6 @@ describe('Disclosure', () => {
     expect(screen.getByTestId('Disclosure')).toBeTruthy()
     expect(screen.getByTestId('Disclosure')).toHaveClass('className')
     expect(screen.getByRole('button')).toHaveTextContent('Disclosure')
-    expect(screen.getByRole('region')).toHaveTextContent('Children')
+    expect(screen.getByTestId('DisclosureDropdown')).toHaveTextContent('Children')
   })
 })

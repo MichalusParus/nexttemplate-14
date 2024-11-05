@@ -2,20 +2,20 @@ import { cn } from '@/utils/utils'
 
 export const paperVariant = {
   text: {
-    primary: 'bg-bg dark:bg-darkBg from-bg dark:from-bg',
-    secondary: 'bg-bg dark:bg-darkBg from-bg dark:from-bg',
-    terciary: 'bg-bg dark:bg-darkBg from-bg dark:from-bg',
+    primary: 'bg-bg dark:bg-darkBg from-bg dark:from-darkBg',
+    secondary: 'bg-bg dark:bg-darkBg from-bg dark:from-darkBg',
+    terciary: 'bg-bg dark:bg-darkBg from-bg dark:from-darkBg',
     none: '',
   },
   outlined: {
     primary: cn(
-      'border border-primary-800 bg-bg from-bg dark:border-primary-100 dark:bg-darkBg dark:from-dark-800',
+      'border border-primary-800 bg-bg from-bg dark:border-primary-100 dark:bg-darkBg dark:from-darkBg',
     ),
     secondary: cn(
-      'border border-secondary-800 bg-bg from-bg dark:border-secondary-100 dark:bg-darkBg dark:from-dark-800',
+      'border border-secondary-800 bg-bg from-bg dark:border-secondary-100 dark:bg-darkBg dark:from-darkBg',
     ),
     terciary: cn(
-      'border border-terciary-800 bg-bg from-bg dark:border-terciary-100 dark:bg-darkBg dark:from-dark-800',
+      'border border-terciary-800 bg-bg from-bg dark:border-terciary-100 dark:bg-darkBg dark:from-darkBg',
     ),
     none: '',
   },

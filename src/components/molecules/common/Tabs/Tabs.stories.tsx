@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState } from 'react'
+import { MouseEvent, useState } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { PlusIcon } from '@/components/atoms/icons'
@@ -17,7 +17,6 @@ const meta: Meta<typeof Tabs> = {
   },
   argTypes: {
     tabs: { control: false },
-    buttonProps: { control: false },
     linkProps: { control: false },
     dropdownProps: { control: false },
   },
@@ -35,7 +34,12 @@ const TabsWithHooks = (args: TabsProps) => {
         name="tabs"
         param={param}
         tabs={args.tabs}
-        onTabClick={tab => setParam(tab.slug)}
+        linkProps={{
+          onClick: (e: MouseEvent<HTMLAnchorElement>) => {
+            const target = e.target as HTMLAnchorElement & { computedName: string }
+            setParam(tabs.find(t => t.label === target.computedName)?.slug || '')
+          },
+        }}
       />
       {args.tabs.length === 4 && (
         <button onClick={() => setParam('hidden')}>Click to show hidden tab</button>
@@ -57,7 +61,6 @@ export const PrimaryDefault: Story = {
     buttonProps: {},
     linkProps: {},
     dropdownProps: {},
-    onTabClick: undefined,
     children: undefined,
   },
   render: args => <TabsWithHooks {...args} />,
