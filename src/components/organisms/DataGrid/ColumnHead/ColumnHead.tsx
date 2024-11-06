@@ -4,10 +4,10 @@ import { forwardRef, useCallback, useState } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { buttonVariant } from '@/components/atoms/common/Button/Button.style'
-import { ChevronIcon, FilterIcon } from '@/components/atoms/icons'
+import { ChevronIcon, FilterIcon, SearchIcon } from '@/components/atoms/icons'
 import { P } from '@/components/atoms/typography/P'
 import { Checkbox } from '@/components/molecules/form/CheckboxField/Checkbox'
-import { SearchBar } from '@/components/molecules/form/SearchBar'
+import { Input } from '@/components/molecules/form/InputField/Input'
 import { Menu } from '@/components/molecules/popovers/Menu'
 import { Tooltip } from '@/components/molecules/popovers/Tooltip'
 import { StyleProps } from '@/components/types'
@@ -193,17 +193,22 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
                   isOpen={isFilterOpen}
                   name={`filter${name}${column.name}`}
                   color="none"
+                  width="min-w-max"
                   setIsOpen={() => setIsFilterOpen(prev => !prev)}
                   dropdownProps={{ className: 'mt-1' }}
                 >
-                  <SearchBar
+                  <Input
                     className="border border-transparent bg-bg dark:bg-darkBg"
                     name={`searchIn${column.name}`}
-                    placeholder={t('searchIn', { field: column.label })}
+                    label={t('searchIn', { field: column.label })}
+                    type="search"
                     variant={variant}
                     color={color}
                     size={size}
-                    onChange={value => setFilter({ ...filter, [column.name]: value })}
+                    placeholder={t('searchIn', { field: column.label })}
+                    startIcon={<SearchIcon />}
+                    labelProps={{ hideLabel: true, hideError: true }}
+                    onChange={value => setFilter({ ...filter, [column.name]: String(value) })}
                   />
                 </Menu>
               </Tooltip>

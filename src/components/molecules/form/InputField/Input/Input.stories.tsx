@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
 
-import { SearchIcon } from '@/components/atoms/icons'
+import { SearchIcon, SettingIcon } from '@/components/atoms/icons'
 
-import { Input } from '.'
+import { Input, InputProps } from '.'
 
 const meta: Meta<typeof Input> = {
   title: 'Molecules/Form/Input',
@@ -11,6 +12,11 @@ const meta: Meta<typeof Input> = {
   parameters: {
     layout: 'centered',
   },
+}
+
+const InputWithHooks = (args: InputProps) => {
+  const [value, setValue] = useState<string>('')
+  return <Input {...args} value={value} onChange={v => setValue(String(v))} />
 }
 
 export default meta
@@ -32,6 +38,7 @@ export const PrimaryDefault: Story = {
     labelProps: undefined,
     onChange: v => console.log(v),
   },
+  render: args => <InputWithHooks {...args} />,
 }
 
 export const Password: Story = {
@@ -40,6 +47,7 @@ export const Password: Story = {
     name: 'inputStory2',
     type: 'password',
   },
+  render: args => <InputWithHooks {...args} />,
 }
 
 export const Number: Story = {
@@ -48,6 +56,7 @@ export const Number: Story = {
     name: 'inputStory3',
     type: 'number',
   },
+  render: args => <InputWithHooks {...args} />,
 }
 
 export const Search: Story = {
@@ -55,24 +64,18 @@ export const Search: Story = {
     ...PrimaryDefault.args,
     name: 'inputStory4',
     type: 'search',
-    value: 'fixed value',
+    startIcon: <SearchIcon />,
   },
-}
-
-export const Date: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    name: 'inputStory5',
-    type: 'date',
-  },
+  render: args => <InputWithHooks {...args} />,
 }
 
 export const StartIcon: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'inputStory6',
-    startIcon: <SearchIcon />,
+    startIcon: <SettingIcon />,
   },
+  render: args => <InputWithHooks {...args} />,
 }
 
 export const Error: Story = {
@@ -81,6 +84,7 @@ export const Error: Story = {
     name: 'inputStory7',
     error: 'error',
   },
+  render: args => <InputWithHooks {...args} />,
 }
 
 export const Disabled: Story = {

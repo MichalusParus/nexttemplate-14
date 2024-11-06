@@ -26,7 +26,7 @@ type NativeInputProps = Omit<
 export type InputProps = NativeInputProps &
   FieldProps &
   StyleProps & {
-    /** input type, text, number, password, search, date supported */
+    /** input type text, number, password, search, supported */
     type?: string
     /** value of input */
     value?: string
@@ -73,7 +73,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               disabledVariant[variant],
               error && 'border-error-800 shadow-error',
               startIcon && 'pl-9',
-              type === 'search' && 'pr-7',
+              type === 'search' && 'pr-8',
               className,
             )}
             name={name}
@@ -102,7 +102,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             <Button
               className={cn(
                 'ClearButton',
-                'right-1 border-none',
+                'right-2 border-none',
                 inputIconPosition,
                 buttonIconSize[size],
               )}

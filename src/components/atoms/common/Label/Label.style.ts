@@ -8,7 +8,7 @@ export const collapsedState = {
 
 export const labelClass = cn('mb-1 mr-4 min-w-[40%] text-inherit')
 
-export const fieldWrapClass = cn('flex flex-col items-start justify-start')
+export const fieldWrapClass = cn('flex w-full flex-col items-start justify-start')
 
 export const textSize = {
   sm: cn('text-sm'),
