@@ -3,13 +3,13 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { JestMockProvider } from '../../../../../../.storybook/helpers'
-import { Input } from '.'
+import { TextInput } from '.'
 
-describe('Input', () => {
+describe('TextInput', () => {
   it('default', () => {
     render(
       <JestMockProvider>
-        <Input
+        <TextInput
           className="className"
           type="text"
           name="inputTest"
@@ -29,7 +29,7 @@ describe('Input', () => {
   it('number', () => {
     render(
       <JestMockProvider>
-        <Input type="number" name="inputTest" label="label" onChange={() => {}} />
+        <TextInput type="number" name="inputTest" label="label" onChange={() => {}} />
       </JestMockProvider>,
     )
     expect(screen.getByRole('spinbutton')).toHaveAttribute('type', 'number')
@@ -38,7 +38,7 @@ describe('Input', () => {
   it('error', () => {
     render(
       <JestMockProvider>
-        <Input type="text" name="inputTest" label="label" error="error" onChange={() => {}} />
+        <TextInput type="text" name="inputTest" label="label" error="error" onChange={() => {}} />
       </JestMockProvider>,
     )
     expect(screen.getByRole('alert')).toHaveTextContent('error')
@@ -47,7 +47,7 @@ describe('Input', () => {
   it('description', () => {
     render(
       <JestMockProvider>
-        <Input
+        <TextInput
           type="text"
           name="inputTest"
           label="label"
@@ -62,7 +62,7 @@ describe('Input', () => {
   it('value', () => {
     render(
       <JestMockProvider>
-        <Input name="name" label="label" value="value" onChange={() => {}} />
+        <TextInput name="name" label="label" value="value" onChange={() => {}} />
       </JestMockProvider>,
     )
     expect(screen.getByRole('textbox')).toHaveAttribute('value', 'value')
@@ -72,7 +72,7 @@ describe('Input', () => {
     const spy = jest.fn()
     render(
       <JestMockProvider>
-        <Input name="name" label="label" value="value" onChange={spy} />
+        <TextInput name="name" label="label" value="value" onChange={spy} />
       </JestMockProvider>,
     )
     fireEvent.change(screen.getByRole('textbox'), {
@@ -86,7 +86,7 @@ describe('Input', () => {
   it('disabled', () => {
     render(
       <JestMockProvider>
-        <Input name="name" label="label" value="" disabled onChange={() => {}} />
+        <TextInput name="name" label="label" value="" disabled onChange={() => {}} />
       </JestMockProvider>,
     )
     expect(screen.getByRole('textbox')).toHaveAttribute('disabled', '')

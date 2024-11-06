@@ -7,7 +7,7 @@ import { Autocomplete, AutocompleteProps } from './Autocomplete/Autocomplete'
 
 export type AutocompleteFieldProps = Omit<AutocompleteProps, 'value' | 'error' | 'onChange'>
 
-/** Form and style context wrapper for Autocomplete component. Input, Dropdown and ListBox props supported. USE CLIENT */
+/** Form and style context wrapper for Autocomplete component. TextInput, Dropdown and ListBox props supported. USE CLIENT */
 export const AutocompleteField = ({
   className,
   name,

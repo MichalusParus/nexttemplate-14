@@ -16,7 +16,7 @@ import {
   inputIconPosition,
   inputSize,
   inputVariant,
-} from './Input.style'
+} from './TextInput.style'
 
 type NativeInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -36,8 +36,8 @@ export type InputProps = NativeInputProps &
     onChange: (value: string | number) => void
   }
 
-/** Basic styled uncontroled Input inside Label Component. For form purposes use InputField. Default InputHTMLAttributes props supported. USE CLIENT */
-export const Input = forwardRef<HTMLInputElement, InputProps>(
+/** Basic styled uncontroled TextInput inside Label Component. For form purposes use TextField. Default InputHTMLAttributes props supported. USE CLIENT */
+export const TextInput = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       className,
@@ -124,4 +124,4 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   },
 )
 
-Input.displayName = 'Input'
+TextInput.displayName = 'TextInput'

@@ -3,14 +3,14 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { JestFormProvider, JestMockProvider } from '../../../../../.storybook/helpers'
-import { InputField } from '.'
+import { TextField } from '.'
 
-describe('InputField', () => {
+describe('TextField', () => {
   it('default', () => {
     render(
       <JestMockProvider>
         <JestFormProvider fields={['inputTest']}>
-          <InputField className="className" type="text" name="inputTest" label="label" />
+          <TextField className="className" type="text" name="inputTest" label="label" />
         </JestFormProvider>
       </JestMockProvider>,
     )
@@ -33,7 +33,7 @@ describe('InputField', () => {
     render(
       <JestMockProvider>
         <JestFormProvider fields={['inputTest']} onSubmit={spy}>
-          <InputField className="className" type="text" name="inputTest" label="label" />
+          <TextField className="className" type="text" name="inputTest" label="label" />
           <button type="submit" />
         </JestFormProvider>
       </JestMockProvider>,

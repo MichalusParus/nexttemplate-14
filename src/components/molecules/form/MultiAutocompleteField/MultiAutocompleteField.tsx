@@ -10,7 +10,7 @@ export type MultiAutocompleteFieldProps = Omit<
   'value' | 'error' | 'onChange'
 >
 
-/** Form and style context wrapper for MultiAutocomplete component. Input, Dropdown and ListBox props supported. USE CLIENT */
+/** Form and style context wrapper for MultiAutocomplete component. TextInput, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiAutocompleteField = ({
   className,
   name,

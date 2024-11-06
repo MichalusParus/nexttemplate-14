@@ -21,9 +21,9 @@ import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 
 import { Label } from '../../../../atoms/common/Label/Label'
-import { Input, InputProps } from '../../InputField/Input/Input'
-import { inputVariant } from '../../InputField/Input/Input.style'
 import { iconSize } from '../../MultiSelectField/MultiSelect/MultiSelect.style'
+import { InputProps,TextInput } from '../../TextField/TextInput/TextInput'
+import { inputVariant } from '../../TextField/TextInput/TextInput.style'
 import {
   chevronClass,
   clearButtonClass,
@@ -54,7 +54,7 @@ export type AutocompleteProps = Pick<InputProps, 'disabled'> &
     onChange: (value: string) => void
   }
 
-/** Basic custom Autocomplete inside Label Component. For form purposes use AutocompleteField. Input, Dropdown and ListBox props supported. USE CLIENT */
+/** Basic custom Autocomplete inside Label Component. For form purposes use AutocompleteField. TextInput, Dropdown and ListBox props supported. USE CLIENT */
 export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<AutocompleteProps>>(
   (
     {
@@ -167,7 +167,7 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
             )}
           >
             <ChevronIcon className={cn(chevronClass, comboboxZIndex, isOpen && 'rotate-180')} />
-            <Input
+            <TextInput
               id={name}
               className={cn(
                 'AutocompleteCombobox',

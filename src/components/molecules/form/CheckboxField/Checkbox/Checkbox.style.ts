@@ -12,7 +12,7 @@ export const switchClass = cn(
 
 export const checkClass = cn('absolute left-0 top-0 z-10 cursor-pointer transition-opacity')
 
-export const thumbClass = cn('transition-position absolute rounded-full')
+export const thumbClass = cn('absolute rounded-full transition-position')
 
 export const checkboxVariant = {
   text: {

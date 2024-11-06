@@ -7,7 +7,7 @@ import { buttonVariant } from '@/components/atoms/common/Button/Button.style'
 import { ChevronIcon, FilterIcon, SearchIcon } from '@/components/atoms/icons'
 import { P } from '@/components/atoms/typography/P'
 import { Checkbox } from '@/components/molecules/form/CheckboxField/Checkbox'
-import { Input } from '@/components/molecules/form/InputField/Input'
+import { TextInput } from '@/components/molecules/form/TextField/TextInput'
 import { Menu } from '@/components/molecules/popovers/Menu'
 import { Tooltip } from '@/components/molecules/popovers/Tooltip'
 import { StyleProps } from '@/components/types'
@@ -197,7 +197,7 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
                   setIsOpen={() => setIsFilterOpen(prev => !prev)}
                   dropdownProps={{ className: 'mt-1' }}
                 >
-                  <Input
+                  <TextInput
                     className="border border-transparent bg-bg dark:bg-darkBg"
                     name={`searchIn${column.name}`}
                     label={t('searchIn', { field: column.label })}

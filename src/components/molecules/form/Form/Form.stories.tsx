@@ -11,13 +11,13 @@ import { formSchema, initialValues, options } from '../../../../../.storybook/he
 import { AutocompleteField } from '../AutocompleteField'
 import { CheckboxField } from '../CheckboxField'
 import { CheckboxGroupField } from '../CheckboxGroupField'
-import { InputField } from '../InputField'
 import { MultiAutocompleteField } from '../MultiAutocompleteField'
 import { MultiSelectField } from '../MultiSelectField'
 import { RadioGroupField } from '../RadioGroupField'
 import { RangeField } from '../RangeField'
 import { SelectField } from '../SelectField'
 import { TextAreaField } from '../TextAreaField'
+import { TextField } from '../TextField'
 import { Form } from '.'
 import { FormProps } from './Form'
 
@@ -50,16 +50,16 @@ const FormWithHooks = (args: FormProps<object>) => {
 
   return (
     <Form {...args} form={form}>
-      <InputField name="inputStory" label="Input:" placeholder="input" />
-      <InputField name="numberStory" type="number" label="Number:" placeholder="number" />
-      <InputField
+      <TextField name="inputStory" label="TextInput:" placeholder="input" />
+      <TextField name="numberStory" type="number" label="Number:" placeholder="number" />
+      <TextField
         name="searchStory"
         type="search"
         label="Search:"
         placeholder="Search"
         labelProps={{ description: 'Some description' }}
       />
-      <InputField
+      <TextField
         name="dateStory"
         type="date"
         label="Date:"

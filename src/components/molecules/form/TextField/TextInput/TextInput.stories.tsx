@@ -3,11 +3,11 @@ import { useState } from 'react'
 
 import { SearchIcon, SettingIcon } from '@/components/atoms/icons'
 
-import { Input, InputProps } from '.'
+import { InputProps, TextInput } from '.'
 
-const meta: Meta<typeof Input> = {
-  title: 'Molecules/Form/Input',
-  component: Input,
+const meta: Meta<typeof TextInput> = {
+  title: 'Molecules/Form/TextInput',
+  component: TextInput,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
@@ -16,11 +16,11 @@ const meta: Meta<typeof Input> = {
 
 const InputWithHooks = (args: InputProps) => {
   const [value, setValue] = useState<string>('')
-  return <Input {...args} value={value} onChange={v => setValue(String(v))} />
+  return <TextInput {...args} value={value} onChange={v => setValue(String(v))} />
 }
 
 export default meta
-type Story = StoryObj<typeof Input>
+type Story = StoryObj<typeof TextInput>
 
 export const PrimaryDefault: Story = {
   args: {
@@ -28,7 +28,7 @@ export const PrimaryDefault: Story = {
     type: 'text',
     name: 'inputStory',
     label: 'Label:',
-    placeholder: 'Input',
+    placeholder: 'TextInput',
     value: '',
     variant: 'outlined',
     color: 'primary',

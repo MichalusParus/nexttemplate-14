@@ -26,9 +26,9 @@ import {
   comboboxWrapClass,
   disabledVariant,
 } from '../../AutocompleteField/Autocomplete/Autocomplete.style'
-import { Input } from '../../InputField/Input'
-import { inputSize, inputVariant } from '../../InputField/Input/Input.style'
 import { iconSize } from '../../MultiSelectField/MultiSelect/MultiSelect.style'
+import { TextInput } from '../../TextField/TextInput'
+import { inputSize, inputVariant } from '../../TextField/TextInput/TextInput.style'
 
 export type MultiAutocompleteProps = Omit<AutocompleteProps, 'value' | 'onChange'> & {
   /** current value of component */
@@ -37,7 +37,7 @@ export type MultiAutocompleteProps = Omit<AutocompleteProps, 'value' | 'onChange
   onChange: (value: string[]) => void
 }
 
-/** Basic custom MultiAutocomplete inside Label Component. For form purposes use MultiAutocompleteField. Input, Dropdown and ListBox props supported. USE CLIENT */
+/** Basic custom MultiAutocomplete inside Label Component. For form purposes use MultiAutocompleteField. TextInput, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiAutocomplete = forwardRef<
   HTMLDivElement,
   PropsWithChildren<MultiAutocompleteProps>
@@ -168,7 +168,7 @@ export const MultiAutocomplete = forwardRef<
               </div>
             )}
             <ChevronIcon className={cn(chevronClass, comboboxZIndex, isOpen && 'rotate-180')} />
-            <Input
+            <TextInput
               id={name}
               className={cn(
                 'AutocompleteCombobox',

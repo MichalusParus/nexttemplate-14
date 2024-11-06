@@ -10,7 +10,7 @@ import {
   inputClass,
   inputSize,
   inputVariant,
-} from '../../InputField/Input/Input.style'
+} from '../../TextField/TextInput/TextInput.style'
 
 type NativeTextAreaProps = Omit<
   TextareaHTMLAttributes<HTMLTextAreaElement>,

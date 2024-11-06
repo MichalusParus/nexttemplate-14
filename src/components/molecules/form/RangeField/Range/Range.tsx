@@ -21,7 +21,7 @@ export type RangeProps = NativeRangeProps &
     onChange: (value: string) => void
   }
 
-/** Basic styled Range Input inside Label Component. For form purposes use RangeField. Default InputHTMLAttributes props supported. */
+/** Basic styled Range TextInput inside Label Component. For form purposes use RangeField. Default InputHTMLAttributes props supported. */
 export const Range = forwardRef<HTMLInputElement, RangeProps>(
   (
     {

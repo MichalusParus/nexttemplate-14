@@ -3,12 +3,12 @@ import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
 import { FormStyleContext } from '../Form/Form'
-import { Input, InputProps } from './Input/Input'
+import { InputProps, TextInput } from './TextInput/TextInput'
 
 export type InputFieldProps = Omit<InputProps, 'value' | 'error' | 'onChange'>
 
-/** Form and style context wrapper for Input component. Default InputHTMLAttributes props supported. USE CLIENT  */
-export const InputField = ({
+/** Form and style context wrapper for TextInput component. Default InputHTMLAttributes props supported. USE CLIENT  */
+export const TextField = ({
   className,
   name,
   label,
@@ -29,7 +29,7 @@ export const InputField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Input
+        <TextInput
           className={className}
           label={label}
           variant={variant || formVariant}
@@ -48,4 +48,4 @@ export const InputField = ({
   )
 }
 
-InputField.displayName = 'InputField'
+TextField.displayName = 'TextField'

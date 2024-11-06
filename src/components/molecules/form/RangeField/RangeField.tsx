@@ -7,7 +7,7 @@ import { Range, RangeProps } from './Range/Range'
 
 export type RangeFieldProps = Omit<RangeProps, 'value' | 'error' | 'onChange'>
 
-/** Form and style context wrapper for Input component. Default InputHTMLAttributes props supported. USE CLIENT */
+/** Form and style context wrapper for TextInput component. Default InputHTMLAttributes props supported. USE CLIENT */
 export const RangeField = ({
   className,
   name,

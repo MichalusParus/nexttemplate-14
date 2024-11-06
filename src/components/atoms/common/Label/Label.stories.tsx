@@ -4,7 +4,7 @@ import {
   inputClass,
   inputSize,
   inputVariant,
-} from '@/components/molecules/form/InputField/Input/Input.style'
+} from '@/components/molecules/form/TextField/TextInput/TextInput.style'
 
 import { Label } from '.'
 
@@ -43,7 +43,7 @@ export const Default: Story = {
         className={`${inputClass} ${inputVariant['outlined']['primary']} ${inputSize['md']}`}
         id="labelStory"
         name="labelStory"
-        placeholder="Random Input"
+        placeholder="Random TextInput"
       />
     ),
   },

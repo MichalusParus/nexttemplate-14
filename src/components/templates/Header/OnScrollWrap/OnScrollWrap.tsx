@@ -35,7 +35,7 @@ export const OnScrollWrap = ({ className, children }: PropsWithChildren<OnScroll
     <div
       className={cn(
         'OnScrollWrap',
-        'transition-position z-40 w-full duration-300',
+        'z-40 w-full transition-position duration-300',
         isTop ? 'fixed top-0' : 'fixed -top-20',
         className,
       )}
