@@ -63,7 +63,7 @@ Other scripts
 
 ParusUI Components are built with focus on minimal size, reusability and customization.
 
-- `Complex` - ParusUI contains 60 components and 7 hooks.
+- `Complex` - ParusUI contains 61 components and 7 hooks.
 
 - `LibraryFree` - ParusUI are lightweighted and fully custom builded with no additional libraries except React Hook Form, Zod and Popper.
 
@@ -71,7 +71,7 @@ ParusUI Components are built with focus on minimal size, reusability and customi
 
 - `TailwindCSS` - Components are build with tailwindCSS for easy customization and fast performance.
 
-- `SVG Icons` - Contains 20 common SVG icons.
+- `SVG Icons` - Contains 24 common SVG icons.
 
 - `Custom Hooks` - Contains 7 usefull custom hooks for easy develompent.
 

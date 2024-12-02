@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { JestFormProvider, JestMockProvider, options } from '../../../../../.storybook/helpers'
+import { getOptions, JestFormProvider, JestMockProvider } from '../../../../../.storybook/helpers'
 import { MultiSelectField } from '.'
 
 describe('MultiSelectField', () => {
@@ -14,7 +14,7 @@ describe('MultiSelectField', () => {
             className="className"
             name="multiSelectTest"
             label="label"
-            options={options}
+            options={getOptions('multiSelectTest', 20)}
           />
         </JestFormProvider>
       </JestMockProvider>,
@@ -35,7 +35,7 @@ describe('MultiSelectField', () => {
             className="className"
             name="multiSelectTest"
             label="label"
-            options={options}
+            options={getOptions('multiSelectTest', 20)}
           />
           <button type="submit" data-testid="submit" />
         </JestFormProvider>
@@ -44,5 +44,23 @@ describe('MultiSelectField', () => {
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByTestId('submit'))
     expect(spy).toHaveBeenCalled()
+  })
+
+  it('description', () => {
+    render(
+      <JestMockProvider>
+        <JestFormProvider fields={['multiSelectTest']} values={[[]]}>
+          <MultiSelectField
+            className="className"
+            name="multiSelectTest"
+            label="label"
+            options={getOptions('multiSelectTest', 20)}
+            labelProps={{ description: 'description' }}
+          />
+          <button type="submit" data-testid="submit" />
+        </JestFormProvider>
+      </JestMockProvider>,
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent('description')
   })
 })

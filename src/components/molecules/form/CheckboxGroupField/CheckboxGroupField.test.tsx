@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { JestFormProvider, options } from '../../../../../.storybook/helpers'
+import { getOptions, JestFormProvider } from '../../../../../.storybook/helpers'
 import { CheckboxGroupField } from '.'
 
 describe('CheckboxGroupField', () => {
@@ -13,14 +13,17 @@ describe('CheckboxGroupField', () => {
           className="className"
           name="checkboxGroupFieldTest"
           label="label"
-          options={options}
+          options={getOptions('checkboxGroupFieldTest', 20)}
         />
       </JestFormProvider>,
     )
     expect(screen.getAllByRole('checkbox')[0]).toBeTruthy()
     expect(screen.getByTestId('CheckboxGroup')).toHaveClass('className')
-    expect(screen.getAllByRole('checkbox')[0]).toHaveAttribute('id', 'value1')
-    expect(screen.getAllByRole('checkbox')[0]).toHaveAttribute('name', 'value1')
+    expect(screen.getAllByRole('checkbox')[0]).toHaveAttribute('id', 'value1checkboxGroupFieldTest')
+    expect(screen.getAllByRole('checkbox')[0]).toHaveAttribute(
+      'name',
+      'value1checkboxGroupFieldTest',
+    )
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
   })
 
@@ -32,7 +35,7 @@ describe('CheckboxGroupField', () => {
           className="className"
           name="checkboxGroupFieldTest"
           label="label"
-          options={options}
+          options={getOptions('checkboxGroupFieldTest', 20)}
         />
         <button type="submit" />
       </JestFormProvider>,
@@ -40,5 +43,21 @@ describe('CheckboxGroupField', () => {
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByRole('button'))
     expect(spy).toHaveBeenCalled()
+  })
+
+  it('description', () => {
+    render(
+      <JestFormProvider fields={['checkboxGroupFieldTest']}>
+        <CheckboxGroupField
+          className="className"
+          name="checkboxGroupFieldTest"
+          label="label"
+          options={getOptions('checkboxGroupFieldTest', 20)}
+          labelProps={{ description: 'description' }}
+        />
+        <button type="submit" />
+      </JestFormProvider>,
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent('description')
   })
 })

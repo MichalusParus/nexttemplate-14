@@ -1,38 +1,68 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 
+import { JestMockProvider } from '../../../../../../.storybook/helpers'
 import { TextArea } from '.'
 
 describe('TextArea', () => {
   it('default', () => {
-    render(<TextArea className="className" name="textareaTest" label="label" onChange={() => {}} />)
-    expect(screen.getByRole('textbox')).toBeTruthy()
-    expect(screen.getByRole('textbox')).toHaveClass('className')
-    expect(screen.getByRole('textbox')).toHaveAttribute('id', 'textareaTest')
-    expect(screen.getByRole('textbox')).toHaveAttribute('name', 'textareaTest')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
+    render(
+      <JestMockProvider>
+        <TextArea
+          className="className"
+          name="textAreaTest"
+          placeholder="placeholder"
+          onChange={() => {}}
+        />
+      </JestMockProvider>,
+    )
+    expect(screen.getByTestId('TextAreaWrap')).toBeTruthy()
+    expect(screen.getByTestId('TextAreaWrap')).toHaveClass('className')
+    expect(screen.getByRole('textbox')).toHaveAttribute('id', 'textAreaTest')
+    expect(screen.getByRole('textbox')).toHaveAttribute('name', 'textAreaTest')
+    expect(screen.getByRole('textbox')).toHaveAttribute('placeholder', 'placeholder')
+  })
+
+  it('value', () => {
+    render(
+      <JestMockProvider>
+        <TextArea name="name" value="value" onChange={() => {}} />
+      </JestMockProvider>,
+    )
+    expect(screen.getByRole('textbox')).toHaveValue('value')
+  })
+
+  it('onChange', () => {
+    const spy = jest.fn()
+    render(
+      <JestMockProvider>
+        <TextArea name="name" value="value" onChange={spy} />
+      </JestMockProvider>,
+    )
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: {
+        value: 'newvalue',
+      },
+    })
+    expect(spy).toHaveBeenCalledWith('newvalue')
   })
 
   it('error', () => {
-    render(<TextArea name="textareaTest" label="label" error="error" onChange={() => {}} />)
-    expect(screen.getByRole('alert')).toHaveTextContent('error')
-  })
-
-  it('description', () => {
     render(
-      <TextArea
-        name="textareaTest"
-        label="label"
-        labelProps={{ description: 'description' }}
-        onChange={() => {}}
-      />,
+      <JestMockProvider>
+        <TextArea name="name" error="error" onChange={() => {}} />
+      </JestMockProvider>,
     )
-    expect(screen.getByRole('alert')).toHaveTextContent('description')
+    expect(screen.getByTestId('TextAreaWrap')).toHaveClass('error')
   })
 
   it('disabled', () => {
-    render(<TextArea name="name" label="label" value="" disabled onChange={() => {}} />)
+    render(
+      <JestMockProvider>
+        <TextArea name="name" value="" disabled onChange={() => {}} />
+      </JestMockProvider>,
+    )
     expect(screen.getByRole('textbox')).toHaveAttribute('disabled', '')
   })
 })

@@ -14,7 +14,6 @@ describe('MultiDatePicker', () => {
         <MultiDatePicker
           className="className"
           name="datePickerTest"
-          label="label"
           value={[date]}
           onChange={() => {}}
         />
@@ -24,46 +23,13 @@ describe('MultiDatePicker', () => {
     expect(screen.getByTestId('Calendar')).toBeTruthy()
     expect(screen.getByTestId('DatePicker')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'datePickerTest')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
-  })
-
-  it('error', () => {
-    const date = new Date()
-    render(
-      <JestMockProvider>
-        <MultiDatePicker
-          name="datePickerTest"
-          label="label"
-          value={[date]}
-          error="error"
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
-    )
-    expect(screen.getByRole('alert')).toHaveTextContent('error')
-  })
-
-  it('description', () => {
-    const date = new Date()
-    render(
-      <JestMockProvider>
-        <MultiDatePicker
-          name="datePickerTest"
-          label="label"
-          value={[date]}
-          labelProps={{ description: 'description' }}
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
-    )
-    expect(screen.getByRole('alert')).toHaveTextContent('description')
   })
 
   it('value', () => {
     const date = new Date()
     render(
       <JestMockProvider>
-        <MultiDatePicker name="datePickerTest" label="label" value={[date]} onChange={() => {}} />
+        <MultiDatePicker name="datePickerTest" value={[date]} onChange={() => {}} />
       </JestMockProvider>,
     )
     fireEvent.click(screen.getByRole('combobox'))
@@ -75,7 +41,7 @@ describe('MultiDatePicker', () => {
     const date = new Date()
     render(
       <JestMockProvider>
-        <MultiDatePicker name="datePickerTest" label="label" value={[date]} onChange={spy} />
+        <MultiDatePicker name="datePickerTest" value={[date]} onChange={spy} />
       </JestMockProvider>,
     )
     fireEvent.click(screen.getByRole('combobox'))
@@ -86,13 +52,7 @@ describe('MultiDatePicker', () => {
   it('disabled', () => {
     render(
       <JestMockProvider>
-        <MultiDatePicker
-          name="datePickerTest"
-          label="label"
-          value={[]}
-          disabled
-          onChange={() => {}}
-        />
+        <MultiDatePicker name="datePickerTest" value={[]} disabled onChange={() => {}} />
       </JestMockProvider>,
     )
     expect(screen.getByRole('combobox')).toHaveAttribute('disabled', '')

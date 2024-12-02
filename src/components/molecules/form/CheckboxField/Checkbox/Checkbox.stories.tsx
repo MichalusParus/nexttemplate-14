@@ -79,6 +79,7 @@ export const Disabled: Story = {
     ...PrimaryDefault.args,
     name: 'checkboxStory5',
     disabled: true,
+    error: 'error',
   },
   render: args => <CheckboxWithHooks {...args} />,
 }

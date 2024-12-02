@@ -12,9 +12,9 @@ export type RangeDatePickerProps = Omit<DatePickerProps, 'value' | 'onChange'> &
   onChange: (value: { start?: Date; end?: Date }) => void
 }
 
-/** Basic custom RangeDatePicker inside Label Component. For form purposes use RangeDatePicker. Combobox, Dropdown and Calendar props supported. USE CLIENT */
+/** Basic custom RangeDatePicker. For form purposes use RangeDatePicker. Button, Dropdown and Calendar props supported. USE CLIENT */
 export const RangeDatePicker = forwardRef<HTMLDivElement, RangeDatePickerProps>(
-  ({ name, label, value, error, calendarProps, onChange, ...rest }, ref) => {
+  ({ name, value, error, calendarProps, onChange, ...rest }, ref) => {
     const handleChange = (date: Date) => {
       if (!value?.start || (value.start && value.end)) {
         onChange({ start: date, end: undefined })
@@ -34,7 +34,6 @@ export const RangeDatePicker = forwardRef<HTMLDivElement, RangeDatePickerProps>(
     return (
       <DatePicker
         name={name}
-        label={label}
         value={value?.start}
         error={error}
         calendarProps={{ ...calendarProps, range: value }}

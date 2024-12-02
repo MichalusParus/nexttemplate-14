@@ -35,4 +35,21 @@ describe('MultiDatePicker', () => {
     fireEvent.click(screen.getByTestId('submit'))
     expect(spy).toHaveBeenCalled()
   })
+
+  it('description', () => {
+    render(
+      <JestMockProvider>
+        <JestFormProvider fields={['datePickerTest']} values={[[]]}>
+          <MultiDatePickerField
+            className="className"
+            name="datePickerTest"
+            label="label"
+            labelProps={{ description: 'description' }}
+          />
+          <button type="submit" data-testid="submit" />
+        </JestFormProvider>
+      </JestMockProvider>,
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent('description')
+  })
 })

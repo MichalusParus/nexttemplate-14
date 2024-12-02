@@ -38,4 +38,19 @@ describe('RangeField', () => {
     fireEvent.click(screen.getByRole('button'))
     expect(spy).toHaveBeenCalled()
   })
+
+  it('description', () => {
+    render(
+      <JestFormProvider fields={['rangeTest']}>
+        <RangeField
+          className="className"
+          name="rangeTest"
+          label="label"
+          labelProps={{ description: 'description' }}
+        />
+        <button type="submit" />
+      </JestFormProvider>,
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent('description')
+  })
 })

@@ -15,10 +15,11 @@ import z from 'zod'
 export const textContent =
   'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Corrupti ex totam blanditiis maiores itaque earum eius, delectus perferendis commodi at cupiditate quos veritatis dolore, quas optio provident ipsam debitis dignissimos eos, modi perspiciatis aspernatur aperiam nemo magnam. Quasi ex at ad eaque distinctio porro natus vitae praesentium. Libero quidem vel deleniti possimus repellendus. In optio sint accusantium quidem aspernatur qui ut necessitatibus cum quam ratione veritatis beatae eos rerum vero natus atque, ea repellat! Nemo assumenda eos accusantium voluptatum itaque alias architecto quo magni repudiandae rem libero dignissimos, tempore adipisci et officia dolor voluptate odit iusto, repellat dolore, vitae sequi? Vitae eveniet totam doloremque necessitatibus, quo cumque quam harum pariatur rem praesentium possimus natus voluptate distinctio cupiditate ut officiis. Quibusdam cumque illo iusto dolorum harum tempora voluptate consequuntur ab? Accusantium officiis molestias, at non qui alias fugiat tempore mollitia assumenda quia ipsam quae! Reprehenderit, labore quas adipisci architecto, commodi laborum iusto odio obcaecati mollitia fugit qui debitis. Fuga quasi iusto id fugiat, alias officiis reprehenderit impedit soluta culpa ipsam, tenetur voluptas dolorum perferendis est, libero eaque qui ipsum. Neque aliquam esse explicabo commodi beatae, velit accusamus, magni modi quia suscipit odit nobis nemo aut iusto rerum ex delectus architecto exercitationem atque illum. Facere saepe quidem eaque dolores et expedita pariatur, unde eum dicta soluta! Quod mollitia enim, consectetur reprehenderit vitae asperiores quo. In eum quo neque nesciunt at voluptas, labore, blanditiis hic pariatur corporis tenetur voluptatum maxime doloribus, expedita beatae nulla temporibus alias suscipit obcaecati nostrum ex cupiditate. Sint repudiandae quod asperiores? Cupiditate ipsam pariatur, eos consectetur doloremque similique, dicta nobis veritatis explicabo officiis quos, deleniti sed asperiores repudiandae vero! Rem nihil impedit ducimus dolore molestiae, ex doloribus saepe aspernatur autem atque alias, sit quaerat quasi totam repudiandae delectus cumque! Esse nihil eligendi saepe repudiandae nulla cum id ea. Dolore recusandae veritatis quidem, accusantium optio dignissimos, vero facere architecto reprehenderit eius provident sapiente soluta expedita amet omnis quibusdam dolorem sint itaque. Dolorum laboriosam reprehenderit placeat iste repudiandae quod non esse? Quae repellat assumenda iste. Nulla odit quos deleniti voluptate nemo delectus accusantium porro, ducimus vel dolore ipsam velit minima maiores dolor! Consequatur necessitatibus vitae unde vel, aut aliquam repudiandae ad ullam minus dolores magni distinctio nemo expedita odit, quisquam voluptas reprehenderit, doloremque asperiores? Modi doloremque quidem voluptates perspiciatis dolore perferendis officiis, voluptas reprehenderit laboriosam ex dignissimos! Quam dolore exercitationem consequuntur eveniet atque recusandae dignissimos autem laboriosam aperiam. Ratione, aspernatur rerum, recusandae laboriosam magni numquam delectus distinctio saepe quo autem, unde quibusdam sed optio at consequuntur fugit. Minima, aliquam autem corporis nostrum nemo eius dolore alias placeat eum ratione expedita quas, perspiciatis reprehenderit in quisquam! Repudiandae illo qui voluptas quos quo iste, eaque, amet suscipit alias omnis quam minus reprehenderit, eum ea ullam voluptatum labore dignissimos eveniet nesciunt! Vel enim asperiores eum illo ullam! Quis animi recusandae laudantium ad excepturi, culpa velit. Molestias corporis quaerat blanditiis illo veritatis, dolore eius natus eveniet unde fugiat cupiditate, quos deserunt odio, cum culpa omnis odit voluptatum. Voluptatum eius iusto, quis distinctio voluptatibus fugiat non.'
 
-export const options = new Array(20).fill(null).map((opt, index) => ({
-  label: index % 3 === 0 ? 'Very long label' + (index + 1) : 'Label' + (index + 1),
-  value: 'value' + (index + 1),
-}))
+export const getOptions = (name?: string, length?: number) =>
+  new Array(length || 20).fill(null).map((opt, index) => ({
+    label: index % 3 === 0 ? 'Very long label' + (index + 1) : 'Label' + (index + 1),
+    value: 'value' + (index + 1) + (name ? name : ''),
+  }))
 
 export const optionsWithContent = new Array(20).fill(null).map((opt, index) => ({
   label: index % 3 === 0 ? 'very long label' + (index + 1) : 'label' + (index + 1),
@@ -58,7 +59,7 @@ export const MenuLinks = ({
     <>
       <MenuItemRadioGroup
         name={'menuRadioStory' + index}
-        options={options.slice(0, 5).map(o => ({ label: o.label, value: o.value + index }))}
+        options={getOptions(`menuRadioStory${index}`, 5)}
         value={radioValue}
         variant={variant}
         color={color}
@@ -280,6 +281,7 @@ export const formSchema = z.object({
   inputStory: z.string().min(1),
   numberStory: z.number().min(1),
   searchStory: z.string().min(1),
+  passwordStory: z.string().min(1),
   dateStory: z.date(),
   dateRangeStory: z.object({ start: z.date(), end: z.date() }),
   dateMultiStory: z.array(z.date()).min(1),
@@ -372,12 +374,14 @@ export const JestFormProvider = ({
   className,
   fields,
   values,
+  required,
   onSubmit = () => {},
   children,
 }: PropsWithChildren<{
   className?: string
   fields: string[]
   values?: any[]
+  required?: boolean
   onSubmit?: (v: any) => void
 }>) => {
   const zodFields = Object.fromEntries(fields.map(field => [field, z.unknown().optional()]))

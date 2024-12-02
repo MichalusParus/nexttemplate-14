@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { options, optionsWithContent } from '../../../../../../.storybook/helpers'
+import { getOptions, optionsWithContent } from '../../../../../../.storybook/helpers'
 import { RadioGroup, RadioGroupProps } from './RadioGroup'
 
 const meta: Meta<typeof RadioGroup> = {
@@ -30,15 +30,14 @@ export const PrimaryDefault: Story = {
   args: {
     className: '',
     name: 'radioGroupStory',
-    label: 'Label',
     value: '',
-    options: options.slice(0, 5),
+    options: getOptions('radioGroupStory', 5),
     column: false,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
     error: '',
-    labelProps: undefined,
+    disabled: false,
     onChange: () => {},
   },
   render: args => <RadioGroupWithHooks {...args} />,
@@ -48,6 +47,8 @@ export const Column: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'radioGroupStory2',
+    options: getOptions('radioGroupStory2', 5),
+
     column: true,
   },
   render: args => <RadioGroupWithHooks {...args} />,
@@ -67,6 +68,7 @@ export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'radioGroupStory4',
+    options: getOptions('radioGroupStory4', 5),
     error: 'error',
   },
   render: args => <RadioGroupWithHooks {...args} />,
@@ -76,6 +78,7 @@ export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'radioGroupStory5',
+    options: getOptions('radioGroupStory5', 5),
     disabled: true,
   },
   render: args => <RadioGroupWithHooks {...args} />,

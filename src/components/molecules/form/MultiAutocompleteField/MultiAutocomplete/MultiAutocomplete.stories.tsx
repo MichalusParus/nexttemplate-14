@@ -5,7 +5,7 @@ import { Button } from '@/components/atoms/common/Button'
 import { useFilterData } from '@/utils/hooks/useFilterData'
 import { debounce } from '@/utils/utils'
 
-import { options } from '../../../../../../.storybook/helpers'
+import { getOptions } from '../../../../../../.storybook/helpers'
 import { MultiAutocomplete, MultiAutocompleteProps } from './MultiAutocomplete'
 
 const meta: Meta<typeof MultiAutocomplete> = {
@@ -19,7 +19,6 @@ const meta: Meta<typeof MultiAutocomplete> = {
     options: {
       control: false,
     },
-
     children: {
       control: false,
     },
@@ -55,7 +54,9 @@ const MultiAutocompleteWithFetch = (args: MultiAutocompleteProps) => {
   const debouncedFn = debounce(getOptions, 500)
 
   return (
-    <div className={`flex h-96 justify-center ${args.placement === 'top' ? 'items-end' : ''}`}>
+    <div
+      className={`flex h-96 items-center justify-center ${args.placement === 'top' ? 'items-end' : ''}`}
+    >
       <MultiAutocomplete
         {...args}
         options={options}
@@ -73,7 +74,7 @@ const ClientMultiAutocomplete = (args: MultiAutocompleteProps) => {
   const { filteredData, setFilter } = useFilterData(args.options)
 
   return (
-    <div className={'flex h-80 justify-center'}>
+    <div className={'flex h-96 items-center justify-center'}>
       <MultiAutocomplete
         {...args}
         options={filteredData}
@@ -90,11 +91,10 @@ type Story = StoryObj<typeof MultiAutocomplete>
 
 export const PrimaryDefault: Story = {
   args: {
-    className: 'className',
+    className: 'w-96',
     name: 'MultiAutocompleteStory',
-    label: 'Label',
     value: [],
-    options: options.slice(0, 5),
+    options: [],
     expandable: false,
     variant: 'outlined',
     color: 'primary',
@@ -103,11 +103,10 @@ export const PrimaryDefault: Story = {
     placement: 'bottom',
     isLoading: false,
     error: '',
-    comboboxProps: undefined,
+    buttonProps: undefined,
     inputProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
-    labelProps: undefined,
     onInputChange: () => {},
     onChange: value => console.log(value),
   },
@@ -118,6 +117,7 @@ export const ClientFilter: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'clientMultiAutocompleteStory',
+    options: getOptions('clientMultiAutocompleteStory', 5),
   },
   render: args => <ClientMultiAutocomplete {...args} />,
 }
@@ -125,7 +125,8 @@ export const ClientFilter: Story = {
 export const Expendable: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'clientMultiAutocompleteStory',
+    name: 'clientMultiAutocompleteStory2',
+    options: getOptions('clientMultiAutocompleteStory2', 5),
     expandable: true,
   },
   render: args => <ClientMultiAutocomplete {...args} />,
@@ -143,8 +144,8 @@ export const Top: Story = {
 export const Scroll: Story = {
   args: {
     ...PrimaryDefault.args,
-    options: options,
     name: 'MultiAutocompleteStory3',
+    options: getOptions('MultiAutocompleteStory3', 20),
   },
   render: args => <ClientMultiAutocomplete {...args} />,
 }

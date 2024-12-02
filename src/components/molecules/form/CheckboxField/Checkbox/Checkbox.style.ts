@@ -186,18 +186,18 @@ export const switchLeft = {
 
 export const disabledVariant = {
   text: cn(
-    '[&.[&.disabled]]:border-transparent [&.[&.disabled]]:bg-dark-300 [&.disabled]:border-transparent [&.disabled]:bg-dark-200',
+    '[&.disabled]:border-transparent [&.disabled]:border-transparent [&.disabled]:bg-dark-200 [&.disabled]:bg-dark-300 [&.disabled]:shadow-none',
     'dark:[&.disabled]:bg-dark-200 dark:[&.disabled]:text-dark-500 dark:[&.disabled]:opacity-50',
   ),
   outlined: cn(
-    '[&.[&.disabled]]:border-dark-400 [&.[&.disabled]]:bg-dark-300 [&.disabled]:border-dark-500 [&.disabled]:bg-dark-200',
+    '[&.disabled]:border-dark-400 [&.disabled]:border-dark-500 [&.disabled]:bg-dark-200 [&.disabled]:bg-dark-300 [&.disabled]:shadow-none',
     'dark:[&.disabled]:border-dark-500 dark:[&.disabled]:bg-dark-200 dark:[&.disabled]:text-dark-500 dark:[&.disabled]:opacity-50',
   ),
   contained: cn(
-    '[&.[&.disabled]]:border-dark-400 [&.[&.disabled]]:bg-dark-400 [&.disabled]:border-dark-500 [&.disabled]:bg-dark-500',
+    '[&.disabled]:border-dark-400 [&.disabled]:border-dark-500 [&.disabled]:bg-dark-400 [&.disabled]:bg-dark-500 [&.disabled]:shadow-none',
     'dark:[&.disabled]:border-dark-500 dark:[&.disabled]:bg-dark-500 dark:[&.disabled]:text-dark-500 dark:[&.disabled]:opacity-50',
   ),
   switch: cn(
-    'disabled:border-dark-500 disabled:bg-dark-200 [&.disabled]:border-dark-400 [&.disabled]:bg-dark-300',
+    'disabled:border-dark-500 disabled:bg-dark-200 disabled:shadow-none [&.disabled]:border-dark-400 [&.disabled]:bg-dark-300',
   ),
 }

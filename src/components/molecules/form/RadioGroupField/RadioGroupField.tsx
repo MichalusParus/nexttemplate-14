@@ -2,12 +2,16 @@
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
+import { Label } from '@/components/atoms/common/Label'
+import { FieldProps } from '@/components/types'
+
 import { FormStyleContext } from '../Form/Form'
 import { RadioGroup, RadioGroupProps } from './RadioGroup/RadioGroup'
 
-export type RadioGroupFieldProps = Omit<RadioGroupProps, 'value' | 'error' | 'onChange'>
+export type RadioGroupFieldProps = Omit<RadioGroupProps, 'value' | 'error' | 'onChange'> &
+  FieldProps
 
-/** Form and style context wrapper for RadioGroup component. Default InputHTMLAttributes props supported. USE CLIENT */
+/** Form and style context wrapper for RadioGroup inside fake Label component. Default InputHTMLAttributes and Label props supported. USE CLIENT */
 export const RadioGroupField = ({
   className,
   name,
@@ -22,27 +26,31 @@ export const RadioGroupField = ({
     control,
     formState: { errors },
   } = useFormContext()
-  const { formVariant, formColor, formSize, formCollapsed } = useContext(FormStyleContext)
+  const { formVariant, formColor, formSize } = useContext(FormStyleContext)
 
   return (
     <Controller
       name={name}
       control={control}
       render={({ field }) => (
-        <RadioGroup
-          className={className}
+        <Label
+          name={name}
           label={label}
-          variant={variant || formVariant}
-          color={color || formColor}
-          size={size || formSize}
+          size={size}
           error={(errors[name]?.message as string) || undefined}
-          labelProps={{
-            ...labelProps,
-            collapsed: labelProps?.collapsed || formCollapsed,
-          }}
-          {...field}
-          {...rest}
-        />
+          {...labelProps}
+          fakeLabel
+        >
+          <RadioGroup
+            className={className}
+            variant={variant || formVariant}
+            color={color || formColor}
+            size={size || formSize}
+            error={(errors[name]?.message as string) || undefined}
+            {...field}
+            {...rest}
+          />
+        </Label>
       )}
     />
   )

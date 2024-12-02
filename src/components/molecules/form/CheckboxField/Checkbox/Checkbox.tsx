@@ -26,7 +26,7 @@ type NativeCheckboxProps = Omit<
 >
 
 export type CheckboxProps = NativeCheckboxProps &
-  FieldProps &
+  Pick<FieldProps, 'label'> &
   InputProps &
   Omit<StyleProps, 'variant'> & {
     /** style variant of component */
@@ -130,7 +130,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             <input
               id={name}
               className={cn(
-                'absolute left-0 top-0 z-10 cursor-pointer opacity-0',
+                'absolute left-0 top-0 z-10 cursor-pointer opacity-0 disabled:cursor-not-allowed',
                 checkboxSize[size],
               )}
               type="checkbox"

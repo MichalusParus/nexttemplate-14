@@ -12,9 +12,9 @@ export type MultiDatePickerProps = Omit<DatePickerProps, 'value' | 'onChange'> &
   onChange: (value: Date[]) => void
 }
 
-/** Basic custom MultiDatePicker inside Label Component. For form purposes use MultiDatePicker. Combobox, Dropdown and Calendar props supported. USE CLIENT */
+/** Basic custom uncontroled MultiDatePicker. For form purposes use MultiDatePicker. Button, Dropdown and Calendar props supported. USE CLIENT */
 export const MultiDatePicker = forwardRef<HTMLDivElement, MultiDatePickerProps>(
-  ({ name, label, value, error, calendarProps, onChange, ...rest }, ref) => {
+  ({ name, value, error, calendarProps, onChange, ...rest }, ref) => {
     const handleChange = (date: Date) => {
       if (value.some(v => isSameDay(v, date))) {
         onChange(value.filter(v => !isSameDay(v, date)))
@@ -26,7 +26,6 @@ export const MultiDatePicker = forwardRef<HTMLDivElement, MultiDatePickerProps>(
     return (
       <DatePicker
         name={name}
-        label={label}
         value={value?.[0]}
         error={error}
         calendarProps={{ ...calendarProps, multiValue: value }}

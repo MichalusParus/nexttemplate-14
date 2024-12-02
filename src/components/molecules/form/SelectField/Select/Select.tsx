@@ -23,16 +23,14 @@ import { ChevronIcon, XIcon } from '@/components/atoms/icons'
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
 import { Tooltip } from '@/components/molecules/popovers/Tooltip'
-import { FieldProps, InputProps, OptionType, StyleProps } from '@/components/types'
+import { InputProps, OptionType, StyleProps } from '@/components/types'
 import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 
-import { Label } from '../../../../atoms/common/Label/Label'
 import { selectClass, selectDisabledVariant } from './Select.style'
 import { SelectValue } from './SelectValue'
 
 export type SelectProps = Pick<ButtonProps, 'disabled'> &
-  FieldProps &
   InputProps &
   StyleProps & {
     /** position of dropdown */
@@ -46,7 +44,7 @@ export type SelectProps = Pick<ButtonProps, 'disabled'> &
     /** optional for enabling expandable type of multiselect */
     expandable?: boolean
     /** for passing aditional props to combobox */
-    comboboxProps?: Partial<ButtonProps>
+    buttonProps?: Partial<ButtonProps>
     /** for passing aditional props to dropdown */
     dropdownProps?: Partial<DropdownProps>
     /** for passing aditional props to listbox */
@@ -57,14 +55,13 @@ export type SelectProps = Pick<ButtonProps, 'disabled'> &
     onClear?: (e: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => void
   }
 
-/** Basic custom Select. For form purposes use SelectField. Label, Combobox, Dropdown and ListBox props supported. USE CLIENT */
+/** Basic custom uncontroled Select. For form purposes use SelectField. Button, Dropdown and ListBox props supported. USE CLIENT */
 export const Select = forwardRef<HTMLDivElement, SelectProps>(
   (
     {
       className,
       name,
-      label,
-      placeholder = label,
+      placeholder = '',
       value,
       multiValue,
       options,
@@ -75,10 +72,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       placement = 'bottom',
       disabled,
       error,
-      comboboxProps = {},
+      buttonProps = {},
       dropdownProps = {},
       listboxProps = {},
-      labelProps = {},
       onChange,
       onClear,
     },
@@ -128,120 +124,113 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         const isOverflow =
           selectValueRef?.current?.scrollWidth > selectValueRef?.current?.clientWidth
         setIsTruncate(isOverflow)
+      } else if (!multiValue?.length) {
+        setIsTruncate(false)
       }
     }, [multiValue])
 
     return (
-      <Label
-        className={cn('', labelProps.className)}
-        name={name}
-        label={label}
-        size={size}
-        error={error}
-        {...filterOutKeys(labelProps, ['className'])}
+      <div
+        className={cn('Select', 'relative w-full', className)}
+        ref={componentRef}
+        data-testid="Select"
       >
         <div
-          className={cn('Select', 'relative w-full', className)}
-          ref={componentRef}
-          data-testid="Select"
+          className={cn(
+            'SelectCombobox',
+            disabled && 'disabled',
+            error && 'border-error-800 shadow-error',
+            isOpen && 'selected z-combobox',
+            selectClass,
+            buttonVariant[variant][color],
+            buttonContentSize[size],
+            buttonIconSize[size],
+            selectDisabledVariant[variant],
+            buttonProps.className,
+          )}
+          role="combobox"
+          tabIndex={disabled ? -1 : 0}
+          aria-labelledby={'label-' + name}
+          aria-describedby={`${name}-description`}
+          aria-disabled={disabled}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-controls={name}
+          aria-owns={name}
+          onClick={() => !disabled && setIsOpen(prev => !prev)}
+          onKeyDown={e =>
+            !disabled && (e.code === 'Enter' || e.code === 'Space')
+              ? setIsOpen(prev => !prev)
+              : null
+          }
+          {...filterOutKeys(buttonProps, ['className'])}
         >
-          <div
-            className={cn(
-              'SelectCombobox',
-              disabled && 'disabled',
-              error && 'border-error-800 shadow-error',
-              isOpen && 'selected z-combobox',
-              selectClass,
-              buttonVariant[variant][color],
-              buttonContentSize[size],
-              buttonIconSize[size],
-              selectDisabledVariant[variant],
-              comboboxProps.className,
-            )}
-            role="combobox"
-            tabIndex={disabled ? -1 : 0}
-            aria-labelledby={'label-' + name}
-            aria-describedby={`${name}-description`}
-            aria-disabled={disabled}
-            aria-expanded={isOpen}
-            aria-haspopup="listbox"
-            aria-controls={name}
-            aria-owns={name}
-            onClick={() => !disabled && setIsOpen(prev => !prev)}
-            onKeyDown={e =>
-              !disabled && (e.code === 'Enter' || e.code === 'Space')
-                ? setIsOpen(prev => !prev)
-                : null
-            }
-            {...filterOutKeys(comboboxProps, ['className'])}
-          >
-            <SelectValue
-              selectedOptions={selectedOptions}
-              multiValue={multiValue}
-              placeholder={placeholder}
-              variant={variant}
-              color={color}
-              size={size}
-              expandable={expandable}
-              handleOnChange={handleOnChange}
-              ref={selectValueRef}
-            />
-            <div className="relative flex items-center gap-1 bg-inherit">
-              <div
-                className={cn(
-                  'TruncateWrap',
-                  'invisible absolute -left-8 top-0 h-full w-8 bg-inherit text-xl',
-                  isTruncate && 'visible',
-                )}
-              >
-                ...
-              </div>
-              {Boolean(multiValue?.length) && onClear && (
-                <Tooltip title={t('clear')} placement="top">
-                  <div
-                    className={cn('ClearButton', 'shrink-0')}
-                    role="button"
-                    aria-label={t('clear')}
-                    tabIndex={0}
-                    onClick={e => onClear(e)}
-                    onKeyDown={e => (e.code === 'Enter' || e.code === 'Space' ? onClear(e) : null)}
-                  >
-                    <XIcon />
-                  </div>
-                </Tooltip>
-              )}
-              <ChevronIcon
-                className={cn('text-inherit transition-transform', isOpen && 'rotate-180')}
-              />
-            </div>
-          </div>
-          <Dropdown
-            isOpen={isOpen}
-            parentRef={componentRef}
-            placement={placement}
+          <SelectValue
+            selectedOptions={selectedOptions}
+            multiValue={multiValue}
+            placeholder={placeholder}
             variant={variant}
             color={color}
-            modal
-            onClose={handleClose}
-            scrollShadowProps={{ disableHorizontal: true }}
-            ref={dropdownRef}
-            {...dropdownProps}
-          >
-            <ListBox
-              name={name}
-              value={multiValue ? multiValue : [value]}
-              options={sortedOptions}
-              variant={variant}
-              color={color}
-              size={size}
-              hideCheckbox={!multiValue}
-              aria-hidden={!isOpen}
-              onClick={handleOnChange}
-              {...listboxProps}
+            size={size}
+            expandable={expandable}
+            handleOnChange={handleOnChange}
+            ref={selectValueRef}
+          />
+          <div className="relative flex items-center gap-1 bg-inherit">
+            <div
+              className={cn(
+                'TruncateWrap',
+                'invisible absolute -left-8 top-0 h-full w-8 bg-inherit text-xl',
+                isTruncate && 'visible',
+              )}
+            >
+              ...
+            </div>
+            {Boolean(multiValue?.length) && onClear && (
+              <Tooltip title={t('clear')} placement="top">
+                <div
+                  className={cn('ClearButton', 'shrink-0')}
+                  role="button"
+                  aria-label={t('clear')}
+                  tabIndex={0}
+                  onClick={e => onClear(e)}
+                  onKeyDown={e => (e.code === 'Enter' || e.code === 'Space' ? onClear(e) : null)}
+                >
+                  <XIcon />
+                </div>
+              </Tooltip>
+            )}
+            <ChevronIcon
+              className={cn('text-inherit transition-transform', isOpen && 'rotate-180')}
             />
-          </Dropdown>
+          </div>
         </div>
-      </Label>
+        <Dropdown
+          isOpen={isOpen}
+          parentRef={componentRef}
+          placement={placement}
+          variant={variant}
+          color={color}
+          modal
+          onClose={handleClose}
+          scrollShadowProps={{ disableHorizontal: true }}
+          ref={dropdownRef}
+          {...dropdownProps}
+        >
+          <ListBox
+            name={name}
+            value={multiValue ? multiValue : [value]}
+            options={sortedOptions}
+            variant={variant}
+            color={color}
+            size={size}
+            hideCheckbox={!multiValue}
+            aria-hidden={!isOpen}
+            onClick={handleOnChange}
+            {...listboxProps}
+          />
+        </Dropdown>
+      </div>
     )
   },
 )

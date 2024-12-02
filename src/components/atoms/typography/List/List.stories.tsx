@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { options, textContent, titleSizeVariants } from '../../../../../.storybook/helpers'
+import { getOptions, textContent, titleSizeVariants } from '../../../../../.storybook/helpers'
 import { CheckIcon } from '../../icons'
 import { Li, List } from './List'
 
@@ -22,7 +22,7 @@ const meta: Meta<typeof List> = {
   },
 }
 
-const listContent = options.map(o => o.label)
+const listContent = getOptions().map(o => o.label)
 
 export default meta
 type Story = StoryObj<typeof List>

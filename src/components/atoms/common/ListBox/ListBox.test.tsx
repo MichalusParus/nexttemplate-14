@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
-import { JestMockProvider, options } from '../../../../../.storybook/helpers'
+import { getOptions, JestMockProvider } from '../../../../../.storybook/helpers'
 import { ListBox } from '.'
 
 describe('ListBox', () => {
@@ -13,7 +13,7 @@ describe('ListBox', () => {
           className="className"
           name="listboxTest"
           value={[]}
-          options={options}
+          options={getOptions('listboxTest', 20)}
           onClick={() => {}}
         />
       </JestMockProvider>,
@@ -29,8 +29,8 @@ describe('ListBox', () => {
         <ListBox
           className="className"
           name="listboxTest"
-          value={['value1']}
-          options={options}
+          value={['value1listboxTest']}
+          options={getOptions('listboxTest', 20)}
           onClick={() => {}}
         />
       </JestMockProvider>,

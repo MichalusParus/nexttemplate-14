@@ -86,15 +86,13 @@ export const GridFooter = forwardRef<HTMLDivElement, GridFooterProps>(
               className={cn('RowsPerPageSelect', 'items-center', pages.length <= 1 && 'hidden')}
               name="rowsPerPage"
               placement="top"
-              label="rows:"
               placeholder="Rows"
               value={String(selectedRowsPerPage)}
               options={rowPerPageOptions}
               variant={variant}
               color={color}
               size={size}
-              labelProps={{ hideError: true, width: 'w-44', collapsed: 'never' }}
-              comboboxProps={{
+              buttonProps={{
                 className: 'border-transparent dark:border-transparent',
                 tabIndex: -1,
               }}

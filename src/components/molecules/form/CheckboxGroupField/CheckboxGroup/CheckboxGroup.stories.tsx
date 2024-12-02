@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { options, optionsWithContent } from '../../../../../../.storybook/helpers'
+import { getOptions, optionsWithContent } from '../../../../../../.storybook/helpers'
 import { CheckboxGroup, CheckboxGroupProps } from './CheckboxGroup'
 
 const meta: Meta<typeof CheckboxGroup> = {
@@ -30,16 +30,14 @@ export const PrimaryDefault: Story = {
   args: {
     className: '',
     name: 'checkboxGroupStory',
-    label: 'Label',
-    content: undefined,
     value: [],
-    options: options.slice(0, 5),
+    options: getOptions('checkboxGroupStory', 5),
     column: false,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
     error: '',
-    labelProps: undefined,
+    disabled: false,
     onChange: value => console.log(value),
   },
   render: args => <CheckboxGroupWithHooks {...args} />,
@@ -49,6 +47,8 @@ export const Column: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'checkboxGroupStory2',
+    options: getOptions('checkboxGroupStory2', 5),
+
     column: true,
   },
   render: args => <CheckboxGroupWithHooks {...args} />,
@@ -68,6 +68,8 @@ export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'checkboxGroupStory4',
+    options: getOptions('checkboxGroupStory4', 5),
+
     error: 'error',
   },
   render: args => <CheckboxGroupWithHooks {...args} />,
@@ -77,6 +79,8 @@ export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'checkboxGroupStory5',
+    options: getOptions('checkboxGroupStory5', 5),
+
     disabled: true,
   },
   render: args => <CheckboxGroupWithHooks {...args} />,

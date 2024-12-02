@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { Range, RangeProps } from './Range'
+import { RangeInput, RangeProps } from './RangeInput'
 
-const meta: Meta<typeof Range> = {
-  title: 'Molecules/Form/Range',
-  component: Range,
+const meta: Meta<typeof RangeInput> = {
+  title: 'Molecules/Form/RangeInput',
+  component: RangeInput,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
@@ -14,23 +14,23 @@ const meta: Meta<typeof Range> = {
 
 const RangeWithHooks = (args: RangeProps) => {
   const [value, setValue] = useState<string>()
-  return <Range {...args} value={value} onChange={value => setValue(value)} />
+  return <RangeInput {...args} value={value} onChange={value => setValue(value)} />
 }
 
 export default meta
-type Story = StoryObj<typeof Range>
+type Story = StoryObj<typeof RangeInput>
 
 export const PrimaryDefault: Story = {
   args: {
     className: '',
     name: 'rangeStory',
-    label: 'Label:',
+    value: undefined,
     min: 0,
     max: 100,
     color: 'primary',
     size: 'md',
     error: '',
-    labelProps: undefined,
+    disabled: false,
     onChange: v => console.log(v),
   },
   render: args => <RangeWithHooks {...args} />,

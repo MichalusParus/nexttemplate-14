@@ -5,7 +5,7 @@ export const rangeWrapClass = cn(
 )
 
 export const rangeClass = cn(
-  'h-2 w-full cursor-pointer appearance-none rounded-lg bg-dark-950/25',
+  'h-2 w-full cursor-pointer appearance-none rounded-lg bg-dark-950/25 disabled:shadow-none',
   '[&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full',
   'disabled:cursor-not-allowed disabled:opacity-50 [&::-moz-range-thumb]:disabled:bg-dark-500 [&::-webkit-slider-thumb]:disabled:bg-dark-500',
 )

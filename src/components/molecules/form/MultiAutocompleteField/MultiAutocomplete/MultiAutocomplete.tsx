@@ -10,7 +10,7 @@ export type MultiAutocompleteProps = Omit<AutocompleteProps, 'value' | 'onChange
   onChange: (value: string[]) => void
 }
 
-/** Basic custom MultiAutocomplete inside Label Component. For form purposes use MultiAutocompleteField. TextInput, Dropdown and ListBox props supported. USE CLIENT */
+/** Basic custom uncontroled MultiAutocomplete. For form purposes use MultiAutocompleteField. Button, TextInput, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiAutocomplete = forwardRef<
   HTMLDivElement,
   PropsWithChildren<MultiAutocompleteProps>

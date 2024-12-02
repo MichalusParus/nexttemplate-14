@@ -2,12 +2,15 @@
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
+import { Label } from '@/components/atoms/common/Label'
+
+import { DatePickerFieldProps } from '../DatePickerField'
 import { FormStyleContext } from '../Form/Form'
-import { RangeDatePicker, RangeDatePickerProps } from './RangeDatePicker/RangeDatePicker'
+import { RangeDatePicker } from './RangeDatePicker/RangeDatePicker'
 
-export type RangeDatePickerFieldProps = Omit<RangeDatePickerProps, 'value' | 'error' | 'onChange'>
+export type RangeDatePickerFieldProps = DatePickerFieldProps
 
-/** Form and style context wrapper for RangeDatePicker component. Combobox, Dropdown and Calendar props supported. USE CLIENT */
+/** Form and style context wrapper for RangeDatePicker inside Label component. Label, Button, Dropdown and Calendar props supported. USE CLIENT */
 export const RangeDatePickerField = ({
   className,
   name,
@@ -22,27 +25,30 @@ export const RangeDatePickerField = ({
     control,
     formState: { errors },
   } = useFormContext()
-  const { formVariant, formColor, formSize, formCollapsed } = useContext(FormStyleContext)
+  const { formVariant, formColor, formSize } = useContext(FormStyleContext)
 
   return (
     <Controller
       name={name}
       control={control}
       render={({ field }) => (
-        <RangeDatePicker
-          className={className}
+        <Label
+          name={name}
           label={label}
-          variant={variant || formVariant}
-          color={color || formColor}
-          size={size || formSize}
+          size={size}
           error={(errors[name]?.message as string) || undefined}
-          labelProps={{
-            ...labelProps,
-            collapsed: labelProps?.collapsed || formCollapsed,
-          }}
-          {...field}
-          {...rest}
-        />
+          {...labelProps}
+        >
+          <RangeDatePicker
+            className={className}
+            variant={variant || formVariant}
+            color={color || formColor}
+            size={size || formSize}
+            error={(errors[name]?.message as string) || undefined}
+            {...field}
+            {...rest}
+          />
+        </Label>
       )}
     />
   )

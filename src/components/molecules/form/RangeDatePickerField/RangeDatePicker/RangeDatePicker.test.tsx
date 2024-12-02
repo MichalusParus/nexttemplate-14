@@ -13,7 +13,6 @@ describe('RangeDatePicker', () => {
         <RangeDatePicker
           className="className"
           name="datePickerTest"
-          label="label"
           value={{ start: undefined, end: undefined }}
           onChange={() => {}}
         />
@@ -23,43 +22,14 @@ describe('RangeDatePicker', () => {
     expect(screen.getByTestId('Calendar')).toBeTruthy()
     expect(screen.getByTestId('DatePicker')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'datePickerTest')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
   })
-  it('error', () => {
-    render(
-      <JestMockProvider>
-        <RangeDatePicker
-          name="datePickerTest"
-          label="label"
-          value={{ start: undefined, end: undefined }}
-          error="error"
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
-    )
-    expect(screen.getByRole('alert')).toHaveTextContent('error')
-  })
-  it('description', () => {
-    render(
-      <JestMockProvider>
-        <RangeDatePicker
-          name="datePickerTest"
-          label="label"
-          value={{ start: undefined, end: undefined }}
-          labelProps={{ description: 'description' }}
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
-    )
-    expect(screen.getByRole('alert')).toHaveTextContent('description')
-  })
+
   it('value', () => {
     const date = new Date()
     render(
       <JestMockProvider>
         <RangeDatePicker
           name="datePickerTest"
-          label="label"
           value={{ start: date, end: date }}
           onChange={() => {}}
         />
@@ -70,13 +40,13 @@ describe('RangeDatePicker', () => {
       `${format(date, 'dd.M.y')} - ${format(date, 'dd.M.y')}`,
     )
   })
+
   it('onChange', () => {
     const spy = jest.fn()
     render(
       <JestMockProvider>
         <RangeDatePicker
           name="datePickerTest"
-          label="label"
           value={{ start: undefined, end: undefined }}
           onChange={spy}
         />
@@ -86,12 +56,12 @@ describe('RangeDatePicker', () => {
     fireEvent.click(screen.getAllByRole('button')[4])
     expect(spy).toHaveBeenCalled()
   })
+
   it('disabled', () => {
     render(
       <JestMockProvider>
         <RangeDatePicker
           name="datePickerTest"
-          label="label"
           value={{ start: undefined, end: undefined }}
           disabled
           onChange={() => {}}

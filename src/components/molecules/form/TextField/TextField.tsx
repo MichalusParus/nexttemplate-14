@@ -10,7 +10,7 @@ import { TextInput, TextInputProps } from './TextInput/TextInput'
 
 export type InputFieldProps = Omit<TextInputProps, 'value' | 'error' | 'onChange'> & FieldProps
 
-/** Form and style context wrapper for TextInput component. Default InputHTMLAttributes props supported. USE CLIENT  */
+/** Form and style context wrapper for TextInput inside Label component. Default InputHTMLAttributes and Label props supported. USE CLIENT  */
 export const TextField = ({
   className,
   name,

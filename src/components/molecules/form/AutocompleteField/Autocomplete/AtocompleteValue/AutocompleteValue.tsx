@@ -30,17 +30,17 @@ export const AutocompleteValue = forwardRef<
       <div
         className={cn(
           'SelectedOptionsWrap',
-          'flex max-w-full gap-2 truncate bg-inherit',
+          'flex w-full gap-2 truncate bg-inherit',
           expandable && 'flex-wrap',
         )}
         data-testid="SelectedOptionsWrap"
       >
-        <div
-          className={cn('flex max-w-full items-center gap-2 truncate', expandable && 'flex-wrap')}
-          ref={ref}
-        >
-          {Boolean(multiValue) &&
-            selectedOptions.map(option => (
+        {Boolean(selectedOptions.length) && Boolean(multiValue) && (
+          <div
+            className={cn('flex items-center gap-2 truncate', expandable && 'flex-wrap')}
+            ref={ref}
+          >
+            {selectedOptions.map(option => (
               <Chip
                 key={option.value}
                 className="border-none [&>.ChipInnerWrap]:p-0"
@@ -67,7 +67,8 @@ export const AutocompleteValue = forwardRef<
                 </div>
               </Chip>
             ))}
-        </div>
+          </div>
+        )}
         {children}
       </div>
     )

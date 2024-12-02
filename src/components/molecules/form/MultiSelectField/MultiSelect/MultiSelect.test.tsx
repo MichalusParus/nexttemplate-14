@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { JestMockProvider, options } from '../../../../../../.storybook/helpers'
+import { getOptions, JestMockProvider } from '../../../../../../.storybook/helpers'
 import { MultiSelect } from '.'
 
 describe('MultiSelect', () => {
@@ -12,9 +12,8 @@ describe('MultiSelect', () => {
         <MultiSelect
           className="className"
           name="multiSelectTest"
-          label="label"
           value={[]}
-          options={options}
+          options={getOptions('multiSelectTest', 20)}
           onChange={() => {}}
         />
       </JestMockProvider>,
@@ -23,39 +22,6 @@ describe('MultiSelect', () => {
     expect(screen.getByRole('listbox')).toBeTruthy()
     expect(screen.getByTestId('Select')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'multiSelectTest')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
-  })
-
-  it('error', () => {
-    render(
-      <JestMockProvider>
-        <MultiSelect
-          name="multiSelectTest"
-          label="label"
-          value={[]}
-          options={options}
-          error="error"
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
-    )
-    expect(screen.getByRole('alert')).toHaveTextContent('error')
-  })
-
-  it('description', () => {
-    render(
-      <JestMockProvider>
-        <MultiSelect
-          name="multiSelectTest"
-          label="label"
-          value={[]}
-          options={options}
-          labelProps={{ description: 'description' }}
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
-    )
-    expect(screen.getByRole('alert')).toHaveTextContent('description')
   })
 
   it('value', () => {
@@ -63,9 +29,8 @@ describe('MultiSelect', () => {
       <JestMockProvider>
         <MultiSelect
           name="multiSelectTest"
-          label="label"
-          value={['value1']}
-          options={options}
+          value={['value1multiSelectTest']}
+          options={getOptions('multiSelectTest', 20)}
           onChange={() => {}}
         />
       </JestMockProvider>,
@@ -81,9 +46,8 @@ describe('MultiSelect', () => {
       <JestMockProvider>
         <MultiSelect
           name="multiSelectTest"
-          label="label"
           value={[]}
-          options={options}
+          options={getOptions('multiSelectTest', 20)}
           onChange={spy}
         />
       </JestMockProvider>,
@@ -98,9 +62,8 @@ describe('MultiSelect', () => {
       <JestMockProvider>
         <MultiSelect
           name="multiSelectTest"
-          label="label"
           value={[]}
-          options={options}
+          options={getOptions('multiSelectTest', 20)}
           disabled
           onChange={() => {}}
         />

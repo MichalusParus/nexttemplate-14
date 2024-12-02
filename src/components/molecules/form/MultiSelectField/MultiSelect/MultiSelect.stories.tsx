@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { options, optionsWithContent } from '../../../../../../.storybook/helpers'
+import { getOptions, optionsWithContent } from '../../../../../../.storybook/helpers'
 import { MultiSelect, MultiSelectProps } from './MultiSelect'
 
 const meta: Meta<typeof MultiSelect> = {
@@ -21,7 +21,9 @@ const meta: Meta<typeof MultiSelect> = {
 const MultiSelectWithHooks = (args: MultiSelectProps) => {
   const [value, setValue] = useState<string[]>([])
   return (
-    <div className={`flex h-80 justify-center ${args.placement === 'top' ? 'items-end' : ''}`}>
+    <div
+      className={`flex h-80 items-center justify-center ${args.placement === 'top' ? 'items-end' : ''}`}
+    >
       <MultiSelect {...args} value={value} onChange={setValue} />
     </div>
   )
@@ -32,22 +34,20 @@ type Story = StoryObj<typeof MultiSelect>
 
 export const PrimaryDefault: Story = {
   args: {
-    className: '',
+    className: 'w-96',
     name: 'multiSelectStory',
-    label: 'Label',
     placeholder: 'MultiSelect',
     value: [],
-    options: options.slice(0, 5),
+    options: getOptions('multiSelectStory', 5),
     expandable: false,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
     placement: 'bottom',
     error: '',
-    comboboxProps: undefined,
+    buttonProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
-    labelProps: undefined,
     onChange: value => console.log(value),
   },
   render: args => <MultiSelectWithHooks {...args} />,
@@ -57,6 +57,8 @@ export const Expandable: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'multiSelectStory2',
+    options: getOptions('multiSelectStory2', 5),
+
     expandable: true,
   },
   render: args => <MultiSelectWithHooks {...args} />,
@@ -67,6 +69,7 @@ export const Top: Story = {
     ...PrimaryDefault.args,
     placement: 'top',
     name: 'multiSelectStory3',
+    options: getOptions('multiSelectStory3', 5),
   },
   render: args => <MultiSelectWithHooks {...args} />,
 }
@@ -74,7 +77,7 @@ export const Top: Story = {
 export const Scroll: Story = {
   args: {
     ...PrimaryDefault.args,
-    options: options,
+    options: getOptions('multiSelectStory4', 20),
     name: 'multiSelectStory4',
   },
   render: args => <MultiSelectWithHooks {...args} />,
@@ -94,6 +97,7 @@ export const Error: Story = {
     ...PrimaryDefault.args,
     error: 'error',
     name: 'multiSelectStory6',
+    options: getOptions('multiSelectStory6', 5),
   },
   render: args => <MultiSelectWithHooks {...args} />,
 }
@@ -102,6 +106,7 @@ export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'multiSelectStory7',
+    options: getOptions('multiSelectStory7', 5),
     disabled: true,
   },
   render: args => <MultiSelectWithHooks {...args} />,

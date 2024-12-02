@@ -1,10 +1,9 @@
 'use client'
 import { forwardRef, InputHTMLAttributes } from 'react'
 
-import { FieldProps, OptionType, StyleProps } from '@/components/types'
+import { InputProps, OptionType, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import { Label } from '../../../../atoms/common/Label/Label'
 import { afterClass, disableVariant, radioClass, radioSize, radioVariant } from './RadioGroup.style'
 
 type NativeRadioGroupProps = Omit<
@@ -13,7 +12,7 @@ type NativeRadioGroupProps = Omit<
 >
 
 export type RadioGroupProps = NativeRadioGroupProps &
-  FieldProps &
+  InputProps &
   StyleProps & {
     /** value of radiogroup */
     value?: string
@@ -25,13 +24,12 @@ export type RadioGroupProps = NativeRadioGroupProps &
     onChange: (value: string) => void
   }
 
-/** Basic styled RadioGroup inside Label Component. For form purposes use RadioGroupField. Default InputHTMLAttributes props supported. USE CLIENT */
+/** Basic styled uncontroled RadioGroup. For form purposes use RadioGroupField. Default InputHTMLAttributes props supported. USE CLIENT */
 export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
   (
     {
       className,
       name,
-      label,
       value,
       options,
       column,
@@ -40,50 +38,47 @@ export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
       size = 'md',
       disabled,
       error,
-      labelProps = {},
       onChange,
       ...rest
     },
     ref,
   ) => {
     return (
-      <Label name={name} label={label} size={size} error={error} {...labelProps} fakeLabel>
-        <div
-          className={cn('RadioGroupWrap', 'flex flex-wrap', column && 'flex-col', className)}
-          role="radiogroup"
-        >
-          {options.map(({ value: radioValue, label: radioLabel, content }) => (
-            <div
-              key={radioValue}
-              className={cn('Radio', 'relative flex items-center', radioSize[size])}
-              data-testid="Radio"
-            >
-              <input
-                className={cn(
-                  radioClass,
-                  radioVariant[variant][color],
-                  disableVariant[variant],
-                  afterClass,
-                  error && 'border-error-800 shadow-error',
-                )}
-                id={radioValue}
-                name={name}
-                type="radio"
-                value={radioValue}
-                onChange={e => onChange(e.target.value)}
-                checked={Boolean(value === radioValue)}
-                aria-describedby={`${name}-description`}
-                disabled={disabled}
-                ref={ref}
-                {...rest}
-              />
-              <label htmlFor={radioValue} className={cn('Label')}>
-                {content || radioLabel}
-              </label>
-            </div>
-          ))}
-        </div>
-      </Label>
+      <div
+        className={cn('RadioGroupWrap', 'flex flex-wrap', column && 'flex-col', className)}
+        role="radiogroup"
+      >
+        {options.map(({ value: radioValue, label: radioLabel, content }) => (
+          <div
+            key={radioValue}
+            className={cn('Radio', 'relative flex items-center', radioSize[size])}
+            data-testid="Radio"
+          >
+            <input
+              className={cn(
+                radioClass,
+                radioVariant[variant][color],
+                disableVariant[variant],
+                afterClass,
+                error && 'border-error-800 shadow-error',
+              )}
+              id={radioValue}
+              name={name}
+              type="radio"
+              value={radioValue}
+              onChange={e => onChange(e.target.value)}
+              checked={Boolean(value === radioValue)}
+              aria-describedby={`${name}-description`}
+              disabled={disabled}
+              ref={ref}
+              {...rest}
+            />
+            <label htmlFor={radioValue} className={cn('Label')}>
+              {content || radioLabel}
+            </label>
+          </div>
+        ))}
+      </div>
     )
   },
 )

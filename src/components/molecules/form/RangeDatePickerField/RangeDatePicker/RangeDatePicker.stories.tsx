@@ -33,7 +33,6 @@ export const PrimaryDefault: Story = {
   args: {
     className: '',
     name: 'datePickerStory',
-    label: 'Label',
     placeholder: 'Placeholder',
     value: { start: undefined, end: undefined },
     variant: 'outlined',
@@ -44,7 +43,6 @@ export const PrimaryDefault: Story = {
     buttonProps: undefined,
     dropdownProps: undefined,
     calendarProps: undefined,
-    labelProps: undefined,
     onChange: value => console.log(value),
   },
   render: args => <RangeDatePickerWithHooks {...args} />,

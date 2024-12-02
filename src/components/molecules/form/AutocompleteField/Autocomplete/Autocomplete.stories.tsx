@@ -5,7 +5,7 @@ import { Button } from '@/components/atoms/common/Button'
 import { useFilterData } from '@/utils/hooks/useFilterData'
 import { debounce } from '@/utils/utils'
 
-import { options } from '../../../../../../.storybook/helpers'
+import { getOptions } from '../../../../../../.storybook/helpers'
 import { Autocomplete, AutocompleteProps } from './Autocomplete'
 
 const meta: Meta<typeof Autocomplete> = {
@@ -54,7 +54,9 @@ const AutocompleteWithFetch = (args: PropsWithChildren<AutocompleteProps>) => {
   const debouncedFn = debounce(getOptions, 500)
 
   return (
-    <div className={`flex h-96 justify-center ${args.placement === 'top' ? 'items-end' : ''}`}>
+    <div
+      className={`flex h-96 items-center justify-center ${args.placement === 'top' ? 'items-end' : ''}`}
+    >
       <Autocomplete
         {...args}
         options={options}
@@ -72,7 +74,7 @@ const ClientAutocomplete = (args: PropsWithChildren<AutocompleteProps>) => {
   const { filteredData, setFilter } = useFilterData(args.options)
 
   return (
-    <div className={'flex h-80 justify-center'}>
+    <div className={'flex h-80 items-center justify-center'}>
       <Autocomplete
         {...args}
         options={filteredData}
@@ -89,24 +91,23 @@ type Story = StoryObj<typeof Autocomplete>
 
 export const PrimaryDefault: Story = {
   args: {
-    className: '',
+    className: 'w-96',
     name: 'autocompleteStory',
-    label: 'Label',
     placeholder: 'placeholder',
     value: '',
     multiValue: undefined,
-    options: options.slice(0, 5),
+    options: [],
     variant: 'outlined',
     color: 'primary',
     size: 'md',
     placement: 'bottom',
     isLoading: false,
     error: '',
-    comboboxProps: undefined,
+    disabled: false,
+    buttonProps: undefined,
     inputProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
-    labelProps: undefined,
     onInputChange: value => console.log('onInputChange', value),
     onChange: value => console.log('onChange', value),
   },
@@ -117,6 +118,7 @@ export const ClientFilter: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'clientAutocompleteStory',
+    options: getOptions('clientAutocompleteStory', 5),
   },
   render: args => <ClientAutocomplete {...args} />,
 }
@@ -133,8 +135,8 @@ export const Top: Story = {
 export const Scroll: Story = {
   args: {
     ...PrimaryDefault.args,
-    options: options,
     name: 'autocompleteStory3',
+    options: getOptions('autocompleteStory3', 20),
   },
   render: args => <ClientAutocomplete {...args} />,
 }

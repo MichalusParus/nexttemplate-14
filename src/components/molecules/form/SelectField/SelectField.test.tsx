@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { JestFormProvider, JestMockProvider, options } from '../../../../../.storybook/helpers'
+import { getOptions, JestFormProvider, JestMockProvider } from '../../../../../.storybook/helpers'
 import { SelectField } from '.'
 
 describe('SelectField', () => {
@@ -10,7 +10,12 @@ describe('SelectField', () => {
     render(
       <JestMockProvider>
         <JestFormProvider fields={['selectTest']}>
-          <SelectField className="className" name="selectTest" label="label" options={options} />
+          <SelectField
+            className="className"
+            name="selectTest"
+            label="label"
+            options={getOptions('selectTest', 20)}
+          />
         </JestFormProvider>
       </JestMockProvider>,
     )
@@ -26,7 +31,12 @@ describe('SelectField', () => {
     render(
       <JestMockProvider>
         <JestFormProvider fields={['selectTest']} onSubmit={spy}>
-          <SelectField className="className" name="selectTest" label="label" options={options} />
+          <SelectField
+            className="className"
+            name="selectTest"
+            label="label"
+            options={getOptions('selectTest', 20)}
+          />
           <button type="submit" data-testid="submit" />
         </JestFormProvider>
       </JestMockProvider>,
@@ -34,5 +44,23 @@ describe('SelectField', () => {
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByTestId('submit'))
     expect(spy).toHaveBeenCalled()
+  })
+
+  it('description', () => {
+    render(
+      <JestMockProvider>
+        <JestFormProvider fields={['selectTest']}>
+          <SelectField
+            className="className"
+            name="selectTest"
+            label="label"
+            options={getOptions('selectTest', 20)}
+            labelProps={{ description: 'description' }}
+          />
+          <button type="submit" data-testid="submit" />
+        </JestFormProvider>
+      </JestMockProvider>,
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent('description')
   })
 })

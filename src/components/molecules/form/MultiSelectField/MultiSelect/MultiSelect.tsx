@@ -13,7 +13,7 @@ export type MultiSelectProps = Omit<
   onChange: (value: string[]) => void
 }
 
-/** Basic custom MultiSelect inside Label Component. For form purposes use MultiSelectField. Label, Dropdown and ListBox props supported. USE CLIENT */
+/** Basic custom uncontroled MultiSelect. For form purposes use MultiSelectField. Button, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
   ({ value, onChange, ...rest }, ref) => {
     const handleOnChange = useCallback(

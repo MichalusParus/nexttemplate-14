@@ -42,4 +42,21 @@ describe('SearchField', () => {
     fireEvent.click(screen.getByTestId('submit'))
     expect(spy).toHaveBeenCalled()
   })
+
+  it('description', () => {
+    render(
+      <JestMockProvider>
+        <JestFormProvider fields={['searchTest']}>
+          <SearchField
+            className="className"
+            name="searchTest"
+            label="label"
+            labelProps={{ description: 'description' }}
+          />
+          <button type="submit" data-testid="submit" />
+        </JestFormProvider>
+      </JestMockProvider>,
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent('description')
+  })
 })

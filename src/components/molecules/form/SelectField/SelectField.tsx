@@ -2,12 +2,15 @@
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
+import { Label } from '@/components/atoms/common/Label'
+import { FieldProps } from '@/components/types'
+
 import { FormStyleContext } from '../Form/Form'
 import { Select, SelectProps } from './Select/Select'
 
-export type SelectFieldProps = Omit<SelectProps, 'value' | 'error' | 'onChange'>
+export type SelectFieldProps = Omit<SelectProps, 'value' | 'error' | 'onChange'> & FieldProps
 
-/** Form and style context wrapper for Select component. Combobox, Dropdown and ListBox props supported. USE CLIENT */
+/** Form and style context wrapper for Select inside Label component. Label, Button, Dropdown and ListBox props supported. USE CLIENT */
 export const SelectField = ({
   className,
   name,
@@ -22,27 +25,30 @@ export const SelectField = ({
     control,
     formState: { errors },
   } = useFormContext()
-  const { formVariant, formColor, formSize, formCollapsed } = useContext(FormStyleContext)
+  const { formVariant, formColor, formSize } = useContext(FormStyleContext)
 
   return (
     <Controller
       name={name}
       control={control}
       render={({ field }) => (
-        <Select
-          className={className}
+        <Label
+          name={name}
           label={label}
-          variant={variant || formVariant}
-          color={color || formColor}
-          size={size || formSize}
+          size={size}
           error={(errors[name]?.message as string) || undefined}
-          labelProps={{
-            ...labelProps,
-            collapsed: labelProps?.collapsed || formCollapsed,
-          }}
-          {...field}
-          {...rest}
-        />
+          {...labelProps}
+        >
+          <Select
+            className={className}
+            variant={variant || formVariant}
+            color={color || formColor}
+            size={size || formSize}
+            error={(errors[name]?.message as string) || undefined}
+            {...field}
+            {...rest}
+          />
+        </Label>
       )}
     />
   )

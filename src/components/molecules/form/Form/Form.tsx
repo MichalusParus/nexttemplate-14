@@ -15,8 +15,6 @@ export type FormProps<T extends FieldValues> = NativeFormProps &
     name: string
     /** useForm hook */
     form: UseFormReturn<T>
-    /** set collapsed state of label. Default is "flex-col md:flex-row" */
-    collapsed?: 'always' | 'never' | 'default'
     /** onSubmit function */
     onSubmit: (values: T) => void
   }
@@ -25,12 +23,10 @@ export const FormStyleContext = createContext<{
   formVariant?: StyleProps['variant']
   formColor?: StyleProps['color']
   formSize?: StyleProps['size']
-  formCollapsed?: 'always' | 'never' | 'default'
 }>({
   formVariant: undefined,
   formColor: undefined,
   formSize: undefined,
-  formCollapsed: undefined,
 })
 
 /** Form with useForm and style context provider for form fields. Default FormHTMLAttributes props supported. USE CLIENT */
@@ -41,7 +37,6 @@ export const Form = <T extends FieldValues>({
   variant,
   color,
   size,
-  collapsed,
   children,
   onSubmit,
   ...rest
@@ -53,7 +48,6 @@ export const Form = <T extends FieldValues>({
           formVariant: variant,
           formColor: color,
           formSize: size,
-          formCollapsed: collapsed,
         }}
       >
         <form

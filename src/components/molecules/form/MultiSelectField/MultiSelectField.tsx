@@ -2,12 +2,15 @@
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
+import { Label } from '@/components/atoms/common/Label'
+import { FieldProps } from '@/components/types'
+
 import { FormStyleContext } from '../Form/Form'
 import { MultiSelect, MultiSelectProps } from './MultiSelect/MultiSelect'
 
-type MultiSelectFieldProps = Omit<MultiSelectProps, 'value' | 'error' | 'onChange'>
+type MultiSelectFieldProps = Omit<MultiSelectProps, 'value' | 'error' | 'onChange'> & FieldProps
 
-/** Form and style context wrapper for MultiSelect component. Combobox, Dropdown and ListBox props supported. USE CLIENT */
+/** Form and style context wrapper for MultiSelect inside Label component. Label, Button, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiSelectField = ({
   className,
   name,
@@ -22,24 +25,30 @@ export const MultiSelectField = ({
     control,
     formState: { errors },
   } = useFormContext()
-  const { formVariant, formColor, formSize, formCollapsed } = useContext(FormStyleContext)
+  const { formVariant, formColor, formSize } = useContext(FormStyleContext)
 
   return (
     <Controller
       name={name}
       control={control}
       render={({ field }) => (
-        <MultiSelect
-          className={className}
+        <Label
+          name={name}
           label={label}
-          variant={variant || formVariant}
-          color={color || formColor}
-          size={size || formSize}
+          size={size}
           error={(errors[name]?.message as string) || undefined}
-          labelProps={{ collapsed: labelProps?.collapsed || formCollapsed }}
-          {...field}
-          {...rest}
-        />
+          {...labelProps}
+        >
+          <MultiSelect
+            className={className}
+            variant={variant || formVariant}
+            color={color || formColor}
+            size={size || formSize}
+            error={(errors[name]?.message as string) || undefined}
+            {...field}
+            {...rest}
+          />
+        </Label>
       )}
     />
   )

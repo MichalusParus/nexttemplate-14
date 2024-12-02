@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { options } from '../../../../../../.storybook/helpers'
+import { getOptions } from '../../../../../../.storybook/helpers'
 import { RadioGroup } from '.'
 
 describe('RadioGroup', () => {
@@ -11,46 +11,16 @@ describe('RadioGroup', () => {
       <RadioGroup
         className="className"
         name="radioGroupTest"
-        label="label"
-        options={options}
+        options={getOptions('radioGroupTest', 20)}
         onChange={() => {}}
       />,
     )
     expect(screen.getByRole('radiogroup')).toBeTruthy()
     expect(screen.getByRole('radiogroup')).toHaveClass('className')
-    expect(screen.getAllByRole('radio')[0]).toHaveAttribute('id', 'value1')
+    expect(screen.getAllByRole('radio')[0]).toHaveAttribute('id', 'value1radioGroupTest')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('name', 'radioGroupTest')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('type', 'radio')
     expect(screen.getAllByTestId('Radio')[0]).toHaveTextContent('label1')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
-  })
-
-  it('error', () => {
-    render(
-      <RadioGroup
-        className="className"
-        name="textareaTest"
-        label="label"
-        options={options}
-        error="error"
-        onChange={() => {}}
-      />,
-    )
-    expect(screen.getByRole('alert')).toHaveTextContent('error')
-  })
-
-  it('description', () => {
-    render(
-      <RadioGroup
-        className="className"
-        name="textareaTest"
-        label="label"
-        options={options}
-        labelProps={{ description: 'description' }}
-        onChange={() => {}}
-      />,
-    )
-    expect(screen.getByRole('alert')).toHaveTextContent('description')
   })
 
   it('value', () => {
@@ -58,14 +28,13 @@ describe('RadioGroup', () => {
       <RadioGroup
         className="className"
         name="textareaTest"
-        label="label"
-        value={'value1'}
-        options={options}
+        value={'value1radioGroupTest'}
+        options={getOptions('radioGroupTest', 20)}
         error="error"
         onChange={() => {}}
       />,
     )
-    expect(screen.getAllByRole('radio')[0]).toHaveAttribute('value', 'value1')
+    expect(screen.getAllByRole('radio')[0]).toHaveAttribute('value', 'value1radioGroupTest')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('checked', '')
   })
 
@@ -75,9 +44,8 @@ describe('RadioGroup', () => {
       <RadioGroup
         className="className"
         name="textareaTest"
-        label="label"
         value={'value1'}
-        options={options}
+        options={getOptions('radioGroupTest', 20)}
         error="error"
         onChange={spy}
       />,
@@ -91,9 +59,8 @@ describe('RadioGroup', () => {
       <RadioGroup
         className="className"
         name="textareaTest"
-        label="label"
         value={'value1'}
-        options={options}
+        options={getOptions('radioGroupTest', 20)}
         error="error"
         onChange={() => {}}
         disabled

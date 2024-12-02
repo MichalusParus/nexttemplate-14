@@ -80,15 +80,15 @@ export const afterClass = cn(
 
 export const disableVariant = {
   text: cn(
-    'disabled:cursor-not-allowed disabled:border-transparent disabled:bg-dark-200 disabled:text-dark-500 disabled:opacity-50',
+    'disabled:cursor-not-allowed disabled:border-transparent disabled:bg-dark-200 disabled:text-dark-500 disabled:opacity-50 disabled:shadow-none',
     'dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:opacity-50',
   ),
   outlined: cn(
-    'disabled:cursor-not-allowed disabled:border-dark-500 disabled:bg-dark-200 disabled:text-dark-500 disabled:opacity-50',
+    'disabled:cursor-not-allowed disabled:border-dark-500 disabled:bg-dark-200 disabled:text-dark-500 disabled:opacity-50 disabled:shadow-none',
     'dark:disabled:border-dark-500 dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:opacity-50',
   ),
   contained: cn(
-    'disabled:cursor-not-allowed disabled:border-dark-500 disabled:bg-dark-500 disabled:text-dark-500 disabled:opacity-50',
+    'disabled:cursor-not-allowed disabled:border-dark-500 disabled:bg-dark-500 disabled:text-dark-500 disabled:opacity-50 disabled:shadow-none',
   ),
 }
 

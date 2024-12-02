@@ -2,12 +2,15 @@
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
+import { Label } from '@/components/atoms/common/Label'
+import { FieldProps } from '@/components/types'
+
 import { FormStyleContext } from '../Form/Form'
-import { Range, RangeProps } from './Range/Range'
+import { RangeInput, RangeProps } from './RangeInput/RangeInput'
 
-export type RangeFieldProps = Omit<RangeProps, 'value' | 'error' | 'onChange'>
+export type RangeFieldProps = Omit<RangeProps, 'value' | 'error' | 'onChange'> & FieldProps
 
-/** Form and style context wrapper for TextInput component. Default InputHTMLAttributes props supported. USE CLIENT */
+/** Form and style context wrapper for RangeInput inside Label component. Default InputHTMLAttributes and Label props supported. USE CLIENT */
 export const RangeField = ({
   className,
   name,
@@ -21,26 +24,29 @@ export const RangeField = ({
     control,
     formState: { errors },
   } = useFormContext()
-  const { formColor, formSize, formCollapsed } = useContext(FormStyleContext)
+  const { formColor, formSize } = useContext(FormStyleContext)
 
   return (
     <Controller
       name={name}
       control={control}
       render={({ field }) => (
-        <Range
-          className={className}
+        <Label
+          name={name}
           label={label}
-          color={color || formColor}
-          size={size || formSize}
+          size={size}
           error={(errors[name]?.message as string) || undefined}
-          labelProps={{
-            ...labelProps,
-            collapsed: labelProps?.collapsed || formCollapsed,
-          }}
-          {...field}
-          {...rest}
-        />
+          {...labelProps}
+        >
+          <RangeInput
+            className={className}
+            color={color || formColor}
+            size={size || formSize}
+            error={(errors[name]?.message as string) || undefined}
+            {...field}
+            {...rest}
+          />
+        </Label>
       )}
     />
   )

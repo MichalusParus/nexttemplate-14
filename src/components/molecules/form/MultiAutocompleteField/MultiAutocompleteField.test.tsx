@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { JestFormProvider, JestMockProvider, options } from '../../../../../.storybook/helpers'
+import { getOptions, JestFormProvider, JestMockProvider } from '../../../../../.storybook/helpers'
 import { MultiAutocompleteField } from '.'
 
 describe('MultiAutocompleteField', () => {
@@ -14,7 +14,7 @@ describe('MultiAutocompleteField', () => {
             className="className"
             name="MultiAutocompleteTest"
             label="label"
-            options={options}
+            options={getOptions('MultiAutocompleteTest', 20)}
             onInputChange={() => {}}
           />
         </JestFormProvider>
@@ -36,7 +36,7 @@ describe('MultiAutocompleteField', () => {
             className="className"
             name="MultiAutocompleteTest"
             label="label"
-            options={options}
+            options={getOptions('MultiAutocompleteTest', 20)}
             onInputChange={() => {}}
           />
           <button type="submit" data-testid="submit" />
@@ -46,5 +46,24 @@ describe('MultiAutocompleteField', () => {
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByTestId('submit'))
     expect(spy).toHaveBeenCalled()
+  })
+
+  it('description', () => {
+    render(
+      <JestMockProvider>
+        <JestFormProvider fields={['MultiAutocompleteTest']} values={[[]]}>
+          <MultiAutocompleteField
+            className="className"
+            name="MultiAutocompleteTest"
+            label="label"
+            options={getOptions('MultiAutocompleteTest', 20)}
+            onInputChange={() => {}}
+            labelProps={{ description: 'description' }}
+          />
+          <button type="submit" data-testid="submit" />
+        </JestFormProvider>
+      </JestMockProvider>,
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent('description')
   })
 })

@@ -13,7 +13,7 @@ export const RegisterForm = () => {
   const { form, onSubmit } = useRegisterForm()
 
   return (
-    <Form name="registerForm" form={form} collapsed="always" onSubmit={onSubmit}>
+    <Form name="registerForm" form={form} onSubmit={onSubmit}>
       <TextField
         name="email"
         label={t('Auth.email')}

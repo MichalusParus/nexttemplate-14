@@ -8,14 +8,12 @@ import { Calendar } from '@/components/molecules/common/Calendar'
 import { CalendarProps } from '@/components/molecules/common/Calendar/Calendar'
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
-import { FieldProps, StyleProps } from '@/components/types'
+import { InputProps, StyleProps } from '@/components/types'
 import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 
-import { Label } from '../../../../atoms/common/Label/Label'
-
 export type DatePickerProps = Pick<ButtonProps, 'name' | 'disabled'> &
-  FieldProps &
+  InputProps &
   StyleProps & {
     /** position of dropdown */
     placement?: 'bottom-start' | 'top-start'
@@ -31,13 +29,12 @@ export type DatePickerProps = Pick<ButtonProps, 'name' | 'disabled'> &
     onChange: (value: Date) => void
   }
 
-/** Basic custom DatePicker inside Label Component. For form purposes use DatePickerField. Button, Dropdown and Calendar props supported. USE CLIENT */
+/** Basic custom uncontroled DatePicker. For form purposes use DatePickerField. Button, Dropdown and Calendar props supported. USE CLIENT */
 export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
   (
     {
       className,
       name,
-      label,
       placeholder,
       value,
       variant = 'outlined',
@@ -49,7 +46,6 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       buttonProps = {},
       dropdownProps = {},
       calendarProps = {},
-      labelProps = {},
       onChange,
     },
     ref,
@@ -107,73 +103,71 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     }
 
     return (
-      <Label name={name} label={label} size={size} error={error} {...labelProps}>
-        <div
-          className={cn('DatePicker', 'relative w-full', className)}
-          ref={componentRef}
-          data-testid="DatePicker"
+      <div
+        className={cn('DatePicker', 'relative w-full', className)}
+        ref={componentRef}
+        data-testid="DatePicker"
+      >
+        <Button
+          className={cn(
+            'DatePickerCombobox',
+            'w-full',
+            isOpen && 'selected z-combobox',
+            error && 'error',
+            buttonProps.className,
+          )}
+          type="button"
+          variant={variant}
+          color={color}
+          size={size}
+          disabled={disabled}
+          hideShadow
+          disableUpperCase
+          role="combobox"
+          aria-labelledby={'label-' + name}
+          aria-describedby={`${name}-description`}
+          aria-expanded={isOpen}
+          aria-haspopup="true"
+          aria-controls={name}
+          aria-owns={name}
+          onClick={() => setIsOpen(prev => !prev)}
+          {...filterOutKeys(buttonProps, ['className'])}
         >
-          <Button
-            className={cn(
-              'DatePickerCombobox',
-              'w-full',
-              isOpen && 'selected z-combobox',
-              error && 'error',
-              buttonProps.className,
-            )}
-            type="button"
+          <div className={cn('ComboboxInnerWrap', 'flex w-full justify-between gap-2')}>
+            <div className="truncate">{getComboboxTitle()}</div>
+            <CalendarIcon className={cn('text-inherit transition-transform')} />
+          </div>
+        </Button>
+        <Dropdown
+          isOpen={isOpen}
+          parentRef={componentRef}
+          placement={placement}
+          variant={variant}
+          color={color}
+          padding="p-0"
+          width={'w-auto'}
+          height="max-h-full"
+          scrollShadowProps={{
+            className: '[&_.ContentWrap]:px-0',
+          }}
+          onClose={handleClose}
+          ref={dropdownRef}
+          {...dropdownProps}
+        >
+          <Calendar
+            name={name}
+            date={value}
             variant={variant}
             color={color}
             size={size}
-            disabled={disabled}
-            hideShadow
-            disableUpperCase
-            role="combobox"
-            aria-labelledby={'label-' + name}
-            aria-describedby={`${name}-description`}
-            aria-expanded={isOpen}
-            aria-haspopup="true"
-            aria-controls={name}
-            aria-owns={name}
-            onClick={() => setIsOpen(prev => !prev)}
-            {...filterOutKeys(buttonProps, ['className'])}
-          >
-            <div className={cn('ComboboxInnerWrap', 'flex w-full justify-between gap-2')}>
-              <div className="truncate">{getComboboxTitle()}</div>
-              <CalendarIcon className={cn('text-inherit transition-transform')} />
-            </div>
-          </Button>
-          <Dropdown
-            isOpen={isOpen}
-            parentRef={componentRef}
-            placement={placement}
-            variant={variant}
-            color={color}
-            padding="p-0"
-            width={'w-auto'}
-            height="max-h-full"
-            scrollShadowProps={{
-              className: '[&_.ContentWrap]:px-0',
-            }}
-            onClose={handleClose}
-            ref={dropdownRef}
-            {...dropdownProps}
-          >
-            <Calendar
-              name={name}
-              date={value}
-              variant={variant}
-              color={color}
-              size={size}
-              enableUseFocus={isOpen}
-              aria-hidden={!isOpen}
-              paperProps={{ className: 'border-none' }}
-              onChange={handleOnChange}
-              {...calendarProps}
-            />
-          </Dropdown>
-        </div>
-      </Label>
+            enableUseFocus={isOpen}
+            aria-hidden={!isOpen}
+            paperProps={{ className: 'border-none' }}
+            onChange={handleOnChange}
+            {...calendarProps}
+          />
+        </Dropdown>
+      </div>
     )
   },
 )

@@ -1,15 +1,16 @@
 'use client'
 import { forwardRef, TextareaHTMLAttributes } from 'react'
 
-import { FieldProps, StyleProps } from '@/components/types'
+import { InputProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import { Label } from '../../../../atoms/common/Label/Label'
 import {
   disabledVariant,
   inputClass,
+  inputErrorClass,
   inputSize,
   inputVariant,
+  inputWrapClass,
 } from '../../TextField/TextInput/TextInput.style'
 
 type NativeTextAreaProps = Omit<
@@ -18,7 +19,7 @@ type NativeTextAreaProps = Omit<
 >
 
 export type TextAreaProps = NativeTextAreaProps &
-  FieldProps &
+  InputProps &
   StyleProps & {
     /** value of textarea */
     value?: string
@@ -26,48 +27,49 @@ export type TextAreaProps = NativeTextAreaProps &
     onChange: (value: string) => void
   }
 
-/** Basic styled uncontroled TextArea inside Label Component. For form purposes use TextAreaField. Default TextareaHTMLAttributes props supported. USE CLIENT */
+/** Basic styled uncontroled TextArea. For form purposes use TextAreaField. Default TextareaHTMLAttributes props supported. USE CLIENT */
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     {
       className,
       name,
-      label,
       value,
       variant = 'outlined',
       color = 'primary',
       size = 'md',
       error,
       disabled,
-      labelProps = {},
       onChange,
       ...rest
     },
     ref,
   ) => {
     return (
-      <Label name={name} label={label} size={size} error={error} {...labelProps}>
+      <div
+        className={cn(
+          'TextAreaWrap',
+          'flex',
+          inputWrapClass,
+          inputVariant[variant][color],
+          error && 'error ' + inputErrorClass,
+          disabled && 'disabled ' + disabledVariant[variant],
+          className,
+        )}
+        data-testid="TextAreaWrap"
+      >
         <textarea
           id={name}
-          className={cn(
-            inputClass,
-            inputVariant[variant][color],
-            inputSize[size],
-            disabledVariant[variant],
-            error && 'border-error-800 shadow-error',
-            !labelProps?.hideError && 'mb-1',
-            className,
-          )}
+          className={cn(inputClass, inputSize[size])}
           name={name}
           value={value}
           disabled={disabled}
-          ref={ref}
           tabIndex={disabled ? -1 : 0}
           aria-describedby={`${name}-description`}
           onChange={e => onChange(e.target.value)}
+          ref={ref}
           {...rest}
         />
-      </Label>
+      </div>
     )
   },
 )

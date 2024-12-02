@@ -10,7 +10,7 @@ import { SearchInput, SearchInputProps } from './SearchInput/SearchInput'
 
 export type InputFieldProps = Omit<SearchInputProps, 'value' | 'error' | 'onChange'> & FieldProps
 
-/** Form and style context wrapper for SearchInput component. Default InputHTMLAttributes props supported. USE CLIENT  */
+/** Form and style context wrapper for SearchInput inside Label component. Default InputHTMLAttributes and Label props supported. USE CLIENT  */
 export const SearchField = ({
   className,
   name,

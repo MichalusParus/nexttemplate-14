@@ -1,7 +1,6 @@
 'use client'
 import { forwardRef, useCallback } from 'react'
 
-import { Label } from '@/components/atoms/common/Label/Label'
 import { OptionType } from '@/components/types'
 import { cn } from '@/utils/utils'
 
@@ -9,7 +8,7 @@ import { Checkbox, CheckboxProps } from '../../CheckboxField/Checkbox/Checkbox'
 
 export type CheckboxGroupProps = Omit<
   CheckboxProps,
-  'value' | 'isChecked' | 'onChange' | 'fake'
+  'value' | 'isChecked' | 'onChange' | 'fake' | 'label' | 'content'
 > & {
   /** name of form field */
   name: string
@@ -23,13 +22,12 @@ export type CheckboxGroupProps = Omit<
   onChange: (value: string[]) => void
 }
 
-/** Basic styled CheckboxGroup inside Label Component. For form purposes use CheckboxGroupField. Default InputHTMLAttributes props supported. USE CLIENT */
+/** Basic styled CheckboxGroup. For form purposes use CheckboxGroupField. Default InputHTMLAttributes props supported. USE CLIENT */
 export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
   (
     {
       className,
       name,
-      label,
       value,
       options,
       column,
@@ -38,7 +36,6 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
       size = 'md',
       disabled,
       error,
-      labelProps = {},
       onChange,
       ...rest
     },
@@ -67,32 +64,30 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
     )
 
     return (
-      <Label name={name} label={label} size={size} error={error} {...labelProps} fakeLabel>
-        <div
-          className={cn('CheckboxGroup', 'flex flex-wrap', column && 'flex-col', className)}
-          data-testid="CheckboxGroup"
-        >
-          {options.map(({ value: checkboxValue, label, content }) => (
-            <Checkbox
-              key={checkboxValue}
-              name={checkboxValue}
-              label={label}
-              value={checkboxValue}
-              content={content}
-              variant={variant}
-              color={color}
-              size={size}
-              isChecked={isChecked(checkboxValue)}
-              error={error}
-              disabled={disabled}
-              onChange={handleOnChange}
-              aria-describedby={`${name}-description`}
-              ref={ref}
-              {...rest}
-            />
-          ))}
-        </div>
-      </Label>
+      <div
+        className={cn('CheckboxGroup', 'flex flex-wrap', column && 'flex-col', className)}
+        data-testid="CheckboxGroup"
+      >
+        {options.map(({ value: checkboxValue, label: checkboxLabel, content }) => (
+          <Checkbox
+            key={checkboxValue}
+            name={checkboxValue}
+            label={checkboxLabel}
+            value={checkboxValue}
+            content={content}
+            variant={variant}
+            color={color}
+            size={size}
+            isChecked={isChecked(checkboxValue)}
+            error={error}
+            disabled={disabled}
+            onChange={handleOnChange}
+            aria-describedby={`${name}-description`}
+            ref={ref}
+            {...rest}
+          />
+        ))}
+      </div>
     )
   },
 )

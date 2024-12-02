@@ -19,20 +19,16 @@ import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 import { ChevronIcon, XIcon } from '@/components/atoms/icons'
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
-import { FieldProps, InputProps, OptionType, StyleProps } from '@/components/types'
+import { InputProps, OptionType, StyleProps } from '@/components/types'
 import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 
-import { Label } from '../../../../atoms/common/Label/Label'
 import { TextInput, TextInputProps } from '../../TextField/TextInput/TextInput'
 import { inputVariant } from '../../TextField/TextInput/TextInput.style'
 import { AutocompleteValue } from './AtocompleteValue'
 import { comboboxClass, disabledVariant } from './Autocomplete.style'
 
-// fix focus to input
-
 export type AutocompleteProps = Pick<TextInputProps, 'disabled'> &
-  FieldProps &
   InputProps &
   StyleProps & {
     /** position of dropdown */
@@ -48,7 +44,7 @@ export type AutocompleteProps = Pick<TextInputProps, 'disabled'> &
     /** optional for enabling expandable type of multiselect */
     expandable?: boolean
     /** for passing aditional props to combobox */
-    comboboxProps?: Partial<ButtonProps>
+    buttonProps?: Partial<ButtonProps>
     /** optional input props for autocomplete input */
     inputProps?: Partial<InputProps>
     /** for passing aditional props to dropdown */
@@ -63,14 +59,13 @@ export type AutocompleteProps = Pick<TextInputProps, 'disabled'> &
     onClear?: (e: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => void
   }
 
-/** Basic custom Autocomplete inside Label Component. For form purposes use AutocompleteField. Combobox, TextInput, Dropdown and ListBox props supported. USE CLIENT */
+/** Basic custom uncontroled Autocomplete. For form purposes use AutocompleteField. Button, TextInput, Dropdown and ListBox props supported. USE CLIENT */
 export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<AutocompleteProps>>(
   (
     {
       className,
       name,
-      label,
-      placeholder = label,
+      placeholder = '',
       value,
       multiValue,
       options,
@@ -82,11 +77,10 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
       isLoading,
       error,
       disabled,
-      comboboxProps = {},
+      buttonProps = {},
       inputProps = {},
       dropdownProps = {},
       listboxProps = {},
-      labelProps = {},
       onInputChange,
       onChange,
       onClear,
@@ -168,142 +162,127 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
     }, [multiValue])
 
     return (
-      <Label
-        className={cn('md:[&>.FieldWrap]:w-[60%]', labelProps.className)}
-        name={name}
-        label={label}
-        size={size}
-        error={error}
-        {...filterOutKeys(labelProps, ['className'])}
+      <div
+        className={cn('Autocomplete', 'relative flex w-full', className)}
+        ref={componentRef}
+        data-testid="Autocomplete"
       >
         <div
-          className={cn('Autocomplete', 'relative flex w-full', className)}
-          ref={componentRef}
-          data-testid="Autocomplete"
+          className={cn(
+            'AutocompleteCombobox',
+            'flex max-w-full items-center justify-between',
+            isOpen && 'selected z-combobox',
+            disabled && 'disabled',
+            error && 'border-error-800 shadow-error',
+            comboboxClass,
+            inputVariant[variant][color],
+            buttonContentSize[size],
+            disabledVariant[variant],
+            buttonProps.className,
+          )}
+          {...filterOutKeys(buttonProps, ['className'])}
         >
-          <div
-            className={cn(
-              'AutocompleteCombobox',
-              'flex items-center justify-between',
-              isOpen && 'selected z-combobox',
-              disabled && 'disabled',
-              error && 'border-error-800 shadow-error',
-              comboboxClass,
-              inputVariant[variant][color],
-              buttonContentSize[size],
-              disabledVariant[variant],
-              comboboxProps.className,
-            )}
-            role="combobox"
-            tabIndex={disabled ? -1 : 0}
-            aria-labelledby={'label-' + name}
-            aria-describedby={`${name}-description`}
-            aria-disabled={disabled}
-            aria-expanded={isOpen}
-            aria-haspopup="listbox"
-            aria-controls={name}
-            aria-owns={name}
-            onClick={() => !disabled && setIsOpen(true)}
-            onKeyDown={e =>
-              !disabled && (e.code === 'Enter' || e.code === 'Space')
-                ? setIsOpen(prev => !prev)
-                : null
-            }
-            {...filterOutKeys(comboboxProps, ['className'])}
-          >
-            <AutocompleteValue
-              selectedOptions={selectedOptions}
-              multiValue={multiValue}
-              variant={variant}
-              color={color}
-              size={size}
-              expandable={expandable}
-              handleOnChange={handleOnChange}
-              ref={autocompleteValueRef}
-            >
-              <div className="relative bg-inherit">
-                <TextInput
-                  id={name}
-                  className={cn(
-                    'AutocompleteCombobox',
-                    '[&>input]:bg-transparent" w-full [&>input]:border-none',
-                    inputProps.className,
-                  )}
-                  name={name}
-                  type="text"
-                  value={inputValue}
-                  variant={variant}
-                  color="none"
-                  size="none"
-                  placeholder={placeholder}
-                  disabled={disabled}
-                  autoComplete="off"
-                  onChange={handleInputChange}
-                  {...filterOutKeys(inputProps, ['className'])}
-                />
-                <div
-                  className={cn(
-                    'TruncateWrap',
-                    'invisible absolute -left-8 top-0 h-full w-8 bg-inherit text-xl',
-                    isTruncate && 'visible',
-                  )}
-                >
-                  ...
-                </div>
-              </div>
-            </AutocompleteValue>
-            <div className="relative flex items-center gap-1">
-              {Boolean(selectedOptions.length) && onClear && (
-                <div
-                  className={cn('ClearButton', 'shrink-0')}
-                  role="button"
-                  aria-label={t('clear')}
-                  tabIndex={0}
-                  onClick={e => onClear(e)}
-                  onKeyDown={e => (e.code === 'Enter' || e.code === 'Space' ? onClear(e) : null)}
-                >
-                  <XIcon />
-                </div>
-              )}
-              <ChevronIcon
-                className={cn('text-inherit transition-transform', isOpen && 'rotate-180')}
-              />
-            </div>
-          </div>
-          <Dropdown
-            isOpen={isOpen}
-            parentRef={componentRef}
-            placement={placement}
+          <AutocompleteValue
+            selectedOptions={selectedOptions}
+            multiValue={multiValue}
             variant={variant}
             color={color}
-            modal
-            onClose={handleClose}
-            scrollShadowProps={{ disableHorizontal: true }}
-            ref={dropdownRef}
-            {...dropdownProps}
+            size={size}
+            expandable={expandable}
+            handleOnChange={handleOnChange}
+            ref={autocompleteValueRef}
           >
-            <ListBox
-              name={name}
-              value={multiValue ? multiValue.map(v => v.value) : [value]}
-              options={sortedOptions}
-              variant={variant}
-              color={color}
-              size={size}
-              isLoading={isLoading}
-              noOptionLabel={
-                inputValue.length <= 2 || !isLoading
-                  ? t('searchForOptions')
-                  : t('noOptionsMatch', { value: inputValue })
-              }
-              hideCheckbox={!multiValue}
-              aria-hidden={!isOpen}
-              onClick={handleOnChange}
-              {...listboxProps}
+            <div className="relative min-w-[30%] grow bg-inherit ">
+              <TextInput
+                id={name}
+                className={cn('AutocompleteCombobox', 'w-auto border-none', inputProps.className)}
+                name={name}
+                type="text"
+                value={inputValue}
+                variant={variant}
+                color="none"
+                size="none"
+                placeholder={placeholder}
+                disabled={disabled}
+                role="combobox"
+                aria-expanded={isOpen}
+                aria-haspopup="listbox"
+                aria-controls={name}
+                aria-owns={name}
+                aria-labelledby={'label-' + name}
+                aria-describedby={`${name}-description`}
+                autoComplete="off"
+                onChange={handleInputChange}
+                onClick={() => !disabled && setIsOpen(true)}
+                onKeyDown={e =>
+                  !disabled && (e.code === 'Enter' || e.code === 'Space')
+                    ? setIsOpen(prev => !prev)
+                    : null
+                }
+                {...filterOutKeys(inputProps, ['className'])}
+              />
+              <div
+                className={cn(
+                  'TruncateWrap',
+                  'invisible absolute -left-8 top-0 h-full w-8 bg-inherit text-xl',
+                  isTruncate && 'visible',
+                )}
+              >
+                ...
+              </div>
+            </div>
+          </AutocompleteValue>
+          <div className="relative flex items-center gap-1">
+            {Boolean(selectedOptions.length) && onClear && (
+              <div
+                className={cn('ClearButton', 'shrink-0')}
+                role="button"
+                aria-label={t('clear')}
+                tabIndex={0}
+                onClick={e => onClear(e)}
+                onKeyDown={e => (e.code === 'Enter' || e.code === 'Space' ? onClear(e) : null)}
+              >
+                <XIcon />
+              </div>
+            )}
+            <ChevronIcon
+              className={cn('text-inherit transition-transform', isOpen && 'rotate-180')}
             />
-            {children}
-          </Dropdown>
+          </div>
         </div>
-      </Label>
+        <Dropdown
+          isOpen={isOpen}
+          parentRef={componentRef}
+          placement={placement}
+          variant={variant}
+          color={color}
+          modal
+          onClose={handleClose}
+          scrollShadowProps={{ disableHorizontal: true }}
+          ref={dropdownRef}
+          {...dropdownProps}
+        >
+          <ListBox
+            name={name}
+            value={multiValue ? multiValue.map(v => v.value) : [value]}
+            options={sortedOptions}
+            variant={variant}
+            color={color}
+            size={size}
+            isLoading={isLoading}
+            noOptionLabel={
+              inputValue.length <= 2 || !isLoading
+                ? t('searchForOptions')
+                : t('noOptionsMatch', { value: inputValue })
+            }
+            hideCheckbox={!multiValue}
+            aria-hidden={!isOpen}
+            onClick={handleOnChange}
+            {...listboxProps}
+          />
+          {children}
+        </Dropdown>
+      </div>
     )
   },
 )

@@ -13,7 +13,7 @@ export const ResetPasswordForm = () => {
   const { form, onSubmit } = useResetPasswordForm()
 
   return (
-    <Form name="resetPasswordForm" form={form} collapsed="always" onSubmit={onSubmit}>
+    <Form name="resetPasswordForm" form={form} onSubmit={onSubmit}>
       <TextField
         name="email"
         label={t('Auth.email')}

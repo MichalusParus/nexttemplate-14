@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { JestFormProvider, options } from '../../../../../.storybook/helpers'
+import { getOptions, JestFormProvider } from '../../../../../.storybook/helpers'
 import { RadioGroupField } from '.'
 
 describe('RadioGroupField', () => {
@@ -13,13 +13,13 @@ describe('RadioGroupField', () => {
           className="className"
           name="radioGroupFieldTest"
           label="label"
-          options={options}
+          options={getOptions('radioGroupFieldTest', 20)}
         />
       </JestFormProvider>,
     )
     expect(screen.getAllByRole('radio')[0]).toBeTruthy()
     expect(screen.getByRole('radiogroup')).toHaveClass('className')
-    expect(screen.getAllByRole('radio')[0]).toHaveAttribute('id', 'value1')
+    expect(screen.getAllByRole('radio')[0]).toHaveAttribute('id', 'value1radioGroupFieldTest')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('name', 'radioGroupFieldTest')
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
   })
@@ -32,7 +32,7 @@ describe('RadioGroupField', () => {
           className="className"
           name="radioGroupFieldTest"
           label="label"
-          options={options}
+          options={getOptions('radioGroupFieldTest', 20)}
         />
         <button type="submit" />
       </JestFormProvider>,
@@ -40,5 +40,21 @@ describe('RadioGroupField', () => {
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByRole('button'))
     expect(spy).toHaveBeenCalled()
+  })
+
+  it('description', () => {
+    render(
+      <JestFormProvider fields={['radioGroupFieldTest']}>
+        <RadioGroupField
+          className="className"
+          name="radioGroupFieldTest"
+          label="label"
+          options={getOptions('radioGroupFieldTest', 20)}
+          labelProps={{ description: 'description' }}
+        />
+        <button type="submit" />
+      </JestFormProvider>,
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent('description')
   })
 })

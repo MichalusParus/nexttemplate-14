@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { options, optionsWithContent } from '../../../../../.storybook/helpers'
+import { getOptions, optionsWithContent } from '../../../../../.storybook/helpers'
 import { ListBox } from '.'
 import { ListBoxProps } from './ListBox'
 
@@ -45,7 +45,7 @@ export const PrimaryDefault: Story = {
     className: '',
     name: 'listBoxStory',
     value: [],
-    options: options,
+    options: getOptions('listBoxStory', 10),
     variant: 'outlined',
     color: 'primary',
     size: 'md',
@@ -59,7 +59,12 @@ export const PrimaryDefault: Story = {
 }
 
 export const HideCheckbox: Story = {
-  args: { ...PrimaryDefault.args, hideCheckbox: true },
+  args: {
+    ...PrimaryDefault.args,
+    hideCheckbox: true,
+    name: 'listBoxStory2',
+    options: getOptions('listBoxStory2', 10),
+  },
   render: args => <ListBoxWithHooks {...args} />,
 }
 

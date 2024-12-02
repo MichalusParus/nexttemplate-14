@@ -200,14 +200,12 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
                   <TextInput
                     className="border-transparent bg-bg dark:bg-darkBg"
                     name={`searchIn${column.name}`}
-                    label={t('searchIn', { field: column.label })}
                     type="search"
                     variant={variant}
                     color={color}
                     size={size}
                     placeholder={t('searchIn', { field: column.label })}
                     startIcon={<SearchIcon />}
-                    labelProps={{ hideLabel: true, hideError: true }}
                     onChange={value => setFilter({ ...filter, [column.name]: String(value) })}
                   />
                 </Menu>

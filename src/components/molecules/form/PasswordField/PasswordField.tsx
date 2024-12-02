@@ -10,7 +10,7 @@ import { PasswordInput, PasswordInputProps } from './PasswordInput/PasswordInput
 
 export type InputFieldProps = Omit<PasswordInputProps, 'value' | 'error' | 'onChange'> & FieldProps
 
-/** Form and style context wrapper for PasswordInput component. Default InputHTMLAttributes props supported. USE CLIENT  */
+/** Form and style context wrapper for PasswordInput inside Label component. Default InputHTMLAttributes and Label props supported. USE CLIENT  */
 export const PasswordField = ({
   className,
   name,

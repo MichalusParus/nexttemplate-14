@@ -2,12 +2,15 @@
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
+import { Label } from '@/components/atoms/common/Label'
+import { FieldProps } from '@/components/types'
+
 import { FormStyleContext } from '../Form/Form'
 import { TextArea, TextAreaProps } from './TextArea/TextArea'
 
-export type TextAreaFieldProps = Omit<TextAreaProps, 'value' | 'error' | 'onChange'>
+export type TextAreaFieldProps = Omit<TextAreaProps, 'value' | 'error' | 'onChange'> & FieldProps
 
-/** Form and style context wrapper for TextArea component. Default TextareaHTMLAttributes props supported. USE CLIENT */
+/** Form and style context wrapper for TextArea inside Label component. Default TextareaHTMLAttributes and Label props supported. USE CLIENT  */
 export const TextAreaField = ({
   className,
   name,
@@ -22,27 +25,30 @@ export const TextAreaField = ({
     control,
     formState: { errors },
   } = useFormContext()
-  const { formVariant, formColor, formSize, formCollapsed } = useContext(FormStyleContext)
+  const { formVariant, formColor, formSize } = useContext(FormStyleContext)
 
   return (
     <Controller
       name={name}
       control={control}
       render={({ field }) => (
-        <TextArea
-          className={className}
+        <Label
+          name={name}
           label={label}
-          variant={variant || formVariant}
-          color={color || formColor}
           size={size || formSize}
-          error={errors[name]?.message as string}
-          labelProps={{
-            ...labelProps,
-            collapsed: labelProps?.collapsed || formCollapsed,
-          }}
-          {...field}
-          {...rest}
-        />
+          error={(errors[name]?.message as string) || undefined}
+          {...labelProps}
+        >
+          <TextArea
+            className={className}
+            variant={variant || formVariant}
+            color={color || formColor}
+            size={size || formSize}
+            error={(errors[name]?.message as string) || undefined}
+            {...field}
+            {...rest}
+          />
+        </Label>
       )}
     />
   )

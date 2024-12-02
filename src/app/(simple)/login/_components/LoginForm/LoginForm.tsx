@@ -14,7 +14,7 @@ export const LoginForm = () => {
   const { form, onSubmit } = useLoginForm()
 
   return (
-    <Form name="loginForm" form={form} collapsed="always" onSubmit={onSubmit}>
+    <Form name="loginForm" form={form} onSubmit={onSubmit}>
       <TextField
         name="email"
         label={t('Auth.email')}
