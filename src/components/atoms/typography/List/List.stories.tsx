@@ -15,9 +15,7 @@ const meta: Meta<typeof List> = {
     content: {
       control: false,
     },
-    titleProps: {
-      control: false,
-    },
+
     icon: {
       control: false,
     },

@@ -52,7 +52,7 @@ const InnerLoadingWrap = ({
   return (
     <>
       {isLoading && <InlineLoader className="absolute inset-0 justify-center" size={size} />}
-      <div className={cn('ContentInnerWrap', 'inline-flex')}>
+      <div className={cn('ContentInnerWrap', 'invisible inline-flex')}>
         {startIcon && startIcon}
         {children}
         {endIcon && endIcon}
@@ -66,6 +66,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
+      type = 'button',
       variant = 'contained',
       color = 'primary',
       size = 'md',
@@ -99,10 +100,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           buttonSize,
           buttonDisabledVariant[variant],
           !disableUpperCase && 'uppercase',
-          isLoading && 'selected [&>div]:invisible',
+          isLoading && 'selected',
           variant === 'contained' && !hideShadow && 'shadow-button active:shadow-none',
           className,
         )}
+        type={type}
         tabIndex={rest.disabled ? -1 : 0}
         onClick={!isLoading ? onClick : () => {}}
         ref={ref}

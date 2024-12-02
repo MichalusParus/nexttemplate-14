@@ -10,17 +10,6 @@ const meta: Meta<typeof MultiDatePicker> = {
   parameters: {
     layout: 'padded',
   },
-  argTypes: {
-    buttonProps: {
-      control: false,
-    },
-    dropdownProps: {
-      control: false,
-    },
-    calendarProps: {
-      control: false,
-    },
-  },
 }
 
 const MultiDatePickerWithHooks = (args: MultiDatePickerProps) => {

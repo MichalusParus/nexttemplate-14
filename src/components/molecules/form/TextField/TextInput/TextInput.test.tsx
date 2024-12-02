@@ -11,58 +11,24 @@ describe('TextInput', () => {
       <JestMockProvider>
         <TextInput
           className="className"
-          type="text"
           name="inputTest"
-          label="label"
+          placeholder="placeholder"
           onChange={() => {}}
         />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('textbox')).toBeTruthy()
-    expect(screen.getByRole('textbox')).toHaveClass('className')
+    expect(screen.getByTestId('InputWrap')).toBeTruthy()
+    expect(screen.getByTestId('InputWrap')).toHaveClass('className')
+    expect(screen.getByRole('textbox')).toHaveAttribute('type', 'text')
     expect(screen.getByRole('textbox')).toHaveAttribute('id', 'inputTest')
     expect(screen.getByRole('textbox')).toHaveAttribute('name', 'inputTest')
-    expect(screen.getByRole('textbox')).toHaveAttribute('type', 'text')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
-  })
-
-  it('number', () => {
-    render(
-      <JestMockProvider>
-        <TextInput type="number" name="inputTest" label="label" onChange={() => {}} />
-      </JestMockProvider>,
-    )
-    expect(screen.getByRole('spinbutton')).toHaveAttribute('type', 'number')
-  })
-
-  it('error', () => {
-    render(
-      <JestMockProvider>
-        <TextInput type="text" name="inputTest" label="label" error="error" onChange={() => {}} />
-      </JestMockProvider>,
-    )
-    expect(screen.getByRole('alert')).toHaveTextContent('error')
-  })
-
-  it('description', () => {
-    render(
-      <JestMockProvider>
-        <TextInput
-          type="text"
-          name="inputTest"
-          label="label"
-          labelProps={{ description: 'description' }}
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
-    )
-    expect(screen.getByRole('alert')).toHaveTextContent('description')
+    expect(screen.getByRole('textbox')).toHaveAttribute('placeholder', 'placeholder')
   })
 
   it('value', () => {
     render(
       <JestMockProvider>
-        <TextInput name="name" label="label" value="value" onChange={() => {}} />
+        <TextInput name="name" value="value" onChange={() => {}} />
       </JestMockProvider>,
     )
     expect(screen.getByRole('textbox')).toHaveAttribute('value', 'value')
@@ -72,7 +38,7 @@ describe('TextInput', () => {
     const spy = jest.fn()
     render(
       <JestMockProvider>
-        <TextInput name="name" label="label" value="value" onChange={spy} />
+        <TextInput name="name" value="value" onChange={spy} />
       </JestMockProvider>,
     )
     fireEvent.change(screen.getByRole('textbox'), {
@@ -83,10 +49,37 @@ describe('TextInput', () => {
     expect(spy).toHaveBeenCalledWith('newvalue')
   })
 
+  it('startIcon', () => {
+    render(
+      <JestMockProvider>
+        <TextInput name="inputTest" startIcon={<svg data-testid="testSvg" />} onChange={() => {}} />
+      </JestMockProvider>,
+    )
+    expect(screen.getByTestId('testSvg')).toBeTruthy()
+  })
+
+  it('endIcon', () => {
+    render(
+      <JestMockProvider>
+        <TextInput name="inputTest" endIcon={<svg data-testid="testSvg" />} onChange={() => {}} />
+      </JestMockProvider>,
+    )
+    expect(screen.getByTestId('testSvg')).toBeTruthy()
+  })
+
+  it('error', () => {
+    render(
+      <JestMockProvider>
+        <TextInput name="inputTest" error="error" onChange={() => {}} />
+      </JestMockProvider>,
+    )
+    expect(screen.getByTestId('InputWrap')).toHaveClass('error')
+  })
+
   it('disabled', () => {
     render(
       <JestMockProvider>
-        <TextInput name="name" label="label" value="" disabled onChange={() => {}} />
+        <TextInput name="name" value="" disabled onChange={() => {}} />
       </JestMockProvider>,
     )
     expect(screen.getByRole('textbox')).toHaveAttribute('disabled', '')

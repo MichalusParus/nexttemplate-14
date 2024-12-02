@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState, useTransition } from 'react'
+import { PropsWithChildren, useState, useTransition } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { useFilterData } from '@/utils/hooks/useFilterData'
@@ -19,22 +19,13 @@ const meta: Meta<typeof Autocomplete> = {
     options: {
       control: false,
     },
-    inputProps: {
-      control: false,
-    },
-    dropdownProps: {
-      control: false,
-    },
-    listboxProps: {
-      control: false,
-    },
     children: {
       control: false,
     },
   },
 }
 
-const AutocompleteWithFetch = (args: AutocompleteProps) => {
+const AutocompleteWithFetch = (args: PropsWithChildren<AutocompleteProps>) => {
   const [value, setValue] = useState<string>('')
   const [options, setOptions] = useState<{ label: string; value: string }[]>([])
   const [isPending, startTransition] = useTransition()
@@ -46,10 +37,12 @@ const AutocompleteWithFetch = (args: AutocompleteProps) => {
           .then(res => res.json())
           .then(res =>
             setOptions(
-              res.map((o: { name: { common: string }; id: string }) => ({
-                label: o.name.common,
-                value: o.name.common,
-              })),
+              res.length
+                ? res.map((o: { name: { common: string }; id: string }) => ({
+                    label: o.name.common,
+                    value: o.name.common,
+                  }))
+                : [],
             ),
           )
       })
@@ -74,7 +67,7 @@ const AutocompleteWithFetch = (args: AutocompleteProps) => {
   )
 }
 
-const ClientAutocomplete = (args: AutocompleteProps) => {
+const ClientAutocomplete = (args: PropsWithChildren<AutocompleteProps>) => {
   const [value, setValue] = useState<string>('')
   const { filteredData, setFilter } = useFilterData(args.options)
 
@@ -96,11 +89,12 @@ type Story = StoryObj<typeof Autocomplete>
 
 export const PrimaryDefault: Story = {
   args: {
-    className: 'className',
+    className: '',
     name: 'autocompleteStory',
     label: 'Label',
     placeholder: 'placeholder',
     value: '',
+    multiValue: undefined,
     options: options.slice(0, 5),
     variant: 'outlined',
     color: 'primary',
@@ -108,12 +102,13 @@ export const PrimaryDefault: Story = {
     placement: 'bottom',
     isLoading: false,
     error: '',
+    comboboxProps: undefined,
     inputProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
-    labelProps: { width: 'w-96' },
-    onInputChange: () => {},
-    onChange: value => console.log(value),
+    labelProps: undefined,
+    onInputChange: value => console.log('onInputChange', value),
+    onChange: value => console.log('onChange', value),
   },
   render: args => <AutocompleteWithFetch {...args} />,
 }
@@ -141,7 +136,7 @@ export const Scroll: Story = {
     options: options,
     name: 'autocompleteStory3',
   },
-  render: args => <AutocompleteWithFetch {...args} />,
+  render: args => <ClientAutocomplete {...args} />,
 }
 
 export const IsLoading: Story = {

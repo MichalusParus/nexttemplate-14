@@ -15,7 +15,7 @@ export const CheckboxGroupField = ({
   variant,
   color,
   size,
-  labelProps,
+  labelProps = {},
   ...rest
 }: CheckboxGroupFieldProps) => {
   const {

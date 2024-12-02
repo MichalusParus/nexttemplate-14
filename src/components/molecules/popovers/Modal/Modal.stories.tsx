@@ -17,15 +17,6 @@ const meta: Meta<typeof Modal> = {
     modalActions: {
       control: false,
     },
-    titleProps: {
-      control: false,
-    },
-    paperProps: {
-      control: false,
-    },
-    buttonProps: {
-      control: false,
-    },
     children: {
       control: false,
     },

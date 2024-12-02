@@ -49,7 +49,7 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       buttonProps = {},
       dropdownProps = {},
       calendarProps = {},
-      labelProps,
+      labelProps = {},
       onChange,
     },
     ref,
@@ -116,10 +116,12 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           <Button
             className={cn(
               'DatePickerCombobox',
-              'z-40 w-full',
+              'w-full',
+              isOpen && 'selected z-combobox',
               error && 'error',
               buttonProps.className,
             )}
+            type="button"
             variant={variant}
             color={color}
             size={size}

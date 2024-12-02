@@ -15,9 +15,6 @@ const meta: Meta<typeof MobilePagination> = {
     pages: {
       control: false,
     },
-    buttonProps: {
-      control: false,
-    },
   },
 }
 

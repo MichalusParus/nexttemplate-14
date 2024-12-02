@@ -22,16 +22,13 @@ export type AccordionProps = Omit<DisclosureProps, 'title' | 'expanded' | 'child
 
 /** Serves as set of Disclosures. Have exclusive one open mode and can be nested. DisclosureProps supported. USE CLIENT */
 export const Accordion = forwardRef<HTMLButtonElement, AccordionProps>(
-  ({ className, options, exclusive, gap = 'gap-2', ...rest }, ref) => {
+  ({ className, options, exclusive, gap = 'gap-4', ...rest }, ref) => {
     const [openState, setOpenState] = useState<boolean[]>(
       options.map(({ expanded }) => Boolean(expanded)),
     )
 
     return (
-      <div
-        className={cn('Accordion', 'flex flex-col overflow-hidden', gap, className)}
-        data-testid="Accordion"
-      >
+      <div className={cn('Accordion', 'flex flex-col', gap, className)} data-testid="Accordion">
         {options.map(({ content, title, expanded }, index) => (
           <Disclosure
             key={slugify(title)}

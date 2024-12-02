@@ -57,7 +57,8 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
     ref,
   ) => {
     const t = useTranslations('Components')
-    const ghostOptions = isLoading ? [{ value: 'ghost', label: 'ghost', content: '' }] : []
+    const ghostOptions =
+      isLoading && !options.length ? [{ value: 'ghost', label: 'ghost', content: '' }] : []
 
     const getSelectedClass = useCallback(
       (optionValue: string) => {
@@ -93,7 +94,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                 'Option',
                 'flex items-center border focus:outline-none',
                 getSelectedClass(optionValue),
-                buttonVariant[variant][color] + ' border-transparent',
+                buttonVariant[variant][color] + ' border-transparent dark:border-transparent',
                 buttonContentSize[size],
                 isLoading ? 'cursor-not-allowed' : 'cursor-pointer',
               )}
@@ -105,11 +106,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
             >
               <>
                 <Checkbox
-                  className={cn(
-                    'mr-4',
-                    hideCheckbox ? 'hidden' : 'block',
-                    checkboxProps?.className,
-                  )}
+                  className={cn(hideCheckbox ? 'hidden' : 'block', checkboxProps?.className)}
                   name={optionValue}
                   label=""
                   value={optionValue}

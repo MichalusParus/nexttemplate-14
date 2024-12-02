@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { PropsWithChildren, useState } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
+import { cn } from '@/utils/utils'
 
 import { MenuLinks } from '../../../../../.storybook/helpers'
 import { Drawer, DrawerProps } from './Drawer'
@@ -18,6 +19,13 @@ const meta: Meta<typeof Drawer> = {
     paperProps: { control: false },
     scrollShadowProps: { control: false },
   },
+  decorators: [
+    Story => (
+      <div id="storyContainer" className="max-w-full overflow-hidden">
+        <Story />
+      </div>
+    ),
+  ],
 }
 
 const DrawerWithHooks = (args: PropsWithChildren<DrawerProps>) => {
@@ -25,6 +33,7 @@ const DrawerWithHooks = (args: PropsWithChildren<DrawerProps>) => {
   return (
     <div className="relative flex h-[50vh] items-center justify-center overflow-hidden">
       <Button
+        className={cn(isOpen && 'z-combobox')}
         name="drawerStory"
         aria-haspopup="true"
         aria-controls="drawerStory"
@@ -35,11 +44,13 @@ const DrawerWithHooks = (args: PropsWithChildren<DrawerProps>) => {
         Drawer button
       </Button>
       <Drawer {...args} name="drawerStory" isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <MenuLinks
-          length={args.className === 'scroll' ? 20 : undefined}
-          variant={args.variant}
-          color={args.color}
-        />
+        <ul>
+          <MenuLinks
+            length={args.className === 'scroll' ? 20 : undefined}
+            variant={args.variant}
+            color={args.color}
+          />
+        </ul>
       </Drawer>
     </div>
   )
@@ -57,9 +68,9 @@ export const PrimaryDefault: Story = {
     variant: 'outlined',
     color: 'primary',
     offsetY: 'top-0 bottom-0',
-    width: 'w-1/3',
+    width: 'w-56',
     padding: 'p-0',
-    modal: false,
+    portalContainer: 'storyContainer',
     paperProps: {},
     scrollShadowProps: {},
     onClose: () => {},
@@ -72,11 +83,6 @@ export const Offset: Story = {
     ...PrimaryDefault.args,
     offsetY: 'top-8 bottom-0',
   },
-  render: args => <DrawerWithHooks {...args} />,
-}
-
-export const Modal: Story = {
-  args: { ...PrimaryDefault.args, modal: true },
   render: args => <DrawerWithHooks {...args} />,
 }
 

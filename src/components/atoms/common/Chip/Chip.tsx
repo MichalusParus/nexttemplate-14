@@ -77,7 +77,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
             color={color}
             size="none"
             hideShadow
-            aria-label={t('delete') + (title || children)}
+            aria-label={t('delete') + (title || String(children))}
             onClick={onClick}
             {...filterOutKeys(buttonProps, ['className'])}
           />

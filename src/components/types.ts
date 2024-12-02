@@ -8,18 +8,21 @@ export type OptionType = {
   content?: ReactNode
 }
 
-export type FieldProps = {
+export type InputProps = {
   /** for passing custom tailwind classes */
   className?: string
   /** name of form field */
   name: string
-  /** text content of label */
-  label: string
   /** placeholder of input */
   placeholder?: string
   /** if defined, error state for label and input */
   error?: string
-  /** optional props for label */
+}
+
+export type FieldProps = {
+  /** text content of label */
+  label: string
+  /** for passing aditional props to label */
   labelProps?: Partial<LabelProps>
 }
 

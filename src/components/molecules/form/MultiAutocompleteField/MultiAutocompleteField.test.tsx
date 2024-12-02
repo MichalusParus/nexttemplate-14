@@ -22,7 +22,7 @@ describe('MultiAutocompleteField', () => {
     )
     fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeTruthy()
-    expect(screen.getByTestId('MultiAutocomplete')).toHaveClass('className')
+    expect(screen.getByTestId('Autocomplete')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'MultiAutocompleteTest')
     expect(screen.getAllByTestId('LabelWrap')[0]).toHaveTextContent('label')
   })

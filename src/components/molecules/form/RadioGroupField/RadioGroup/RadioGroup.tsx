@@ -40,7 +40,7 @@ export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
       size = 'md',
       disabled,
       error,
-      labelProps,
+      labelProps = {},
       onChange,
       ...rest
     },

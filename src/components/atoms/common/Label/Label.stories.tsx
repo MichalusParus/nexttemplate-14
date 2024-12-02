@@ -31,7 +31,6 @@ export const Default: Story = {
     name: 'labelStory',
     label: 'Label:',
     size: 'md',
-    collapsed: 'default',
     width: 'w-full',
     error: undefined,
     description: '',
@@ -60,20 +59,6 @@ export const Error: Story = {
   args: {
     ...Default.args,
     error: 'error',
-  },
-}
-
-export const CollapsedAlways: Story = {
-  args: {
-    ...Default.args,
-    collapsed: 'always',
-  },
-}
-
-export const CollapsedNever: Story = {
-  args: {
-    ...Default.args,
-    collapsed: 'never',
   },
 }
 

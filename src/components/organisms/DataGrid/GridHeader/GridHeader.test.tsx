@@ -72,7 +72,6 @@ describe('GridHeader', () => {
       </JestMockProvider>,
     )
     expect(screen.getAllByRole('columnheader')).toHaveLength(5)
-    expect(screen.getByTestId('FakeCheckboxWrap')).toBeInTheDocument()
     fireEvent.click(screen.getAllByRole('columnheader')[0])
     expect(spy).toHaveBeenCalled()
   })

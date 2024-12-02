@@ -15,15 +15,6 @@ const meta: Meta<typeof MultiSelect> = {
     options: {
       control: false,
     },
-    buttonProps: {
-      control: false,
-    },
-    dropdownProps: {
-      control: false,
-    },
-    listboxProps: {
-      control: false,
-    },
   },
 }
 
@@ -45,13 +36,15 @@ export const PrimaryDefault: Story = {
     name: 'multiSelectStory',
     label: 'Label',
     placeholder: 'MultiSelect',
+    value: [],
     options: options.slice(0, 5),
+    expandable: false,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
     placement: 'bottom',
     error: '',
-    buttonProps: undefined,
+    comboboxProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
     labelProps: undefined,
@@ -60,11 +53,20 @@ export const PrimaryDefault: Story = {
   render: args => <MultiSelectWithHooks {...args} />,
 }
 
+export const Expandable: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'multiSelectStory2',
+    expandable: true,
+  },
+  render: args => <MultiSelectWithHooks {...args} />,
+}
+
 export const Top: Story = {
   args: {
     ...PrimaryDefault.args,
     placement: 'top',
-    name: 'multiSelectStory2',
+    name: 'multiSelectStory3',
   },
   render: args => <MultiSelectWithHooks {...args} />,
 }
@@ -73,7 +75,7 @@ export const Scroll: Story = {
   args: {
     ...PrimaryDefault.args,
     options: options,
-    name: 'multiSelectStory3',
+    name: 'multiSelectStory4',
   },
   render: args => <MultiSelectWithHooks {...args} />,
 }
@@ -81,7 +83,7 @@ export const Scroll: Story = {
 export const OptionsWithContent: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'multiSelectStory4',
+    name: 'multiSelectStory5',
     options: optionsWithContent.slice(0, 5),
   },
   render: args => <MultiSelectWithHooks {...args} />,
@@ -91,7 +93,7 @@ export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
     error: 'error',
-    name: 'multiSelectStory5',
+    name: 'multiSelectStory6',
   },
   render: args => <MultiSelectWithHooks {...args} />,
 }
@@ -99,7 +101,7 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'multiSelectStory6',
+    name: 'multiSelectStory7',
     disabled: true,
   },
   render: args => <MultiSelectWithHooks {...args} />,

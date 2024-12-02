@@ -11,9 +11,12 @@ import { formSchema, initialValues, options } from '../../../../../.storybook/he
 import { AutocompleteField } from '../AutocompleteField'
 import { CheckboxField } from '../CheckboxField'
 import { CheckboxGroupField } from '../CheckboxGroupField'
+import { DatePickerField } from '../DatePickerField'
 import { MultiAutocompleteField } from '../MultiAutocompleteField'
+import { MultiDatePickerField } from '../MultiDatePickerField'
 import { MultiSelectField } from '../MultiSelectField'
 import { RadioGroupField } from '../RadioGroupField'
+import { RangeDatePickerField } from '../RangeDatePickerField'
 import { RangeField } from '../RangeField'
 import { SelectField } from '../SelectField'
 import { TextAreaField } from '../TextAreaField'
@@ -59,13 +62,6 @@ const FormWithHooks = (args: FormProps<object>) => {
         placeholder="Search"
         labelProps={{ description: 'Some description' }}
       />
-      <TextField
-        name="dateStory"
-        type="date"
-        label="Date:"
-        placeholder="date"
-        labelProps={{ description: 'Some description' }}
-      />
       <TextAreaField name="textareaStory" label="Textarea:" placeholder="textarea" />
       <RangeField name="rangeStory" label="Range:" min={100} max={200} />
       <Label name="checkboxStory" label="Fake label:" collapsed={args.collapsed} fakeLabel>
@@ -89,6 +85,9 @@ const FormWithHooks = (args: FormProps<object>) => {
         }))}
       />
       <RadioGroupField name="radioGroupStory" label="Radio Group:" options={options.slice(0, 6)} />
+      <DatePickerField name="dateStory" label="DatePicker:" placeholder="date" />
+      <RangeDatePickerField name="dateRangeStory" label="RangeDatePicker:" placeholder="range" />
+      <MultiDatePickerField name="dateMultiStory" label="MultiDatePicker:" placeholder="multi" />
       <SelectField
         name="selectStory"
         label="Select:"

@@ -198,7 +198,7 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
                   dropdownProps={{ className: 'mt-1' }}
                 >
                   <TextInput
-                    className="border border-transparent bg-bg dark:bg-darkBg"
+                    className="border-transparent bg-bg dark:bg-darkBg"
                     name={`searchIn${column.name}`}
                     label={t('searchIn', { field: column.label })}
                     type="search"

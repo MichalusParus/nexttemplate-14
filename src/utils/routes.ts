@@ -1,4 +1,12 @@
 export enum PUBLICROUTES {
+  register = '/register',
+  login = '/login',
+}
+
+export enum PRIVATEROUTES {
   home = '/',
-  about = '/about',
+}
+
+export enum ADMINROUTES {
+  dashboard = '/admin/dashboard',
 }

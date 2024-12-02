@@ -9,13 +9,13 @@ const meta: Meta<typeof Disclosure> = {
   tags: ['autodocs'],
   decorators: [
     Story => (
-      <div className="h-96">
+      <div className="min-h-96">
         <Story />
       </div>
     ),
   ],
   parameters: {
-    layout: 'padded',
+    layout: 'fullscreen',
   },
   argTypes: {
     children: { control: false },

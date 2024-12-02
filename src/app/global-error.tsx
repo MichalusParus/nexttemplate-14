@@ -19,7 +19,7 @@ export default function GlobalError({ error, reset }: ErrorPageProps) {
         'mx-auto mt-40 flex max-w-80 flex-col items-center justify-center gap-4',
       )}
     >
-      <Alert status="error" title={t('errorPageTitle')}>
+      <Alert status="error" title={t('errorPageTitle')} variant="text">
         {t('errorPageMessage', { message: error.message })}
       </Alert>
       <div className={cn('ActionWrap', 'flex w-full justify-end gap-4')}>

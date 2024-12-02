@@ -112,7 +112,7 @@ export const Dropdown = forwardRef<HTMLDivElement, PropsWithChildren<DropdownPro
                 className={cn(
                   'Dropdown',
                   dropdownClass,
-                  isOpen ? 'visible z-50 opacity-100' : 'invisible opacity-0',
+                  isOpen ? 'z-modal visible opacity-100' : 'invisible opacity-0',
                   className,
                 )}
                 style={{

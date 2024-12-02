@@ -19,8 +19,8 @@ describe('TextField', () => {
         value: 'inputTest',
       },
     })
-    expect(screen.getByRole('textbox')).toBeTruthy()
-    expect(screen.getByRole('textbox')).toHaveClass('className')
+    expect(screen.getByTestId('InputWrap')).toBeTruthy()
+    expect(screen.getByTestId('InputWrap')).toHaveClass('className')
     expect(screen.getByRole('textbox')).toHaveAttribute('id', 'inputTest')
     expect(screen.getByRole('textbox')).toHaveAttribute('name', 'inputTest')
     expect(screen.getByRole('textbox')).toHaveAttribute('type', 'text')

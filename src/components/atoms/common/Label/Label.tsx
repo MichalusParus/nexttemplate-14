@@ -1,10 +1,10 @@
 import { forwardRef, LabelHTMLAttributes } from 'react'
 
 import { Alert } from '@/components/atoms/common/Alert'
-import { FieldProps, StyleProps } from '@/components/types'
+import { FieldProps, InputProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import { collapsedState, fieldWrapClass, labelClass, textSize } from './Label.style'
+import { labelClass, textSize } from './Label.style'
 
 type NativeLabelProps = Omit<
   LabelHTMLAttributes<HTMLLabelElement>,
@@ -12,11 +12,10 @@ type NativeLabelProps = Omit<
 >
 
 export type LabelProps = NativeLabelProps &
-  Omit<FieldProps, 'labelProps' | 'placeholder'> & {
+  Omit<FieldProps, 'labelProps'> &
+  Omit<InputProps, 'placeholder'> & {
     /** size of component, none disable sizes for custom styling via className */
     size?: StyleProps['size']
-    /** set collapsed state of label. Default is "flex-col md:flex-row" */
-    collapsed?: 'always' | 'never' | 'default'
     /** for setting width than default value as tailwind class */
     width?: string
     /** optional form component description */
@@ -37,7 +36,6 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
       name,
       label,
       size = 'md',
-      collapsed = 'default',
       width = 'w-full',
       error,
       description,
@@ -53,13 +51,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
 
     return (
       <div
-        className={cn(
-          'LabelWrap',
-          'relative flex items-start',
-          collapsedState[collapsed],
-          width,
-          className,
-        )}
+        className={cn('LabelWrap', 'relative flex flex-col items-start gap-0.5', width, className)}
         data-testid="LabelWrap"
       >
         {fakeLabel ? (
@@ -78,21 +70,19 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
             {label}
           </label>
         )}
-        <div className={cn('FieldWrap', fieldWrapClass)}>
-          {children}
-          {!hideError && (
-            <Alert
-              id={`${name}-description`}
-              className={cn('mb-2', error || description ? 'opacity-100' : 'opacity-0')}
-              variant="text"
-              status={description && !error ? 'info' : 'error'}
-              size="sm"
-              aria-hidden={!description && !error}
-            >
-              {description && !error ? description : error}
-            </Alert>
-          )}
-        </div>
+        {children}
+        {!hideError && (
+          <Alert
+            id={`${name}-description`}
+            className={cn(error || description ? 'opacity-100' : 'opacity-0')}
+            variant="text"
+            status={description && !error ? 'info' : 'error'}
+            size="sm"
+            aria-hidden={!description && !error}
+          >
+            {description && !error ? description : error}
+          </Alert>
+        )}
       </div>
     )
   },

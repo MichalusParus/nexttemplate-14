@@ -15,7 +15,7 @@ export const AutocompleteField = ({
   variant,
   color,
   size,
-  labelProps,
+  labelProps = {},
   ...rest
 }: AutocompleteFieldProps) => {
   const {

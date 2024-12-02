@@ -134,7 +134,7 @@ export const PrimaryDefault: Story = {
     placement: 'bottom',
     variant: 'outlined',
     color: 'primary',
-    width: undefined,
+    width: 'w-40',
     parentRef: undefined,
     buttonProps: undefined,
     dropdownProps: undefined,

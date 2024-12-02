@@ -27,7 +27,7 @@ export const MultiDatePicker = forwardRef<HTMLDivElement, MultiDatePickerProps>(
       <DatePicker
         name={name}
         label={label}
-        value={value[0]}
+        value={value?.[0]}
         error={error}
         calendarProps={{ ...calendarProps, multiValue: value }}
         onChange={handleChange}

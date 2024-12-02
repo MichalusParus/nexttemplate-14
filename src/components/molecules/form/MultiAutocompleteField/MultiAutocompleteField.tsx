@@ -18,7 +18,7 @@ export const MultiAutocompleteField = ({
   variant,
   color,
   size,
-  labelProps,
+  labelProps = {},
   ...rest
 }: MultiAutocompleteFieldProps) => {
   const {

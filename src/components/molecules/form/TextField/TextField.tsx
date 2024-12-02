@@ -2,10 +2,13 @@
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
-import { FormStyleContext } from '../Form/Form'
-import { InputProps, TextInput } from './TextInput/TextInput'
+import { Label } from '@/components/atoms/common/Label'
+import { FieldProps } from '@/components/types'
 
-export type InputFieldProps = Omit<InputProps, 'value' | 'error' | 'onChange'>
+import { FormStyleContext } from '../Form/Form'
+import { TextInput, TextInputProps } from './TextInput/TextInput'
+
+export type InputFieldProps = Omit<TextInputProps, 'value' | 'error' | 'onChange'> & FieldProps
 
 /** Form and style context wrapper for TextInput component. Default InputHTMLAttributes props supported. USE CLIENT  */
 export const TextField = ({
@@ -15,34 +18,37 @@ export const TextField = ({
   variant,
   color,
   size,
-  labelProps,
+  labelProps = {},
   ...rest
 }: InputFieldProps) => {
   const {
     control,
     formState: { errors },
   } = useFormContext()
-  const { formVariant, formColor, formSize, formCollapsed } = useContext(FormStyleContext)
+  const { formVariant, formColor, formSize } = useContext(FormStyleContext)
 
   return (
     <Controller
       name={name}
       control={control}
       render={({ field }) => (
-        <TextInput
-          className={className}
+        <Label
+          name={name}
           label={label}
-          variant={variant || formVariant}
-          color={color || formColor}
           size={size || formSize}
           error={(errors[name]?.message as string) || undefined}
-          labelProps={{
-            ...labelProps,
-            collapsed: labelProps?.collapsed || formCollapsed,
-          }}
-          {...field}
-          {...rest}
-        />
+          {...labelProps}
+        >
+          <TextInput
+            className={className}
+            variant={variant || formVariant}
+            color={color || formColor}
+            size={size || formSize}
+            error={(errors[name]?.message as string) || undefined}
+            {...field}
+            {...rest}
+          />
+        </Label>
       )}
     />
   )

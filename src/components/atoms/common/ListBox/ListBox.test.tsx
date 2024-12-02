@@ -21,7 +21,6 @@ describe('ListBox', () => {
     expect(screen.getByRole('listbox')).toBeTruthy()
     expect(screen.getByRole('listbox')).toHaveClass('className')
     expect(screen.getByRole('listbox')).toHaveAttribute('id', 'listboxTest')
-    expect(screen.getAllByTestId('FakeCheckboxWrap')[0]).toBeInTheDocument()
   })
 
   it('value', () => {

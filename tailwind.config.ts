@@ -9,7 +9,12 @@ const config: Config = {
   corePlugins: {
     aspectRatio: false,
   },
-  plugins: [require('@tailwindcss/aspect-ratio')],
+  plugins: [
+    require('@tailwindcss/aspect-ratio'),
+    function ({ addVariant }: { addVariant: (name: string, selector: string) => void }) {
+      addVariant('autofill', '&:-webkit-autofill')
+    },
+  ],
   theme: {
     screens: {
       xs: '480px',
@@ -24,6 +29,7 @@ const config: Config = {
       colors: {
         text: 'rgb(var(--color-dark-950) / <alpha-value>)',
         contrast: 'rgb(var(--color-dark-50) / <alpha-value>)',
+        placeholder: 'rgb(var(--color-dark-400) / <alpha-value>)',
         bg: 'rgb(var(--color-dark-50) / <alpha-value>)',
         darkBg: 'rgb(var(--color-dark-800) / <alpha-value>)',
         primary: {
@@ -134,17 +140,17 @@ const config: Config = {
       spacing: {
         sm: 'theme(fontSize.sm)',
         smPY: '0.375rem',
-        smPX: '0.75rem',
+        smPX: '0.5rem',
         // should be equal to sm text line height
         smIcon: '1.25rem',
         md: 'theme(fontSize.base)',
         mdPY: '0.5rem',
-        mdPX: '1rem',
+        mdPX: '0.75rem',
         // should be equal to md text line height
         mdIcon: '1.5rem',
         lg: 'theme(fontSize.lg)',
         lgPY: '0.625rem',
-        lgPX: '1.25rem',
+        lgPX: '1rem',
         // should be equal to lg text line height
         lgIcon: '1.75rem',
         xl: 'theme(fontSize.xl)',
@@ -152,7 +158,10 @@ const config: Config = {
         '2xl': 'theme(fontSize.2xl)',
         '2xlIcon': '2rem',
         '3xl': 'theme(fontSize.3xl)',
-        smHeaderHeight: '3.375rem',
+        smHeaderHeight: '3.313rem',
+        lgHeaderHeight: '4.063rem',
+        sideBarWidth: '16rem',
+        smSideBarWidth: '6rem',
       },
       boxShadow: {
         header: 'var(--shadow-header)',
@@ -170,13 +179,18 @@ const config: Config = {
         maxHeight: 'max-height, opacity',
         width: 'width',
         margin: 'margin',
-        disableAutofill: 'backgroundColor 600000s 0s, color 600000s 0s',
       },
       animation: {
         ghostAnim: 'ghostAnim 1500ms infinite',
         inlineLoaderAnim: 'inlineLoaderAnim 1400ms infinite',
         circularLoaderAnim:
           'circularLoaderAnim1 800ms infinite linear alternate, circularLoaderAnim2 1600ms infinite linear',
+      },
+      zIndex: {
+        modal: '100',
+        combobox: '40',
+        header: '20',
+        overlay: '30',
       },
     },
   },

@@ -4,11 +4,23 @@
       "reset": "Reset",
       "pageNotFound": "404 - Page ' {name} ' not found",
       "errorPageTitle": "Internal Error",
-      "errorPageMessage": "Oops! Something went wrong - {message}"
+      "errorPageMessage": "Oops! Something went wrong - {message}",
+      "formErrors": {
+        "required": "{field} is required.",
+        "emailFormat": "Invalid email format.",
+        "minLength": "{field} must be at least {min} characters long.",
+        "maxLength": "{field} must be at most {max} characters long.",
+        "minOneUpperCase": "{field} must contain at least one uppercase letter.",
+        "minOneLowerCase": "{field} must contain at least one lowercase letter.",
+        "noSpaces": "{field} must not contain spaces.",
+        "passwordsDontMatch": "Passwords don't match."
+      }
     },
     "Navigation": {
       "home": "Home",
-      "about": "About"
+      "login": "Login",
+      "register": "Register",
+      "dashboard": "Dashboard"
     },
     "Components": {
       "profile": "profile",
@@ -30,6 +42,31 @@
       "searchIn": "search in {field}",
       "noRows": "No rows found",
       "pause": "Pause",
-      "play": "Play"
+      "play": "Play",
+      "hidePassword": "Hide password",
+      "showPassword": "Show password"
+    },
+    "Auth": {
+      "login": "Login",
+      "email": "Email",
+      "emailPlaceholder": "Enter your email",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "loginSubmit": "Login",
+      "forgotPassword": "Forgot password?",
+      "dontHaveAccount": "Don't have an account?",
+
+
+      "resetPassword": "Reset password",
+      "resetPasswordDescription": "You will receive a link to reset your password.",
+      "resetPasswordSubmit": "Reset password",
+
+
+
+      "register": "Register",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Enter your password again",
+      "registerSubmit": "Register",
+      "alreadyHaveAccount": "Already have an account?"
     }
 }

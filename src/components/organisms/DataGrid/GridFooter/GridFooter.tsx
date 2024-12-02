@@ -94,7 +94,7 @@ export const GridFooter = forwardRef<HTMLDivElement, GridFooterProps>(
               color={color}
               size={size}
               labelProps={{ hideError: true, width: 'w-44', collapsed: 'never' }}
-              buttonProps={{
+              comboboxProps={{
                 className: 'border-transparent dark:border-transparent',
                 tabIndex: -1,
               }}

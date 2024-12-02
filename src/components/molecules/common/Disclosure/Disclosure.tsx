@@ -110,7 +110,7 @@ export const Disclosure = forwardRef<HTMLButtonElement, PropsWithChildren<Disclo
             'Dropdown',
             'translate-y-1.5 overflow-hidden transition-maxHeight',
             width,
-            openState ? 'visible z-[35] max-h-screen opacity-100' : 'invisible max-h-0 opacity-50',
+            openState ? 'visible max-h-screen opacity-100' : 'invisible max-h-0 opacity-50',
             className,
           )}
           aria-hidden={!openState}

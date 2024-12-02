@@ -63,7 +63,7 @@ export const ToastProvider = forwardRef<HTMLDivElement, PropsWithChildren<Record
         {mounted &&
           createPortal(
             <div
-              className={cn('ToastsWrap', 'fixed bottom-4 right-4 z-50 flex flex-col gap-2')}
+              className={cn('ToastsWrap', 'z-modal fixed bottom-4 right-4 flex flex-col gap-2')}
               ref={ref}
               data-testid="ToastsWrap"
             >

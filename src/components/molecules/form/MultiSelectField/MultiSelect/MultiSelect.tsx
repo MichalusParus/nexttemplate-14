@@ -1,80 +1,21 @@
 'use client'
-import { useTranslations } from 'next-intl'
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { forwardRef, KeyboardEvent, MouseEvent, useCallback } from 'react'
 
-import { Button } from '@/components/atoms/common/Button'
-import { Chip } from '@/components/atoms/common/Chip'
-import { ListBox } from '@/components/atoms/common/ListBox'
-import { ChevronIcon, XIcon } from '@/components/atoms/icons'
-import { Dropdown } from '@/components/molecules/popovers/Dropdown'
-import { useFocus } from '@/utils/hooks/useFocus'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { Select, SelectProps } from '../../SelectField/Select/Select'
 
-import { Label } from '../../../../atoms/common/Label/Label'
-import { SelectProps } from '../../SelectField/Select/Select'
-import { iconSize, selectedClass, selectedSize } from './MultiSelect.style'
-
-export type MultiSelectProps = Omit<SelectProps, 'value' | 'onChange'> & {
+export type MultiSelectProps = Omit<
+  SelectProps,
+  'value' | 'multiValue' | 'onChange' | 'onClear'
+> & {
   /** current value of component */
   value: string[]
   /** onChange function */
   onChange: (value: string[]) => void
 }
 
-/** Basic custom MultiSelect inside Label Component. For form purposes use MultiSelectField. Button, Dropdown and ListBox props supported. USE CLIENT */
+/** Basic custom MultiSelect inside Label Component. For form purposes use MultiSelectField. Label, Dropdown and ListBox props supported. USE CLIENT */
 export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
-  (
-    {
-      className,
-      name,
-      label,
-      placeholder = label,
-      options,
-      value,
-      placement = 'bottom',
-      variant = 'outlined',
-      color = 'primary',
-      size = 'md',
-      disabled,
-      error,
-      buttonProps = {},
-      dropdownProps = {},
-      listboxProps = {},
-      labelProps,
-      onChange,
-    },
-    ref,
-  ) => {
-    const t = useTranslations('Components')
-    const componentRef = useRef<HTMLDivElement>(null)
-    const dropdownRef = useRef<HTMLDivElement>(null)
-    useImperativeHandle(ref, () => componentRef.current!)
-    const [isOpen, setIsOpen] = useState(false)
-    const [selectedOptionsSize, setSelectedOptionsSize] = useState<{
-      width?: number
-      height?: number
-    }>()
-    const sortedOptions = placement === 'top' ? options.reverse() : options
-    const selectedOptionsRef = useRef<HTMLDivElement>(null)
-    const selectedOptions = options.filter(option => value.includes(option.value)) || options[0]
-    const { focusableEl } = useFocus(
-      isOpen,
-      componentRef,
-      ['.SelectCombobox', '.ChipAction', '.ClearButton', '.Option'],
-      () => setIsOpen(false),
-      {
-        portalRef: dropdownRef,
-        value: value,
-      },
-    )
-
-    const handleClose = () => {
-      if (focusableEl[0]) {
-        focusableEl[0].focus()
-      }
-      setIsOpen(false)
-    }
-
+  ({ value, onChange, ...rest }, ref) => {
     const handleOnChange = useCallback(
       (v: string) => {
         if (value.includes(v)) {
@@ -86,128 +27,23 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
       [value, onChange],
     )
 
-    const handleClear = useCallback(() => {
-      onChange([])
-    }, [onChange])
-
-    useEffect(() => {
-      if (selectedOptions.length) {
-        setSelectedOptionsSize({
-          width: selectedOptionsRef.current?.clientWidth,
-          height: (selectedOptionsRef.current?.clientHeight || 2) - 2,
-        })
-      }
-    }, [selectedOptions.length, selectedOptionsRef, setSelectedOptionsSize])
+    const handleClear = useCallback(
+      (e: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => {
+        e.stopPropagation()
+        onChange([])
+      },
+      [onChange],
+    )
 
     return (
-      <Label name={name} label={label} size={size} error={error} {...labelProps}>
-        <div
-          className={cn('MultiSelect', 'relative w-full', className)}
-          ref={componentRef}
-          data-testid="MultiSelect"
-        >
-          <Button
-            className={cn('MultiSelectCombobox', 'w-full', error && 'error', buttonProps.className)}
-            variant={variant}
-            color={color}
-            size={size}
-            disabled={disabled}
-            hideShadow
-            disableUpperCase
-            role="combobox"
-            aria-labelledby={'label-' + name}
-            aria-describedby={`${name}-description`}
-            aria-expanded={isOpen}
-            aria-haspopup="listbox"
-            aria-controls={name}
-            aria-owns={name}
-            onClick={() => setIsOpen(prev => !prev)}
-            {...filterOutKeys(buttonProps, ['className'])}
-          >
-            <div className={cn('ComboboxInnerWrap', 'flex w-full items-center justify-between')}>
-              {selectedOptions.length ? (
-                <div
-                  className="FakeSelectedWrap"
-                  style={{
-                    width: selectedOptionsSize?.width,
-                    height: selectedOptionsSize?.height,
-                  }}
-                />
-              ) : (
-                <div className="text-dark-400">{placeholder}</div>
-              )}
-              <ChevronIcon
-                className={cn(
-                  'text-inherit transition-transform',
-                  isOpen && 'rotate-180',
-                  iconSize[size],
-                )}
-              />
-            </div>
-          </Button>
-          <div
-            className={cn(
-              'SelectedOptionsWrap',
-              selectedClass,
-              selectedSize[size],
-              isOpen ? 'z-40' : 'z-20',
-            )}
-            ref={selectedOptionsRef}
-            data-testid="SelectedOptionsWrap"
-          >
-            {selectedOptions.map(option => (
-              <Chip
-                key={option.value}
-                variant={variant}
-                color={color}
-                size={size}
-                buttonProps={{ tabIndex: -1 }}
-                onClick={() => handleOnChange(option.value)}
-              >
-                {option.label}
-              </Chip>
-            ))}
-            {Boolean(value.length) && (
-              <Button
-                className={cn('ClearButton', 'shrink-0 border-0')}
-                type="button"
-                startIcon={<XIcon className={iconSize[size]} />}
-                variant={variant}
-                color={color}
-                size="none"
-                hideShadow
-                aria-label={t('clear')}
-                tabIndex={-1}
-                onClick={handleClear}
-              />
-            )}
-          </div>
-          <Dropdown
-            isOpen={isOpen}
-            parentRef={componentRef}
-            placement={placement}
-            variant={variant}
-            color={color}
-            onClose={handleClose}
-            scrollShadowProps={{ disableHorizontal: true }}
-            ref={dropdownRef}
-            {...dropdownProps}
-          >
-            <ListBox
-              name={name}
-              value={value}
-              options={sortedOptions}
-              variant={variant}
-              color={color}
-              size={size}
-              aria-multiselectable={true}
-              aria-hidden={!isOpen}
-              onClick={handleOnChange}
-              {...listboxProps}
-            />
-          </Dropdown>
-        </div>
-      </Label>
+      <Select
+        value={value[0]}
+        multiValue={value}
+        onChange={handleOnChange}
+        onClear={handleClear}
+        ref={ref}
+        {...rest}
+      />
     )
   },
 )

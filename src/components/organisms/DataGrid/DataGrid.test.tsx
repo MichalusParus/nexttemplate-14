@@ -74,7 +74,6 @@ describe('DataGrid', () => {
       </JestMockProvider>,
     )
     expect(screen.getAllByRole('columnheader')).toHaveLength(5)
-    expect(screen.getAllByTestId('FakeCheckboxWrap')).toHaveLength(26)
     fireEvent.click(screen.getAllByRole('button')[20])
     fireEvent.click(screen.getAllByRole('button')[20])
     fireEvent.click(screen.getByTestId('gridMultiselectSubmit'))

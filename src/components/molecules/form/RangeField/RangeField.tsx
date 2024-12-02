@@ -14,7 +14,7 @@ export const RangeField = ({
   label,
   color,
   size,
-  labelProps,
+  labelProps = {},
   ...rest
 }: RangeFieldProps) => {
   const {

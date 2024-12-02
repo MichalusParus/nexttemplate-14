@@ -35,8 +35,8 @@ export const chipVariant = {
 }
 
 export const chipSize = {
-  sm: cn('text-sm [&_span]:leading-4 [&_svg]:h-md [&_svg]:min-w-md'),
-  md: cn('text-base [&_span]:leading-5 [&_svg]:h-lg [&_svg]:min-w-lg'),
-  lg: cn('text-lg [&_span]:leading-6 [&_svg]:h-xl [&_svg]:min-w-xl'),
+  sm: cn('text-sm [&_span]:leading-4 [&_svg]:h-smIcon [&_svg]:min-w-smIcon'),
+  md: cn('text-base [&_span]:leading-5 [&_svg]:h-mdIcon [&_svg]:min-w-mdIcon'),
+  lg: cn('text-lg [&_span]:leading-6 [&_svg]:h-lgIcon [&_svg]:min-w-lgIcon'),
   none: '',
 }

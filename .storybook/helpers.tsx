@@ -281,6 +281,8 @@ export const formSchema = z.object({
   numberStory: z.number().min(1),
   searchStory: z.string().min(1),
   dateStory: z.date(),
+  dateRangeStory: z.object({ start: z.date(), end: z.date() }),
+  dateMultiStory: z.array(z.date()).min(1),
   textareaStory: z.string().min(1),
   rangeStory: z.number().min(20),
   checkboxStory: z.string().min(1),
@@ -297,7 +299,9 @@ export const initialValues = {
   inputStory: '',
   numberStory: undefined,
   searchStory: '',
-  dateStory: new Date(),
+  dateStory: undefined,
+  dateRangeStory: { start: undefined, end: undefined },
+  dateMultiStory: [],
   textareaStory: '',
   rangeStory: 0,
   checkboxStory: '',
@@ -355,7 +359,7 @@ export const breadcrumbOptions = [
   { label: 'Bffs', href: '/bffs' },
 ]
 
-export const JestMockProvider = ({ children }: PropsWithChildren<Record<never, never>>) => {
+export const JestMockProvider = ({ children }: PropsWithChildren) => {
   const messages = require(`../messages/en.json`)
   return (
     <NextIntlClientProvider messages={messages} locale={'en'}>

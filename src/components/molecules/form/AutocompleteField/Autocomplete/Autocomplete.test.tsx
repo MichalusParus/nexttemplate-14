@@ -63,24 +63,6 @@ describe('Autocomplete', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('description')
   })
 
-  it('inputValue', () => {
-    render(
-      <JestMockProvider>
-        <Autocomplete
-          className="className"
-          name="autocompleteTest"
-          label="label"
-          value="value1"
-          options={options}
-          onInputChange={() => {}}
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
-    )
-    fireEvent.click(screen.getByRole('combobox'))
-    expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true')
-  })
-
   it('onInputChange', () => {
     const spy = jest.fn()
     render(
@@ -96,7 +78,7 @@ describe('Autocomplete', () => {
         />
       </JestMockProvider>,
     )
-    fireEvent.change(screen.getByRole('combobox'), {
+    fireEvent.change(screen.getByRole('textbox'), {
       target: {
         value: 'newvalue',
       },
@@ -121,7 +103,7 @@ describe('Autocomplete', () => {
     )
     fireEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getAllByRole('option')[0])
-    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(2)
   })
 
   it('disabled', () => {
@@ -139,6 +121,6 @@ describe('Autocomplete', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('combobox')).toHaveAttribute('disabled', '')
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-disabled', 'true')
   })
 })

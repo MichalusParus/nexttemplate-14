@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
-export const inputClass = cn(
-  'shrink-0 cursor-pointer appearance-none rounded-md transition-activity focus:outline-none',
+export const inputWrapClass = cn(
+  'shrink-0 cursor-pointer appearance-none overflow-hidden rounded-md transition-activity focus:outline-none',
   'disabled:cursor-not-allowed disabled:opacity-50 [&.disabled]:cursor-not-allowed [&.disabled]:opacity-50',
 )
 
@@ -10,7 +10,7 @@ export const switchClass = cn(
   'disabled:cursor-not-allowed disabled:opacity-50 [&.disabled]:cursor-not-allowed [&.disabled]:opacity-50',
 )
 
-export const checkClass = cn('absolute left-0 top-0 z-10 cursor-pointer transition-opacity')
+export const checkClass = cn('absolute -left-px -top-px bottom-0 right-0')
 
 export const thumbClass = cn('absolute rounded-full transition-position')
 
@@ -18,22 +18,22 @@ export const checkboxVariant = {
   text: {
     primary: cn(
       'border border-transparent',
-      'hover:bg-primary-100 focus-visible:bg-primary-100 group-hover:bg-primary-100 group-focus-visible:bg-primary-100',
-      'dark:hover:bg-primary-900 dark:focus-visible:bg-primary-900 dark:group-hover:bg-primary-900 dark:group-focus-visible:bg-primary-900',
+      'focus-within:bg-primary-100 hover:bg-primary-100 group-focus-within:bg-primary-100 group-hover:bg-primary-100',
+      'dark:focus-within:bg-primary-900 dark:hover:bg-primary-900 dark:group-focus-within:bg-primary-900 dark:group-hover:bg-primary-900',
       'checked:bg-primary-50 active:bg-primary-50 [&.selected]:bg-primary-50 ',
       'dark:checked:bg-primary-700 dark:active:bg-primary-700 dark:[&.selected]:bg-primary-700',
     ),
     secondary: cn(
       'border border-transparent',
-      'hover:bg-secondary-200 focus-visible:bg-secondary-200 group-hover:bg-secondary-200 group-focus-visible:bg-secondary-200',
-      'dark:hover:bg-secondary-900 dark:focus-visible:bg-secondary-900 dark:group-hover:bg-secondary-900 dark:group-focus-visible:bg-secondary-900',
+      'focus-within:bg-secondary-200 hover:bg-secondary-200 group-focus-within:bg-secondary-200 group-hover:bg-secondary-200',
+      'dark:focus-within:bg-secondary-900 dark:hover:bg-secondary-900 dark:group-focus-within:bg-secondary-900 dark:group-hover:bg-secondary-900',
       'checked:bg-secondary-100 active:bg-secondary-100 [&.selected]:bg-secondary-100',
       'dark:checked:bg-secondary-700 dark:active:bg-secondary-700 dark:[&.selected]:bg-secondary-700',
     ),
     terciary: cn(
       'border border-transparent',
-      'hover:bg-terciary-200 focus-visible:bg-terciary-200 group-hover:bg-terciary-200 group-focus-visible:bg-terciary-200',
-      'dark:hover:bg-terciary-900 dark:focus-visible:bg-terciary-900 dark:group-hover:bg-terciary-900 dark:group-focus-visible:bg-terciary-900',
+      'focus-within:bg-terciary-200 hover:bg-terciary-200 group-focus-within:bg-terciary-200 group-hover:bg-terciary-200',
+      'dark:focus-within:bg-terciary-900 dark:hover:bg-terciary-900 dark:group-focus-within:bg-terciary-900 dark:group-hover:bg-terciary-900',
       'checked:bg-terciary-100 active:bg-terciary-100 [&.selected]:bg-terciary-100 ',
       'dark:checked:bg-terciary-700 dark:active:bg-terciary-700 dark:[&.selected]:bg-terciary-700',
     ),
@@ -42,22 +42,22 @@ export const checkboxVariant = {
   outlined: {
     primary: cn(
       'border border-primary-800 dark:border-primary-100',
-      'hover:bg-primary-100 focus-visible:bg-primary-100 group-hover:bg-primary-100 group-focus-visible:bg-primary-100',
-      'dark:hover:bg-primary-900 dark:focus-visible:bg-primary-900 dark:group-hover:bg-primary-900 dark:group-focus-visible:bg-primary-900',
+      'focus-within:bg-primary-100 hover:bg-primary-100 group-focus-within:bg-primary-100 group-hover:bg-primary-100',
+      'dark:focus-within:bg-primary-900 dark:hover:bg-primary-900 dark:group-focus-within:bg-primary-900 dark:group-hover:bg-primary-900',
       'checked:bg-primary-50 active:bg-primary-50 [&.selected]:bg-primary-50',
       'dark:checked:bg-primary-700 dark:active:bg-primary-700 dark:[&.selected]:bg-primary-700',
     ),
     secondary: cn(
       'border border-secondary-800 dark:border-secondary-100',
-      'hover:bg-secondary-200 focus-visible:bg-secondary-200 group-hover:bg-secondary-200 group-focus-visible:bg-secondary-200',
-      'dark:hover:bg-secondary-900 dark:focus-visible:bg-secondary-900 dark:group-hover:bg-secondary-900 dark:group-focus-visible:bg-secondary-900',
+      'focus-within:bg-secondary-200 hover:bg-secondary-200 group-focus-within:bg-secondary-200 group-hover:bg-secondary-200',
+      'dark:focus-within:bg-secondary-900 dark:hover:bg-secondary-900 dark:group-focus-within:bg-secondary-900 dark:group-hover:bg-secondary-900',
       'checked:bg-secondary-100 active:bg-secondary-100 [&.selected]:bg-secondary-100',
       'dark:checked:bg-secondary-700 dark:active:bg-secondary-700 dark:[&.selected]:bg-secondary-700',
     ),
     terciary: cn(
       'border border-terciary-800 dark:border-terciary-100',
-      'hover:bg-terciary-200 focus-visible:bg-terciary-200 group-hover:bg-terciary-200 group-focus-visible:bg-terciary-200',
-      'dark:hover:bg-terciary-900 dark:focus-visible:bg-terciary-900 dark:group-hover:bg-terciary-900 dark:group-focus-visible:bg-terciary-900',
+      'focus-within:bg-terciary-200 hover:bg-terciary-200 group-focus-within:bg-terciary-200 group-hover:bg-terciary-200',
+      'dark:focus-within:bg-terciary-900 dark:hover:bg-terciary-900 dark:group-focus-within:bg-terciary-900 dark:group-hover:bg-terciary-900',
       'checked:bg-terciary-100 active:bg-terciary-100 [&.selected]:bg-terciary-100',
       'dark:checked:bg-terciary-700 dark:active:bg-terciary-700 dark:[&.selected]:bg-terciary-700',
     ),
@@ -66,17 +66,17 @@ export const checkboxVariant = {
   contained: {
     primary: cn(
       'border border-primary-100 bg-primary-800',
-      'hover:bg-primary-900 focus-visible:bg-primary-900 group-hover:bg-primary-900 group-focus-visible:bg-primary-900',
+      'focus-within:bg-primary-900 hover:bg-primary-900 group-focus-within:bg-primary-900 group-hover:bg-primary-900',
       'checked:bg-primary-700 active:bg-primary-700 [&.selected]:bg-primary-700',
     ),
     secondary: cn(
       'border border-secondary-100 bg-secondary-800',
-      'hover:bg-secondary-900 focus-visible:bg-secondary-900 group-hover:bg-secondary-900 group-focus-visible:bg-secondary-900',
+      'focus-within:bg-secondary-900 hover:bg-secondary-900 group-focus-within:bg-secondary-900 group-hover:bg-secondary-900',
       'checked:bg-secondary-700 active:bg-secondary-700 [&.selected]:bg-secondary-700',
     ),
     terciary: cn(
       'border border-terciary-100 bg-terciary-800',
-      'hover:bg-terciary-900 focus-visible:bg-terciary-900 group-hover:bg-terciary-900 group-focus-visible:bg-terciary-900',
+      'focus-within:bg-terciary-900 hover:bg-terciary-900 group-focus-within:bg-terciary-900 group-hover:bg-terciary-900',
       'checked:bg-terciary-700 active:bg-terciary-700 [&.selected]:bg-terciary-700',
     ),
     none: '',
@@ -186,16 +186,16 @@ export const switchLeft = {
 
 export const disabledVariant = {
   text: cn(
-    'disabled:border-transparent disabled:bg-dark-200 [&.disabled]:border-transparent [&.disabled]:bg-dark-300',
-    'dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:opacity-50',
+    '[&.[&.disabled]]:border-transparent [&.[&.disabled]]:bg-dark-300 [&.disabled]:border-transparent [&.disabled]:bg-dark-200',
+    'dark:[&.disabled]:bg-dark-200 dark:[&.disabled]:text-dark-500 dark:[&.disabled]:opacity-50',
   ),
   outlined: cn(
-    'disabled:border-dark-500 disabled:bg-dark-200 [&.disabled]:border-dark-400 [&.disabled]:bg-dark-300',
-    'dark:disabled:border-dark-500 dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:opacity-50',
+    '[&.[&.disabled]]:border-dark-400 [&.[&.disabled]]:bg-dark-300 [&.disabled]:border-dark-500 [&.disabled]:bg-dark-200',
+    'dark:[&.disabled]:border-dark-500 dark:[&.disabled]:bg-dark-200 dark:[&.disabled]:text-dark-500 dark:[&.disabled]:opacity-50',
   ),
   contained: cn(
-    'disabled:border-dark-500 disabled:bg-dark-500 [&.disabled]:border-dark-400 [&.disabled]:bg-dark-400',
-    'dark:disabled:border-dark-500 dark:disabled:bg-dark-500 dark:disabled:text-dark-500 dark:disabled:opacity-50',
+    '[&.[&.disabled]]:border-dark-400 [&.[&.disabled]]:bg-dark-400 [&.disabled]:border-dark-500 [&.disabled]:bg-dark-500',
+    'dark:[&.disabled]:border-dark-500 dark:[&.disabled]:bg-dark-500 dark:[&.disabled]:text-dark-500 dark:[&.disabled]:opacity-50',
   ),
   switch: cn(
     'disabled:border-dark-500 disabled:bg-dark-200 [&.disabled]:border-dark-400 [&.disabled]:bg-dark-300',

@@ -70,7 +70,6 @@ describe('ColumnHead', () => {
       </JestMockProvider>,
     )
     expect(screen.getByRole('columnheader')).toBeInTheDocument()
-    expect(screen.getByTestId('FakeCheckboxWrap')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('columnheader'))
     expect(spy).toHaveBeenCalled()
   })

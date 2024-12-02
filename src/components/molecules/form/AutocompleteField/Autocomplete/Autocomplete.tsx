@@ -3,45 +3,52 @@ import { useTranslations } from 'next-intl'
 import {
   forwardRef,
   KeyboardEvent,
+  MouseEvent,
   PropsWithChildren,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useRef,
   useState,
 } from 'react'
 
-import { Button } from '@/components/atoms/common/Button'
+import { ButtonProps } from '@/components/atoms/common/Button'
+import { buttonContentSize } from '@/components/atoms/common/Button/Button.style'
 import { ListBox } from '@/components/atoms/common/ListBox'
 import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 import { ChevronIcon, XIcon } from '@/components/atoms/icons'
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
-import { FieldProps, OptionType, StyleProps } from '@/components/types'
+import { FieldProps, InputProps, OptionType, StyleProps } from '@/components/types'
 import { useFocus } from '@/utils/hooks/useFocus'
 import { cn, filterOutKeys } from '@/utils/utils'
 
 import { Label } from '../../../../atoms/common/Label/Label'
-import { iconSize } from '../../MultiSelectField/MultiSelect/MultiSelect.style'
-import { InputProps,TextInput } from '../../TextField/TextInput/TextInput'
+import { TextInput, TextInputProps } from '../../TextField/TextInput/TextInput'
 import { inputVariant } from '../../TextField/TextInput/TextInput.style'
-import {
-  chevronClass,
-  clearButtonClass,
-  comboboxWrapClass,
-  disabledVariant,
-} from './Autocomplete.style'
+import { AutocompleteValue } from './AtocompleteValue'
+import { comboboxClass, disabledVariant } from './Autocomplete.style'
 
-export type AutocompleteProps = Pick<InputProps, 'disabled'> &
+// fix focus to input
+
+export type AutocompleteProps = Pick<TextInputProps, 'disabled'> &
   FieldProps &
+  InputProps &
   StyleProps & {
     /** position of dropdown */
     placement?: 'bottom' | 'top'
     /** current value of autocomplete */
     value: string
+    /** optional multiValue for displaying multiselect values */
+    multiValue?: OptionType[]
     /** options for select to choose from */
     options: OptionType[]
     /** loading state for options fetching, loading is delayed for 1 second to prevent flickering */
     isLoading?: boolean
+    /** optional for enabling expandable type of multiselect */
+    expandable?: boolean
+    /** for passing aditional props to combobox */
+    comboboxProps?: Partial<ButtonProps>
     /** optional input props for autocomplete input */
     inputProps?: Partial<InputProps>
     /** for passing aditional props to dropdown */
@@ -52,9 +59,11 @@ export type AutocompleteProps = Pick<InputProps, 'disabled'> &
     onInputChange: (value: string) => void
     /** onChange function */
     onChange: (value: string) => void
+    /** optional onClear function for clearing selected values, used for multiselect */
+    onClear?: (e: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => void
   }
 
-/** Basic custom Autocomplete inside Label Component. For form purposes use AutocompleteField. TextInput, Dropdown and ListBox props supported. USE CLIENT */
+/** Basic custom Autocomplete inside Label Component. For form purposes use AutocompleteField. Combobox, TextInput, Dropdown and ListBox props supported. USE CLIENT */
 export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<AutocompleteProps>>(
   (
     {
@@ -63,7 +72,9 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
       label,
       placeholder = label,
       value,
+      multiValue,
       options,
+      expandable,
       variant = 'outlined',
       color = 'primary',
       size = 'md',
@@ -71,12 +82,14 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
       isLoading,
       error,
       disabled,
+      comboboxProps = {},
       inputProps = {},
       dropdownProps = {},
       listboxProps = {},
-      labelProps,
+      labelProps = {},
       onInputChange,
       onChange,
+      onClear,
       children,
     },
     ref,
@@ -84,15 +97,15 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
     const t = useTranslations('Components')
     const componentRef = useRef<HTMLDivElement>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
+    const autocompleteValueRef = useRef<HTMLDivElement>(null)
     useImperativeHandle(ref, () => componentRef.current!)
     const [isOpen, setIsOpen] = useState(false)
     const [inputValue, setInputValue] = useState<string>('')
+    const [isTruncate, setIsTruncate] = useState(false)
     const sortedOptions = placement === 'top' ? options.reverse() : options
-    const noOptionsLabel =
-      inputValue.length <= 2 ? t('searchForOptions') : t('noOptionsMatch', { value: inputValue })
-    const comboboxZIndex = isOpen ? 'z-40' : 'z-20'
-    const selectedClass = isOpen ? 'selected' : ''
-    const disabledClass = disabled ? 'disabled' : ''
+    const selectedOptions = multiValue
+      ? multiValue
+      : options.filter(option => value === option.value)
     const { focusableEl } = useFocus(
       isOpen,
       componentRef,
@@ -105,50 +118,64 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
 
     const handleClose = useCallback(() => {
       const selectedLabel = options.find(option => option.value === value)?.label
-      if (isOpen && inputValue !== selectedLabel) {
+      if (isOpen && inputValue !== '' && inputValue !== selectedLabel && !multiValue) {
+        setInputValue(selectedLabel || '')
         onInputChange(selectedLabel || '')
       }
       if (focusableEl[0]) {
         focusableEl[0].focus()
       }
       setIsOpen(prev => !prev)
-    }, [isOpen, options, value, inputValue, focusableEl, onInputChange, setIsOpen])
+    }, [isOpen, options, value, inputValue, multiValue, focusableEl, onInputChange, setIsOpen])
 
     const handleOnChange = useCallback(
-      (target: string) => {
+      (target: string, e?: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => {
+        e?.stopPropagation()
         const selectedOption = options.find(({ value }) => value === target) || options[0]
         onChange(selectedOption.value)
-        setInputValue(selectedOption.label)
+        if (!multiValue) {
+          setInputValue(selectedOption.label)
+          onInputChange(selectedOption.label)
+          setIsOpen(false)
+        }
         if (focusableEl[0]) {
           focusableEl[0].focus()
         }
-        setIsOpen(prev => !prev)
       },
-      [options, focusableEl, onChange, setIsOpen, setInputValue],
+      [options, focusableEl, multiValue, onChange, setIsOpen, setInputValue, onInputChange],
     )
 
     const handleInputChange = useCallback(
-      (value: string | number) => {
+      (v: string | number) => {
         if (!isOpen) {
           setIsOpen(true)
         }
-        setInputValue(String(value).trimStart())
-        onInputChange(String(value).trimStart())
+        setInputValue(String(v).trimStart())
+        onInputChange(String(v).trimStart())
       },
       [isOpen, onInputChange],
     )
 
-    const handleClear = useCallback(() => {
-      onChange('')
-      onInputChange('')
-      setInputValue('')
-      if (focusableEl[0]) {
-        focusableEl[0].focus()
+    useEffect(() => {
+      if (!multiValue?.length) {
+        setInputValue('')
       }
-    }, [focusableEl, onChange, onInputChange])
+      if (multiValue && autocompleteValueRef?.current) {
+        const isOverflow =
+          autocompleteValueRef?.current?.scrollWidth > autocompleteValueRef?.current?.clientWidth
+        setIsTruncate(isOverflow)
+      }
+    }, [multiValue])
 
     return (
-      <Label name={name} label={label} size={size} error={error} {...labelProps}>
+      <Label
+        className={cn('md:[&>.FieldWrap]:w-[60%]', labelProps.className)}
+        name={name}
+        label={label}
+        size={size}
+        error={error}
+        {...filterOutKeys(labelProps, ['className'])}
+      >
         <div
           className={cn('Autocomplete', 'relative flex w-full', className)}
           ref={componentRef}
@@ -156,59 +183,92 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
         >
           <div
             className={cn(
-              'ComboboxWrap',
-              comboboxWrapClass,
-              selectedClass,
-              inputVariant[variant][color],
-              disabledClass,
-              disabledVariant[variant],
-              comboboxZIndex,
+              'AutocompleteCombobox',
+              'flex items-center justify-between',
+              isOpen && 'selected z-combobox',
+              disabled && 'disabled',
               error && 'border-error-800 shadow-error',
+              comboboxClass,
+              inputVariant[variant][color],
+              buttonContentSize[size],
+              disabledVariant[variant],
+              comboboxProps.className,
             )}
+            role="combobox"
+            tabIndex={disabled ? -1 : 0}
+            aria-labelledby={'label-' + name}
+            aria-describedby={`${name}-description`}
+            aria-disabled={disabled}
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
+            aria-controls={name}
+            aria-owns={name}
+            onClick={() => !disabled && setIsOpen(true)}
+            onKeyDown={e =>
+              !disabled && (e.code === 'Enter' || e.code === 'Space')
+                ? setIsOpen(prev => !prev)
+                : null
+            }
+            {...filterOutKeys(comboboxProps, ['className'])}
           >
-            <ChevronIcon className={cn(chevronClass, comboboxZIndex, isOpen && 'rotate-180')} />
-            <TextInput
-              id={name}
-              className={cn(
-                'AutocompleteCombobox',
-                'w-full border-none bg-transparent pr-16',
-                comboboxZIndex,
-                inputProps.className,
-              )}
-              name={name}
-              label="AutocompleteInput"
-              value={inputValue}
+            <AutocompleteValue
+              selectedOptions={selectedOptions}
+              multiValue={multiValue}
               variant={variant}
-              color="none"
+              color={color}
               size={size}
-              placeholder={placeholder}
-              disabled={disabled}
-              labelProps={{ hideError: true, hideLabel: true, collapsed: 'always' }}
-              role="combobox"
-              aria-haspopup="listbox"
-              aria-describedby={`${name}-description`}
-              aria-expanded={isOpen}
-              aria-controls={name}
-              aria-owns={name}
-              onKeyDown={(e: KeyboardEvent) =>
-                e.code === 'Enter' || e.code === 'Space' ? setIsOpen(true) : null
-              }
-              onClick={() => setIsOpen(true)}
-              onChange={handleInputChange}
-              {...filterOutKeys(inputProps, ['className'])}
-            />
-            {inputValue && (
-              <Button
-                className={cn('ClearButton', clearButtonClass, comboboxZIndex, selectedClass)}
-                startIcon={<XIcon className={iconSize[size]} />}
-                variant={variant}
-                color={color}
-                size="none"
-                hideShadow
-                aria-label={t('clear')}
-                onClick={handleClear}
+              expandable={expandable}
+              handleOnChange={handleOnChange}
+              ref={autocompleteValueRef}
+            >
+              <div className="relative bg-inherit">
+                <TextInput
+                  id={name}
+                  className={cn(
+                    'AutocompleteCombobox',
+                    '[&>input]:bg-transparent" w-full [&>input]:border-none',
+                    inputProps.className,
+                  )}
+                  name={name}
+                  type="text"
+                  value={inputValue}
+                  variant={variant}
+                  color="none"
+                  size="none"
+                  placeholder={placeholder}
+                  disabled={disabled}
+                  autoComplete="off"
+                  onChange={handleInputChange}
+                  {...filterOutKeys(inputProps, ['className'])}
+                />
+                <div
+                  className={cn(
+                    'TruncateWrap',
+                    'invisible absolute -left-8 top-0 h-full w-8 bg-inherit text-xl',
+                    isTruncate && 'visible',
+                  )}
+                >
+                  ...
+                </div>
+              </div>
+            </AutocompleteValue>
+            <div className="relative flex items-center gap-1">
+              {Boolean(selectedOptions.length) && onClear && (
+                <div
+                  className={cn('ClearButton', 'shrink-0')}
+                  role="button"
+                  aria-label={t('clear')}
+                  tabIndex={0}
+                  onClick={e => onClear(e)}
+                  onKeyDown={e => (e.code === 'Enter' || e.code === 'Space' ? onClear(e) : null)}
+                >
+                  <XIcon />
+                </div>
+              )}
+              <ChevronIcon
+                className={cn('text-inherit transition-transform', isOpen && 'rotate-180')}
               />
-            )}
+            </div>
           </div>
           <Dropdown
             isOpen={isOpen}
@@ -216,25 +276,29 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
             placement={placement}
             variant={variant}
             color={color}
+            modal
             onClose={handleClose}
             scrollShadowProps={{ disableHorizontal: true }}
             ref={dropdownRef}
             {...dropdownProps}
           >
             <ListBox
-              className={cn(placement === 'bottom' ? 'pt-1' : 'pb-1', listboxProps.className)}
               name={name}
-              value={[value]}
+              value={multiValue ? multiValue.map(v => v.value) : [value]}
               options={sortedOptions}
               variant={variant}
               color={color}
               size={size}
               isLoading={isLoading}
-              hideCheckbox
-              noOptionLabel={noOptionsLabel}
+              noOptionLabel={
+                inputValue.length <= 2 || !isLoading
+                  ? t('searchForOptions')
+                  : t('noOptionsMatch', { value: inputValue })
+              }
+              hideCheckbox={!multiValue}
               aria-hidden={!isOpen}
               onClick={handleOnChange}
-              {...filterOutKeys(listboxProps, ['className'])}
+              {...listboxProps}
             />
             {children}
           </Dropdown>

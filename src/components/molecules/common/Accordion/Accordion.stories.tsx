@@ -31,7 +31,7 @@ export const PrimaryDefault: Story = {
     className: '',
     options: accordionOptions,
     exclusive: false,
-    gap: 'gap-2',
+    gap: 'gap-4',
     chevronPosition: 'end',
     variant: 'outlined',
     color: 'primary',

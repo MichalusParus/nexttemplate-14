@@ -199,10 +199,14 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
               onClick={() => setCurrentMonth(addMonths(currentMonth, -1))}
             />
             <Button
-              className={cn('MonthSelect', 'border-none font-semibold')}
+              className={cn(
+                'MonthSelect',
+                'border-none font-semibold disabled:cursor-default disabled:bg-transparent disabled:text-current',
+              )}
               variant={variant}
               color={color}
               size={size}
+              disabled={readOnly}
               disableUpperCase
               hideShadow
               onClick={() => setCalendarState(calendarState === 'days' ? 'months' : 'days')}
@@ -212,6 +216,7 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
                 className={cn(
                   'text-inherit transition-transform',
                   calendarState === 'months' && 'rotate-180',
+                  readOnly && 'invisible',
                 )}
               />
             </Button>

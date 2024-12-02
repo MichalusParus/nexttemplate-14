@@ -38,21 +38,6 @@ describe('Checkbox', () => {
     expect(screen.getByTestId('SwitchThumb')).toBeTruthy()
   })
 
-  it('fake', () => {
-    render(
-      <Checkbox
-        className="className"
-        name="checkboxTest"
-        label="label"
-        fake
-        error="error"
-        isChecked={false}
-        onChange={() => {}}
-      />,
-    )
-    expect(screen.getByTestId('FakeCheckboxWrap')).toBeTruthy()
-  })
-
   it('error', () => {
     render(
       <Checkbox
@@ -64,7 +49,7 @@ describe('Checkbox', () => {
         onChange={() => {}}
       />,
     )
-    expect(screen.getByRole('checkbox')).toHaveClass('shadow-error')
+    expect(screen.getByTestId('CheckboxInputWrap')).toHaveClass('error')
   })
 
   it('isChecked', () => {

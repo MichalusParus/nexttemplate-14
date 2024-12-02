@@ -15,7 +15,7 @@ export const MultiSelectField = ({
   variant,
   color,
   size,
-  labelProps,
+  labelProps = {},
   ...rest
 }: MultiSelectFieldProps) => {
   const {

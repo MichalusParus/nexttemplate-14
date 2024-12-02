@@ -16,9 +16,7 @@ const meta: Meta<typeof Pagination> = {
     pages: {
       control: false,
     },
-    buttonProps: {
-      control: false,
-    },
+
     loadMoreButtonProps: {
       control: false,
     },

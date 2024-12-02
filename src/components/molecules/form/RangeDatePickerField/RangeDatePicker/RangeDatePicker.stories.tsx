@@ -10,17 +10,6 @@ const meta: Meta<typeof RangeDatePicker> = {
   parameters: {
     layout: 'padded',
   },
-  argTypes: {
-    buttonProps: {
-      control: false,
-    },
-    dropdownProps: {
-      control: false,
-    },
-    calendarProps: {
-      control: false,
-    },
-  },
 }
 
 const RangeDatePickerWithHooks = (args: RangeDatePickerProps) => {

@@ -21,7 +21,7 @@ describe('MultiSelectField', () => {
     )
     fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeTruthy()
-    expect(screen.getByTestId('MultiSelect')).toHaveClass('className')
+    expect(screen.getByTestId('Select')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'multiSelectTest')
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
   })

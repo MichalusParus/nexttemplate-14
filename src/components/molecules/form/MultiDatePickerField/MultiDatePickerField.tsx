@@ -15,7 +15,7 @@ export const MultiDatePickerField = ({
   variant,
   color,
   size,
-  labelProps,
+  labelProps = {},
   ...rest
 }: MultiDatePickerFieldProps) => {
   const {

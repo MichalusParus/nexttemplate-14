@@ -15,7 +15,7 @@ export const TextAreaField = ({
   variant,
   color,
   size,
-  labelProps,
+  labelProps = {},
   ...rest
 }: TextAreaFieldProps) => {
   const {

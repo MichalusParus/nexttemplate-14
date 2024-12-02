@@ -1,6 +1,6 @@
 import { cn } from '@/utils/utils'
 
-export const drawerClass = cn('absolute z-50 rounded-md bg-bg transition-position')
+export const drawerClass = cn('z-modal absolute rounded-md bg-bg transition-position')
 
 export const openClass = {
   left: cn('visible left-0 opacity-100'),

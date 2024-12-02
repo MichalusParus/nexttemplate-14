@@ -100,6 +100,6 @@ describe('Select', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('combobox')).toHaveAttribute('disabled', '')
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-disabled', 'true')
   })
 })

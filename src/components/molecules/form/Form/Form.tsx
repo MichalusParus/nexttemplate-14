@@ -18,7 +18,7 @@ export type FormProps<T extends FieldValues> = NativeFormProps &
     /** set collapsed state of label. Default is "flex-col md:flex-row" */
     collapsed?: 'always' | 'never' | 'default'
     /** onSubmit function */
-    onSubmit: (values: object) => void
+    onSubmit: (values: T) => void
   }
 
 export const FormStyleContext = createContext<{
@@ -58,7 +58,11 @@ export const Form = <T extends FieldValues>({
       >
         <form
           id={name}
-          className={cn('Form', 'flex w-full flex-wrap items-center justify-center', className)}
+          className={cn(
+            'Form',
+            'flex w-full flex-col flex-wrap items-center justify-center',
+            className,
+          )}
           onSubmit={form.handleSubmit(onSubmit)}
           data-testid="Form"
           {...rest}

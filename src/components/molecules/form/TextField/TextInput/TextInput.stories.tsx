@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { SearchIcon, SettingIcon } from '@/components/atoms/icons'
+import { SettingIcon } from '@/components/atoms/icons'
 
-import { InputProps, TextInput } from '.'
+import { TextInput, TextInputProps } from '.'
 
 const meta: Meta<typeof TextInput> = {
   title: 'Molecules/Form/TextInput',
@@ -14,7 +14,7 @@ const meta: Meta<typeof TextInput> = {
   },
 }
 
-const InputWithHooks = (args: InputProps) => {
+const InputWithHooks = (args: TextInputProps) => {
   const [value, setValue] = useState<string>('')
   return <TextInput {...args} value={value} onChange={v => setValue(String(v))} />
 }
@@ -24,28 +24,19 @@ type Story = StoryObj<typeof TextInput>
 
 export const PrimaryDefault: Story = {
   args: {
-    className: '',
+    className: 'w-96',
     type: 'text',
     name: 'inputStory',
-    label: 'Label:',
-    placeholder: 'TextInput',
     value: '',
+    placeholder: 'TextInput',
     variant: 'outlined',
     color: 'primary',
     size: 'md',
-    error: '',
     startIcon: undefined,
-    labelProps: undefined,
+    endIcon: undefined,
+    error: '',
+    disabled: false,
     onChange: v => console.log(v),
-  },
-  render: args => <InputWithHooks {...args} />,
-}
-
-export const Password: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    name: 'inputStory2',
-    type: 'password',
   },
   render: args => <InputWithHooks {...args} />,
 }
@@ -53,18 +44,8 @@ export const Password: Story = {
 export const Number: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'inputStory3',
+    name: 'inputStory1',
     type: 'number',
-  },
-  render: args => <InputWithHooks {...args} />,
-}
-
-export const Search: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    name: 'inputStory4',
-    type: 'search',
-    startIcon: <SearchIcon />,
   },
   render: args => <InputWithHooks {...args} />,
 }
@@ -72,8 +53,17 @@ export const Search: Story = {
 export const StartIcon: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'inputStory6',
+    name: 'inputStory2',
     startIcon: <SettingIcon />,
+  },
+  render: args => <InputWithHooks {...args} />,
+}
+
+export const EndIcon: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'inputStory3',
+    endIcon: <SettingIcon />,
   },
   render: args => <InputWithHooks {...args} />,
 }
@@ -81,7 +71,7 @@ export const StartIcon: Story = {
 export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'inputStory7',
+    name: 'inputStory4',
     error: 'error',
   },
   render: args => <InputWithHooks {...args} />,
@@ -90,7 +80,7 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'inputStory8',
+    name: 'inputStory5',
     disabled: true,
   },
 }

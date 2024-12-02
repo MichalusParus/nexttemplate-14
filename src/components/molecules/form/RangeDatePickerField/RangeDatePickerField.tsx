@@ -15,7 +15,7 @@ export const RangeDatePickerField = ({
   variant,
   color,
   size,
-  labelProps,
+  labelProps = {},
   ...rest
 }: RangeDatePickerFieldProps) => {
   const {

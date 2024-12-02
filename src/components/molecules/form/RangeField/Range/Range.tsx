@@ -33,7 +33,7 @@ export const Range = forwardRef<HTMLInputElement, RangeProps>(
       value,
       error,
       disabled,
-      labelProps,
+      labelProps = {},
       onChange,
       ...rest
     },

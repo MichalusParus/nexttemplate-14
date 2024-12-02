@@ -35,14 +35,14 @@ export type DrawerProps = Omit<StyleProps, 'size'> & {
   width?: string
   /** for setting internal padding of Paper component */
   padding?: string
-  /** optional boolean for setting modal behavior */
-  modal?: boolean
+  /** optional id for portal container */
+  portalContainer?: string
   /** for passing aditional props to Paper */
   paperProps?: Partial<PaperProps>
   /** for passing aditional props to Scrollshadow */
   scrollShadowProps?: Partial<ScrollShadowProps>
   /** drawer closing function */
-  onClose: () => void
+  onClose?: () => void
 }
 
 /** Drawer is controled menu popover that appears from sides of relative parent. Should contain somponents with role menuitem. Paper and ScrollShadow props supported. USE CLIENT */
@@ -58,17 +58,18 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
       offsetY = 'top-0 bottom-0',
       width = 'w-1/3',
       padding = 'p-0',
-      modal,
+      portalContainer,
       paperProps = {},
       scrollShadowProps = {},
       children,
-      onClose,
+      onClose = () => {},
     },
     ref,
   ) => {
     const componentRef = useRef<HTMLDivElement>(null)
     useImperativeHandle(ref, () => componentRef.current!)
     const [mounted, setMounted] = useState(false)
+    const container = portalContainer ? document.getElementById(portalContainer) : undefined
     const { focusableEl } = useFocus(
       isOpen,
       componentRef,
@@ -84,31 +85,12 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
     }
 
     useEffect(() => {
-      if (modal) {
-        document.body.style.overflow = isOpen ? 'hidden' : 'unset'
-      }
-    }, [isOpen, modal])
+      document.body.style.overflow = isOpen ? 'hidden' : 'unset'
+    }, [isOpen])
 
     useEffect(() => {
       setMounted(true)
     }, [])
-
-    useEffect(() => {
-      if (isOpen && !modal) {
-        const handleClickOutside = (e: MouseEvent | TouchEvent) => {
-          const target = e.target as HTMLElement
-          if (componentRef.current && !componentRef.current.contains(target)) {
-            onClose()
-          }
-        }
-        document.addEventListener('mousedown', handleClickOutside)
-        document.addEventListener('touchstart', handleClickOutside)
-        return () => {
-          document.removeEventListener('mousedown', handleClickOutside)
-          document.removeEventListener('touchstart', handleClickOutside)
-        }
-      }
-    }, [modal, isOpen, componentRef, onClose])
 
     return (
       <>
@@ -141,9 +123,9 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
                   <ScrollShadow {...scrollShadowProps}>{children}</ScrollShadow>
                 </Paper>
               </div>
-              {modal && <Overlay isOpen={isOpen} onClose={handleClose} dark />}
+              <Overlay isOpen={isOpen} onClose={handleClose} />
             </>,
-            document.body,
+            container ? container : document.body,
           )}
       </>
     )

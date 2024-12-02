@@ -15,7 +15,7 @@ export const DatePickerField = ({
   variant,
   color,
   size,
-  labelProps,
+  labelProps = {},
   ...rest
 }: DatePickerFieldProps) => {
   const {

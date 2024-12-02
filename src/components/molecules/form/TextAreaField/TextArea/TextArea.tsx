@@ -39,7 +39,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       size = 'md',
       error,
       disabled,
-      labelProps,
+      labelProps = {},
       onChange,
       ...rest
     },

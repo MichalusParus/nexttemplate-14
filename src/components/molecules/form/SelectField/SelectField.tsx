@@ -15,7 +15,7 @@ export const SelectField = ({
   variant,
   color,
   size,
-  labelProps,
+  labelProps = {},
   ...rest
 }: SelectFieldProps) => {
   const {

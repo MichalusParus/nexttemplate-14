@@ -15,7 +15,7 @@ export const RadioGroupField = ({
   variant,
   color,
   size,
-  labelProps,
+  labelProps = {},
   ...rest
 }: RadioGroupFieldProps) => {
   const {

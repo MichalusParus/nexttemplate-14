@@ -16,9 +16,6 @@ const meta: Meta<typeof ScreenPagination> = {
     pages: {
       control: false,
     },
-    buttonProps: {
-      control: false,
-    },
   },
 }
 

@@ -12,14 +12,6 @@ const meta: Meta<typeof Calendar> = {
   parameters: {
     layout: 'centered',
   },
-  argTypes: {
-    buttonProps: {
-      control: false,
-    },
-    paperProps: {
-      control: false,
-    },
-  },
 }
 
 const CalendarWithHooks = (args: CalendarProps) => {
@@ -64,8 +56,10 @@ type Story = StoryObj<typeof Calendar>
 export const PrimaryDefault: Story = {
   args: {
     className: 'className',
+    name: 'calendarStory',
     date: new Date(),
     range: undefined,
+    multiValue: undefined,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
@@ -74,8 +68,8 @@ export const PrimaryDefault: Story = {
     minMaxDate: undefined,
     unavailable: [],
     enableUseFocus: undefined,
-    buttonProps: {},
-    paperProps: {},
+    buttonProps: undefined,
+    paperProps: undefined,
   },
   render: args => <CalendarWithHooks {...args} />,
 }

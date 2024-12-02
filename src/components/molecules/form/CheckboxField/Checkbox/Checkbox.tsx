@@ -2,7 +2,7 @@
 import { forwardRef, InputHTMLAttributes, ReactNode } from 'react'
 
 import { CheckIcon } from '@/components/atoms/icons'
-import { FieldProps, StyleProps } from '@/components/types'
+import { FieldProps, InputProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import {
@@ -13,7 +13,7 @@ import {
   checkLabelSize,
   checkVariant,
   disabledVariant,
-  inputClass,
+  inputWrapClass,
   switchClass,
   switchLeft,
   switchSize,
@@ -27,6 +27,7 @@ type NativeCheckboxProps = Omit<
 
 export type CheckboxProps = NativeCheckboxProps &
   FieldProps &
+  InputProps &
   Omit<StyleProps, 'variant'> & {
     /** style variant of component */
     variant?: StyleProps['variant'] | 'switch'
@@ -61,48 +62,9 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     },
     ref,
   ) => {
-    const errorShadow = error ? 'shadow-error border-error-800' : ''
-    const checkVisibility = isChecked || disabled ? 'visible opacity-100' : 'invisible opacity-0'
+    const errorShadow = error ? 'error shadow-error border-error-800' : ''
+    const checkVisibility = isChecked || disabled ? 'opacity-100' : 'opacity-0'
     const thumbPosition = isChecked || disabled ? switchLeft[size] : 'left-0'
-    const disabledClass = disabled ? 'disabled' : ''
-    const selectedClass = isChecked ? 'selected' : ''
-
-    if (fake) {
-      return (
-        <div
-          className={cn(
-            'FakeCheckboxWrap',
-            'relative flex items-center',
-            checkLabelSize[size],
-            className,
-          )}
-          data-testid="FakeCheckboxWrap"
-        >
-          <div
-            className={cn(
-              'FakeInput',
-              inputClass,
-              checkboxVariant[variant][color],
-              disabledClass,
-              disabledVariant[variant],
-              checkboxSize[size],
-              selectedClass,
-              errorShadow,
-            )}
-          />
-          <CheckIcon
-            className={cn(
-              'CheckIcon',
-              checkClass,
-              checkVariant[variant][color],
-              checkboxSize[size],
-              checkVisibility,
-              disabledClass,
-            )}
-          />
-        </div>
-      )
-    }
 
     if (variant === 'switch') {
       return (
@@ -131,10 +93,10 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             <div
               className={cn(
                 'SwitchThumb',
+                disabled && 'disabled',
                 thumbClass,
                 checkVariant[variant][color],
                 thumbPosition,
-                disabledClass,
               )}
               data-testid="SwitchThumb"
             />
@@ -148,42 +110,55 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 
     return (
       <div
-        className={cn('CheckboxWrap', 'flex items-start', checkboxMargin[size], className)}
+        className={cn('CheckboxWrap', 'flex items-start', !fake && checkboxMargin[size], className)}
         data-testid="Checkbox"
       >
-        <div className="relative mr-2 flex">
-          <input
-            id={name}
-            className={cn(
-              inputClass,
-              checkboxVariant[variant][color],
-              disabledVariant[variant],
-              checkboxSize[size],
-              errorShadow,
-            )}
-            type="checkbox"
-            name={name}
-            value={value}
-            onChange={e => onChange(e.target.value)}
-            checked={isChecked}
-            disabled={disabled}
-            ref={ref}
-            {...rest}
-          />
+        <div
+          className={cn(
+            'CheckboxInputWrap',
+            'relative mr-2 flex',
+            inputWrapClass,
+            checkboxVariant[variant][color],
+            checkboxSize[size],
+            disabled && 'disabled',
+            disabled && disabledVariant[variant],
+            errorShadow,
+          )}
+          data-testid="CheckboxInputWrap"
+        >
+          {!fake && (
+            <input
+              id={name}
+              className={cn(
+                'absolute left-0 top-0 z-10 cursor-pointer opacity-0',
+                checkboxSize[size],
+              )}
+              type="checkbox"
+              name={name}
+              value={value}
+              onChange={e => onChange(e.target.value)}
+              checked={isChecked}
+              disabled={disabled}
+              ref={ref}
+              {...rest}
+            />
+          )}
           <CheckIcon
             className={cn(
               'CheckIcon',
-              checkClass,
+              disabled && 'disabled',
+              !fake && checkClass,
               checkVariant[variant][color],
               checkboxSize[size],
               checkVisibility,
-              disabledClass,
             )}
           />
         </div>
-        <label htmlFor={name} className={cn('Label', checkLabelSize[size])}>
-          {content || label}
-        </label>
+        {!fake && (
+          <label htmlFor={name} className={cn('Label', checkLabelSize[size])}>
+            {content || label}
+          </label>
+        )}
       </div>
     )
   },

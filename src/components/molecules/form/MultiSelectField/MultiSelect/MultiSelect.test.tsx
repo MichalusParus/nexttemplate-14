@@ -21,7 +21,7 @@ describe('MultiSelect', () => {
     )
     fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeTruthy()
-    expect(screen.getByTestId('MultiSelect')).toHaveClass('className')
+    expect(screen.getByTestId('Select')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'multiSelectTest')
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
   })
@@ -71,7 +71,7 @@ describe('MultiSelect', () => {
       </JestMockProvider>,
     )
     fireEvent.click(screen.getByRole('combobox'))
-    expect(screen.getByTestId('SelectedOptionsWrap')).toHaveTextContent('label1')
+    expect(screen.getByTestId('SelectValue')).toHaveTextContent('label1')
     expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true')
   })
 
@@ -106,6 +106,6 @@ describe('MultiSelect', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('combobox')).toHaveAttribute('disabled', '')
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-disabled', 'true')
   })
 })

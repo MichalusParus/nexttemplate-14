@@ -38,7 +38,7 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
       size = 'md',
       disabled,
       error,
-      labelProps,
+      labelProps = {},
       onChange,
       ...rest
     },

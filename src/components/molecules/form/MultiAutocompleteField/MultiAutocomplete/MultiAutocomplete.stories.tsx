@@ -19,15 +19,7 @@ const meta: Meta<typeof MultiAutocomplete> = {
     options: {
       control: false,
     },
-    inputProps: {
-      control: false,
-    },
-    dropdownProps: {
-      control: false,
-    },
-    listboxProps: {
-      control: false,
-    },
+
     children: {
       control: false,
     },
@@ -46,10 +38,12 @@ const MultiAutocompleteWithFetch = (args: MultiAutocompleteProps) => {
           .then(res => res.json())
           .then(res =>
             setOptions(
-              res.map((o: { name: { common: string }; id: string }) => ({
-                label: o.name.common,
-                value: o.name.common,
-              })),
+              res.length
+                ? res.map((o: { name: { common: string }; id: string }) => ({
+                    label: o.name.common,
+                    value: o.name.common,
+                  }))
+                : [],
             ),
           )
       })
@@ -101,6 +95,7 @@ export const PrimaryDefault: Story = {
     label: 'Label',
     value: [],
     options: options.slice(0, 5),
+    expandable: false,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
@@ -108,10 +103,11 @@ export const PrimaryDefault: Story = {
     placement: 'bottom',
     isLoading: false,
     error: '',
+    comboboxProps: undefined,
     inputProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
-    labelProps: { width: 'w-[30rem]' },
+    labelProps: undefined,
     onInputChange: () => {},
     onChange: value => console.log(value),
   },
@@ -122,6 +118,15 @@ export const ClientFilter: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'clientMultiAutocompleteStory',
+  },
+  render: args => <ClientMultiAutocomplete {...args} />,
+}
+
+export const Expendable: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'clientMultiAutocompleteStory',
+    expandable: true,
   },
   render: args => <ClientMultiAutocomplete {...args} />,
 }
@@ -141,7 +146,7 @@ export const Scroll: Story = {
     options: options,
     name: 'MultiAutocompleteStory3',
   },
-  render: args => <MultiAutocompleteWithFetch {...args} />,
+  render: args => <ClientMultiAutocomplete {...args} />,
 }
 
 export const IsLoading: Story = {
