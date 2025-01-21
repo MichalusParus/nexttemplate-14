@@ -3,14 +3,15 @@ import { useTranslations } from 'next-intl'
 import { forwardRef } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
+import { iconOnlySize } from '@/components/atoms/common/Button/Button.style'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { Ghost } from '@/components/atoms/loaders/Ghost'
 import { P } from '@/components/atoms/typography/P'
-import { Checkbox } from '@/components/molecules/form/CheckboxField/Checkbox'
+import { Checkbox } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import { cellOverflow, cellSize, selectCellSize } from '../ColumnHead/ColumnHead.style'
+import { cellOverflow, cellSize } from '../GridHeader/ColumnHead/ColumnHead.style'
 import { checkboxSize, rowgroupVariant } from '../GridHeader/GridHeader.style'
 import { ColumnDef, RowDef } from '../types'
 
@@ -120,7 +121,7 @@ export const GridBody = forwardRef<HTMLDivElement, GridBodyProps>(
                         className={cn(
                           'GridCell',
                           selectedClass(String(row.id)),
-                          selectCellSize[size],
+                          iconOnlySize[size],
                         )}
                       >
                         <Checkbox

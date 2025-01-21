@@ -21,8 +21,8 @@ describe('ToastProvider', () => {
       </ToastProvider>,
     )
     fireEvent.click(screen.getByTestId('button'))
-    expect(screen.getByTestId('ToastsWrap')).toBeTruthy()
-    expect(screen.getByTestId('Toast')).toBeTruthy()
+    expect(screen.getByTestId('ToastsWrap')).toBeInTheDocument()
+    expect(screen.getByTestId('Toast')).toBeInTheDocument()
     expect(screen.getByTestId('Toast')).toHaveTextContent('message')
   })
 })

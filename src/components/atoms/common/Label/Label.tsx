@@ -71,18 +71,20 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
           </label>
         )}
         {children}
-        {!hideError && (
-          <Alert
-            id={`${name}-description`}
-            className={cn(error || description ? 'opacity-100' : 'opacity-0')}
-            variant="text"
-            status={description && !error ? 'info' : 'error'}
-            size="sm"
-            aria-hidden={!description && !error}
-          >
-            {description && !error ? description : error}
-          </Alert>
-        )}
+        <div className="min-h-[1.625rem]">
+          {!hideError && (error || description) && (
+            <Alert
+              id={`${name}-description`}
+              className={cn(error || description ? 'opacity-100' : 'opacity-0')}
+              variant="text"
+              status={description && !error ? 'info' : 'error'}
+              size="sm"
+              aria-hidden={!description && !error}
+            >
+              {description && !error ? description : error}
+            </Alert>
+          )}
+        </div>
       </div>
     )
   },

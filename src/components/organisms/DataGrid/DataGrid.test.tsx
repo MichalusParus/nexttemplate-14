@@ -33,7 +33,7 @@ describe('DataGrid', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('grid')).toBeTruthy()
+    expect(screen.getByRole('grid')).toBeInTheDocument()
     expect(screen.getByRole('grid')).toHaveClass('className')
     expect(screen.getAllByRole('rowgroup')[0]).toHaveTextContent(
       'Column Head 1Num 2Column Head 3Column Head 4',

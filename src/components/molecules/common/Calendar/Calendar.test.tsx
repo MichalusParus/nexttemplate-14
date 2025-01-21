@@ -12,7 +12,7 @@ describe('Calendar', () => {
         <Calendar date={new Date()} className="className" onChange={() => {}} />
       </JestMockProvider>,
     )
-    expect(screen.getByTestId('Calendar')).toBeTruthy()
+    expect(screen.getByTestId('Calendar')).toBeInTheDocument()
     expect(screen.getByTestId('Calendar')).toHaveClass('className')
   })
 

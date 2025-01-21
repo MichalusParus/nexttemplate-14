@@ -12,7 +12,7 @@ describe('Ghost', () => {
         <Ghost className="className" />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('status')).toBeTruthy()
+    expect(screen.getByRole('status')).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveClass('className')
   })
 })

@@ -5,9 +5,10 @@ import { StyleProps } from '@/components/types'
 import { FilterDef, SortingDef } from '@/utils/hooks/useFilterData'
 import { cn } from '@/utils/utils'
 
-import { ColumnHead } from '../ColumnHead'
 import { ColumnDef } from '../types'
+import { ColumnHead } from './ColumnHead'
 import { rowgroupVariant } from './GridHeader.style'
+import { SelectAllHead } from './SelectAllHead'
 
 type GridHeaderProps = StyleProps & {
   /** for passing custom tailwind classes */
@@ -65,19 +66,14 @@ export const GridHeader = forwardRef<HTMLDivElement, GridHeaderProps>(
       >
         <div className="GridRow flex" role="row">
           {handleAll && (
-            <ColumnHead
+            <SelectAllHead
               className="rounded-none rounded-tl-md"
               name={name}
-              column={columns[0]}
               variant={variant}
               color={color}
               size={size}
-              allSelected={allSelected}
-              sorting={sorting}
-              filter={filter}
+              isChecked={allSelected}
               handleAll={handleAll}
-              handleSorting={haveSubColumns ? undefined : handleSorting}
-              setFilter={haveSubColumns ? undefined : setFilter}
             />
           )}
           {columns.map((col, i) => (
@@ -102,19 +98,14 @@ export const GridHeader = forwardRef<HTMLDivElement, GridHeaderProps>(
         {haveSubColumns && (
           <div className="GridRow flex" role="row">
             {handleAll && (
-              <ColumnHead
-                className="rounded-none"
+              <SelectAllHead
+                className="rounded-none rounded-tl-md"
                 name={name}
-                column={columns[0]}
                 variant={variant}
                 color={color}
                 size={size}
-                allSelected={allSelected}
-                sorting={sorting}
-                filter={filter}
+                isChecked={allSelected}
                 handleAll={handleAll}
-                handleSorting={handleSorting}
-                setFilter={setFilter}
               />
             )}
             {mergedSubColumns.map(col => (

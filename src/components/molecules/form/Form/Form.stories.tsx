@@ -9,21 +9,21 @@ import { Label } from '@/components/atoms/common/Label'
 import { useFilterData } from '@/utils/hooks/useFilterData'
 
 import { formSchema, getOptions, initialValues } from '../../../../../.storybook/helpers'
-import { AutocompleteField } from '../AutocompleteField'
-import { CheckboxField } from '../CheckboxField'
-import { CheckboxGroupField } from '../CheckboxGroupField'
-import { DatePickerField } from '../DatePickerField'
-import { MultiAutocompleteField } from '../MultiAutocompleteField'
-import { MultiDatePickerField } from '../MultiDatePickerField'
-import { MultiSelectField } from '../MultiSelectField'
-import { PasswordField } from '../PasswordField'
-import { RadioGroupField } from '../RadioGroupField'
-import { RangeDatePickerField } from '../RangeDatePickerField'
-import { RangeField } from '../RangeField'
-import { SearchField } from '../SearchField'
-import { SelectField } from '../SelectField'
-import { TextAreaField } from '../TextAreaField'
-import { TextField } from '../TextField'
+import { DatePickerField } from '../datePickers/DatePickerField'
+import { MultiDatePickerField } from '../datePickers/MultiDatePickerField'
+import { RangeDatePickerField } from '../datePickers/RangeDatePickerField'
+import { CheckboxField } from '../inputs/CheckboxField'
+import { CheckboxGroupField } from '../inputs/CheckboxGroupField'
+import { PasswordField } from '../inputs/PasswordField'
+import { RadioGroupField } from '../inputs/RadioGroupField'
+import { RangeField } from '../inputs/RangeField'
+import { SearchField } from '../inputs/SearchField'
+import { TextAreaField } from '../inputs/TextAreaField'
+import { TextField } from '../inputs/TextField'
+import { AutocompleteField } from '../selects/AutocompleteField'
+import { MultiAutocompleteField } from '../selects/MultiAutocompleteField'
+import { MultiSelectField } from '../selects/MultiSelectField'
+import { SelectField } from '../selects/SelectField'
 import { Form } from '.'
 import { FormProps } from './Form'
 
@@ -126,7 +126,7 @@ const FormWithHooks = (args: FormProps<object>) => {
 
 export const Default: Story = {
   args: {
-    className: 'w-96 gap-2',
+    className: 'w-96',
     name: 'formStory',
     form: undefined,
     variant: 'outlined',

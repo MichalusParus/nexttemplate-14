@@ -12,7 +12,7 @@ describe('Nav', () => {
         <Nav className="className" navLinks={[]} />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('navigation')).toBeTruthy()
+    expect(screen.getByRole('navigation')).toBeInTheDocument()
     expect(screen.getByRole('navigation')).toHaveClass('className')
   })
 })

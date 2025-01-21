@@ -8,7 +8,7 @@ import { Breadcrumb } from './Breadcrumb'
 describe('Breadcrumb', () => {
   it('default', () => {
     render(<Breadcrumb className="className" options={breadcrumbOptions} />)
-    expect(screen.getByRole('navigation')).toBeTruthy()
+    expect(screen.getByRole('navigation')).toBeInTheDocument()
     expect(screen.getByRole('navigation')).toHaveClass('className')
     expect(screen.getAllByRole('link')).toHaveLength(3)
     expect(screen.getAllByRole('link')[0]).toHaveTextContent('Users')

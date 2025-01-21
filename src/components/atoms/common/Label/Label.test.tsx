@@ -7,7 +7,7 @@ import { Label } from '.'
 describe('Label', () => {
   it('default', () => {
     render(<Label name="labelTest" label="label" className="className" />)
-    expect(screen.getByTestId('LabelWrap')).toBeTruthy()
+    expect(screen.getByTestId('LabelWrap')).toBeInTheDocument()
     expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
     expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
     expect(screen.getByTestId('Label')).toHaveAttribute('for', 'labelTest')
@@ -20,6 +20,6 @@ describe('Label', () => {
 
   it('description', () => {
     render(<Label name="labelTest" label="label" className="className" description="description" />)
-    expect(screen.getByRole('alert')).toHaveTextContent('description')
+    expect(screen.getByTestId('Alert')).toHaveTextContent('description')
   })
 })

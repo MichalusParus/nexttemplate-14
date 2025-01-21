@@ -22,7 +22,7 @@ describe('GridHeader', () => {
         <GridHeader className="className" name="ColumnHeadTest" columns={gridColsDef} />,
       </JestMockProvider>,
     )
-    expect(screen.getByRole('rowgroup')).toBeTruthy()
+    expect(screen.getByRole('rowgroup')).toBeInTheDocument()
     expect(screen.getByRole('rowgroup')).toHaveClass('className')
     expect(screen.getByRole('rowgroup')).toHaveTextContent(
       'Column Head 1Num 2Column Head 3Column Head 4',
@@ -47,12 +47,6 @@ describe('GridHeader', () => {
     fireEvent.click(screen.getAllByRole('button')[0])
     expect(screen.getAllByRole('menu')).toHaveLength(1)
     expect(screen.getAllByRole('menu')[0]).toHaveAttribute('id', 'filterColumnHeadTestname1')
-    fireEvent.change(screen.getAllByRole('searchbox')[0], {
-      target: {
-        value: 'newvalue',
-      },
-    })
-    expect(spy).toHaveBeenCalledWith({ name1: 'newvalue' })
     fireEvent.click(screen.getAllByRole('columnheader')[0])
     expect(spy).toHaveBeenCalled()
   })

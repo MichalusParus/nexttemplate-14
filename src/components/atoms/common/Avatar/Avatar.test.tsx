@@ -13,7 +13,7 @@ describe('Avatar', () => {
       </JestMockProvider>,
     )
     expect(screen.getByRole('img')).toBeVisible()
-    expect(screen.getByRole('img')).toBeTruthy()
+    expect(screen.getByRole('img')).toBeInTheDocument()
     expect(screen.getByRole('img')).toHaveClass('className')
     expect(screen.getByRole('img')).not.toHaveTextContent('UN')
   })

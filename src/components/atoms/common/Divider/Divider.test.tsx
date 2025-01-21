@@ -7,7 +7,7 @@ import { Divider } from '.'
 describe('Divider', () => {
   it('default', () => {
     render(<Divider className="className" />)
-    expect(screen.getByRole('separator')).toBeTruthy()
+    expect(screen.getByRole('separator')).toBeInTheDocument()
     expect(screen.getByRole('separator')).toHaveClass('className')
   })
 

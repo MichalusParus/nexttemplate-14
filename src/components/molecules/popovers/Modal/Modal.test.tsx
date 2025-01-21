@@ -14,7 +14,7 @@ describe('Modal', () => {
         </Modal>
       </JestMockProvider>,
     )
-    expect(screen.getByRole('dialog')).toBeTruthy()
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(screen.getByRole('dialog')).toHaveClass('className')
     expect(screen.getByRole('dialog')).toHaveAttribute('id', 'test')
     expect(screen.getByRole('dialog')).toHaveTextContent('Children')

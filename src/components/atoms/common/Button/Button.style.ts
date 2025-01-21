@@ -108,7 +108,7 @@ export const buttonDisabledVariant = {
 
 export const iconOnlySize = {
   sm: cn('p-smPY text-sm '),
-  md: cn('text-md p-mdPY'),
+  md: cn('p-mdPY text-base'),
   lg: cn('p-lgPY text-lg'),
   inline: cn('border-0 px-1'),
   none: '',

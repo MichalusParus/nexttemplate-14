@@ -18,7 +18,7 @@ describe('ListBox', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('listbox')).toBeTruthy()
+    expect(screen.getByRole('listbox')).toBeInTheDocument()
     expect(screen.getByRole('listbox')).toHaveClass('className')
     expect(screen.getByRole('listbox')).toHaveAttribute('id', 'listboxTest')
   })

@@ -1,0 +1,96 @@
+'use client'
+import { forwardRef, useCallback } from 'react'
+
+import { OptionType } from '@/components/types'
+import { cn } from '@/utils/utils'
+
+import { Checkbox, CheckboxProps } from '../../CheckboxField/Checkbox/Checkbox'
+
+export type CheckboxGroupProps = Omit<
+  CheckboxProps,
+  'value' | 'isChecked' | 'onChange' | 'fake' | 'label' | 'content'
+> & {
+  /** name of form field */
+  name: string
+  /** checkboxGroup value */
+  value: string[]
+  /** group options for individual radio inputs */
+  options: OptionType[]
+  /** display radio inputs in column */
+  column?: boolean
+  /** onChange function */
+  onChange: (value: string[]) => void
+}
+
+/** Basic styled CheckboxGroup. For form purposes use CheckboxGroupField. Default InputHTMLAttributes props supported. USE CLIENT */
+export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
+  (
+    {
+      className,
+      name,
+      value,
+      options,
+      column,
+      variant = 'outlined',
+      color = 'primary',
+      size = 'md',
+      disabled,
+      error,
+      onChange,
+      ...rest
+    },
+    ref,
+  ) => {
+    const isChecked = useCallback(
+      (checkboxValue: string) => {
+        if (value) {
+          return value.includes(checkboxValue)
+        } else {
+          return false
+        }
+      },
+      [value],
+    )
+
+    const handleOnChange = useCallback(
+      (checkboxValue: string) => {
+        if (isChecked(checkboxValue)) {
+          onChange(value.filter(v => v !== checkboxValue))
+        } else {
+          onChange([...value, checkboxValue])
+        }
+      },
+      [value, isChecked, onChange],
+    )
+
+    return (
+      <div
+        className={cn('CheckboxGroup', 'flex flex-wrap', column && 'flex-col', className)}
+        data-testid="CheckboxGroup"
+      >
+        {options.map(({ value: checkboxValue, label: checkboxLabel, content }) => (
+          <Checkbox
+            key={checkboxValue}
+            name={checkboxValue}
+            label={checkboxLabel}
+            value={checkboxValue}
+            content={content}
+            variant={variant}
+            color={color}
+            size={size}
+            isChecked={isChecked(checkboxValue)}
+            error={error}
+            disabled={disabled}
+            onChange={handleOnChange}
+            aria-labelledby={`label-${name}`}
+            aria-describedby={`${name}-description`}
+            ref={ref}
+            {...rest}
+          />
+        ))}
+      </div>
+    )
+  },
+)
+
+CheckboxGroup.displayName = 'CheckboxGroup'

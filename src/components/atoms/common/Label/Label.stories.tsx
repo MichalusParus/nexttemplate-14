@@ -4,7 +4,7 @@ import {
   inputClass,
   inputSize,
   inputVariant,
-} from '@/components/molecules/form/TextField/TextInput/TextInput.style'
+} from '@/components/molecules/form/inputs/TextField/TextInput/TextInput.style'
 
 import { Label } from '.'
 

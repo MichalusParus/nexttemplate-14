@@ -20,7 +20,7 @@ describe('GridFooter', () => {
         ,
       </JestMockProvider>,
     )
-    expect(screen.getByRole('rowgroup')).toBeTruthy()
+    expect(screen.getByRole('rowgroup')).toBeInTheDocument()
     expect(screen.getByRole('rowgroup')).toHaveClass('GridFooter')
     expect(screen.getByTestId('MobilePagination')).toBeInTheDocument()
     expect(screen.getByRole('combobox')).toBeInTheDocument()

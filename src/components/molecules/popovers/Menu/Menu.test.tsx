@@ -11,9 +11,9 @@ describe('Menu', () => {
         Children
       </Menu>,
     )
-    expect(screen.getByTestId('MenuWrap')).toBeTruthy()
+    expect(screen.getByTestId('MenuWrap')).toBeInTheDocument()
     expect(screen.getByTestId('MenuWrap')).toHaveClass('className')
-    expect(screen.getByRole('menu')).toBeTruthy()
+    expect(screen.getByRole('menu')).toBeInTheDocument()
     expect(screen.getByRole('menu')).toHaveAttribute('id', 'menuTest')
     expect(screen.getByRole('menu')).toHaveTextContent('Children')
   })

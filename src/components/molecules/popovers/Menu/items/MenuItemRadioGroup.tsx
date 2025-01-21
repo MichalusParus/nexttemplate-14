@@ -2,16 +2,15 @@
 import { forwardRef } from 'react'
 
 import { buttonContentSize, buttonVariant } from '@/components/atoms/common/Button/Button.style'
-import { RadioGroupProps } from '@/components/molecules/form/RadioGroupField/RadioGroup'
-import { cn } from '@/utils/utils'
-
+import { RadioGroupProps } from '@/components/molecules/form/inputs/RadioGroupField/RadioGroup'
 import {
   afterClass,
   disableVariant,
   radioClass,
   radioSize,
   radioVariant,
-} from '../../../form/RadioGroupField/RadioGroup/RadioGroup.style'
+} from '@/components/molecules/form/inputs/RadioGroupField/RadioGroup/RadioGroup.style'
+import { cn } from '@/utils/utils'
 
 export type MenuItemRadioGroupProps = Omit<RadioGroupProps, 'label' | 'labelProps' | 'error'>
 

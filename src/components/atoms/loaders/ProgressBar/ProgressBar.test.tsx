@@ -7,7 +7,7 @@ import { ProgressBar } from '.'
 describe('ProgressBar', () => {
   it('default', () => {
     render(<ProgressBar className="className" />)
-    expect(screen.getByTestId('ProgressBar')).toBeTruthy()
+    expect(screen.getByTestId('ProgressBar')).toBeInTheDocument()
     expect(screen.getByTestId('ProgressBar')).toHaveClass('className')
   })
 })

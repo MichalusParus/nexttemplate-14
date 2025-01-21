@@ -7,7 +7,7 @@ import { Main } from '.'
 describe('Main', () => {
   it('default', () => {
     render(<Main className="className" />)
-    expect(screen.getByTestId('Main')).toBeTruthy()
+    expect(screen.getByTestId('Main')).toBeInTheDocument()
     expect(screen.getByTestId('Main')).toHaveClass('className')
   })
 })

@@ -12,7 +12,7 @@ describe('List', () => {
         <List className="className" />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('list')).toBeTruthy()
+    expect(screen.getByRole('list')).toBeInTheDocument()
     expect(screen.getByTestId('ListWrap')).toHaveClass('className')
   })
 

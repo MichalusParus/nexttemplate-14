@@ -12,7 +12,7 @@ describe('HamburgerMenu', () => {
         <HamburgerMenu className="className" navLinks={[]} />
       </JestMockProvider>,
     )
-    expect(screen.getByTestId('HamburgerMenu')).toBeTruthy()
+    expect(screen.getByTestId('HamburgerMenu')).toBeInTheDocument()
     expect(screen.getByTestId('HamburgerMenu')).toHaveClass('className')
   })
 })

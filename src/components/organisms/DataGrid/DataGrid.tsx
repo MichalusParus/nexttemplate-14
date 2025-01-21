@@ -49,6 +49,10 @@ export type DataGridProps = StyleProps & {
   onRowClick?: (value: RowDef) => void
 }
 
+// focus first and pagination, when focus inside, keyboard navigation
+// renderCell fn
+// check scrollability horozontal, header mainly, columns must have same size
+
 /** Grid "table" for displaying data in rows with filter, sort, pagination, data export, onClick and multiselection. USE CLIENT */
 export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
   (
@@ -91,20 +95,20 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
     const haveSubColumns = columns.some(col => col.columns && col.columns.length > 0)
     const mergedSubColumns = columns.map(c => c.columns).flat()
     const columnsInRow = haveSubColumns ? (mergedSubColumns as ColDef[]) : columns
-    const { focusableEl } = useFocus(
-      isGridFocusOpen,
-      componentRef,
-      [
-        '.RowButton:not(.cursor-default)',
-        '.SubColButton',
-        '.Combobox',
-        '.ExportButton',
-        '.LeftChevronButton',
-        '.RightChevronButton',
-        '.SelectAll:not(.cursor-default)',
-      ],
-      () => setIsGridFocusOpen(false),
-    )
+    // const { focusableEl } = useFocus(
+    //   isGridFocusOpen,
+    //   componentRef,
+    //   [
+    //     '.RowButton:not(.cursor-default)',
+    //     '.SubColButton',
+    //     '.Combobox',
+    //     '.ExportButton',
+    //     '.LeftChevronButton',
+    //     '.RightChevronButton',
+    //     '.SelectAll:not(.cursor-default)',
+    //   ],
+    //   () => setIsGridFocusOpen(false),
+    // )
 
     const handleAll = useCallback(() => {
       if (selectAll === 'none') {
@@ -143,12 +147,12 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
         const target = e.target as HTMLDivElement
         if (isGridFocusOpen && !componentRef.current?.contains(target)) {
           setIsGridFocusOpen(false)
-          if (focusableEl[0]) {
-            focusableEl[0].focus()
-          }
+          // if (focusableEl[0]) {
+          //   focusableEl[0].focus()
+          // }
         }
       },
-      [isGridFocusOpen, componentRef, focusableEl],
+      [isGridFocusOpen, componentRef],
     )
 
     const handleKeyDown = useCallback(

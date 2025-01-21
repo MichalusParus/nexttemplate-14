@@ -13,7 +13,7 @@ describe('Drawer', () => {
         </a>
       </Drawer>,
     )
-    expect(screen.getByRole('menu')).toBeTruthy()
+    expect(screen.getByRole('menu')).toBeInTheDocument()
     expect(screen.getByRole('menu')).toHaveClass('className')
     expect(screen.getByRole('menu')).toHaveAttribute('id', 'drawerTest')
     expect(screen.getByRole('menu')).toHaveAttribute('aria-label', 'drawerTest')

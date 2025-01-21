@@ -12,7 +12,7 @@ describe('SideBar', () => {
         <SideBar className="className" />
       </JestMockProvider>,
     )
-    expect(screen.getByTestId('SideBar')).toBeTruthy()
+    expect(screen.getByTestId('SideBar')).toBeInTheDocument()
     expect(screen.getByTestId('SideBar')).toHaveClass('className')
   })
 })

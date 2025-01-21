@@ -113,10 +113,6 @@ export const MenuLinks = ({
   )
 }
 
-export const getPages = (length: number) => {
-  return new Array(length).fill(null).map((n, index) => index + 1)
-}
-
 export const routerMock = {
   nextjs: {
     appDirectory: true,
@@ -384,7 +380,7 @@ export const JestFormProvider = ({
   required?: boolean
   onSubmit?: (v: any) => void
 }>) => {
-  const zodFields = Object.fromEntries(fields.map(field => [field, z.unknown().optional()]))
+  const zodFields = Object.fromEntries(fields.map(field => [field, z.unknown()]))
   const schema = z.object(zodFields)
   const formValues = Object.fromEntries(fields.map((field, i) => [field, values?.[i]]))
   const form = useForm<z.infer<typeof schema>>({

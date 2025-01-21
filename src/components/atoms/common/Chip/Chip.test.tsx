@@ -12,7 +12,7 @@ describe('Chip', () => {
         <Chip className="className">Chip</Chip>
       </JestMockProvider>,
     )
-    expect(screen.getByTestId('Chip')).toBeTruthy()
+    expect(screen.getByTestId('Chip')).toBeInTheDocument()
     expect(screen.getByTestId('Chip')).toHaveClass('className')
   })
 

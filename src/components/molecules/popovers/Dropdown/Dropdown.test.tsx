@@ -17,7 +17,7 @@ describe('Dropdown', () => {
         Children
       </Dropdown>,
     )
-    expect(screen.getByTestId('Dropdown')).toBeTruthy()
+    expect(screen.getByTestId('Dropdown')).toBeInTheDocument()
     expect(screen.getByTestId('Dropdown')).toHaveClass('className')
     expect(screen.getByTestId('Dropdown')).toHaveTextContent('Children')
   })

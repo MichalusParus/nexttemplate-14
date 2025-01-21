@@ -7,7 +7,7 @@ import { AdminMain } from '.'
 describe('AdminMain', () => {
   it('default', () => {
     render(<AdminMain className="className" />)
-    expect(screen.getByTestId('AdminMain')).toBeTruthy()
+    expect(screen.getByTestId('AdminMain')).toBeInTheDocument()
     expect(screen.getByTestId('AdminMain')).toHaveClass('className')
   })
 })

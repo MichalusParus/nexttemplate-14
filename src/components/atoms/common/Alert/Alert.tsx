@@ -48,14 +48,15 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
           alertIconSize[size],
           className,
         )}
-        role="alert"
+        role={status === 'error' ? 'alert' : undefined}
         ref={ref}
+        data-testid="Alert"
         {...rest}
       >
-        {status === 'success' && <SuccessIcon />}
-        {status === 'info' && <InfoIcon />}
-        {status === 'warning' && <WarningIcon />}
-        {status === 'error' && <ErrorIcon />}
+        {status === 'success' && <SuccessIcon aria-hidden="true" />}
+        {status === 'info' && <InfoIcon aria-hidden="true" />}
+        {status === 'warning' && <WarningIcon aria-hidden="true" />}
+        {status === 'error' && <ErrorIcon aria-hidden="true" />}
         {icon && status === 'none' && icon}
         <div className="AlertInnerWrap flex flex-col px-1.5">
           <Span variant="bold">{title && title}</Span>

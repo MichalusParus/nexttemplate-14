@@ -11,7 +11,7 @@ describe('Form', () => {
         Children
       </JestFormProvider>,
     )
-    expect(screen.getByTestId('Form')).toBeTruthy()
+    expect(screen.getByTestId('Form')).toBeInTheDocument()
     expect(screen.getByTestId('Form')).toHaveClass('className')
   })
 })

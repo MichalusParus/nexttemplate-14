@@ -14,7 +14,7 @@ describe('Title', () => {
         </Title>
       </JestMockProvider>,
     )
-    expect(screen.getByRole('heading')).toBeTruthy()
+    expect(screen.getByRole('heading')).toBeInTheDocument()
     expect(screen.getByRole('heading')).toHaveClass('className')
     expect(screen.getByRole('heading')).toHaveTextContent('Title')
   })

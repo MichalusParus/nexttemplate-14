@@ -7,7 +7,7 @@ import { Overlay } from '.'
 describe('Overlay', () => {
   it('default', () => {
     render(<Overlay isOpen={false} onClose={() => {}} className="className" />)
-    expect(screen.getByRole('button')).toBeTruthy()
+    expect(screen.getByRole('button')).toBeInTheDocument()
     expect(screen.getByRole('button')).toHaveClass('className')
   })
 

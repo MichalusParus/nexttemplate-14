@@ -14,7 +14,7 @@ describe('ImageViewer', () => {
         </ImageViewer>
       </JestMockProvider>,
     )
-    expect(screen.getByTestId('ImageViewer')).toBeTruthy()
+    expect(screen.getByTestId('ImageViewer')).toBeInTheDocument()
     expect(screen.getByTestId('ImageViewer')).toHaveClass('className')
   })
 })

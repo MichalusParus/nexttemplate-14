@@ -12,7 +12,7 @@ describe('Header', () => {
         <Header className="className" />
       </JestMockProvider>,
     )
-    expect(screen.getByTestId('Header')).toBeTruthy()
+    expect(screen.getByTestId('Header')).toBeInTheDocument()
     expect(screen.getByTestId('Header')).toHaveClass('className')
   })
 })

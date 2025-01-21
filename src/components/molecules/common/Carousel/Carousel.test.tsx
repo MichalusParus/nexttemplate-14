@@ -16,7 +16,7 @@ describe('Carousel', () => {
         </Carousel>
       </JestMockProvider>,
     )
-    expect(screen.getByTestId('Carousel')).toBeTruthy()
+    expect(screen.getByTestId('Carousel')).toBeInTheDocument()
     expect(screen.getByTestId('Carousel')).toHaveClass('className')
     expect(screen.getAllByTestId('panel')).toHaveLength(3)
     expect(screen.getAllByRole('button')).toHaveLength(5)

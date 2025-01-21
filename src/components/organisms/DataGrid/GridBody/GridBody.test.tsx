@@ -18,7 +18,7 @@ describe('GridBody', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('rowgroup')).toBeTruthy()
+    expect(screen.getByRole('rowgroup')).toBeInTheDocument()
     expect(screen.getByRole('rowgroup')).toHaveClass('GridBody')
     expect(screen.getAllByRole('row')).toHaveLength(10)
     expect(screen.getAllByRole('gridcell')).toHaveLength(40)

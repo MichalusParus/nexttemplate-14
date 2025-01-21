@@ -2,7 +2,7 @@
 import { forwardRef } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
-import { Checkbox, CheckboxProps } from '@/components/molecules/form/CheckboxField/Checkbox'
+import { Checkbox, CheckboxProps } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
 import { StyleProps } from '@/components/types'
 import { cn, filterOutKeys } from '@/utils/utils'
 

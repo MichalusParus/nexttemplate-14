@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/atoms/common/Button'
 import { Form } from '@/components/molecules/form/Form'
-import { TextField } from '@/components/molecules/form/TextField'
+import { TextField } from '@/components/molecules/form/inputs/TextField'
 
 import { useResetPasswordForm } from './useResetPasswordForm'
 

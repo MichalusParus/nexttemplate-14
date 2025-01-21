@@ -7,7 +7,7 @@ import { Logo } from '.'
 describe('Logo', () => {
   it('default', () => {
     render(<Logo className="className" />)
-    expect(screen.getByTestId('Logo')).toBeTruthy()
+    expect(screen.getByTestId('Logo')).toBeInTheDocument()
     expect(screen.getByTestId('Logo')).toHaveClass('className')
   })
 })

@@ -1,8 +1,8 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef, KeyboardEvent, OlHTMLAttributes, useCallback } from 'react'
 
-import { Checkbox } from '@/components/molecules/form/CheckboxField/Checkbox'
-import { CheckboxProps } from '@/components/molecules/form/CheckboxField/Checkbox/Checkbox'
+import { Checkbox } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
+import { CheckboxProps } from '@/components/molecules/form/inputs/CheckboxField/Checkbox/Checkbox'
 import { OptionType, StyleProps } from '@/components/types'
 import { cn, filterOutKeys } from '@/utils/utils'
 
