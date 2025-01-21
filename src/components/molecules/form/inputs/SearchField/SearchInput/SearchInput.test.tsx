@@ -31,7 +31,7 @@ describe('SearchInput', () => {
         <SearchInput name="name" value="value" onChange={() => {}} />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('searchbox')).toHaveAttribute('value', 'value')
+    expect(screen.getByRole('searchbox')).toHaveValue('value')
   })
 
   it('onChange', () => {

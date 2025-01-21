@@ -64,7 +64,6 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           value={value}
           disabled={disabled}
           tabIndex={disabled ? -1 : 0}
-          aria-labelledby={`label-${name}`}
           aria-describedby={`${name}-description`}
           onChange={e => onChange(e.target.value)}
           ref={ref}

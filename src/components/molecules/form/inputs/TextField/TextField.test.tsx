@@ -25,6 +25,7 @@ describe('TextField', () => {
     expect(screen.getByRole('textbox')).toHaveAttribute('name', 'inputTest')
     expect(screen.getByRole('textbox')).toHaveAttribute('type', 'text')
     expect(screen.getByRole('textbox')).toHaveAttribute('value', 'inputTest')
+    expect(screen.getByRole('textbox')).toHaveAttribute('aria-labelledby', 'label-inputTest')
     expect(screen.getByTestId('Label')).toBeInTheDocument()
     expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })

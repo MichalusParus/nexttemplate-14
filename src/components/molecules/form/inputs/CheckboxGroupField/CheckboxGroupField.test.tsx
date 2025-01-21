@@ -24,7 +24,8 @@ describe('CheckboxGroupField', () => {
       'name',
       'value1checkboxGroupFieldTest',
     )
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
+    expect(screen.getByTestId('Label')).toBeInTheDocument()
+    expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })
 
   it('onSubmit', () => {
@@ -58,6 +59,7 @@ describe('CheckboxGroupField', () => {
         <button type="submit" />
       </JestFormProvider>,
     )
+    expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')
   })
 })

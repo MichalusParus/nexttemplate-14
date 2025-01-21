@@ -77,6 +77,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       listboxProps = {},
       onChange,
       onClear,
+      ...rest
     },
     ref,
   ) => {
@@ -150,8 +151,6 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
           )}
           role="combobox"
           tabIndex={disabled ? -1 : 0}
-          aria-labelledby={`label-${name}`}
-          aria-describedby={`${name}-description`}
           aria-disabled={disabled}
           aria-expanded={isOpen}
           aria-haspopup="listbox"
@@ -164,6 +163,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
               : null
           }
           {...filterOutKeys(buttonProps, ['className'])}
+          {...rest}
         >
           <SelectValue
             selectedOptions={selectedOptions}

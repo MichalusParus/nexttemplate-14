@@ -25,7 +25,9 @@ describe('SearchField', () => {
     expect(screen.getByRole('searchbox')).toHaveAttribute('name', 'searchTest')
     expect(screen.getByRole('searchbox')).toHaveAttribute('type', 'search')
     expect(screen.getByRole('searchbox')).toHaveAttribute('value', 'searchTest')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
+    expect(screen.getByRole('searchbox')).toHaveAttribute('aria-labelledby', 'label-searchTest')
+    expect(screen.getByTestId('Label')).toBeInTheDocument()
+    expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })
 
   it('onSubmit', () => {
@@ -57,6 +59,7 @@ describe('SearchField', () => {
         </JestFormProvider>
       </JestMockProvider>,
     )
+    expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')
   })
 })

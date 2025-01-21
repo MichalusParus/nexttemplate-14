@@ -17,7 +17,7 @@ const meta: Meta<typeof Ellipsis> = {
   },
   decorators: [
     Story => (
-      <div className="relative h-72 w-96 overflow-hidden border p-4">
+      <div className="h-72 w-96 border p-4">
         <Story />
       </div>
     ),
@@ -29,7 +29,7 @@ type Story = StoryObj<typeof Ellipsis>
 
 export const Default: Story = {
   args: {
-    className: 'line-clamp-1',
+    className: '',
     variant: 'none',
     color: 'none',
     tooltipProps: {},
@@ -37,17 +37,10 @@ export const Default: Story = {
   },
 }
 
-export const LineClamp: Story = {
+export const MultiLine: Story = {
   args: {
     ...Default.args,
     className: 'line-clamp-3',
-  },
-}
-
-export const Overflow: Story = {
-  args: {
-    ...Default.args,
-    className: 'block w-full h-full break-words overflow-hidden',
     children: textContent.slice(0, 500),
   },
 }

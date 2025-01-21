@@ -24,7 +24,9 @@ describe('TextAreaField', () => {
     expect(screen.getByRole('textbox')).toHaveAttribute('id', 'textAreaTest')
     expect(screen.getByRole('textbox')).toHaveAttribute('name', 'textAreaTest')
     expect(screen.getByRole('textbox')).toHaveValue('textAreaTest')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
+    expect(screen.getByRole('textbox')).toHaveAttribute('aria-labelledby', 'label-textAreaTest')
+    expect(screen.getByTestId('Label')).toBeInTheDocument()
+    expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })
 
   it('onSubmit', () => {
@@ -56,6 +58,7 @@ describe('TextAreaField', () => {
         </JestFormProvider>
       </JestMockProvider>,
     )
+    expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')
   })
 })

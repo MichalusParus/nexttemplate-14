@@ -85,6 +85,7 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
       onChange,
       onClear,
       children,
+      ...rest
     },
     ref,
   ) => {
@@ -209,8 +210,6 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
                 aria-haspopup="listbox"
                 aria-controls={name}
                 aria-owns={name}
-                aria-labelledby={`label-${name}`}
-                aria-describedby={`${name}-description`}
                 autoComplete="off"
                 onChange={handleInputChange}
                 onClick={() => !disabled && setIsOpen(true)}
@@ -220,6 +219,7 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
                     : null
                 }
                 {...filterOutKeys(inputProps, ['className'])}
+                {...rest}
               />
               <div
                 className={cn(

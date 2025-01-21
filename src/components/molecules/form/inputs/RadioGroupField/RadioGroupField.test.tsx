@@ -21,7 +21,8 @@ describe('RadioGroupField', () => {
     expect(screen.getByRole('radiogroup')).toHaveClass('className')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('id', 'value1radioGroupFieldTest')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('name', 'radioGroupFieldTest')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
+    expect(screen.getByTestId('Label')).toBeInTheDocument()
+    expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })
 
   it('onSubmit', () => {
@@ -55,6 +56,7 @@ describe('RadioGroupField', () => {
         <button type="submit" />
       </JestFormProvider>,
     )
+    expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')
   })
 })

@@ -46,7 +46,6 @@ export const RangeInput = forwardRef<HTMLInputElement, RangeProps>(
           onChange={e => onChange(e.target.value)}
           disabled={disabled}
           tabIndex={disabled ? -1 : 0}
-          aria-labelledby={`label-${name}`}
           aria-describedby={`${name}-description`}
           ref={ref}
           {...rest}

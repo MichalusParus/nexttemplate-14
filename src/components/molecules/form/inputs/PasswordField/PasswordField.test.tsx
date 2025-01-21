@@ -9,31 +9,36 @@ describe('PasswordField', () => {
   it('default', () => {
     render(
       <JestMockProvider>
-        <JestFormProvider fields={['searchTest']}>
-          <PasswordField className="className" name="searchTest" label="label" />
+        <JestFormProvider fields={['passwordTest']}>
+          <PasswordField className="className" name="passwordTest" label="label" />
         </JestFormProvider>
       </JestMockProvider>,
     )
     fireEvent.change(screen.getByTestId('PasswordInput'), {
       target: {
-        value: 'searchTest',
+        value: 'passwordTest',
       },
     })
     expect(screen.getByTestId('InputWrap')).toBeInTheDocument()
     expect(screen.getByTestId('InputWrap')).toHaveClass('className')
-    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('id', 'searchTest')
-    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('name', 'searchTest')
+    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('id', 'passwordTest')
+    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('name', 'passwordTest')
     expect(screen.getByTestId('PasswordInput')).toHaveAttribute('type', 'password')
-    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('value', 'searchTest')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
+    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('value', 'passwordTest')
+    expect(screen.getByTestId('PasswordInput')).toHaveAttribute(
+      'aria-labelledby',
+      'label-passwordTest',
+    )
+    expect(screen.getByTestId('Label')).toBeInTheDocument()
+    expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })
 
   it('onSubmit', () => {
     const spy = jest.fn()
     render(
       <JestMockProvider>
-        <JestFormProvider fields={['searchTest']} onSubmit={spy}>
-          <PasswordField className="className" name="searchTest" label="label" />
+        <JestFormProvider fields={['passwordTest']} onSubmit={spy}>
+          <PasswordField className="className" name="passwordTest" label="label" />
           <button type="submit" data-testid="submit" />
         </JestFormProvider>
       </JestMockProvider>,
@@ -46,10 +51,10 @@ describe('PasswordField', () => {
   it('description', () => {
     render(
       <JestMockProvider>
-        <JestFormProvider fields={['searchTest']}>
+        <JestFormProvider fields={['passwordTest']}>
           <PasswordField
             className="className"
-            name="searchTest"
+            name="passwordTest"
             label="label"
             labelProps={{ description: 'description' }}
           />
@@ -57,6 +62,7 @@ describe('PasswordField', () => {
         </JestFormProvider>
       </JestMockProvider>,
     )
+    expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')
   })
 })

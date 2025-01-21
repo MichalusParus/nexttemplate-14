@@ -18,7 +18,9 @@ describe('RangeDatePicker', () => {
     expect(screen.getByTestId('Calendar')).toBeInTheDocument()
     expect(screen.getByTestId('DatePicker')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'datePickerTest')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-labelledby', 'label-datePickerTest')
+    expect(screen.getByTestId('Label')).toBeInTheDocument()
+    expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })
   it('onSubmit', () => {
     const spy = jest.fn()

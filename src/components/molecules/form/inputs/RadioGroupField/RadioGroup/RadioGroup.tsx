@@ -68,7 +68,6 @@ export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
               value={radioValue}
               onChange={e => onChange(e.target.value)}
               checked={Boolean(value === radioValue)}
-              aria-labelledby={`label-${name}`}
               aria-describedby={`${name}-description`}
               disabled={disabled}
               ref={ref}

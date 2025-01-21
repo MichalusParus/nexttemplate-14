@@ -9,7 +9,8 @@ describe('Label', () => {
     render(<Label name="labelTest" label="label" className="className" />)
     expect(screen.getByTestId('LabelWrap')).toBeInTheDocument()
     expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
+    expect(screen.getByTestId('Label')).toBeInTheDocument()
+    expect(screen.getByTestId('Label')).toHaveTextContent('label')
     expect(screen.getByTestId('Label')).toHaveAttribute('for', 'labelTest')
   })
 
@@ -20,6 +21,7 @@ describe('Label', () => {
 
   it('description', () => {
     render(<Label name="labelTest" label="label" className="className" description="description" />)
+    expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')
   })
 })

@@ -82,7 +82,6 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
             error={error}
             disabled={disabled}
             onChange={handleOnChange}
-            aria-labelledby={`label-${name}`}
             aria-describedby={`${name}-description`}
             ref={ref}
             {...rest}

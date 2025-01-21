@@ -1,3 +1,4 @@
+'use client'
 import {
   forwardRef,
   PropsWithChildren,
@@ -12,6 +13,7 @@ import { Tooltip, TooltipProps } from '@/components/molecules/popovers/Tooltip'
 import { cn } from '@/utils/utils'
 
 import { Span, SpanProps } from '../Span'
+import { ellipsisClass } from './Ellipsis.style'
 
 export type ComponentTemplateProps = SpanProps & {
   /** for passing custom tailwind classes */
@@ -22,7 +24,7 @@ export type ComponentTemplateProps = SpanProps & {
   tooltipProps?: Partial<TooltipProps>
 }
 
-/** Text wrapper for displaying text with ellipsis and tooltip. Tooltip and Span props supported. */
+/** Text wrapper for displaying text with ellipsis and tooltip. Tooltip and Span props supported. USE CLIENT */
 export const Ellipsis = forwardRef<HTMLSpanElement, PropsWithChildren<ComponentTemplateProps>>(
   ({ className, tooltipProps, children, ...rest }, ref) => {
     const [isOverflow, setIsOverflow] = useState(false)
@@ -30,7 +32,6 @@ export const Ellipsis = forwardRef<HTMLSpanElement, PropsWithChildren<ComponentT
     useImperativeHandle(ref, () => componentRef.current!)
 
     const checkOverflow = () => {
-      console.log(componentRef.current?.scrollHeight, componentRef.current?.clientHeight)
       if (componentRef.current) {
         setIsOverflow(componentRef.current?.scrollHeight > componentRef.current.clientHeight)
       }
@@ -51,7 +52,7 @@ export const Ellipsis = forwardRef<HTMLSpanElement, PropsWithChildren<ComponentT
     if (!isOverflow)
       return (
         <Span
-          className={cn('Ellipsis', '', className)}
+          className={cn('Ellipsis', ellipsisClass, className)}
           ref={componentRef}
           data-testid="Ellipsis"
           {...rest}
@@ -63,7 +64,7 @@ export const Ellipsis = forwardRef<HTMLSpanElement, PropsWithChildren<ComponentT
     return (
       <Tooltip title={children} {...tooltipProps}>
         <Span
-          className={cn('Ellipsis', '', className)}
+          className={cn('Ellipsis', ellipsisClass, className)}
           ref={componentRef}
           data-testid="Ellipsis"
           {...rest}

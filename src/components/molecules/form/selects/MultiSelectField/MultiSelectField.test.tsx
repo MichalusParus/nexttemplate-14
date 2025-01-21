@@ -27,7 +27,9 @@ describe('MultiSelectField', () => {
     expect(screen.getByRole('listbox')).toBeInTheDocument()
     expect(screen.getByTestId('Select')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'multiSelectTest')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-labelledby', 'label-multiSelectTest')
+    expect(screen.getByTestId('Label')).toBeInTheDocument()
+    expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })
 
   it('onSubmit', () => {
@@ -65,6 +67,7 @@ describe('MultiSelectField', () => {
         </JestFormProvider>
       </JestMockProvider>,
     )
+    expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')
   })
 })

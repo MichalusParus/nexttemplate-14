@@ -23,7 +23,6 @@ describe('TextInput', () => {
     expect(screen.getByRole('textbox')).toHaveAttribute('type', 'text')
     expect(screen.getByRole('textbox')).toHaveAttribute('id', 'inputTest')
     expect(screen.getByRole('textbox')).toHaveAttribute('name', 'inputTest')
-    expect(screen.getByRole('textbox')).toHaveAttribute('aria-labelledby', 'label-inputTest')
     expect(screen.getByRole('textbox')).toHaveAttribute('placeholder', 'placeholder')
     screen.getByRole('textbox').focus()
     expect(screen.getByRole('textbox')).toHaveFocus()

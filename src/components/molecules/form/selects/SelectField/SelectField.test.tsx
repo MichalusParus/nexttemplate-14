@@ -27,7 +27,9 @@ describe('SelectField', () => {
     expect(screen.getByRole('listbox')).toBeInTheDocument()
     expect(screen.getByTestId('Select')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'selectTest')
-    expect(screen.getByTestId('LabelWrap')).toHaveTextContent('label')
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-labelledby', 'label-selectTest')
+    expect(screen.getByTestId('Label')).toBeInTheDocument()
+    expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })
 
   it('onSubmit', () => {
@@ -65,6 +67,7 @@ describe('SelectField', () => {
         </JestFormProvider>
       </JestMockProvider>,
     )
+    expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')
   })
 })

@@ -11,7 +11,7 @@ describe('PasswordInput', () => {
       <JestMockProvider>
         <PasswordInput
           className="className"
-          name="searchTest"
+          name="passwordTest"
           placeholder="placeholder"
           onChange={() => {}}
         />
@@ -20,8 +20,8 @@ describe('PasswordInput', () => {
     expect(screen.getByTestId('InputWrap')).toBeInTheDocument()
     expect(screen.getByTestId('InputWrap')).toHaveClass('className')
     expect(screen.getByTestId('PasswordInput')).toHaveAttribute('type', 'password')
-    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('id', 'searchTest')
-    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('name', 'searchTest')
+    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('id', 'passwordTest')
+    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('name', 'passwordTest')
     expect(screen.getByTestId('PasswordInput')).toHaveAttribute('placeholder', 'placeholder')
   })
 
@@ -31,7 +31,7 @@ describe('PasswordInput', () => {
         <PasswordInput name="name" value="value" onChange={() => {}} />
       </JestMockProvider>,
     )
-    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('value', 'value')
+    expect(screen.getByTestId('PasswordInput')).toHaveValue('value')
   })
 
   it('onChange', () => {

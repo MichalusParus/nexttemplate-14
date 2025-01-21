@@ -55,7 +55,11 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
         data-testid="LabelWrap"
       >
         {fakeLabel ? (
-          <div className={cn('FakeLabel', labelClass, textSize[size], labelVisibility)}>
+          <div
+            id={'label-' + name}
+            className={cn('FakeLabel', labelClass, textSize[size], labelVisibility)}
+            data-testid="Label"
+          >
             {label}
           </div>
         ) : (

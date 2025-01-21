@@ -28,6 +28,10 @@ describe('AutocompleteField', () => {
     expect(screen.getByRole('listbox')).toBeInTheDocument()
     expect(screen.getByTestId('Autocomplete')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'autocompleteTest')
+    expect(screen.getByRole('combobox')).toHaveAttribute(
+      'aria-labelledby',
+      'label-autocompleteTest',
+    )
     expect(screen.getAllByTestId('LabelWrap')[0]).toHaveTextContent('label')
   })
 
@@ -68,6 +72,7 @@ describe('AutocompleteField', () => {
         </JestFormProvider>
       </JestMockProvider>,
     )
+    expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')
   })
 })
