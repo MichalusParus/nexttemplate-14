@@ -30,7 +30,7 @@ describe('AutocompleteField', () => {
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'autocompleteTest')
     expect(screen.getByRole('combobox')).toHaveAttribute(
       'aria-labelledby',
-      'label-autocompleteTest',
+      'autocompleteTest-label',
     )
     expect(screen.getAllByTestId('LabelWrap')[0]).toHaveTextContent('label')
   })

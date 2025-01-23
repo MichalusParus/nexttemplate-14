@@ -28,7 +28,7 @@ export const LoginForm = () => {
         placeholder={t('Auth.passwordPlaceholder')}
         autoComplete="current-password"
       />
-      <Link className="ml-auto" size="inline" disableUpperCase href="/reset-password">
+      <Link className="ml-auto" size="inline" href="/reset-password">
         {t('Auth.forgotPassword')}
       </Link>
       <Button className="mt-8" type="submit">

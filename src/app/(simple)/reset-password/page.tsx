@@ -20,7 +20,7 @@ export default async function ResetPassword() {
       <ResetPasswordForm />
       <P align="text-center">
         {t('dontHaveAccount')}{' '}
-        <Link size="inline" disableUpperCase href="/register">
+        <Link size="inline" href="/register">
           {t('register')}
         </Link>
       </P>

@@ -58,8 +58,8 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
         {status === 'warning' && <WarningIcon aria-hidden="true" />}
         {status === 'error' && <ErrorIcon aria-hidden="true" />}
         {icon && status === 'none' && icon}
-        <div className="AlertInnerWrap flex flex-col px-1.5">
-          <Span variant="bold">{title && title}</Span>
+        <div className={cn('AlertInnerWrap', 'flex flex-col px-1.5')}>
+          {title && <Span variant="bold">{title}</Span>}
           <Span variant="none">{children}</Span>
         </div>
       </div>

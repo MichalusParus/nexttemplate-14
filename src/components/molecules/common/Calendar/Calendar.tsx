@@ -207,7 +207,6 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
               color={color}
               size={size}
               disabled={readOnly}
-              disableUpperCase
               hideShadow
               onClick={() => setCalendarState(calendarState === 'days' ? 'months' : 'days')}
             >
@@ -260,6 +259,7 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
                       color={color}
                       size={size}
                       startIcon={format(day, 'd')}
+                      aria-label={format(day, 'd')}
                       hideShadow
                       tabIndex={-1}
                       disabled={
@@ -310,6 +310,7 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
                     color={color}
                     size={size}
                     startIcon={format(month, 'MMM yyyy')}
+                    aria-label={format(month, 'MMM yyyy')}
                     hideShadow
                     tabIndex={-1}
                     disabled={

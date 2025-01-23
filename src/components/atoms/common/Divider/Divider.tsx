@@ -15,8 +15,8 @@ export type DividerProps = NativeDividerProps & {
   label?: string
   /** theme color of component, none disable colors for custom styling via className */
   color?: StyleProps['color']
-  /** size of divider, number in px */
-  width?: number
+  /** thickness of divider, number in px or string css value */
+  width?: number | string
   /** for vertical divider */
   vertical?: boolean
 }
@@ -29,6 +29,14 @@ export const Divider = forwardRef<HTMLDivElement, DividerProps>(
       : { height: width, width: '100%' }
     const flexDirection = vertical ? 'min-h-full flex-col' : 'flex-row'
 
+    const renderDividerLine = () => (
+      <div
+        className={`Divider rounded-full ${dividerColor[color]}`}
+        style={dividerStyle}
+        data-testid="Divider"
+      />
+    )
+
     return (
       <div
         className={cn('DividerWrap', 'flex items-center', flexDirection, className)}
@@ -36,19 +44,11 @@ export const Divider = forwardRef<HTMLDivElement, DividerProps>(
         ref={ref}
         aria-orientation={vertical ? 'vertical' : 'horizontal'}
       >
-        <div
-          className={`Divider rounded-full ${dividerColor[color]}`}
-          style={dividerStyle}
-          data-testid="Divider"
-        />
+        {renderDividerLine()}
         {label && (
           <>
             <Span className={vertical ? 'my-2' : 'mx-4'}>{label}</Span>
-            <div
-              className={`Divider rounded-full ${dividerColor[color]}`}
-              style={dividerStyle}
-              data-testid="Divider"
-            />
+            {renderDividerLine()}
           </>
         )}
       </div>

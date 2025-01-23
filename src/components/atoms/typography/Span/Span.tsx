@@ -19,15 +19,26 @@ export type SpanProps = NativeSpanProps & {
 /** Basic span component with inherited font size. Default HTMLAttributes props supported. */
 export const Span = forwardRef<HTMLSpanElement, SpanProps>(
   ({ className, variant = 'bold', color = 'none', children, ...rest }, ref) => {
+    const Element = (() => {
+      switch (variant) {
+        case 'bold':
+          return 'strong'
+        case 'italic':
+          return 'em'
+        default:
+          return 'span'
+      }
+    })()
+
     return (
-      <span
+      <Element
         className={cn('text-inherit', spanStyle[variant], spanColor[color], className)}
         ref={ref}
         data-testid="Span"
         {...rest}
       >
         {children}
-      </span>
+      </Element>
     )
   },
 )

@@ -29,7 +29,6 @@ export const PrimaryDefault: Story = {
     endIcon: undefined,
     isLoading: false,
     hideShadow: false,
-    disableUpperCase: false,
     onClick: () => console.log('Click'),
     children: 'Button',
   },
@@ -67,7 +66,6 @@ export const Inline: Story = {
     ...PrimaryDefault.args,
     variant: 'text',
     size: 'inline',
-    disableUpperCase: true,
     children: 'inline button',
   },
   render: args => (

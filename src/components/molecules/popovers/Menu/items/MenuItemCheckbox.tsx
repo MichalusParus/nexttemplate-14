@@ -43,7 +43,6 @@ export const MenuItemCheckbox = forwardRef<HTMLButtonElement, MenuItemCheckboxPr
           variant={variant}
           color={color}
           size={size}
-          disableUpperCase
           hideShadow
           aria-selected={isChecked}
           ref={ref}
@@ -73,7 +72,7 @@ export const MenuItemCheckbox = forwardRef<HTMLButtonElement, MenuItemCheckboxPr
       //     className={cn(
       //       'MenuItemCheckboxWrap',
       //       'm-0 font-semibold',
-      //       buttonContentSize[rest.size || 'md'],
+      //       buttonSize[rest.size || 'md'],
       //       className,
       //     )}
       //     variant={variant}

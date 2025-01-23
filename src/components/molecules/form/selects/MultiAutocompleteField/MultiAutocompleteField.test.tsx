@@ -30,7 +30,7 @@ describe('MultiAutocompleteField', () => {
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'MultiAutocompleteTest')
     expect(screen.getByRole('combobox')).toHaveAttribute(
       'aria-labelledby',
-      'label-MultiAutocompleteTest',
+      'MultiAutocompleteTest-label',
     )
     expect(screen.getAllByTestId('LabelWrap')[0]).toHaveTextContent('label')
   })

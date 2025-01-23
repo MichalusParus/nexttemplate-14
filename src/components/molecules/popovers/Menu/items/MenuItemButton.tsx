@@ -16,7 +16,6 @@ export const MenuItemButton = forwardRef<HTMLButtonElement, PropsWithChildren<Me
             'w-full rounded-none border-transparent dark:border-transparent',
             className,
           )}
-          disableUpperCase
           role="menuitem"
           ref={ref}
           {...rest}

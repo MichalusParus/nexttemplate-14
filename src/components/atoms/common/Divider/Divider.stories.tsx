@@ -32,7 +32,21 @@ export const PrimaryDefault: Story = {
   ),
 }
 
-export const Title: Story = {
+export const Padding: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    className: 'px-20',
+  },
+  render: args => (
+    <div className="w-full">
+      <p className="p-4">{textContent.slice(0, 500)}</p>
+      <Divider {...args} />
+      <p className="p-4">{textContent.slice(0, 500)}</p>
+    </div>
+  ),
+}
+
+export const Label: Story = {
   args: {
     ...PrimaryDefault.args,
     label: 'OR',

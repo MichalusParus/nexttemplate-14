@@ -95,7 +95,6 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
           <Button
             variant={variant}
             color={color}
-            disableUpperCase
             aria-expanded={openState}
             aria-haspopup="menu"
             aria-controls={name}

@@ -1,9 +1,12 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { axe, toHaveNoViolations } from 'jest-axe'
 
 import { getOptions, JestMockProvider } from '../../../../../.storybook/helpers'
 import { ListBox } from '.'
+
+expect.extend(toHaveNoViolations)
 
 describe('ListBox', () => {
   it('default', () => {
@@ -18,9 +21,35 @@ describe('ListBox', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getByRole('listbox')).toBeInTheDocument()
-    expect(screen.getByRole('listbox')).toHaveClass('className')
-    expect(screen.getByRole('listbox')).toHaveAttribute('id', 'listboxTest')
+    const listboxRole = screen.getByRole('listbox')
+    const optionRoles = screen.getAllByRole('option')
+    const checkIconTestIds = screen.getAllByTestId('CheckIcon')
+
+    expect(listboxRole).toBeInTheDocument()
+    expect(listboxRole).toHaveClass('className')
+    expect(listboxRole).toHaveAttribute('id', 'listboxTest')
+    expect(listboxRole).toHaveAttribute('aria-labelledby', 'listboxTest-label')
+    expect(optionRoles).toHaveLength(20)
+    expect(checkIconTestIds).toHaveLength(20)
+  })
+
+  it('noOptions', () => {
+    render(
+      <JestMockProvider>
+        <ListBox
+          name="listboxTest"
+          value={[]}
+          options={[]}
+          noOptionLabel="noOptions"
+          onClick={() => {}}
+        />
+      </JestMockProvider>,
+    )
+    const optionsQuery = screen.queryAllByRole('option')
+    const noOptionText = screen.getByText('noOptions')
+
+    expect(optionsQuery).toHaveLength(0)
+    expect(noOptionText).toBeInTheDocument()
   })
 
   it('value', () => {
@@ -35,6 +64,111 @@ describe('ListBox', () => {
         />
       </JestMockProvider>,
     )
-    expect(screen.getAllByRole('option')[0]).toHaveAttribute('aria-selected', 'true')
+    const optionRoles = screen.getAllByRole('option')
+    const checkIconTestIds = screen.getAllByTestId('CheckIcon')
+
+    expect(optionRoles[0]).toHaveAttribute('aria-selected', 'true')
+    expect(optionRoles[0]).toHaveClass('selected')
+    expect(optionRoles[1]).not.toHaveClass('selected')
+    expect(checkIconTestIds[0]).toHaveClass('opacity-100')
+    expect(checkIconTestIds[1]).toHaveClass('opacity-0')
+  })
+
+  it('onClick', () => {
+    const spy = jest.fn()
+    render(
+      <JestMockProvider>
+        <ListBox
+          className="className"
+          name="listboxTest"
+          value={[]}
+          options={getOptions('listboxTest', 20)}
+          onClick={spy}
+        />
+      </JestMockProvider>,
+    )
+    const optionRoles = screen.getAllByRole('option')
+
+    fireEvent.click(optionRoles[0])
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith('value1listboxTest')
+  })
+
+  it('onKeyDown', () => {
+    const spy = jest.fn()
+    render(
+      <JestMockProvider>
+        <ListBox
+          className="className"
+          name="listboxTest"
+          value={[]}
+          options={getOptions('listboxTest', 20)}
+          onClick={spy}
+        />
+      </JestMockProvider>,
+    )
+    const optionRoles = screen.getAllByRole('option')
+
+    fireEvent.keyDown(optionRoles[0], { code: 'Space' })
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith('value1listboxTest')
+  })
+
+  it('isLoading', () => {
+    const spy = jest.fn()
+    render(
+      <JestMockProvider>
+        <ListBox
+          className="className"
+          name="listboxTest"
+          value={[]}
+          options={getOptions('listboxTest', 20)}
+          isLoading
+          onClick={spy}
+        />
+      </JestMockProvider>,
+    )
+    const optionRoles = screen.getAllByRole('option')
+
+    fireEvent.keyDown(optionRoles[0], { code: 'Space' })
+    fireEvent.click(optionRoles[0])
+    expect(spy).toHaveBeenCalledTimes(0)
+    expect(spy).not.toHaveBeenCalledWith('value1listboxTest')
+    expect(optionRoles[0]).toHaveAttribute('aria-disabled', 'true')
+  })
+
+  it('hideCheckbox', () => {
+    render(
+      <JestMockProvider>
+        <ListBox
+          className="className"
+          name="listboxTest"
+          value={[]}
+          options={getOptions('listboxTest', 20)}
+          onClick={() => {}}
+          hideCheckbox
+        />
+      </JestMockProvider>,
+    )
+    const checkIconTestIds = screen.queryAllByTestId('CheckIcon')
+
+    expect(checkIconTestIds).toHaveLength(0)
+  })
+
+  it('axe', async () => {
+    const { container } = render(
+      <JestMockProvider>
+        <div id="listboxTest-label">Label</div>
+        <ListBox
+          name="listboxTest"
+          value={[]}
+          options={getOptions('listboxTest', 20)}
+          onClick={() => {}}
+        />
+      </JestMockProvider>,
+    )
+
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
   })
 })

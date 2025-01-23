@@ -2,7 +2,7 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef, KeyboardEvent, MouseEvent, useCallback, useState } from 'react'
 
-import { buttonContentSize, buttonVariant } from '@/components/atoms/common/Button/Button.style'
+import { buttonSize, buttonVariant } from '@/components/atoms/common/Button/Button.style'
 import { ChevronIcon, FilterIcon } from '@/components/atoms/icons'
 import { Span } from '@/components/atoms/typography/Span'
 import { SearchInput } from '@/components/molecules/form/inputs/SearchField/SearchInput'
@@ -110,7 +110,7 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
         <div
           className={cn(
             'flex w-full items-center justify-start whitespace-nowrap',
-            buttonContentSize[size],
+            buttonSize[size],
           )}
         >
           <Span className={cellOverflow}>{column.label}</Span>
@@ -133,7 +133,7 @@ export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
                   isFilterApplied &&
                     'opacity-100 group-hover:opacity-100 group-focus-visible:opacity-100',
                   buttonVariant[variant][color],
-                  buttonContentSize[size],
+                  buttonSize[size],
                   isFilterOpen && 'z-combobox',
                 )}
                 role="button"

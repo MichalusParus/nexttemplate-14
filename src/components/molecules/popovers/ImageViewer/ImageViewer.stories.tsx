@@ -38,7 +38,6 @@ export const Default: Story = {
         alt="imageStory"
         ratio="aspect-w-16 aspect-h-9"
         objectFit="object-cover"
-        rounded="rounded-none"
       />
     ),
   },

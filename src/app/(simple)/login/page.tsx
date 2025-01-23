@@ -21,7 +21,7 @@ export default async function Login() {
       <LoginForm />
       <P align="text-center">
         {t('dontHaveAccount')}{' '}
-        <Link size="inline" disableUpperCase href="/register">
+        <Link size="inline" href="/register">
           {t('register')}
         </Link>
       </P>

@@ -77,7 +77,6 @@ export const Disclosure = forwardRef<HTMLButtonElement, PropsWithChildren<Disclo
             name={slugify(title)}
             variant={variant}
             color={color}
-            disableUpperCase
             hideShadow
             role="button"
             aria-expanded={openState}

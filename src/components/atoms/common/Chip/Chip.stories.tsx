@@ -13,7 +13,6 @@ const meta: Meta<typeof Chip> = {
   },
   argTypes: {
     startIcon: { control: false },
-    buttonIcon: { control: false },
   },
 }
 
@@ -27,7 +26,6 @@ export const PrimaryDefault: Story = {
     color: 'primary',
     size: 'md',
     startIcon: undefined,
-    buttonIcon: undefined,
     onClick: undefined,
     buttonProps: undefined,
     children: 'Chip',
@@ -56,7 +54,7 @@ export const OnClick: Story = {
 export const CustomIcon: Story = {
   args: {
     ...PrimaryDefault.args,
-    buttonIcon: <PlusIcon />,
+    buttonProps: { startIcon: <PlusIcon /> },
     onClick: () => console.log('click'),
   },
 }

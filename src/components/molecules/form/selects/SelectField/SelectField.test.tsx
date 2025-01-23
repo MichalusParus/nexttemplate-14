@@ -27,7 +27,7 @@ describe('SelectField', () => {
     expect(screen.getByRole('listbox')).toBeInTheDocument()
     expect(screen.getByTestId('Select')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'selectTest')
-    expect(screen.getByRole('combobox')).toHaveAttribute('aria-labelledby', 'label-selectTest')
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-labelledby', 'selectTest-label')
     expect(screen.getByTestId('Label')).toBeInTheDocument()
     expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })

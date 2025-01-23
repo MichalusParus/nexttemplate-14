@@ -1,3 +1,4 @@
+'use client'
 import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes, ReactNode } from 'react'
 
@@ -20,15 +21,13 @@ export type ChipProps = NativeChipProps &
     title?: string
     /** pass svg icon before children */
     startIcon?: ReactNode
-    /** pass svg icon to onClick button, onClick cannot be undefined */
-    buttonIcon?: ReactNode
     /** optional props for button */
     buttonProps?: Partial<ButtonProps>
     /** onClick function */
     onClick?: () => void
   }
 
-/** Small styled wrapper for displaying selected options with optional button. Default HTMLAttributes props supported. */
+/** Small styled wrapper for displaying selected options with optional button. Default HTMLAttributes props supported. USE CLIENT */
 export const Chip = forwardRef<HTMLDivElement, ChipProps>(
   (
     {
@@ -38,7 +37,6 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
       size = 'md',
       title,
       startIcon,
-      buttonIcon,
       buttonProps = {},
       onClick,
       children,
@@ -47,6 +45,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
     ref,
   ) => {
     const t = useTranslations('Components')
+    const buttonLabel = `${t('delete')} ${title || (typeof children === 'string' ? children : '')}`
 
     return (
       <div
@@ -64,7 +63,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
       >
         {startIcon && startIcon}
         <div className="ChipInnerWrap flex flex-col px-2">
-          <Span variant="bold">{title && title}</Span>
+          {title && <Span variant="bold">{title}</Span>}
           <Span className="whitespace-nowrap" variant="none">
             {children}
           </Span>
@@ -72,12 +71,12 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
         {onClick && (
           <Button
             className={cn('ChipAction', 'rounded-full border-0', buttonProps?.className)}
-            startIcon={buttonIcon ? buttonIcon : <XIcon />}
+            startIcon={<XIcon />}
             variant={variant}
             color={color}
             size="none"
             hideShadow
-            aria-label={t('delete') + (title || String(children))}
+            aria-label={buttonLabel}
             onClick={onClick}
             {...filterOutKeys(buttonProps, ['className'])}
           />

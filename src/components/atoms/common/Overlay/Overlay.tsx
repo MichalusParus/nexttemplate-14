@@ -1,4 +1,5 @@
 'use client'
+import { useTranslations } from 'next-intl'
 import { ButtonHTMLAttributes, forwardRef } from 'react'
 
 import { cn } from '@/utils/utils'
@@ -19,6 +20,8 @@ export type OverlayProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'classN
 /** Overlay is used in popover components for closing popover on click outside. USE CLIENT */
 export const Overlay = forwardRef<HTMLButtonElement, OverlayProps>(
   ({ className, isOpen, dark, onClose, ...rest }, ref) => {
+    const t = useTranslations('Components')
+
     return (
       <button
         className={cn(
@@ -29,9 +32,11 @@ export const Overlay = forwardRef<HTMLButtonElement, OverlayProps>(
           className,
         )}
         type="button"
-        onClick={onClose}
         tabIndex={-1}
+        aria-label={t('close')}
         ref={ref}
+        data-testid="Overlay"
+        onClick={onClose}
         {...rest}
       />
     )

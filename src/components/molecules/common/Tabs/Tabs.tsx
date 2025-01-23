@@ -111,7 +111,6 @@ export const Tabs = forwardRef<HTMLDivElement, PropsWithChildren<TabsProps>>(
                       variant={variant}
                       color={color}
                       size={size}
-                      disableUpperCase
                       hideShadow
                       role="tab"
                       aria-controls={tabPanelId}
@@ -132,7 +131,6 @@ export const Tabs = forwardRef<HTMLDivElement, PropsWithChildren<TabsProps>>(
             className={cn('TabsDropdownCombobox', 'w-full justify-between md:hidden')}
             variant={variant}
             color={color}
-            disableUpperCase
             role="combobox"
             aria-expanded={isOpen}
             aria-haspopup="true"
@@ -173,7 +171,6 @@ export const Tabs = forwardRef<HTMLDivElement, PropsWithChildren<TabsProps>>(
                       variant={variant}
                       color={color}
                       size={size}
-                      disableUpperCase
                       hideShadow
                       role="tab"
                       aria-controls={tabPanelId}

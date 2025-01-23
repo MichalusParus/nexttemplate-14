@@ -69,7 +69,6 @@ export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
             variant={variant}
             color={color}
             size={size}
-            disableUpperCase
             onClick={onLoadMore}
             {...filterOutKeys(loadMoreButtonProps, ['className', 'children'])}
           >

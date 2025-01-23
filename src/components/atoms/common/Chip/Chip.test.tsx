@@ -1,9 +1,12 @@
 import '@testing-library/jest-dom'
 
 import { fireEvent, render, screen } from '@testing-library/react'
+import { axe, toHaveNoViolations } from 'jest-axe'
 
 import { JestMockProvider } from '../../../../../.storybook/helpers'
 import { Chip } from '.'
+
+expect.extend(toHaveNoViolations)
 
 describe('Chip', () => {
   it('default', () => {
@@ -12,8 +15,11 @@ describe('Chip', () => {
         <Chip className="className">Chip</Chip>
       </JestMockProvider>,
     )
-    expect(screen.getByTestId('Chip')).toBeInTheDocument()
-    expect(screen.getByTestId('Chip')).toHaveClass('className')
+    const chipTestId = screen.getByTestId('Chip')
+
+    expect(chipTestId).toBeInTheDocument()
+    expect(chipTestId).toHaveClass('className')
+    expect(chipTestId).toHaveTextContent('Chip')
   })
 
   it('title', () => {
@@ -22,18 +28,37 @@ describe('Chip', () => {
         <Chip title="Chip title">Chip info</Chip>
       </JestMockProvider>,
     )
-    expect(screen.getAllByTestId('Span')[0]).toHaveTextContent('Chip title')
-    expect(screen.getAllByTestId('Span')[1]).toHaveTextContent('Chip info')
+    const titleText = screen.getByText('Chip title')
+    const infoText = screen.getByText('Chip info')
+
+    expect(titleText).toBeInTheDocument()
+    expect(infoText).toBeInTheDocument()
   })
 
   it('startIcon', () => {
     render(
       <JestMockProvider>
-        <Chip startIcon={<svg data-testid="testSvg" />}>Chip</Chip>
+        <Chip startIcon={<svg role="img" />}>Chip</Chip>
       </JestMockProvider>,
     )
-    expect(screen.getByTestId('testSvg')).toBeVisible()
-    expect(screen.getByTestId('Chip')).toHaveTextContent('Chip')
+    const imgRole = screen.getByRole('img')
+
+    expect(imgRole).toBeInTheDocument()
+  })
+
+  it('buttonIcon', () => {
+    const spy = jest.fn()
+    render(
+      <JestMockProvider>
+        <Chip onClick={spy} buttonProps={{ startIcon: <svg role="img" /> }} />
+      </JestMockProvider>,
+    )
+    const buttonRole = screen.getByRole('button')
+    const imgRole = screen.getByRole('img')
+
+    fireEvent.click(buttonRole)
+    expect(spy).toHaveBeenCalled()
+    expect(imgRole).toBeInTheDocument()
   })
 
   it('onClick', () => {
@@ -43,19 +68,20 @@ describe('Chip', () => {
         <Chip onClick={spy} />
       </JestMockProvider>,
     )
-    fireEvent.click(screen.getByRole('button'))
+    const buttonRole = screen.getByRole('button')
+
+    fireEvent.click(buttonRole)
     expect(spy).toHaveBeenCalled()
   })
 
-  it('buttonIcon', () => {
-    const spy = jest.fn()
-    render(
+  it('axe', async () => {
+    const { container } = render(
       <JestMockProvider>
-        <Chip onClick={spy} buttonIcon={<svg data-testid="testSvg" />} />
+        <Chip>Chip</Chip>
       </JestMockProvider>,
     )
-    fireEvent.click(screen.getByRole('button'))
-    expect(spy).toHaveBeenCalled()
-    expect(screen.getByTestId('testSvg')).toBeVisible()
+
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
   })
 })

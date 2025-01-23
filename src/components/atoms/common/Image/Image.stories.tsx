@@ -29,7 +29,6 @@ export const Default: Story = {
     ratio: 'aspect-w-16 aspect-h-9',
     objectFit: 'object-contain',
     objectPosition: 'object-center',
-    rounded: 'rounded-md',
   },
 }
 

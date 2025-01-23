@@ -50,7 +50,6 @@ export const Nav = forwardRef<HTMLDivElement, NavProps>(
                 href={slug}
                 variant={menu ? 'text' : 'contained'}
                 size={menu ? 'md' : 'none'}
-                disableUpperCase
                 hideShadow
                 {...filterOutKeys(linkProps, ['className'])}
               >

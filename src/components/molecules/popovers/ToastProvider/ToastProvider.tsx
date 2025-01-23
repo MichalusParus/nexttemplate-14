@@ -12,6 +12,8 @@ import { createPortal } from 'react-dom'
 import { Alert, AlertStatusType } from '@/components/atoms/common/Alert'
 import { cn } from '@/utils/utils'
 
+// research autofocus on display, screen readers
+
 type AddToast = (
   status: AlertStatusType,
   message: string,
@@ -63,7 +65,7 @@ export const ToastProvider = forwardRef<HTMLDivElement, PropsWithChildren<Record
         {mounted &&
           createPortal(
             <div
-              className={cn('ToastsWrap', 'z-modal fixed bottom-4 right-4 flex flex-col gap-2')}
+              className={cn('ToastsWrap', 'fixed bottom-4 right-4 z-modal flex flex-col gap-2')}
               ref={ref}
               data-testid="ToastsWrap"
             >

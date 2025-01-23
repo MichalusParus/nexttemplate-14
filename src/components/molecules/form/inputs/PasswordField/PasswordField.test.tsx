@@ -27,7 +27,7 @@ describe('PasswordField', () => {
     expect(screen.getByTestId('PasswordInput')).toHaveAttribute('value', 'passwordTest')
     expect(screen.getByTestId('PasswordInput')).toHaveAttribute(
       'aria-labelledby',
-      'label-passwordTest',
+      'passwordTest-label',
     )
     expect(screen.getByTestId('Label')).toBeInTheDocument()
     expect(screen.getByTestId('Label')).toHaveTextContent('label')

@@ -19,7 +19,6 @@ export const Logo = ({ className, url }: LogoProps) => {
       color="none"
       size="none"
       href={url || '/'}
-      disableUpperCase
       data-testid="Logo"
     >
       <div

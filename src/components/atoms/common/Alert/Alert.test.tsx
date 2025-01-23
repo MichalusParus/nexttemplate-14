@@ -1,21 +1,20 @@
 import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
+import { axe, toHaveNoViolations } from 'jest-axe'
 
 import { Alert } from '.'
+
+expect.extend(toHaveNoViolations)
 
 describe('Alert', () => {
   it('default', () => {
     render(<Alert className="className">Alert</Alert>)
-    expect(screen.getByTestId('Alert')).toBeVisible()
-    expect(screen.getByTestId('Alert')).toHaveClass('className')
-    expect(screen.getByTestId('Alert')).toHaveTextContent('Alert')
-  })
+    const alertTestId = screen.getByTestId('Alert')
 
-  it('title', () => {
-    render(<Alert title="Alert title">Alert info</Alert>)
-    expect(screen.getAllByTestId('Span')[0]).toHaveTextContent('Alert title')
-    expect(screen.getAllByTestId('Span')[1]).toHaveTextContent('Alert info')
+    expect(alertTestId).toBeInTheDocument()
+    expect(alertTestId).toHaveClass('className')
+    expect(alertTestId).toHaveTextContent('Alert')
   })
 
   it('error', () => {
@@ -27,12 +26,30 @@ describe('Alert', () => {
     expect(screen.getByRole('alert')).toBeInTheDocument()
   })
 
+  it('title', () => {
+    render(<Alert title="Alert title">Alert info</Alert>)
+    const titleText = screen.getByText('Alert title')
+    const infoText = screen.getByText('Alert info')
+
+    expect(titleText).toBeInTheDocument()
+    expect(infoText).toBeInTheDocument()
+  })
+
   it('icon', () => {
     render(
       <Alert status="none" title="Alert title" icon={<svg role="img" />}>
         Alert
       </Alert>,
     )
-    expect(screen.getByRole('img')).toBeInTheDocument()
+    const imgRole = screen.getByRole('img')
+
+    expect(imgRole).toBeInTheDocument()
+  })
+
+  it('axe', async () => {
+    const { container } = render(<Alert className="className">Alert</Alert>)
+
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
   })
 })

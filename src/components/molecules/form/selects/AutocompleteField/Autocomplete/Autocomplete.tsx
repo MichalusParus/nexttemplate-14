@@ -13,7 +13,7 @@ import {
 } from 'react'
 
 import { ButtonProps } from '@/components/atoms/common/Button'
-import { buttonContentSize } from '@/components/atoms/common/Button/Button.style'
+import { buttonSize } from '@/components/atoms/common/Button/Button.style'
 import { ListBox } from '@/components/atoms/common/ListBox'
 import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 import { ChevronIcon, XIcon } from '@/components/atoms/icons'
@@ -27,6 +27,9 @@ import { TextInput, TextInputProps } from '../../../inputs/TextField/TextInput/T
 import { inputVariant } from '../../../inputs/TextField/TextInput/TextInput.style'
 import { AutocompleteValue } from './AtocompleteValue'
 import { comboboxClass, disabledVariant } from './Autocomplete.style'
+
+// with selected options clicking outside input should open dropdown
+// try line-clamp for truncate
 
 export type AutocompleteProps = Pick<TextInputProps, 'disabled'> &
   InputProps &
@@ -177,7 +180,7 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
             error && 'border-error-800 shadow-error',
             comboboxClass,
             inputVariant[variant][color],
-            buttonContentSize[size],
+            buttonSize[size],
             disabledVariant[variant],
             buttonProps.className,
           )}

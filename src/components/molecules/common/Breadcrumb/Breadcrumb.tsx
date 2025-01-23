@@ -28,7 +28,6 @@ export const Breadcrumb = forwardRef<HTMLDivElement, BreadcrumbProps>(
                     variant="text"
                     color={color}
                     size="inline"
-                    disableUpperCase
                     href={option.href}
                   >
                     {option.label}

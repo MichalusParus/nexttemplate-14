@@ -13,8 +13,8 @@ import {
 
 import { ButtonProps } from '@/components/atoms/common/Button'
 import {
-  buttonContentSize,
   buttonIconSize,
+  buttonSize,
   buttonVariant,
 } from '@/components/atoms/common/Button/Button.style'
 import { ListBox } from '@/components/atoms/common/ListBox'
@@ -137,6 +137,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         data-testid="Select"
       >
         <div
+          id={name}
           className={cn(
             'SelectCombobox',
             disabled && 'disabled',
@@ -144,7 +145,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             isOpen && 'selected z-combobox',
             selectClass,
             buttonVariant[variant][color],
-            buttonContentSize[size],
+            buttonSize[size],
             buttonIconSize[size],
             selectDisabledVariant[variant],
             buttonProps.className,

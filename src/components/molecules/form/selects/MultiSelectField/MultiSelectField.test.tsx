@@ -27,7 +27,7 @@ describe('MultiSelectField', () => {
     expect(screen.getByRole('listbox')).toBeInTheDocument()
     expect(screen.getByTestId('Select')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'multiSelectTest')
-    expect(screen.getByRole('combobox')).toHaveAttribute('aria-labelledby', 'label-multiSelectTest')
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-labelledby', 'multiSelectTest-label')
     expect(screen.getByTestId('Label')).toBeInTheDocument()
     expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })

@@ -1,16 +1,11 @@
 import { LinkProps as NextLinkProps } from 'next/link'
 import NextLink from 'next/link'
-import { forwardRef, LinkHTMLAttributes, ReactNode } from 'react'
+import { Children, forwardRef, LinkHTMLAttributes, ReactNode } from 'react'
 
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-import {
-  buttonContentSize,
-  buttonIconSize,
-  buttonVariant,
-  iconOnlySize,
-} from '../Button/Button.style'
+import { buttonIconSize, buttonSize, buttonVariant, iconOnlySize } from '../Button/Button.style'
 import { linkClass } from './Link.style'
 
 type NativeAnchorProps = Omit<LinkHTMLAttributes<HTMLAnchorElement>, 'className' | 'color'>
@@ -30,8 +25,6 @@ export type LinkProps = NativeAnchorProps &
     endIcon?: ReactNode
     /** hide button shadow */
     hideShadow?: boolean
-    /** disable auto upper case */
-    disableUpperCase?: boolean
   }
 
 /** Basic Anchor based on Next Link with Button styles and icon handling. Default LinkHTMLAttributes & LinkProps supported. */
@@ -45,20 +38,17 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
       startIcon,
       endIcon,
       hideShadow,
-      disableUpperCase,
       children,
       ...rest
     },
     ref,
   ) => {
-    const iconOnly = Boolean(
-      (startIcon || endIcon) && (Array.isArray(children) ? !children.some(x => x) : !children),
-    )
-    const iconMargin = startIcon ? '[&_svg]:mr-2' : '[&_svg]:ml-2'
+    const iconOnly = (startIcon || endIcon) && Children.count(children) === 0
     const linkFlex = size === 'inline' ? 'inline-flex' : 'flex'
-    const linkSize = iconOnly
-      ? `${iconOnlySize[size]} ${buttonIconSize[size]}`
-      : `${buttonContentSize[size]} ${iconMargin} ${buttonIconSize[size]}`
+
+    if (iconOnly && !rest['aria-label'] && !rest['aria-labelledby']) {
+      console.warn('Icon-only links should have an aria-label for accessibility.')
+    }
 
     return (
       <NextLink
@@ -67,9 +57,9 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
           linkClass,
           linkFlex,
           buttonVariant[variant][color],
-          linkSize,
+          iconOnly ? iconOnlySize[size] : buttonSize[size],
+          buttonIconSize[size],
           variant === 'contained' && !hideShadow && 'shadow-button active:shadow-none',
-          !disableUpperCase && 'uppercase',
           className,
         )}
         ref={ref}

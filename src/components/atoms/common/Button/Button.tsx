@@ -1,5 +1,5 @@
 'use client'
-import { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react'
+import { ButtonHTMLAttributes, Children, forwardRef, ReactNode } from 'react'
 
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
@@ -7,9 +7,9 @@ import { cn } from '@/utils/utils'
 import { InlineLoader } from '../../loaders/InlineLoader'
 import {
   buttonClass,
-  buttonContentSize,
   buttonDisabledVariant,
   buttonIconSize,
+  buttonSize,
   buttonVariant,
   iconOnlySize,
 } from './Button.style'
@@ -35,31 +35,9 @@ export type ButtonProps = NativeButtonProps &
     isLoading?: boolean
     /** hide button shadow */
     hideShadow?: boolean
-    /** disable auto upper case */
-    disableUpperCase?: boolean
     /** onClick function */
     onClick?: () => void
   }
-
-/** Inner loading wrap for loading buttons*/
-const InnerLoadingWrap = ({
-  size = 'md',
-  startIcon,
-  endIcon,
-  isLoading,
-  children,
-}: Partial<ButtonProps>) => {
-  return (
-    <>
-      {isLoading && <InlineLoader className="absolute inset-0 justify-center" size={size} />}
-      <div className={cn('ContentInnerWrap', 'invisible inline-flex')}>
-        {startIcon && startIcon}
-        {children}
-        {endIcon && endIcon}
-      </div>
-    </>
-  )
-}
 
 /** Basic Button with loading state and icon handling. Default ButtonHTMLAttributes props supported. USE CLIENT */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -74,7 +52,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       endIcon,
       isLoading,
       hideShadow,
-      disableUpperCase,
+      disabled,
       children,
       onClick,
       ...rest
@@ -82,13 +60,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const buttonFlex = size === 'inline' ? 'inline-flex' : 'flex'
-    const iconOnly =
-      (startIcon || endIcon) && (Array.isArray(children) ? !children.some(x => x) : !children)
-    const endIconMargin = endIcon ? '[&_svg]:ml-2' : ''
-    const iconMargin = startIcon ? '[&_svg]:mr-2' : endIconMargin
-    const buttonSize = iconOnly
-      ? `${iconOnlySize[size]} ${buttonIconSize[size]}`
-      : `${buttonContentSize[size]} ${iconMargin} ${buttonIconSize[size]}`
+    const iconOnly = (startIcon || endIcon) && Children.count(children) === 0
+
+    const renderLoadingState = () => (
+      <>
+        <InlineLoader className="absolute inset-0 justify-center" size={size} />
+        <div className={cn('ContentInnerWrap', 'invisible flex')} aria-hidden={true}>
+          {startIcon && startIcon}
+          {children}
+          {endIcon && endIcon}
+        </div>
+      </>
+    )
+
+    if (iconOnly && !rest['aria-label'] && !rest['aria-labelledby']) {
+      console.log('test', startIcon)
+      console.warn('Icon-only buttons should have an aria-label for accessibility.')
+    }
 
     return (
       <button
@@ -97,28 +85,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           buttonClass,
           buttonFlex,
           buttonVariant[variant][color],
-          buttonSize,
+          iconOnly ? iconOnlySize[size] : buttonSize[size],
+          buttonIconSize[size],
           buttonDisabledVariant[variant],
-          !disableUpperCase && 'uppercase',
           isLoading && 'selected',
           variant === 'contained' && !hideShadow && 'shadow-button active:shadow-none',
           className,
         )}
         type={type}
-        tabIndex={rest.disabled ? -1 : 0}
+        disabled={disabled}
+        aria-busy={isLoading}
+        aria-disabled={isLoading || disabled}
         onClick={!isLoading ? onClick : () => {}}
         ref={ref}
         {...rest}
       >
         {isLoading ? (
-          <InnerLoadingWrap
-            size={size}
-            startIcon={startIcon}
-            endIcon={endIcon}
-            isLoading={isLoading}
-          >
-            {children}
-          </InnerLoadingWrap>
+          renderLoadingState()
         ) : (
           <>
             {startIcon && startIcon}

@@ -22,7 +22,7 @@ describe('RangeField', () => {
     expect(screen.getByRole('slider')).toHaveAttribute('id', 'rangeTest')
     expect(screen.getByRole('slider')).toHaveAttribute('name', 'rangeTest')
     expect(screen.getByRole('slider')).toHaveAttribute('type', 'range')
-    expect(screen.getByRole('slider')).toHaveAttribute('aria-labelledby', 'label-rangeTest')
+    expect(screen.getByRole('slider')).toHaveAttribute('aria-labelledby', 'rangeTest-label')
     expect(screen.getByRole('slider')).toHaveAttribute('value', '50')
     expect(screen.getByTestId('Label')).toBeInTheDocument()
     expect(screen.getByTestId('Label')).toHaveTextContent('label')

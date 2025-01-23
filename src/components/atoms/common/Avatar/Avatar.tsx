@@ -1,3 +1,4 @@
+'use client'
 import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
@@ -20,29 +21,47 @@ export type AvatarProps = NativeAvatarProps &
     username?: string
   }
 
-/** Avatar component for displaying user initials. By default shows profile icon. Default HTMLAttributes props supported. */
+/** Avatar component for displaying user initials. By default shows profile icon. Default HTMLAttributes props supported. USE CLIENT */
 export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
   (
     { className, src, username, variant = 'outlined', color = 'primary', size = 'md', ...rest },
     ref,
   ) => {
     const t = useTranslations('Components')
-    const userInitials = username?.split(' ').map(name => name.slice(0, 1).toUpperCase())
+    const userInitials = username
+      ?.split(' ')
+      .filter(name => name)
+      .reduce<string[]>((initials, name, index, arr) => {
+        if (arr.length === 1 || index === 0 || index === arr.length - 1) {
+          initials.push(name.charAt(0).toUpperCase())
+        }
+        return initials
+      }, [])
+      .join('')
 
-    const AvatarType = () => {
+    const renderAvatarContent = () => {
       if (src) {
         return (
           <Image
             className="min-h-full min-w-full"
             src={src}
-            alt={t('profile')}
+            alt={username ? `${t('profile')} ${username}` : t('profile')}
             ratio="aspect-w-4 aspect-h-4"
           />
         )
       } else if (userInitials) {
-        return <span>{userInitials}</span>
+        return (
+          <>
+            <span className="sr-only">{`${t('initials')} ${userInitials}`}</span>
+            <span aria-hidden="true">{userInitials}</span>
+          </>
+        )
       } else {
-        return <ProfileIcon className="min-h-full min-w-full p-0.5" />
+        return (
+          <div role="img" aria-label={t('profile')}>
+            <ProfileIcon className="min-h-full min-w-full p-0.5" />
+          </div>
+        )
       }
     }
 
@@ -55,12 +74,11 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
           avatarSize[size],
           className,
         )}
-        role="img"
         ref={ref}
-        aria-label={t('profile')}
+        data-testid="Avatar"
         {...rest}
       >
-        <AvatarType />
+        {renderAvatarContent()}
       </div>
     )
   },

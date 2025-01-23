@@ -24,8 +24,8 @@ describe('CheckboxGroupField', () => {
       'name',
       'value1checkboxGroupFieldTest',
     )
-    expect(screen.getByTestId('Label')).toBeInTheDocument()
-    expect(screen.getByTestId('Label')).toHaveTextContent('label')
+    expect(screen.getByTestId('FakeLabel')).toBeInTheDocument()
+    expect(screen.getByTestId('FakeLabel')).toHaveTextContent('label')
   })
 
   it('onSubmit', () => {

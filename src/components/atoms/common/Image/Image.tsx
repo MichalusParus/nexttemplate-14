@@ -35,8 +35,6 @@ export type ImageProps = NativeImgProps &
       | 'object-right-bottom'
       | 'object-left-bottom'
       | 'object-right-top'
-    /** rounded tailwind class */
-    rounded?: string
   }
 
 /** Next Image component with ratio wrap. Default ImgHTMLAttributes & ImageProps supported. */
@@ -48,21 +46,14 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
       width = 'w-full',
       objectFit = 'object-contain',
       objectPosition = 'object-center',
-      rounded = 'rounded-md',
       ...rest
     },
     ref,
   ) => {
     return (
       <div
-        className={cn(
-          'ImageRatioWrap',
-          'relative overflow-hidden bg-dark-950/25',
-          width,
-          ratio,
-          rounded,
-          className,
-        )}
+        className={cn('ImageRatioWrap', 'relative overflow-hidden bg-dark-950/25', width, ratio)}
+        data-testid="ImageRatioWrap"
       >
         <NextImage
           className={cn(objectFit, objectPosition, className)}

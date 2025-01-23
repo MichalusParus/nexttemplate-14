@@ -6,11 +6,15 @@ export const usePopper = (placement?: Placement, offset?: [number, number]) => {
   const popperRef = useRef<Instance | null>(null)
   const anchorRef = useRef<HTMLDivElement | null>(null)
   const [popoverEl, setPopoverEl] = useState<HTMLDivElement | null>(null)
+  const [adjustedPlacement, setAdjustedPlacement] = useState<Placement>(placement || 'auto')
 
   useEffect(() => {
     if (anchorRef.current && popoverEl) {
       popperRef.current = createPopper(anchorRef.current, popoverEl, {
         placement: placement || 'auto',
+        onFirstUpdate: state => {
+          setAdjustedPlacement(state.placement || 'auto')
+        },
         modifiers: [
           { name: 'offset', options: { offset: offset || [0, 10] } },
           { name: 'flip', options: { padding: 10 } },
@@ -26,8 +30,9 @@ export const usePopper = (placement?: Placement, offset?: [number, number]) => {
   }, [popoverEl, anchorRef, placement, offset])
 
   return {
-    anchorRef: anchorRef,
-    popoverEl: popoverEl,
-    setPopoverEl: setPopoverEl,
+    anchorRef,
+    popoverEl,
+    adjustedPlacement,
+    setPopoverEl,
   }
 }

@@ -25,7 +25,7 @@ describe('SearchField', () => {
     expect(screen.getByRole('searchbox')).toHaveAttribute('name', 'searchTest')
     expect(screen.getByRole('searchbox')).toHaveAttribute('type', 'search')
     expect(screen.getByRole('searchbox')).toHaveAttribute('value', 'searchTest')
-    expect(screen.getByRole('searchbox')).toHaveAttribute('aria-labelledby', 'label-searchTest')
+    expect(screen.getByRole('searchbox')).toHaveAttribute('aria-labelledby', 'searchTest-label')
     expect(screen.getByTestId('Label')).toBeInTheDocument()
     expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })

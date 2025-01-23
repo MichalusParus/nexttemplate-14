@@ -24,6 +24,7 @@
     },
     "Components": {
       "profile": "profile",
+      "initials": "initials",
       "close": "close",
       "clear": "clear",
       "delete": "delete",
@@ -55,14 +56,9 @@
       "loginSubmit": "Login",
       "forgotPassword": "Forgot password?",
       "dontHaveAccount": "Don't have an account?",
-
-
       "resetPassword": "Reset password",
       "resetPasswordDescription": "You will receive a email to reset your password.",
       "resetPasswordSubmit": "Reset password",
-
-
-
       "register": "Register",
       "confirmPassword": "Confirm password",
       "confirmPasswordPlaceholder": "Enter your password again",

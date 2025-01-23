@@ -1,27 +1,90 @@
 import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
+import { axe, toHaveNoViolations } from 'jest-axe'
 
 import { Label } from '.'
 
+expect.extend(toHaveNoViolations)
+
 describe('Label', () => {
   it('default', () => {
-    render(<Label name="labelTest" label="label" className="className" />)
-    expect(screen.getByTestId('LabelWrap')).toBeInTheDocument()
-    expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
-    expect(screen.getByTestId('Label')).toBeInTheDocument()
-    expect(screen.getByTestId('Label')).toHaveTextContent('label')
-    expect(screen.getByTestId('Label')).toHaveAttribute('for', 'labelTest')
+    render(<Label name="labelTest" label="label" className="className" width="w-96" />)
+    const labelWrapTestId = screen.getByTestId('LabelWrap')
+    const labelTestId = screen.getByTestId('Label')
+    const alertTestId = screen.getByTestId('Alert')
+
+    expect(labelWrapTestId).toBeInTheDocument()
+    expect(labelWrapTestId).toHaveClass('className')
+    expect(labelWrapTestId).toHaveClass('w-96')
+    expect(labelTestId).toBeInTheDocument()
+    expect(labelTestId).toHaveTextContent('label')
+    expect(labelTestId).toHaveAttribute('for', 'labelTest')
+    expect(labelTestId).toHaveAttribute('id', 'labelTest-label')
+    expect(alertTestId).toBeInTheDocument()
+    expect(alertTestId).toHaveAttribute('aria-hidden', 'true')
+    expect(alertTestId).toHaveClass('opacity-0')
   })
 
   it('error', () => {
-    render(<Label name="labelTest" label="label" className="className" error="error" />)
-    expect(screen.getByRole('alert')).toHaveTextContent('error')
+    render(
+      <Label
+        name="labelTest"
+        label="label"
+        className="className"
+        error="error"
+        description="description"
+      />,
+    )
+    const alertRole = screen.getByRole('alert')
+
+    expect(alertRole).toBeInTheDocument()
+    expect(alertRole).toHaveTextContent('error')
+    expect(alertRole).toHaveAttribute('id', 'labelTest-description')
   })
 
   it('description', () => {
     render(<Label name="labelTest" label="label" className="className" description="description" />)
-    expect(screen.getByTestId('Alert')).toBeInTheDocument()
-    expect(screen.getByTestId('Alert')).toHaveTextContent('description')
+    const alertTestId = screen.getByTestId('Alert')
+
+    expect(alertTestId).toBeInTheDocument()
+    expect(alertTestId).toHaveTextContent('description')
+    expect(alertTestId).toHaveAttribute('id', 'labelTest-description')
+  })
+
+  it('fake', () => {
+    render(<Label name="labelTest" label="label" fakeLabel />)
+    const labelQuery = screen.queryByTestId('Label')
+    const fakeLabelTestId = screen.getByTestId('FakeLabel')
+
+    expect(labelQuery).toBeNull()
+    expect(fakeLabelTestId).toBeInTheDocument()
+    expect(fakeLabelTestId).toHaveTextContent('label')
+    expect(fakeLabelTestId).toHaveAttribute('id', 'labelTest-label')
+  })
+
+  it('hideLabel', () => {
+    render(<Label name="labelTest" label="label" hideLabel />)
+    const labelTestId = screen.getByTestId('Label')
+
+    expect(labelTestId).toBeInTheDocument()
+    expect(labelTestId).toHaveTextContent('label')
+    expect(labelTestId).toHaveClass('hidden')
+  })
+
+  it('hideError', () => {
+    render(<Label name="labelTest" label="label" error="error" hideError />)
+    const alertRole = screen.getByRole('alert')
+
+    expect(alertRole).toBeInTheDocument()
+    expect(alertRole).toHaveTextContent('error')
+    expect(alertRole).toHaveClass('hidden')
+  })
+
+  it('axe', async () => {
+    const { container } = render(<Label name="labelTest" label="label" />)
+
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
   })
 })

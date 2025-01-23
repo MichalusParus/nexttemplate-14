@@ -21,8 +21,8 @@ describe('RadioGroupField', () => {
     expect(screen.getByRole('radiogroup')).toHaveClass('className')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('id', 'value1radioGroupFieldTest')
     expect(screen.getAllByRole('radio')[0]).toHaveAttribute('name', 'radioGroupFieldTest')
-    expect(screen.getByTestId('Label')).toBeInTheDocument()
-    expect(screen.getByTestId('Label')).toHaveTextContent('label')
+    expect(screen.getByTestId('FakeLabel')).toBeInTheDocument()
+    expect(screen.getByTestId('FakeLabel')).toHaveTextContent('label')
   })
 
   it('onSubmit', () => {

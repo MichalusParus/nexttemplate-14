@@ -28,7 +28,6 @@ export const PrimaryDefault: Story = {
     startIcon: undefined,
     endIcon: undefined,
     hideShadow: false,
-    disableUpperCase: false,
     href: '#',
     children: 'Link',
   },
@@ -68,7 +67,6 @@ export const Inline: Story = {
     ...PrimaryDefault.args,
     variant: 'text',
     size: 'inline',
-    disableUpperCase: true,
     children: 'inline link',
   },
   render: args => (

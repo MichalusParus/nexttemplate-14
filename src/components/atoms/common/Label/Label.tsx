@@ -28,7 +28,7 @@ export type LabelProps = NativeLabelProps &
     hideError?: boolean
   }
 
-/** Label wrapper for form components with inherited font color. Full or collapsed state. Default LabelHTMLAttributes props supported. */
+/** Label wrapper for form components with inherited font color. Default LabelHTMLAttributes props supported. */
 export const Label = forwardRef<HTMLLabelElement, LabelProps>(
   (
     {
@@ -47,7 +47,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
     },
     ref,
   ) => {
-    const labelVisibility = hideLabel ? 'hidden' : ''
+    const labelVisibility = hideLabel && 'hidden'
 
     return (
       <div
@@ -56,15 +56,15 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
       >
         {fakeLabel ? (
           <div
-            id={'label-' + name}
+            id={`${name}-label`}
             className={cn('FakeLabel', labelClass, textSize[size], labelVisibility)}
-            data-testid="Label"
+            data-testid="FakeLabel"
           >
             {label}
           </div>
         ) : (
           <label
-            id={'label-' + name}
+            id={`${name}-label`}
             className={cn('Label', labelClass, textSize[size], labelVisibility)}
             htmlFor={name}
             ref={ref}
@@ -75,20 +75,16 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
           </label>
         )}
         {children}
-        <div className="min-h-[1.625rem]">
-          {!hideError && (error || description) && (
-            <Alert
-              id={`${name}-description`}
-              className={cn(error || description ? 'opacity-100' : 'opacity-0')}
-              variant="text"
-              status={description && !error ? 'info' : 'error'}
-              size="sm"
-              aria-hidden={!description && !error}
-            >
-              {description && !error ? description : error}
-            </Alert>
-          )}
-        </div>
+        <Alert
+          id={`${name}-description`}
+          className={cn(error || description ? 'opacity-100' : 'opacity-0', hideError && 'hidden')}
+          variant="text"
+          status={description && !error ? 'info' : 'error'}
+          size="sm"
+          aria-hidden={!description && !error}
+        >
+          {(description && !error ? description : error) || ' '}
+        </Alert>
       </div>
     )
   },

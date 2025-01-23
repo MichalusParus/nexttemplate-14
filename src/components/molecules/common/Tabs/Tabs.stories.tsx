@@ -70,14 +70,7 @@ export const OptionalChildren: Story = {
   args: {
     ...PrimaryDefault.args,
     children: (
-      <Button
-        startIcon={<PlusIcon />}
-        variant="text"
-        color="error"
-        size="sm"
-        disableUpperCase
-        hideShadow
-      >
+      <Button startIcon={<PlusIcon />} variant="text" color="error" size="sm" hideShadow>
         Custom Button
       </Button>
     ),

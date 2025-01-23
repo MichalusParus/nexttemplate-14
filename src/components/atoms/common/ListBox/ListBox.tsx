@@ -1,3 +1,4 @@
+'use client'
 import { useTranslations } from 'next-intl'
 import { forwardRef, KeyboardEvent, OlHTMLAttributes, useCallback } from 'react'
 
@@ -7,7 +8,7 @@ import { OptionType, StyleProps } from '@/components/types'
 import { cn, filterOutKeys } from '@/utils/utils'
 
 import { Ghost } from '../../loaders/Ghost'
-import { buttonContentSize, buttonVariant } from '../Button/Button.style'
+import { buttonSize, buttonVariant } from '../Button/Button.style'
 
 type NativeListBoxProps = Omit<
   OlHTMLAttributes<HTMLUListElement>,
@@ -36,7 +37,7 @@ export type ListBoxProps = NativeListBoxProps &
     onClick: (value: string) => void
   }
 
-/** Listbox Ul with selectable options. */
+/** Listbox Ul with selectable options. USE CLIENT */
 export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
   (
     {
@@ -59,6 +60,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
     const t = useTranslations('Components')
     const ghostOptions =
       isLoading && !options.length ? [{ value: 'ghost', label: 'ghost', content: '' }] : []
+    const completeOptions = [...options, ...ghostOptions]
 
     const getSelectedClass = useCallback(
       (optionValue: string) => {
@@ -81,13 +83,13 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
       <ul
         id={name}
         className={cn('ListBox', className)}
-        aria-labelledby={'label-' + name}
+        aria-labelledby={`${name}-label`}
         role="listbox"
         ref={ref}
         {...rest}
       >
         {options.length || isLoading ? (
-          [...options, ...ghostOptions].map(({ value: optionValue, label, content }) => (
+          completeOptions.map(({ value: optionValue, label, content }) => (
             <li
               key={optionValue}
               className={cn(
@@ -95,30 +97,33 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                 'flex items-center border focus:outline-none',
                 getSelectedClass(optionValue),
                 buttonVariant[variant][color] + ' border-transparent dark:border-transparent',
-                buttonContentSize[size],
+                buttonSize[size],
                 isLoading ? 'cursor-not-allowed' : 'cursor-pointer',
               )}
               role="option"
               tabIndex={-1}
               aria-selected={value.includes(optionValue)}
-              onClick={() => !isLoading && onClick(optionValue)}
-              onKeyDown={e => !isLoading && handleOnKeyDown(e, optionValue)}
+              aria-disabled={isLoading}
+              onClick={() => (!isLoading ? onClick(optionValue) : () => {})}
+              onKeyDown={e => (!isLoading ? handleOnKeyDown(e, optionValue) : () => {})}
             >
               <>
-                <Checkbox
-                  className={cn(hideCheckbox ? 'hidden' : 'block', checkboxProps?.className)}
-                  name={optionValue}
-                  label=""
-                  value={optionValue}
-                  variant={variant}
-                  color={color}
-                  size={size}
-                  isChecked={value.includes(optionValue)}
-                  disabled={isLoading}
-                  fake
-                  onChange={() => {}}
-                  {...filterOutKeys(checkboxProps, ['className'])}
-                />
+                {!hideCheckbox && (
+                  <Checkbox
+                    className={checkboxProps?.className}
+                    name={optionValue}
+                    label=""
+                    value={optionValue}
+                    variant={variant}
+                    color={color}
+                    size={size}
+                    isChecked={value.includes(optionValue)}
+                    disabled={isLoading}
+                    fake
+                    onChange={() => {}}
+                    {...filterOutKeys(checkboxProps, ['className'])}
+                  />
+                )}
                 {isLoading ? <Ghost className="ml-0 mr-16 w-full" size={size} /> : content || label}
               </>
             </li>

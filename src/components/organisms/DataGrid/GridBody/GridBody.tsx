@@ -108,7 +108,6 @@ export const GridBody = forwardRef<HTMLDivElement, GridBodyProps>(
                   variant={variant}
                   color={isRowInteractive ? color : 'none'}
                   size="none"
-                  disableUpperCase
                   hideShadow
                   tabIndex={-1}
                   aria-selected={selectedRows.some(row => row.id)}

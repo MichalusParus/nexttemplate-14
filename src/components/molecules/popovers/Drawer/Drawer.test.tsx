@@ -2,16 +2,19 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@testing-library/react'
 
+import { JestMockProvider } from '../../../../../.storybook/helpers'
 import { Drawer } from '.'
 
 describe('Drawer', () => {
   it('default', () => {
     render(
-      <Drawer className="className" name="drawerTest" isOpen={true} onClose={() => {}}>
-        <a href="/" tabIndex={0}>
-          Children
-        </a>
-      </Drawer>,
+      <JestMockProvider>
+        <Drawer className="className" name="drawerTest" isOpen={true} onClose={() => {}}>
+          <a href="/" tabIndex={0}>
+            Children
+          </a>
+        </Drawer>
+      </JestMockProvider>,
     )
     expect(screen.getByRole('menu')).toBeInTheDocument()
     expect(screen.getByRole('menu')).toHaveClass('className')

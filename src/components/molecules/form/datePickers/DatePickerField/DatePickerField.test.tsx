@@ -18,7 +18,7 @@ describe('DatePickerField', () => {
     expect(screen.getByTestId('Calendar')).toBeInTheDocument()
     expect(screen.getByTestId('DatePicker')).toHaveClass('className')
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', 'datePickerTest')
-    expect(screen.getByRole('combobox')).toHaveAttribute('aria-labelledby', 'label-datePickerTest')
+    expect(screen.getByRole('combobox')).toHaveAttribute('aria-labelledby', 'datePickerTest-label')
     expect(screen.getByTestId('Label')).toBeInTheDocument()
     expect(screen.getByTestId('Label')).toHaveTextContent('label')
   })

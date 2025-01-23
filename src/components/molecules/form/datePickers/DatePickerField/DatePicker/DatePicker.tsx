@@ -109,6 +109,7 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
         data-testid="DatePicker"
       >
         <Button
+          id={name}
           className={cn(
             'DatePickerCombobox',
             'w-full',
@@ -122,9 +123,8 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           size={size}
           disabled={disabled}
           hideShadow
-          disableUpperCase
           role="combobox"
-          aria-labelledby={`label-${name}`}
+          aria-labelledby={`${name}-label`}
           aria-describedby={`${name}-description`}
           aria-expanded={isOpen}
           aria-haspopup="true"

@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const buttonClass = cn(
-  'relative items-center justify-center whitespace-nowrap rounded-md border font-semibold transition-activity focus:outline-none [&.error]:border-error-800 [&.error]:shadow-error',
+  'relative items-center justify-center gap-2 whitespace-nowrap rounded-md border font-semibold transition-activity focus:outline-none [&.error]:border-error-800 [&.error]:shadow-error',
 )
 
 export const buttonVariant = {
@@ -114,7 +114,7 @@ export const iconOnlySize = {
   none: '',
 }
 
-export const buttonContentSize = {
+export const buttonSize = {
   sm: cn('px-smPX py-smPY text-sm'),
   md: cn('px-mdPX py-mdPY text-base'),
   lg: cn('px-lgPX py-lgPY text-lg'),

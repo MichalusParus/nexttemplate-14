@@ -21,7 +21,7 @@ export default async function Register() {
       <RegisterForm />
       <P align="text-center">
         {t('alreadyHaveAccount')}
-        <Link size="inline" disableUpperCase href="/login">
+        <Link size="inline" href="/login">
           {t('login')}
         </Link>
       </P>

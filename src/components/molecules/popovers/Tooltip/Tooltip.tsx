@@ -38,7 +38,7 @@ export const Tooltip = forwardRef<HTMLDivElement, PropsWithChildren<TooltipProps
   ) => {
     const [isVisible, setIsVisible] = useState(false)
     const [mounted, setMounted] = useState(false)
-    const { anchorRef, setPopoverEl } = usePopper(placement, offset)
+    const { anchorRef, adjustedPlacement, setPopoverEl } = usePopper(placement, offset)
     useImperativeHandle(ref, () => anchorRef.current!)
 
     const handleVisible = useCallback(() => {
@@ -96,7 +96,7 @@ export const Tooltip = forwardRef<HTMLDivElement, PropsWithChildren<TooltipProps
               className={cn(
                 'Tooltip',
                 tooltipClass,
-                tooltipPointer[placement],
+                tooltipPointer[adjustedPlacement],
                 tooltipVisibility,
                 delay,
                 isVisible && 'visible opacity-100',

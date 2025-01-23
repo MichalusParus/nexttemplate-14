@@ -1,7 +1,7 @@
 'use client'
 import { forwardRef } from 'react'
 
-import { buttonContentSize, buttonVariant } from '@/components/atoms/common/Button/Button.style'
+import { buttonSize, buttonVariant } from '@/components/atoms/common/Button/Button.style'
 import { RadioGroupProps } from '@/components/molecules/form/inputs/RadioGroupField/RadioGroup'
 import {
   afterClass,
@@ -51,7 +51,7 @@ export const MenuItemRadioGroup = forwardRef<HTMLInputElement, MenuItemRadioGrou
                 radioSize[size],
                 'relative mb-0 mr-0 flex items-center',
                 buttonVariant[variant][color],
-                buttonContentSize[size],
+                buttonSize[size],
               )}
             >
               <input
