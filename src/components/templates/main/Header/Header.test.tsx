@@ -1,17 +1,11 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../.storybook/helpers'
+import { render, screen } from '../../../../../.jest/customRender'
 import { Header } from '.'
 
 describe('Header', () => {
   it('default', () => {
-    render(
-      <JestMockProvider>
-        <Header className="className" />
-      </JestMockProvider>,
-    )
+    render(<Header className="className" />)
     expect(screen.getByTestId('Header')).toBeInTheDocument()
     expect(screen.getByTestId('Header')).toHaveClass('className')
   })

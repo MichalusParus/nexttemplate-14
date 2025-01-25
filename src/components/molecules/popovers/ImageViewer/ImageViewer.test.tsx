@@ -1,18 +1,14 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../.storybook/helpers'
+import { render, screen } from '../../../../../.jest/customRender'
 import { ImageViewer } from '.'
 
 describe('ImageViewer', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <ImageViewer name="viewerTest" className="className">
-          Image
-        </ImageViewer>
-      </JestMockProvider>,
+      <ImageViewer name="viewerTest" className="className">
+        Image
+      </ImageViewer>,
     )
     expect(screen.getByTestId('ImageViewer')).toBeInTheDocument()
     expect(screen.getByTestId('ImageViewer')).toHaveClass('className')

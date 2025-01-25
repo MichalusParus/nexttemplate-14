@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { createRef } from 'react'
 
+import { render, screen } from '../../../../../.jest/customRender'
 import { Alert } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -44,6 +45,20 @@ describe('Alert', () => {
     const imgRole = screen.getByRole('img')
 
     expect(imgRole).toBeInTheDocument()
+  })
+
+  it('ref', () => {
+    const ref = createRef<HTMLDivElement>()
+    render(<Alert ref={ref}>Alert</Alert>)
+
+    expect(ref.current).not.toBeNull()
+    expect(ref.current?.focus).toBeDefined()
+
+    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
+    ref.current?.focus()
+
+    expect(focusMock).toHaveBeenCalled()
+    focusMock.mockRestore()
   })
 
   it('axe', async () => {

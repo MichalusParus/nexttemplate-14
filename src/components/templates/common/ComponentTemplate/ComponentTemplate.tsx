@@ -1,4 +1,4 @@
-import { forwardRef, HTMLAttributes } from 'react'
+import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react'
 
 import { cn } from '@/utils/utils'
 
@@ -26,19 +26,20 @@ export type ComponentTemplateProps = Omit<HTMLAttributes<HTMLDivElement>, 'class
 //   - jest tests
 
 /** Serves as a template for creating new components. Default HTMLAttributes props supported. */
-export const ComponentTemplate = forwardRef<HTMLDivElement, ComponentTemplateProps>(
-  ({ className, ...rest }, ref) => {
-    return (
-      <div
-        className={cn('ComponentTemplate', className)}
-        ref={ref}
-        data-testid="ComponentTemplate"
-        {...rest}
-      >
-        {className}
-      </div>
-    )
-  },
-)
+export const ComponentTemplate = forwardRef<
+  HTMLDivElement,
+  PropsWithChildren<ComponentTemplateProps>
+>(({ className, children, ...rest }, ref) => {
+  return (
+    <div
+      className={cn('ComponentTemplate', className)}
+      ref={ref}
+      data-testid="ComponentTemplate"
+      {...rest}
+    >
+      {children}
+    </div>
+  )
+})
 
 ComponentTemplate.displayName = 'ComponentTemplate'

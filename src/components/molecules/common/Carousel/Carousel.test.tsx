@@ -1,20 +1,16 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../.storybook/helpers'
+import { render, screen } from '../../../../../.jest/customRender'
 import { Carousel } from '.'
 
 describe('Carousel', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <Carousel pages={3} className="className">
-          <div className="h-full w-full" data-testid="panel" />
-          <div className="h-full w-full" data-testid="panel" />
-          <div className="h-full w-full" data-testid="panel" />
-        </Carousel>
-      </JestMockProvider>,
+      <Carousel pages={3} className="className">
+        <div className="h-full w-full" data-testid="panel" />
+        <div className="h-full w-full" data-testid="panel" />
+        <div className="h-full w-full" data-testid="panel" />
+      </Carousel>,
     )
     expect(screen.getByTestId('Carousel')).toBeInTheDocument()
     expect(screen.getByTestId('Carousel')).toHaveClass('className')

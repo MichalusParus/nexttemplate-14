@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { gridColsDef, JestMockProvider } from '../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
+import { gridColsDef } from '../../../../../../.storybook/helpers'
 import { ColumnHead } from '.'
 
 jest.mock('next/navigation', () => {
@@ -17,11 +16,7 @@ jest.mock('next/navigation', () => {
 
 describe('ColumnHead', () => {
   it('default', () => {
-    render(
-      <JestMockProvider>
-        <ColumnHead className="className" name="ColumnHeadTest" column={gridColsDef[0]} />
-      </JestMockProvider>,
-    )
+    render(<ColumnHead className="className" name="ColumnHeadTest" column={gridColsDef[0]} />)
     expect(screen.getByTestId('ColumnHeader')).toBeInTheDocument()
     expect(screen.getByTestId('ColumnHeader')).toHaveClass('className')
     expect(screen.getByTestId('ColumnHeader')).toHaveTextContent('Column Head 1')
@@ -30,15 +25,13 @@ describe('ColumnHead', () => {
   it('interactive', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <ColumnHead
-          className="className"
-          name="ColumnHeadTest"
-          column={gridColsDef[0]}
-          handleSorting={spy}
-          setFilter={spy}
-        />
-      </JestMockProvider>,
+      <ColumnHead
+        className="className"
+        name="ColumnHeadTest"
+        column={gridColsDef[0]}
+        handleSorting={spy}
+        setFilter={spy}
+      />,
     )
     expect(screen.getByRole('columnheader')).toBeInTheDocument()
     expect(screen.getByTestId('MenuWrap')).toBeInTheDocument()

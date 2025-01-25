@@ -1,22 +1,19 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
 import { createRef } from 'react'
 
-import { JestMockProvider } from '../../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../../.jest/customRender'
 import { TextInput } from '.'
 
 describe('TextInput', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <TextInput
-          className="className"
-          name="inputTest"
-          placeholder="placeholder"
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
+      <TextInput
+        className="className"
+        name="inputTest"
+        placeholder="placeholder"
+        onChange={() => {}}
+      />,
     )
     expect(screen.getByTestId('InputWrap')).toBeInTheDocument()
     expect(screen.getByTestId('InputWrap')).toHaveClass('className')
@@ -29,21 +26,13 @@ describe('TextInput', () => {
   })
 
   it('value', () => {
-    render(
-      <JestMockProvider>
-        <TextInput name="name" value="value" onChange={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<TextInput name="name" value="value" onChange={() => {}} />)
     expect(screen.getByRole('textbox')).toHaveAttribute('value', 'value')
   })
 
   it('onChange', () => {
     const spy = jest.fn()
-    render(
-      <JestMockProvider>
-        <TextInput name="name" value="value" onChange={spy} />
-      </JestMockProvider>,
-    )
+    render(<TextInput name="name" value="value" onChange={spy} />)
     fireEvent.change(screen.getByRole('textbox'), {
       target: {
         value: 'newvalue',
@@ -54,48 +43,32 @@ describe('TextInput', () => {
 
   it('startIcon', () => {
     render(
-      <JestMockProvider>
-        <TextInput name="inputTest" startIcon={<svg data-testid="testSvg" />} onChange={() => {}} />
-      </JestMockProvider>,
+      <TextInput name="inputTest" startIcon={<svg data-testid="testSvg" />} onChange={() => {}} />,
     )
     expect(screen.getByTestId('testSvg')).toBeInTheDocument()
   })
 
   it('endIcon', () => {
     render(
-      <JestMockProvider>
-        <TextInput name="inputTest" endIcon={<svg data-testid="testSvg" />} onChange={() => {}} />
-      </JestMockProvider>,
+      <TextInput name="inputTest" endIcon={<svg data-testid="testSvg" />} onChange={() => {}} />,
     )
     expect(screen.getByTestId('testSvg')).toBeInTheDocument()
   })
 
   it('error', () => {
-    render(
-      <JestMockProvider>
-        <TextInput name="inputTest" error="error" onChange={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<TextInput name="inputTest" error="error" onChange={() => {}} />)
     expect(screen.getByTestId('InputWrap')).toHaveClass('error')
   })
 
   it('disabled', () => {
-    render(
-      <JestMockProvider>
-        <TextInput name="name" value="" disabled onChange={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<TextInput name="name" value="" disabled onChange={() => {}} />)
     expect(screen.getByRole('textbox')).toHaveAttribute('disabled', '')
     expect(screen.getByRole('textbox')).toHaveAttribute('tabindex', '-1')
   })
 
   it('ref', () => {
     const ref = createRef<HTMLInputElement>()
-    render(
-      <JestMockProvider>
-        <TextInput name="name" value="" ref={ref} onChange={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<TextInput name="name" value="" ref={ref} onChange={() => {}} />)
     expect(ref.current).toBe(screen.getByRole('textbox'))
   })
 })

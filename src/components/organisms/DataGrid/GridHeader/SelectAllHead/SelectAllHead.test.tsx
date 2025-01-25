@@ -1,8 +1,6 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
 import { SelectAllHead } from '.'
 
 jest.mock('next/navigation', () => {
@@ -17,11 +15,7 @@ jest.mock('next/navigation', () => {
 
 describe('SelectAllHead', () => {
   it('default', () => {
-    render(
-      <JestMockProvider>
-        <SelectAllHead className="className" name="SelectAllHeadTest" handleAll={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<SelectAllHead className="className" name="SelectAllHeadTest" handleAll={() => {}} />)
     expect(screen.getByRole('columnheader')).toBeInTheDocument()
     expect(screen.getByRole('columnheader')).toHaveClass('className')
     expect(screen.getByTestId('Checkbox')).toBeInTheDocument()
@@ -29,11 +23,7 @@ describe('SelectAllHead', () => {
 
   it('handleAll', () => {
     const spy = jest.fn()
-    render(
-      <JestMockProvider>
-        <SelectAllHead className="className" name="SelectAllHeadTest" handleAll={spy} />
-      </JestMockProvider>,
-    )
+    render(<SelectAllHead className="className" name="SelectAllHeadTest" handleAll={spy} />)
     expect(screen.getByRole('columnheader')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('columnheader'))
     expect(spy).toHaveBeenCalled()

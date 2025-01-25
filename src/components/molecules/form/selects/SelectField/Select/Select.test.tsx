@@ -1,22 +1,19 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { getOptions, JestMockProvider } from '../../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../../.jest/customRender'
+import { getOptions } from '../../../../../../../.storybook/helpers'
 import { Select } from '.'
 
 describe('Select', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <Select
-          className="className"
-          name="selectTest"
-          value=""
-          options={getOptions('selectTest', 20)}
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
+      <Select
+        className="className"
+        name="selectTest"
+        value=""
+        options={getOptions('selectTest', 20)}
+        onChange={() => {}}
+      />,
     )
     fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeInTheDocument()
@@ -26,14 +23,12 @@ describe('Select', () => {
 
   it('value', () => {
     render(
-      <JestMockProvider>
-        <Select
-          name="selectTest"
-          value="value1selectTest"
-          options={getOptions('selectTest', 20)}
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
+      <Select
+        name="selectTest"
+        value="value1selectTest"
+        options={getOptions('selectTest', 20)}
+        onChange={() => {}}
+      />,
     )
     fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('combobox')).toHaveTextContent('label1')
@@ -43,9 +38,7 @@ describe('Select', () => {
   it('onChange', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <Select name="selectTest" value="" options={getOptions('selectTest', 20)} onChange={spy} />
-      </JestMockProvider>,
+      <Select name="selectTest" value="" options={getOptions('selectTest', 20)} onChange={spy} />,
     )
     fireEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getAllByRole('option')[0])
@@ -54,15 +47,13 @@ describe('Select', () => {
 
   it('disabled', () => {
     render(
-      <JestMockProvider>
-        <Select
-          name="selectTest"
-          value=""
-          options={getOptions('selectTest', 20)}
-          disabled
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
+      <Select
+        name="selectTest"
+        value=""
+        options={getOptions('selectTest', 20)}
+        disabled
+        onChange={() => {}}
+      />,
     )
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-disabled', 'true')
   })

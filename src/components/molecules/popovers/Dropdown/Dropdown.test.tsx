@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
-
+import { render, screen } from '../../../../../.jest/customRender'
 import { Dropdown } from '.'
 
 describe('Dropdown', () => {

@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { createRef } from 'react'
 
-import { getOptions, JestMockProvider } from '../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../.jest/customRender'
+import { getOptions } from '../../../../../.storybook/helpers'
 import { ListBox } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -11,15 +12,13 @@ expect.extend(toHaveNoViolations)
 describe('ListBox', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <ListBox
-          className="className"
-          name="listboxTest"
-          value={[]}
-          options={getOptions('listboxTest', 20)}
-          onClick={() => {}}
-        />
-      </JestMockProvider>,
+      <ListBox
+        className="className"
+        name="listboxTest"
+        value={[]}
+        options={getOptions('listboxTest', 20)}
+        onClick={() => {}}
+      />,
     )
     const listboxRole = screen.getByRole('listbox')
     const optionRoles = screen.getAllByRole('option')
@@ -35,15 +34,13 @@ describe('ListBox', () => {
 
   it('noOptions', () => {
     render(
-      <JestMockProvider>
-        <ListBox
-          name="listboxTest"
-          value={[]}
-          options={[]}
-          noOptionLabel="noOptions"
-          onClick={() => {}}
-        />
-      </JestMockProvider>,
+      <ListBox
+        name="listboxTest"
+        value={[]}
+        options={[]}
+        noOptionLabel="noOptions"
+        onClick={() => {}}
+      />,
     )
     const optionsQuery = screen.queryAllByRole('option')
     const noOptionText = screen.getByText('noOptions')
@@ -54,15 +51,13 @@ describe('ListBox', () => {
 
   it('value', () => {
     render(
-      <JestMockProvider>
-        <ListBox
-          className="className"
-          name="listboxTest"
-          value={['value1listboxTest']}
-          options={getOptions('listboxTest', 20)}
-          onClick={() => {}}
-        />
-      </JestMockProvider>,
+      <ListBox
+        className="className"
+        name="listboxTest"
+        value={['value1listboxTest']}
+        options={getOptions('listboxTest', 20)}
+        onClick={() => {}}
+      />,
     )
     const optionRoles = screen.getAllByRole('option')
     const checkIconTestIds = screen.getAllByTestId('CheckIcon')
@@ -77,15 +72,13 @@ describe('ListBox', () => {
   it('onClick', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <ListBox
-          className="className"
-          name="listboxTest"
-          value={[]}
-          options={getOptions('listboxTest', 20)}
-          onClick={spy}
-        />
-      </JestMockProvider>,
+      <ListBox
+        className="className"
+        name="listboxTest"
+        value={[]}
+        options={getOptions('listboxTest', 20)}
+        onClick={spy}
+      />,
     )
     const optionRoles = screen.getAllByRole('option')
 
@@ -97,15 +90,13 @@ describe('ListBox', () => {
   it('onKeyDown', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <ListBox
-          className="className"
-          name="listboxTest"
-          value={[]}
-          options={getOptions('listboxTest', 20)}
-          onClick={spy}
-        />
-      </JestMockProvider>,
+      <ListBox
+        className="className"
+        name="listboxTest"
+        value={[]}
+        options={getOptions('listboxTest', 20)}
+        onClick={spy}
+      />,
     )
     const optionRoles = screen.getAllByRole('option')
 
@@ -117,16 +108,14 @@ describe('ListBox', () => {
   it('isLoading', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <ListBox
-          className="className"
-          name="listboxTest"
-          value={[]}
-          options={getOptions('listboxTest', 20)}
-          isLoading
-          onClick={spy}
-        />
-      </JestMockProvider>,
+      <ListBox
+        className="className"
+        name="listboxTest"
+        value={[]}
+        options={getOptions('listboxTest', 20)}
+        isLoading
+        onClick={spy}
+      />,
     )
     const optionRoles = screen.getAllByRole('option')
 
@@ -139,25 +128,45 @@ describe('ListBox', () => {
 
   it('hideCheckbox', () => {
     render(
-      <JestMockProvider>
-        <ListBox
-          className="className"
-          name="listboxTest"
-          value={[]}
-          options={getOptions('listboxTest', 20)}
-          onClick={() => {}}
-          hideCheckbox
-        />
-      </JestMockProvider>,
+      <ListBox
+        className="className"
+        name="listboxTest"
+        value={[]}
+        options={getOptions('listboxTest', 20)}
+        onClick={() => {}}
+        hideCheckbox
+      />,
     )
     const checkIconTestIds = screen.queryAllByTestId('CheckIcon')
 
     expect(checkIconTestIds).toHaveLength(0)
   })
 
+  it('ref', () => {
+    const ref = createRef<HTMLUListElement>()
+    render(
+      <ListBox
+        ref={ref}
+        name="listboxTest"
+        value={[]}
+        options={getOptions('listboxTest', 20)}
+        onClick={() => {}}
+      />,
+    )
+
+    expect(ref.current).not.toBeNull()
+    expect(ref.current?.focus).toBeDefined()
+
+    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
+    ref.current?.focus()
+
+    expect(focusMock).toHaveBeenCalled()
+    focusMock.mockRestore()
+  })
+
   it('axe', async () => {
     const { container } = render(
-      <JestMockProvider>
+      <>
         <div id="listboxTest-label">Label</div>
         <ListBox
           name="listboxTest"
@@ -165,7 +174,7 @@ describe('ListBox', () => {
           options={getOptions('listboxTest', 20)}
           onClick={() => {}}
         />
-      </JestMockProvider>,
+      </>,
     )
 
     const results = await axe(container)

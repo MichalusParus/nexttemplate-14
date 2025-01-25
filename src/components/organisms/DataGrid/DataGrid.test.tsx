@@ -1,13 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import {
-  gridCleanColsDef,
-  gridColsDef,
-  gridData,
-  JestMockProvider,
-} from '../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../.jest/customRender'
+import { gridCleanColsDef, gridColsDef, gridData } from '../../../../.storybook/helpers'
 import { DataGrid } from '.'
 
 jest.mock('next/navigation', () => {
@@ -24,14 +18,12 @@ jest.mock('next/navigation', () => {
 describe('DataGrid', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <DataGrid
-          className="className"
-          name="dataGridTest"
-          columns={gridCleanColsDef}
-          rows={gridData}
-        />
-      </JestMockProvider>,
+      <DataGrid
+        className="className"
+        name="dataGridTest"
+        columns={gridCleanColsDef}
+        rows={gridData}
+      />,
     )
     expect(screen.getByRole('grid')).toBeInTheDocument()
     expect(screen.getByRole('grid')).toHaveClass('className')
@@ -43,15 +35,13 @@ describe('DataGrid', () => {
   it('interactive', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <DataGrid
-          className="className"
-          name="dataGridTest"
-          columns={gridColsDef}
-          rows={gridData}
-          onRowClick={spy}
-        />
-      </JestMockProvider>,
+      <DataGrid
+        className="className"
+        name="dataGridTest"
+        columns={gridColsDef}
+        rows={gridData}
+        onRowClick={spy}
+      />,
     )
     expect(screen.getAllByRole('rowgroup')[1]).toBeInTheDocument()
     expect(screen.getAllByTestId('MenuWrap')).toHaveLength(4)
@@ -63,15 +53,13 @@ describe('DataGrid', () => {
   it('multiselect', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <DataGrid
-          className="className"
-          name="dataGridTest"
-          columns={gridColsDef}
-          rows={gridData}
-          onMultiselectSubmit={spy}
-        />
-      </JestMockProvider>,
+      <DataGrid
+        className="className"
+        name="dataGridTest"
+        columns={gridColsDef}
+        rows={gridData}
+        onMultiselectSubmit={spy}
+      />,
     )
     expect(screen.getAllByRole('columnheader')).toHaveLength(5)
     fireEvent.click(screen.getAllByRole('button')[20])

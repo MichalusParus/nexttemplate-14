@@ -1,18 +1,15 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { JestFormProvider, JestMockProvider } from '../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
+import { JestFormProvider } from '../../../../../../.storybook/helpers'
 import { PasswordField } from '.'
 
 describe('PasswordField', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['passwordTest']}>
-          <PasswordField className="className" name="passwordTest" label="label" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['passwordTest']}>
+        <PasswordField className="className" name="passwordTest" label="label" />
+      </JestFormProvider>,
     )
     fireEvent.change(screen.getByTestId('PasswordInput'), {
       target: {
@@ -36,12 +33,10 @@ describe('PasswordField', () => {
   it('onSubmit', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['passwordTest']} onSubmit={spy}>
-          <PasswordField className="className" name="passwordTest" label="label" />
-          <button type="submit" data-testid="submit" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['passwordTest']} onSubmit={spy}>
+        <PasswordField className="className" name="passwordTest" label="label" />
+        <button type="submit" data-testid="submit" />
+      </JestFormProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByTestId('submit'))
@@ -50,17 +45,15 @@ describe('PasswordField', () => {
 
   it('description', () => {
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['passwordTest']}>
-          <PasswordField
-            className="className"
-            name="passwordTest"
-            label="label"
-            labelProps={{ description: 'description' }}
-          />
-          <button type="submit" data-testid="submit" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['passwordTest']}>
+        <PasswordField
+          className="className"
+          name="passwordTest"
+          label="label"
+          labelProps={{ description: 'description' }}
+        />
+        <button type="submit" data-testid="submit" />
+      </JestFormProvider>,
     )
     expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')

@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { createRef } from 'react'
 
+import { render, screen } from '../../../../../.jest/customRender'
 import { Image } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -33,6 +34,20 @@ describe('Image', () => {
 
     expect(imageRole).toHaveClass('object-cover')
     expect(imageRole).toHaveClass('object-center')
+  })
+
+  it('ref', () => {
+    const ref = createRef<HTMLImageElement>()
+    render(<Image ref={ref} src="/#" alt="image" />)
+
+    expect(ref.current).not.toBeNull()
+    expect(ref.current?.focus).toBeDefined()
+
+    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
+    ref.current?.focus()
+
+    expect(focusMock).toHaveBeenCalled()
+    focusMock.mockRestore()
   })
 
   it('axe', async () => {

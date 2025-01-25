@@ -1,22 +1,19 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
 import { format } from 'date-fns'
 
-import { JestMockProvider } from '../../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '.././../../../../../../.jest/customRender'
 import { DatePicker } from '.'
 
 describe('DatePicker', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <DatePicker
-          className="className"
-          name="datePickerTest"
-          value={new Date()}
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
+      <DatePicker
+        className="className"
+        name="datePickerTest"
+        value={new Date()}
+        onChange={() => {}}
+      />,
     )
     fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByTestId('Calendar')).toBeInTheDocument()
@@ -26,33 +23,21 @@ describe('DatePicker', () => {
 
   it('value', () => {
     const date = new Date()
-    render(
-      <JestMockProvider>
-        <DatePicker name="datePickerTest" value={new Date()} onChange={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<DatePicker name="datePickerTest" value={new Date()} onChange={() => {}} />)
     fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('combobox')).toHaveTextContent(format(date, 'dd.M.y'))
   })
 
   it('onChange', () => {
     const spy = jest.fn()
-    render(
-      <JestMockProvider>
-        <DatePicker name="datePickerTest" value={new Date()} onChange={spy} />
-      </JestMockProvider>,
-    )
+    render(<DatePicker name="datePickerTest" value={new Date()} onChange={spy} />)
     fireEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getAllByRole('button')[4])
     expect(spy).toHaveBeenCalled()
   })
 
   it('disabled', () => {
-    render(
-      <JestMockProvider>
-        <DatePicker name="datePickerTest" value={new Date()} disabled onChange={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<DatePicker name="datePickerTest" value={new Date()} disabled onChange={() => {}} />)
     expect(screen.getByRole('combobox')).toHaveAttribute('disabled', '')
   })
 })

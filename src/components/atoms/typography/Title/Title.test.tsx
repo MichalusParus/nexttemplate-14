@@ -1,18 +1,14 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../.storybook/helpers'
+import { render, screen } from '../../../../../.jest/customRender'
 import { Title } from '.'
 
 describe('Title', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <Title variant="h1" className="className">
-          Title
-        </Title>
-      </JestMockProvider>,
+      <Title variant="h1" className="className">
+        Title
+      </Title>,
     )
     expect(screen.getByRole('heading')).toBeInTheDocument()
     expect(screen.getByRole('heading')).toHaveClass('className')
@@ -20,11 +16,9 @@ describe('Title', () => {
   })
   it('isLoading', () => {
     render(
-      <JestMockProvider>
-        <Title variant="h1" isLoading className="className">
-          Title
-        </Title>
-      </JestMockProvider>,
+      <Title variant="h1" isLoading className="className">
+        Title
+      </Title>,
     )
     expect(screen.getByRole('heading')).not.toHaveTextContent('Title')
     expect(screen.getByRole('status')).toBeInTheDocument()

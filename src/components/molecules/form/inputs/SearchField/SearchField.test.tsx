@@ -1,18 +1,15 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { JestFormProvider, JestMockProvider } from '../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
+import { JestFormProvider } from '../../../../../../.storybook/helpers'
 import { SearchField } from '.'
 
 describe('SearchField', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['searchTest']}>
-          <SearchField className="className" name="searchTest" label="label" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['searchTest']}>
+        <SearchField className="className" name="searchTest" label="label" />
+      </JestFormProvider>,
     )
     fireEvent.change(screen.getByRole('searchbox'), {
       target: {
@@ -33,12 +30,10 @@ describe('SearchField', () => {
   it('onSubmit', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['searchTest']} onSubmit={spy}>
-          <SearchField className="className" name="searchTest" label="label" />
-          <button type="submit" data-testid="submit" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['searchTest']} onSubmit={spy}>
+        <SearchField className="className" name="searchTest" label="label" />
+        <button type="submit" data-testid="submit" />
+      </JestFormProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByTestId('submit'))
@@ -47,17 +42,15 @@ describe('SearchField', () => {
 
   it('description', () => {
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['searchTest']}>
-          <SearchField
-            className="className"
-            name="searchTest"
-            label="label"
-            labelProps={{ description: 'description' }}
-          />
-          <button type="submit" data-testid="submit" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['searchTest']}>
+        <SearchField
+          className="className"
+          name="searchTest"
+          label="label"
+          labelProps={{ description: 'description' }}
+        />
+        <button type="submit" data-testid="submit" />
+      </JestFormProvider>,
     )
     expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')

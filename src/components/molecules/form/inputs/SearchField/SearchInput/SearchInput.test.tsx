@@ -1,21 +1,17 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../../.jest/customRender'
 import { SearchInput } from '.'
 
 describe('SearchInput', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <SearchInput
-          className="className"
-          name="searchTest"
-          placeholder="placeholder"
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
+      <SearchInput
+        className="className"
+        name="searchTest"
+        placeholder="placeholder"
+        onChange={() => {}}
+      />,
     )
     expect(screen.getByTestId('InputWrap')).toBeInTheDocument()
     expect(screen.getByTestId('InputWrap')).toHaveClass('className')
@@ -26,21 +22,13 @@ describe('SearchInput', () => {
   })
 
   it('value', () => {
-    render(
-      <JestMockProvider>
-        <SearchInput name="name" value="value" onChange={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<SearchInput name="name" value="value" onChange={() => {}} />)
     expect(screen.getByRole('searchbox')).toHaveValue('value')
   })
 
   it('onChange', () => {
     const spy = jest.fn()
-    render(
-      <JestMockProvider>
-        <SearchInput name="name" value="value" onChange={spy} />
-      </JestMockProvider>,
-    )
+    render(<SearchInput name="name" value="value" onChange={spy} />)
     fireEvent.change(screen.getByRole('searchbox'), {
       target: {
         value: 'newvalue',
@@ -51,31 +39,19 @@ describe('SearchInput', () => {
 
   it('clear', () => {
     const spy = jest.fn()
-    render(
-      <JestMockProvider>
-        <SearchInput name="name" value="value" onChange={spy} />
-      </JestMockProvider>,
-    )
+    render(<SearchInput name="name" value="value" onChange={spy} />)
     expect(screen.getByRole('button')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button'))
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
   it('error', () => {
-    render(
-      <JestMockProvider>
-        <SearchInput name="name" error="error" onChange={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<SearchInput name="name" error="error" onChange={() => {}} />)
     expect(screen.getByTestId('InputWrap')).toHaveClass('error')
   })
 
   it('disabled', () => {
-    render(
-      <JestMockProvider>
-        <SearchInput name="name" value="" disabled onChange={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<SearchInput name="name" value="" disabled onChange={() => {}} />)
     expect(screen.getByRole('searchbox')).toHaveAttribute('disabled', '')
   })
 })

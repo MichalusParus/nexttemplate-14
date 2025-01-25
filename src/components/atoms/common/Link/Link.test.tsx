@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { createRef } from 'react'
 
+import { render, screen } from '../../../../../.jest/customRender'
 import { Link } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -68,6 +69,24 @@ describe('Link', () => {
       'Icon-only links should have an aria-label for accessibility.',
     )
     consoleWarnSpy.mockRestore()
+  })
+
+  it('ref', () => {
+    const ref = createRef<HTMLAnchorElement>()
+    render(
+      <Link ref={ref} href="/#">
+        title
+      </Link>,
+    )
+
+    expect(ref.current).not.toBeNull()
+    expect(ref.current?.focus).toBeDefined()
+
+    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
+    ref.current?.focus()
+
+    expect(focusMock).toHaveBeenCalled()
+    focusMock.mockRestore()
   })
 
   it('axe', async () => {

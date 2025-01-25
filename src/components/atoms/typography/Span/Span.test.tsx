@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 
+import { render, screen } from '../../../../../.jest/customRender'
 import { Span } from '.'
 
 expect.extend(toHaveNoViolations)

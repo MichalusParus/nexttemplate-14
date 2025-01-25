@@ -10,7 +10,7 @@ export type ScrollShadowProps = Omit<HTMLAttributes<HTMLDivElement>, 'className'
   className?: string
   /** for setting height or maxHeight in tailwind classes */
   height?: string
-  /** for setting shadow color in tailwind class "from-primary-700" */
+  /** for setting shadow from color in tailwind class "from-primary-700" */
   color?: string
   /** stable gutter for Y scroll */
   gutter?: boolean
@@ -18,7 +18,7 @@ export type ScrollShadowProps = Omit<HTMLAttributes<HTMLDivElement>, 'className'
   disableHorizontal?: boolean
 }
 
-/** Content wrapper for scroll shadow effect. Parent must have from-"bgColor" tailwind class set. Default HTMLAttributes props supported. USE CLIENT  */
+/** Content wrapper for scroll shadow effect. Parent must have from-"bgColor" or be specified in color prop. Default HTMLAttributes props supported. USE CLIENT  */
 export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
   (
     {
@@ -50,12 +50,7 @@ export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
           setScroll(prev => [...prev, 'horizontal'])
         }
       }
-    }, [
-      scrollShadowRef,
-      scrollShadowRef?.current?.clientHeight,
-      scrollShadowRef?.current?.clientWidth,
-      disableHorizontal,
-    ])
+    }, [disableHorizontal])
 
     return (
       <div
@@ -76,14 +71,18 @@ export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
             )}
             style={{ scrollbarGutter: gutter ? 'stable' : 'initial' }}
             ref={scrollShadowRef}
-            tabIndex={-1}
+            data-testid="ContentWrap"
           >
             {children}
           </div>
         </div>
         {isVertical && (
           <>
-            <div className={cn('TopShadow', 'rounded-t-md', shadowPosition.top, shadowClass)} />
+            <div
+              className={cn('TopShadow', 'rounded-t-md', shadowPosition.top, shadowClass)}
+              aria-hidden
+              data-testid="TopShadow"
+            />
             <div
               className={cn(
                 'BottomShadow',
@@ -92,12 +91,18 @@ export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
                 shadowClass,
                 isHorizontal ? 'bottom-2' : 'bottom-0',
               )}
+              aria-hidden
+              data-testid="BottomShadow"
             />
           </>
         )}
         {isHorizontal && (
           <>
-            <div className={cn('LeftShadow', 'rounded-l-md', shadowPosition.left, shadowClass)} />
+            <div
+              className={cn('LeftShadow', 'rounded-l-md', shadowPosition.left, shadowClass)}
+              aria-hidden
+              data-testid="LeftShadow"
+            />
             <div
               className={cn(
                 'RightShadow',
@@ -106,6 +111,8 @@ export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
                 shadowClass,
                 isVertical ? 'right-[0.437rem]' : '-right-[0.063rem]',
               )}
+              aria-hidden
+              data-testid="RightShadow"
             />
           </>
         )}

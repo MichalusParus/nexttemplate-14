@@ -74,7 +74,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     )
 
     if (iconOnly && !rest['aria-label'] && !rest['aria-labelledby']) {
-      console.log('test', startIcon)
       console.warn('Icon-only buttons should have an aria-label for accessibility.')
     }
 

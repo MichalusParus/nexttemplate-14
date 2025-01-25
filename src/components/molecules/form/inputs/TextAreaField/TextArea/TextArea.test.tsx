@@ -1,21 +1,17 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../../.jest/customRender'
 import { TextArea } from '.'
 
 describe('TextArea', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <TextArea
-          className="className"
-          name="textAreaTest"
-          placeholder="placeholder"
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
+      <TextArea
+        className="className"
+        name="textAreaTest"
+        placeholder="placeholder"
+        onChange={() => {}}
+      />,
     )
     expect(screen.getByTestId('TextAreaWrap')).toBeInTheDocument()
     expect(screen.getByTestId('TextAreaWrap')).toHaveClass('className')
@@ -25,21 +21,13 @@ describe('TextArea', () => {
   })
 
   it('value', () => {
-    render(
-      <JestMockProvider>
-        <TextArea name="name" value="value" onChange={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<TextArea name="name" value="value" onChange={() => {}} />)
     expect(screen.getByRole('textbox')).toHaveValue('value')
   })
 
   it('onChange', () => {
     const spy = jest.fn()
-    render(
-      <JestMockProvider>
-        <TextArea name="name" value="value" onChange={spy} />
-      </JestMockProvider>,
-    )
+    render(<TextArea name="name" value="value" onChange={spy} />)
     fireEvent.change(screen.getByRole('textbox'), {
       target: {
         value: 'newvalue',
@@ -49,20 +37,12 @@ describe('TextArea', () => {
   })
 
   it('error', () => {
-    render(
-      <JestMockProvider>
-        <TextArea name="name" error="error" onChange={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<TextArea name="name" error="error" onChange={() => {}} />)
     expect(screen.getByTestId('TextAreaWrap')).toHaveClass('error')
   })
 
   it('disabled', () => {
-    render(
-      <JestMockProvider>
-        <TextArea name="name" value="" disabled onChange={() => {}} />
-      </JestMockProvider>,
-    )
+    render(<TextArea name="name" value="" disabled onChange={() => {}} />)
     expect(screen.getByRole('textbox')).toHaveAttribute('disabled', '')
   })
 })

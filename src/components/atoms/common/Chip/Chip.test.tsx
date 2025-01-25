@@ -1,20 +1,16 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { createRef } from 'react'
 
-import { JestMockProvider } from '../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../.jest/customRender'
 import { Chip } from '.'
 
 expect.extend(toHaveNoViolations)
 
 describe('Chip', () => {
   it('default', () => {
-    render(
-      <JestMockProvider>
-        <Chip className="className">Chip</Chip>
-      </JestMockProvider>,
-    )
+    render(<Chip className="className">Chip</Chip>)
     const chipTestId = screen.getByTestId('Chip')
 
     expect(chipTestId).toBeInTheDocument()
@@ -23,11 +19,7 @@ describe('Chip', () => {
   })
 
   it('title', () => {
-    render(
-      <JestMockProvider>
-        <Chip title="Chip title">Chip info</Chip>
-      </JestMockProvider>,
-    )
+    render(<Chip title="Chip title">Chip info</Chip>)
     const titleText = screen.getByText('Chip title')
     const infoText = screen.getByText('Chip info')
 
@@ -36,11 +28,7 @@ describe('Chip', () => {
   })
 
   it('startIcon', () => {
-    render(
-      <JestMockProvider>
-        <Chip startIcon={<svg role="img" />}>Chip</Chip>
-      </JestMockProvider>,
-    )
+    render(<Chip startIcon={<svg role="img" />}>Chip</Chip>)
     const imgRole = screen.getByRole('img')
 
     expect(imgRole).toBeInTheDocument()
@@ -48,11 +36,7 @@ describe('Chip', () => {
 
   it('buttonIcon', () => {
     const spy = jest.fn()
-    render(
-      <JestMockProvider>
-        <Chip onClick={spy} buttonProps={{ startIcon: <svg role="img" /> }} />
-      </JestMockProvider>,
-    )
+    render(<Chip onClick={spy} buttonProps={{ startIcon: <svg role="img" /> }} />)
     const buttonRole = screen.getByRole('button')
     const imgRole = screen.getByRole('img')
 
@@ -63,23 +47,31 @@ describe('Chip', () => {
 
   it('onClick', () => {
     const spy = jest.fn()
-    render(
-      <JestMockProvider>
-        <Chip onClick={spy} />
-      </JestMockProvider>,
-    )
+    render(<Chip onClick={spy} />)
     const buttonRole = screen.getByRole('button')
 
+    buttonRole.focus()
+    expect(document.activeElement).toBe(buttonRole)
     fireEvent.click(buttonRole)
     expect(spy).toHaveBeenCalled()
   })
 
+  it('ref', () => {
+    const ref = createRef<HTMLDivElement>()
+    render(<Chip ref={ref}>Chip</Chip>)
+
+    expect(ref.current).not.toBeNull()
+    expect(ref.current?.focus).toBeDefined()
+
+    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
+    ref.current?.focus()
+
+    expect(focusMock).toHaveBeenCalled()
+    focusMock.mockRestore()
+  })
+
   it('axe', async () => {
-    const { container } = render(
-      <JestMockProvider>
-        <Chip>Chip</Chip>
-      </JestMockProvider>,
-    )
+    const { container } = render(<Chip>Chip</Chip>)
 
     const results = await axe(container)
     expect(results).toHaveNoViolations()

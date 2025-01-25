@@ -1,18 +1,15 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { JestFormProvider, JestMockProvider } from '../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
+import { JestFormProvider } from '../../../../../../.storybook/helpers'
 import { RangeDatePickerField } from '.'
 
 describe('RangeDatePicker', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['datePickerTest']}>
-          <RangeDatePickerField className="className" name="datePickerTest" label="label" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['datePickerTest']}>
+        <RangeDatePickerField className="className" name="datePickerTest" label="label" />
+      </JestFormProvider>,
     )
     fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByTestId('Calendar')).toBeInTheDocument()
@@ -25,12 +22,10 @@ describe('RangeDatePicker', () => {
   it('onSubmit', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['datePickerTest']} onSubmit={spy}>
-          <RangeDatePickerField className="className" name="datePickerTest" label="label" />
-          <button type="submit" data-testid="submit" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['datePickerTest']} onSubmit={spy}>
+        <RangeDatePickerField className="className" name="datePickerTest" label="label" />
+        <button type="submit" data-testid="submit" />
+      </JestFormProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByTestId('submit'))

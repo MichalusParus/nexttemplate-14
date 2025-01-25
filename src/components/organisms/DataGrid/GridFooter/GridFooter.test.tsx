@@ -1,24 +1,19 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../.storybook/helpers'
+import { render, screen } from '../../../../../.jest/customRender'
 import { GridFooter } from '.'
 
 describe('GridFooter', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <GridFooter
-          filteredData={[]}
-          selectedRowsPerPage={20}
-          pages={[1, 2, 3]}
-          selectedPage={1}
-          setSelectedPage={() => {}}
-          setSelectedRowsPerPage={() => {}}
-        />
-        ,
-      </JestMockProvider>,
+      <GridFooter
+        filteredData={[]}
+        selectedRowsPerPage={20}
+        pages={[1, 2, 3]}
+        selectedPage={1}
+        setSelectedPage={() => {}}
+        setSelectedRowsPerPage={() => {}}
+      />,
     )
     expect(screen.getByRole('rowgroup')).toBeInTheDocument()
     expect(screen.getByRole('rowgroup')).toHaveClass('GridFooter')

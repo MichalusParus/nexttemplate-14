@@ -1,18 +1,14 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../.storybook/helpers'
+import { render, screen } from '../../../../../.jest/customRender'
 import { Modal } from '.'
 
 describe('Modal', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <Modal className="className" name="test" isOpen>
-          Children
-        </Modal>
-      </JestMockProvider>,
+      <Modal className="className" name="test" isOpen>
+        Children
+      </Modal>,
     )
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(screen.getByRole('dialog')).toHaveClass('className')
@@ -22,26 +18,22 @@ describe('Modal', () => {
   })
   it('title', () => {
     render(
-      <JestMockProvider>
-        <Modal className="className" name="test" title="Title" isOpen>
-          Children
-        </Modal>
-      </JestMockProvider>,
+      <Modal className="className" name="test" title="Title" isOpen>
+        Children
+      </Modal>,
     )
     expect(screen.getByRole('heading')).toHaveTextContent('Title')
   })
   it('actions', () => {
     render(
-      <JestMockProvider>
-        <Modal
-          className="className"
-          name="test"
-          modalActions={<button data-testid="button">Action</button>}
-          isOpen
-        >
-          Children
-        </Modal>
-      </JestMockProvider>,
+      <Modal
+        className="className"
+        name="test"
+        modalActions={<button data-testid="button">Action</button>}
+        isOpen
+      >
+        Children
+      </Modal>,
     )
     expect(screen.getByTestId('button')).toHaveTextContent('Action')
   })

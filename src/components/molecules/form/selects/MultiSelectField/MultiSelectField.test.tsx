@@ -1,27 +1,20 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import {
-  getOptions,
-  JestFormProvider,
-  JestMockProvider,
-} from '../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
+import { getOptions, JestFormProvider } from '../../../../../../.storybook/helpers'
 import { MultiSelectField } from '.'
 
 describe('MultiSelectField', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['multiSelectTest']} values={[[]]}>
-          <MultiSelectField
-            className="className"
-            name="multiSelectTest"
-            label="label"
-            options={getOptions('multiSelectTest', 20)}
-          />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['multiSelectTest']} values={[[]]}>
+        <MultiSelectField
+          className="className"
+          name="multiSelectTest"
+          label="label"
+          options={getOptions('multiSelectTest', 20)}
+        />
+      </JestFormProvider>,
     )
     fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeInTheDocument()
@@ -35,17 +28,15 @@ describe('MultiSelectField', () => {
   it('onSubmit', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['multiSelectTest']} values={[[]]} onSubmit={spy}>
-          <MultiSelectField
-            className="className"
-            name="multiSelectTest"
-            label="label"
-            options={getOptions('multiSelectTest', 20)}
-          />
-          <button type="submit" data-testid="submit" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['multiSelectTest']} values={[[]]} onSubmit={spy}>
+        <MultiSelectField
+          className="className"
+          name="multiSelectTest"
+          label="label"
+          options={getOptions('multiSelectTest', 20)}
+        />
+        <button type="submit" data-testid="submit" />
+      </JestFormProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByTestId('submit'))
@@ -54,18 +45,16 @@ describe('MultiSelectField', () => {
 
   it('description', () => {
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['multiSelectTest']} values={[[]]}>
-          <MultiSelectField
-            className="className"
-            name="multiSelectTest"
-            label="label"
-            options={getOptions('multiSelectTest', 20)}
-            labelProps={{ description: 'description' }}
-          />
-          <button type="submit" data-testid="submit" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['multiSelectTest']} values={[[]]}>
+        <MultiSelectField
+          className="className"
+          name="multiSelectTest"
+          label="label"
+          options={getOptions('multiSelectTest', 20)}
+          labelProps={{ description: 'description' }}
+        />
+        <button type="submit" data-testid="submit" />
+      </JestFormProvider>,
     )
     expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')

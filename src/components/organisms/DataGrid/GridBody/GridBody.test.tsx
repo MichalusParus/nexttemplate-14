@@ -1,22 +1,19 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { gridColsDef, gridData, JestMockProvider } from '../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../.jest/customRender'
+import { gridColsDef, gridData } from '../../../../../.storybook/helpers'
 import { GridBody } from '.'
 
 describe('GridBody', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <GridBody
-          columns={gridColsDef}
-          pagedData={gridData.slice(0, 10)}
-          selectedRows={[]}
-          multiselect={false}
-          handleRowClick={() => {}}
-        />
-      </JestMockProvider>,
+      <GridBody
+        columns={gridColsDef}
+        pagedData={gridData.slice(0, 10)}
+        selectedRows={[]}
+        multiselect={false}
+        handleRowClick={() => {}}
+      />,
     )
     expect(screen.getByRole('rowgroup')).toBeInTheDocument()
     expect(screen.getByRole('rowgroup')).toHaveClass('GridBody')
@@ -26,17 +23,15 @@ describe('GridBody', () => {
 
   it('loading', () => {
     render(
-      <JestMockProvider>
-        <GridBody
-          columns={gridColsDef}
-          pagedData={gridData.slice(0, 20)}
-          selectedRows={[]}
-          multiselect={false}
-          rowsPerPage={5}
-          isLoading
-          handleRowClick={() => {}}
-        />
-      </JestMockProvider>,
+      <GridBody
+        columns={gridColsDef}
+        pagedData={gridData.slice(0, 20)}
+        selectedRows={[]}
+        multiselect={false}
+        rowsPerPage={5}
+        isLoading
+        handleRowClick={() => {}}
+      />,
     )
     expect(screen.getAllByRole('status')).toHaveLength(5)
   })
@@ -44,15 +39,13 @@ describe('GridBody', () => {
   it('handleRowClick', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <GridBody
-          columns={gridColsDef}
-          pagedData={gridData.slice(0, 20)}
-          selectedRows={[]}
-          multiselect={false}
-          handleRowClick={spy}
-        />
-      </JestMockProvider>,
+      <GridBody
+        columns={gridColsDef}
+        pagedData={gridData.slice(0, 20)}
+        selectedRows={[]}
+        multiselect={false}
+        handleRowClick={spy}
+      />,
     )
     fireEvent.click(screen.getAllByRole('button')[0])
     expect(spy).toHaveBeenCalled()

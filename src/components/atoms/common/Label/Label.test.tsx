@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { createRef } from 'react'
 
+import { render, screen } from '../../../../../.jest/customRender'
 import { Label } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -79,6 +80,20 @@ describe('Label', () => {
     expect(alertRole).toBeInTheDocument()
     expect(alertRole).toHaveTextContent('error')
     expect(alertRole).toHaveClass('hidden')
+  })
+
+  it('ref', () => {
+    const ref = createRef<HTMLLabelElement>()
+    render(<Label ref={ref} name="labelTest" label="label" />)
+
+    expect(ref.current).not.toBeNull()
+    expect(ref.current?.focus).toBeDefined()
+
+    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
+    ref.current?.focus()
+
+    expect(focusMock).toHaveBeenCalled()
+    focusMock.mockRestore()
   })
 
   it('axe', async () => {

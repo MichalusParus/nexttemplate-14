@@ -1,23 +1,20 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { getOptions, JestMockProvider } from '../../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../../.jest/customRender'
+import { getOptions } from '../../../../../../../.storybook/helpers'
 import { Autocomplete } from '.'
 
 describe('Autocomplete', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <Autocomplete
-          className="className"
-          name="autocompleteTest"
-          value="value"
-          options={getOptions('autocompleteTest', 20)}
-          onInputChange={() => {}}
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
+      <Autocomplete
+        className="className"
+        name="autocompleteTest"
+        value="value"
+        options={getOptions('autocompleteTest', 20)}
+        onInputChange={() => {}}
+        onChange={() => {}}
+      />,
     )
     fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('listbox')).toBeInTheDocument()
@@ -28,16 +25,14 @@ describe('Autocomplete', () => {
   it('onInputChange', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <Autocomplete
-          className="className"
-          name="autocompleteTest"
-          value="value1"
-          options={getOptions('autocompleteTest', 20)}
-          onInputChange={spy}
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
+      <Autocomplete
+        className="className"
+        name="autocompleteTest"
+        value="value1"
+        options={getOptions('autocompleteTest', 20)}
+        onInputChange={spy}
+        onChange={() => {}}
+      />,
     )
     fireEvent.change(screen.getByRole('combobox'), {
       target: {
@@ -50,16 +45,14 @@ describe('Autocomplete', () => {
   it('onChange', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <Autocomplete
-          className="className"
-          name="autocompleteTest"
-          value="value1"
-          options={getOptions('autocompleteTest', 20)}
-          onInputChange={spy}
-          onChange={spy}
-        />
-      </JestMockProvider>,
+      <Autocomplete
+        className="className"
+        name="autocompleteTest"
+        value="value1"
+        options={getOptions('autocompleteTest', 20)}
+        onInputChange={spy}
+        onChange={spy}
+      />,
     )
     fireEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getAllByRole('option')[0])
@@ -68,17 +61,15 @@ describe('Autocomplete', () => {
 
   it('disabled', () => {
     render(
-      <JestMockProvider>
-        <Autocomplete
-          className="className"
-          name="autocompleteTest"
-          value="value1"
-          disabled
-          options={getOptions('autocompleteTest', 20)}
-          onInputChange={() => {}}
-          onChange={() => {}}
-        />
-      </JestMockProvider>,
+      <Autocomplete
+        className="className"
+        name="autocompleteTest"
+        value="value1"
+        disabled
+        options={getOptions('autocompleteTest', 20)}
+        onInputChange={() => {}}
+        onChange={() => {}}
+      />,
     )
     expect(screen.getByRole('combobox')).toHaveAttribute('disabled', '')
   })

@@ -1,18 +1,15 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { JestFormProvider, JestMockProvider } from '../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
+import { JestFormProvider } from '../../../../../../.storybook/helpers'
 import { MultiDatePickerField } from '.'
 
 describe('MultiDatePicker', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['datePickerTest']} values={[[]]}>
-          <MultiDatePickerField className="className" name="datePickerTest" label="label" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['datePickerTest']} values={[[]]}>
+        <MultiDatePickerField className="className" name="datePickerTest" label="label" />
+      </JestFormProvider>,
     )
     fireEvent.click(screen.getByRole('combobox'))
     expect(screen.getByTestId('Calendar')).toBeInTheDocument()
@@ -26,12 +23,10 @@ describe('MultiDatePicker', () => {
   it('onSubmit', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['datePickerTest']} values={[[]]} onSubmit={spy}>
-          <MultiDatePickerField className="className" name="datePickerTest" label="label" />
-          <button type="submit" data-testid="submit" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['datePickerTest']} values={[[]]} onSubmit={spy}>
+        <MultiDatePickerField className="className" name="datePickerTest" label="label" />
+        <button type="submit" data-testid="submit" />
+      </JestFormProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByTestId('submit'))
@@ -40,17 +35,15 @@ describe('MultiDatePicker', () => {
 
   it('description', () => {
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['datePickerTest']} values={[[]]}>
-          <MultiDatePickerField
-            className="className"
-            name="datePickerTest"
-            label="label"
-            labelProps={{ description: 'description' }}
-          />
-          <button type="submit" data-testid="submit" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['datePickerTest']} values={[[]]}>
+        <MultiDatePickerField
+          className="className"
+          name="datePickerTest"
+          label="label"
+          labelProps={{ description: 'description' }}
+        />
+        <button type="submit" data-testid="submit" />
+      </JestFormProvider>,
     )
     expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')

@@ -1,20 +1,16 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { createRef } from 'react'
 
-import { JestMockProvider } from '../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../.jest/customRender'
 import { Overlay } from '.'
 
 expect.extend(toHaveNoViolations)
 
 describe('Overlay', () => {
   it('default', () => {
-    render(
-      <JestMockProvider>
-        <Overlay isOpen={false} onClose={() => {}} className="className" />
-      </JestMockProvider>,
-    )
+    render(<Overlay isOpen={false} onClose={() => {}} className="className" />)
     const overlayTestId = screen.getByTestId('Overlay')
 
     expect(overlayTestId).toBeInTheDocument()
@@ -24,23 +20,29 @@ describe('Overlay', () => {
 
   it('onClose', () => {
     const spy = jest.fn()
-    render(
-      <JestMockProvider>
-        <Overlay isOpen={false} onClose={spy} />
-      </JestMockProvider>,
-    )
+    render(<Overlay isOpen={false} onClose={spy} />)
     const overlayTestId = screen.getByTestId('Overlay')
 
     fireEvent.click(overlayTestId)
     expect(spy).toHaveBeenCalled()
   })
 
+  it('ref', () => {
+    const ref = createRef<HTMLButtonElement>()
+    render(<Overlay isOpen={false} onClose={() => {}} ref={ref} />)
+
+    expect(ref.current).not.toBeNull()
+    expect(ref.current?.focus).toBeDefined()
+
+    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
+    ref.current?.focus()
+
+    expect(focusMock).toHaveBeenCalled()
+    focusMock.mockRestore()
+  })
+
   it('axe', async () => {
-    const { container } = render(
-      <JestMockProvider>
-        <Overlay isOpen={false} onClose={() => {}} />
-      </JestMockProvider>,
-    )
+    const { container } = render(<Overlay isOpen={false} onClose={() => {}} />)
 
     const results = await axe(container)
     expect(results).toHaveNoViolations()

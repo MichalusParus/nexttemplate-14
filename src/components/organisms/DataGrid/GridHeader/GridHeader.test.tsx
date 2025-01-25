@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { gridColsDef, JestMockProvider } from '../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../.jest/customRender'
+import { gridColsDef } from '../../../../../.storybook/helpers'
 import { GridHeader } from '.'
 
 jest.mock('next/navigation', () => {
@@ -17,11 +16,7 @@ jest.mock('next/navigation', () => {
 
 describe('GridHeader', () => {
   it('default', () => {
-    render(
-      <JestMockProvider>
-        <GridHeader className="className" name="ColumnHeadTest" columns={gridColsDef} />,
-      </JestMockProvider>,
-    )
+    render(<GridHeader className="className" name="ColumnHeadTest" columns={gridColsDef} />)
     expect(screen.getByRole('rowgroup')).toBeInTheDocument()
     expect(screen.getByRole('rowgroup')).toHaveClass('className')
     expect(screen.getByRole('rowgroup')).toHaveTextContent(
@@ -32,15 +27,13 @@ describe('GridHeader', () => {
   it('interactive', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <GridHeader
-          className="className"
-          name="ColumnHeadTest"
-          columns={gridColsDef}
-          handleSorting={spy}
-          setFilter={spy}
-        />
-      </JestMockProvider>,
+      <GridHeader
+        className="className"
+        name="ColumnHeadTest"
+        columns={gridColsDef}
+        handleSorting={spy}
+        setFilter={spy}
+      />,
     )
     expect(screen.getByRole('rowgroup')).toBeInTheDocument()
     expect(screen.getAllByTestId('MenuWrap')).toHaveLength(4)
@@ -54,16 +47,14 @@ describe('GridHeader', () => {
   it('handleAll', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <GridHeader
-          className="className"
-          name="ColumnHeadTest"
-          columns={gridColsDef}
-          handleSorting={() => {}}
-          setFilter={() => {}}
-          handleAll={spy}
-        />
-      </JestMockProvider>,
+      <GridHeader
+        className="className"
+        name="ColumnHeadTest"
+        columns={gridColsDef}
+        handleSorting={() => {}}
+        setFilter={() => {}}
+        handleAll={spy}
+      />,
     )
     expect(screen.getAllByRole('columnheader')).toHaveLength(5)
     fireEvent.click(screen.getAllByRole('columnheader')[0])

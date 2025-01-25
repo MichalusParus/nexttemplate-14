@@ -1,27 +1,17 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../.storybook/helpers'
+import { render, screen } from '../../../../../.jest/customRender'
 import { List } from '.'
 
 describe('List', () => {
   it('default', () => {
-    render(
-      <JestMockProvider>
-        <List className="className" />
-      </JestMockProvider>,
-    )
+    render(<List className="className" />)
     expect(screen.getByRole('list')).toBeInTheDocument()
     expect(screen.getByTestId('ListWrap')).toHaveClass('className')
   })
 
   it('content', () => {
-    render(
-      <JestMockProvider>
-        <List className="className" content={['1', '2', '3']} />
-      </JestMockProvider>,
-    )
+    render(<List className="className" content={['1', '2', '3']} />)
     expect(screen.getAllByRole('listitem')).toHaveLength(3)
     expect(screen.getAllByRole('listitem')[0]).toHaveTextContent('1')
     expect(screen.getAllByRole('listitem')[1]).toHaveTextContent('2')
@@ -29,27 +19,20 @@ describe('List', () => {
   })
 
   it('title', () => {
-    render(
-      <JestMockProvider>
-        <List className="className" title="title" />
-      </JestMockProvider>,
-    )
+    render(<List className="className" title="title" />)
     expect(screen.getAllByRole('heading')).toHaveLength(1)
     expect(screen.getByRole('heading')).toHaveTextContent('title')
   })
 
   it('isloading', () => {
     render(
-      <JestMockProvider>
-        <List
-          className="className"
-          title="title"
-          titleProps={{ variant: 'h3', isLoading: true }}
-          isLoading={true}
-          expectedLines={6}
-        />
-        ,
-      </JestMockProvider>,
+      <List
+        className="className"
+        title="title"
+        titleProps={{ variant: 'h3', isLoading: true }}
+        isLoading={true}
+        expectedLines={6}
+      />,
     )
     expect(screen.getAllByRole('status')).toHaveLength(7)
     expect(screen.getByTestId('ListWrap')).toHaveTextContent('')

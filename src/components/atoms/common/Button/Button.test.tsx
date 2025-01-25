@@ -1,20 +1,16 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { createRef } from 'react'
 
-import { JestMockProvider } from '../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../.jest/customRender'
 import { Button } from '.'
 
 expect.extend(toHaveNoViolations)
 
 describe('Button', () => {
   it('default', () => {
-    render(
-      <JestMockProvider>
-        <Button className="className">button</Button>
-      </JestMockProvider>,
-    )
+    render(<Button className="className">button</Button>)
     const buttonRole = screen.getByRole('button')
 
     expect(buttonRole).toBeInTheDocument()
@@ -26,11 +22,7 @@ describe('Button', () => {
   })
 
   it('iconOnly', () => {
-    render(
-      <JestMockProvider>
-        <Button startIcon={<svg role="img" />} aria-label="label" />
-      </JestMockProvider>,
-    )
+    render(<Button startIcon={<svg role="img" />} aria-label="label" />)
     const buttonRole = screen.getByRole('button')
     const imgRole = screen.getByRole('img')
 
@@ -40,11 +32,7 @@ describe('Button', () => {
   })
 
   it('startIcon', () => {
-    render(
-      <JestMockProvider>
-        <Button startIcon={<svg role="img" />}>button</Button>
-      </JestMockProvider>,
-    )
+    render(<Button startIcon={<svg role="img" />}>button</Button>)
     const buttonRole = screen.getByRole('button')
     const imgRole = screen.getByRole('img')
 
@@ -53,11 +41,7 @@ describe('Button', () => {
   })
 
   it('endIcon', () => {
-    render(
-      <JestMockProvider>
-        <Button endIcon={<svg role="img" />}>button</Button>
-      </JestMockProvider>,
-    )
+    render(<Button endIcon={<svg role="img" />}>button</Button>)
     const buttonRole = screen.getByRole('button')
     const imgRole = screen.getByRole('img')
 
@@ -68,11 +52,9 @@ describe('Button', () => {
   it('isLoading', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <Button isLoading={true} onClick={spy}>
-          button
-        </Button>
-      </JestMockProvider>,
+      <Button isLoading={true} onClick={spy}>
+        button
+      </Button>,
     )
     const buttonRole = screen.getByRole('button')
     const statusRole = screen.getByRole('status')
@@ -89,11 +71,7 @@ describe('Button', () => {
 
   it('onClick', () => {
     const spy = jest.fn()
-    render(
-      <JestMockProvider>
-        <Button onClick={spy} />
-      </JestMockProvider>,
-    )
+    render(<Button onClick={spy} />)
     const buttonRole = screen.getByRole('button')
 
     fireEvent.click(buttonRole)
@@ -101,11 +79,7 @@ describe('Button', () => {
   })
 
   it('submit', () => {
-    render(
-      <JestMockProvider>
-        <Button type="submit" />
-      </JestMockProvider>,
-    )
+    render(<Button type="submit" />)
     const buttonRole = screen.getByRole('button')
 
     expect(buttonRole).toHaveAttribute('type', 'submit')
@@ -113,11 +87,7 @@ describe('Button', () => {
 
   it('disabled', () => {
     const spy = jest.fn()
-    render(
-      <JestMockProvider>
-        <Button onClick={spy} disabled />
-      </JestMockProvider>,
-    )
+    render(<Button onClick={spy} disabled />)
     const buttonRole = screen.getByRole('button')
 
     expect(buttonRole).toBeDisabled()
@@ -130,11 +100,7 @@ describe('Button', () => {
 
   it('no aria-label warning', () => {
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
-    render(
-      <JestMockProvider>
-        <Button startIcon={<svg role="img" />} />
-      </JestMockProvider>,
-    )
+    render(<Button startIcon={<svg role="img" />} />)
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       'Icon-only buttons should have an aria-label for accessibility.',
@@ -142,12 +108,22 @@ describe('Button', () => {
     consoleWarnSpy.mockRestore()
   })
 
+  it('ref', () => {
+    const ref = createRef<HTMLButtonElement>()
+    render(<Button ref={ref}>button</Button>)
+
+    expect(ref.current).not.toBeNull()
+    expect(ref.current?.focus).toBeDefined()
+
+    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
+    ref.current?.focus()
+
+    expect(focusMock).toHaveBeenCalled()
+    focusMock.mockRestore()
+  })
+
   it('axe', async () => {
-    const { container } = render(
-      <JestMockProvider>
-        <Button>button</Button>
-      </JestMockProvider>,
-    )
+    const { container } = render(<Button>button</Button>)
 
     const results = await axe(container)
     expect(results).toHaveNoViolations()

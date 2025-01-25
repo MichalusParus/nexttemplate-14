@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { createRef } from 'react'
 
+import { render, screen } from '../../../../../.jest/customRender'
 import { Divider } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -43,6 +44,20 @@ describe('Divider', () => {
 
     expect(labelText).toBeInTheDocument()
     expect(dividerTestID).toHaveLength(2)
+  })
+
+  it('ref', () => {
+    const ref = createRef<HTMLDivElement>()
+    render(<Divider ref={ref} className="className" />)
+
+    expect(ref.current).not.toBeNull()
+    expect(ref.current?.focus).toBeDefined()
+
+    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
+    ref.current?.focus()
+
+    expect(focusMock).toHaveBeenCalled()
+    focusMock.mockRestore()
   })
 
   it('axe', async () => {

@@ -1,17 +1,11 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../.storybook/helpers'
+import { render, screen } from '../../../../../.jest/customRender'
 import { InlineLoader } from '.'
 
 describe('InlineLoader', () => {
   it('default', () => {
-    render(
-      <JestMockProvider>
-        <InlineLoader className="className" />
-      </JestMockProvider>,
-    )
+    render(<InlineLoader className="className" />)
     expect(screen.getByRole('status')).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveClass('className')
   })

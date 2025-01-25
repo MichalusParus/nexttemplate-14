@@ -1,18 +1,15 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { JestFormProvider, JestMockProvider } from '../../../../../../.storybook/helpers'
+import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
+import { JestFormProvider } from '../../../../../../.storybook/helpers'
 import { TextAreaField } from '.'
 
 describe('TextAreaField', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['textAreaTest']}>
-          <TextAreaField className="className" name="textAreaTest" label="label" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['textAreaTest']}>
+        <TextAreaField className="className" name="textAreaTest" label="label" />
+      </JestFormProvider>,
     )
     fireEvent.change(screen.getByRole('textbox'), {
       target: {
@@ -32,12 +29,10 @@ describe('TextAreaField', () => {
   it('onSubmit', () => {
     const spy = jest.fn()
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['textAreaTest']} onSubmit={spy}>
-          <TextAreaField className="className" name="textAreaTest" label="label" />
-          <button type="submit" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['textAreaTest']} onSubmit={spy}>
+        <TextAreaField className="className" name="textAreaTest" label="label" />
+        <button type="submit" />
+      </JestFormProvider>,
     )
     screen.getByTestId('Form').onsubmit = spy
     fireEvent.click(screen.getByRole('button'))
@@ -46,17 +41,15 @@ describe('TextAreaField', () => {
 
   it('description', () => {
     render(
-      <JestMockProvider>
-        <JestFormProvider fields={['textAreaTest']}>
-          <TextAreaField
-            className="className"
-            name="textAreaTest"
-            label="label"
-            labelProps={{ description: 'description' }}
-          />
-          <button type="submit" />
-        </JestFormProvider>
-      </JestMockProvider>,
+      <JestFormProvider fields={['textAreaTest']}>
+        <TextAreaField
+          className="className"
+          name="textAreaTest"
+          label="label"
+          labelProps={{ description: 'description' }}
+        />
+        <button type="submit" />
+      </JestFormProvider>,
     )
     expect(screen.getByTestId('Alert')).toBeInTheDocument()
     expect(screen.getByTestId('Alert')).toHaveTextContent('description')

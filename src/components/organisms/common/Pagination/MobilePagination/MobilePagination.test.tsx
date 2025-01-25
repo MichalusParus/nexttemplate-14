@@ -1,21 +1,17 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../../.storybook/helpers'
+import { render, screen } from '../../../../../../.jest/customRender'
 import { MobilePagination } from '.'
 
 describe('MobilePagination', () => {
   it('default', () => {
     render(
-      <JestMockProvider>
-        <MobilePagination
-          count={3}
-          selectedPage={1}
-          setSelectedPage={() => {}}
-          className="className"
-        />
-      </JestMockProvider>,
+      <MobilePagination
+        count={3}
+        selectedPage={1}
+        setSelectedPage={() => {}}
+        className="className"
+      />,
     )
     expect(screen.getByTestId('MobilePagination')).toBeInTheDocument()
     expect(screen.getByTestId('MobilePagination')).toHaveClass('className')
@@ -25,14 +21,12 @@ describe('MobilePagination', () => {
 
   it('selectedPage', () => {
     render(
-      <JestMockProvider>
-        <MobilePagination
-          count={3}
-          selectedPage={3}
-          setSelectedPage={() => {}}
-          className="className"
-        />
-      </JestMockProvider>,
+      <MobilePagination
+        count={3}
+        selectedPage={3}
+        setSelectedPage={() => {}}
+        className="className"
+      />,
     )
     expect(screen.getByTestId('SelectedOutOff')).toHaveTextContent('3 / 3')
   })

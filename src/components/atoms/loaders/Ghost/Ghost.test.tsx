@@ -1,17 +1,11 @@
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@testing-library/react'
-
-import { JestMockProvider } from '../../../../../.storybook/helpers'
+import { render, screen } from '../../../../../.jest/customRender'
 import { Ghost } from '.'
 
 describe('Ghost', () => {
   it('default', () => {
-    render(
-      <JestMockProvider>
-        <Ghost className="className" />
-      </JestMockProvider>,
-    )
+    render(<Ghost className="className" />)
     expect(screen.getByRole('status')).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveClass('className')
   })

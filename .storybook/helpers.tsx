@@ -7,7 +7,6 @@ import {
   MenuItemRadioGroup,
 } from '@/components/molecules/popovers/Menu/items'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { NextIntlClientProvider } from 'next-intl'
 import { PropsWithChildren, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
@@ -356,15 +355,6 @@ export const breadcrumbOptions = [
   { label: 'Favourite', href: '/favourite' },
   { label: 'Bffs', href: '/bffs' },
 ]
-
-export const JestMockProvider = ({ children }: PropsWithChildren) => {
-  const messages = require(`../messages/en.json`)
-  return (
-    <NextIntlClientProvider messages={messages} locale={'en'}>
-      {children}
-    </NextIntlClientProvider>
-  )
-}
 
 export const JestFormProvider = ({
   className,
