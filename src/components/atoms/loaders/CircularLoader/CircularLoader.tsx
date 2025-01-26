@@ -1,3 +1,4 @@
+'use client'
 import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
@@ -18,7 +19,7 @@ export type CircularLoaderProps = NativeCircularLoaderProps &
     hideLabel?: boolean
   }
 
-/** Serves as block loader. Default HTMLAttributes props supported. */
+/** Serves as block loader. Default HTMLAttributes props supported. USE CLIENT */
 export const CircularLoader = forwardRef<HTMLDivElement, CircularLoaderProps>(
   (
     { className, color = 'primary', size = 'md', label = 'Loading...', hideLabel, ...rest },

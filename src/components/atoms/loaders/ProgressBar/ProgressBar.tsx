@@ -1,3 +1,5 @@
+'use client'
+import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
 import { StyleProps } from '@/components/types'
@@ -18,23 +20,28 @@ export type ProgressBarProps = NativeProgressBarProps & {
   height?: string
 }
 
-/** Progress bar for displaying loading state or visual representation of data. Default HTMLAttributes props supported. */
+/** Progress bar for displaying loading state or visual representation of data. Default HTMLAttributes props supported. USE CLIENT */
 export const ProgressBar = forwardRef<HTMLDivElement, ProgressBarProps>(
-  ({ className, progress, color = 'primary', height = 'h-3', ...rest }, ref) => {
+  ({ className, progress = 0, color = 'primary', height = 'h-3', ...rest }, ref) => {
+    const t = useTranslations('Components')
+    const min = 0
+    const max = 100
+    const progressValue = Math.min(max, Math.max(min, progress))
+
     return (
       <div
         className={cn('ProgressBar', progressClass, progressColor[color], className)}
         role="progressbar"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={progress}
-        data-testid="ProgressBar"
+        aria-valuemin={min}
+        aria-valuemax={max}
+        aria-valuenow={progressValue}
+        aria-label={t('loading')}
         ref={ref}
         {...rest}
       >
         <div
           className={cn('Progress', 'rounded-sm', height)}
-          style={{ width: `${progress}%`, transition: '200ms width linear' }}
+          style={{ width: `${progressValue}%`, transition: '200ms width linear' }}
         />
       </div>
     )

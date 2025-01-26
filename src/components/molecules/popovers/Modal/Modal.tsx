@@ -148,6 +148,7 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
                 <div className={cn('ModalTitleWrap', 'pb-8')}>
                   {title && (
                     <Title
+                      variant="h3"
                       color={variant === 'contained' ? 'none' : color}
                       align="text-center"
                       size="xl"

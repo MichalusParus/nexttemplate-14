@@ -13,3 +13,5 @@ export const listSize = {
   lg: cn('text-lg'),
   none: '',
 }
+
+export const liIconClass = cn('[&>svg]:absolute [&>svg]:left-3')

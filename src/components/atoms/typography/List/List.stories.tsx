@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 
 import { getOptions, textContent, titleSizeVariants } from '../../../../../.storybook/helpers'
 import { CheckIcon } from '../../icons'
-import { Li, List } from './List'
+import { Li } from './Li/Li'
+import { List } from './List'
 
 const meta: Meta<typeof List> = {
   title: 'Atoms/Typography/List',
@@ -30,15 +31,18 @@ type Story = StoryObj<typeof List>
 export const Default: Story = {
   args: {
     className: '',
+    type: 'ol',
     listStyleType: undefined,
     color: 'none',
     size: 'md',
     content: listContent.slice(0, 6),
     title: undefined,
-    titleProps: { variant: 'h3' },
+    description: undefined,
     icon: undefined,
     isLoading: false,
-    expectedLines: 6,
+    expectedLines: 3,
+    titleProps: {},
+    pProps: {},
   },
 }
 
@@ -47,7 +51,7 @@ export const Ol: Story = {
 }
 
 export const Ul: Story = {
-  args: { ...Default.args, listStyleType: 'list-disc' },
+  args: { ...Default.args, type: 'ul', listStyleType: 'list-disc' },
 }
 
 export const CustomIcon: Story = {
@@ -70,19 +74,21 @@ export const Description: Story = {
 export const Children: Story = {
   args: {
     ...Default.args,
-    content: undefined,
+    content: [],
     listStyleType: 'list-decimal',
     title: 'Pass Li as Children and customize each one.',
+    isLoading: false,
+    expectedLines: 0,
   },
   render: args => (
     <List {...args}>
-      <Li color="primary" size="sm">
+      <Li color="primary" size="sm" isLoading={args.isLoading}>
         Small Primary Li
       </Li>
-      <Li color="secondary" size="md">
+      <Li color="secondary" size="md" isLoading={args.isLoading}>
         Medium Secondary Li
       </Li>
-      <Li color="terciary" size="lg">
+      <Li color="terciary" size="lg" isLoading={args.isLoading}>
         Large Terciary Li
       </Li>
     </List>
@@ -90,18 +96,23 @@ export const Children: Story = {
 }
 
 export const AllSizesAndLoading: Story = {
-  args: { ...Default.args, title: 'List title' },
+  args: { ...Default.args, title: 'List title', description: 'List description' },
   render: args => (
     <div className="flex flex-col gap-10">
       {titleSizeVariants.slice(0, 3).map(variant => (
         <div key={variant} className="flex w-96 [&>*]:basis-1/2">
-          <List {...args} size={variant as 'sm' | 'md' | 'lg'} />
-          <List
-            {...args}
-            titleProps={{ variant: 'h3', isLoading: true }}
-            isLoading
-            size={variant as 'sm' | 'md' | 'lg'}
-          />
+          <div>
+            <List {...args} size={variant as 'sm' | 'md' | 'lg'} />
+          </div>
+          <div>
+            <List
+              {...args}
+              titleProps={{ isLoading: true }}
+              pProps={{ isLoading: true }}
+              isLoading
+              size={variant as 'sm' | 'md' | 'lg'}
+            />
+          </div>
         </div>
       ))}
     </div>

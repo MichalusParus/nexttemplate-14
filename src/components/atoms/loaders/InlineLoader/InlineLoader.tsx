@@ -1,3 +1,4 @@
+'use client'
 import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
@@ -15,7 +16,7 @@ export type InlineLoaderProps = NativeInlineLoaderProps & {
   size?: StyleProps['size'] | 'inline'
 }
 
-/** Serves as inline loader, takes current text color. Default HTMLAttributes props supported. */
+/** Serves as inline loader, takes current text color. Default HTMLAttributes props supported. USE CLIENT */
 export const InlineLoader = forwardRef<HTMLSpanElement, InlineLoaderProps>(
   ({ className, size = 'md', ...rest }, ref) => {
     const t = useTranslations('Components')

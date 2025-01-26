@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { createRef } from 'react'
 
 import { render, screen } from '../../../../../.jest/customRender'
 import { Span } from '.'
@@ -38,8 +39,22 @@ describe('Span', () => {
     expect(spanText.tagName).toBe('SPAN')
   })
 
+  it('ref', () => {
+    const ref = createRef<HTMLSpanElement>()
+    render(<Span ref={ref}>Span Text</Span>)
+
+    expect(ref.current).not.toBeNull()
+    expect(ref.current?.focus).toBeDefined()
+
+    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
+    ref.current?.focus()
+
+    expect(focusMock).toHaveBeenCalled()
+    focusMock.mockRestore()
+  })
+
   it('axe', async () => {
-    const { container } = render(<Span className="className">Span Text</Span>)
+    const { container } = render(<Span>Span Text</Span>)
 
     const results = await axe(container)
     expect(results).toHaveNoViolations()

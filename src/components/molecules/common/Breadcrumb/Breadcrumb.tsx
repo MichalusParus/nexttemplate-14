@@ -5,6 +5,8 @@ import { Span } from '@/components/atoms/typography/Span'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
+// fix keys in map
+
 export type BreadcrumbProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> &
   Pick<StyleProps, 'color'> & {
     /** for passing custom tailwind classes */

@@ -1,3 +1,4 @@
+'use client'
 import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
@@ -15,7 +16,7 @@ export type GhostProps = NativeGhostProps & {
   size?: StyleProps['size'] | 'xl' | '2xl' | '3xl' | 'none'
 }
 
-/** Ghost is loading template for text, images, boxes and sections. Height and width must be set through className, for inline use theme heights. Default HTMLAttributes props supported. */
+/** Ghost is loading template for text, images, boxes and sections. Height and width must be set through className, for inline use theme heights. Default HTMLAttributes props supported. USE CLIENT */
 export const Ghost = forwardRef<HTMLSpanElement, GhostProps>(
   ({ className, size = 'none', ...rest }, ref) => {
     const t = useTranslations('Components')
