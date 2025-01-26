@@ -11,10 +11,13 @@ expect.extend(toHaveNoViolations)
 describe('Ellipsis', () => {
   it('default', () => {
     render(<Ellipsis className="className">text</Ellipsis>)
-    expect(screen.getByTestId('Ellipsis')).toBeInTheDocument()
-    expect(screen.getByTestId('Ellipsis')).toHaveClass('className')
-    expect(screen.getByTestId('Ellipsis')).toHaveTextContent('text')
-    expect(screen.queryByRole('tooltip')).toBeNull()
+    const ellipsisTestId = screen.getByTestId('Ellipsis')
+    const tooltipQuery = screen.queryByRole('tooltip')
+
+    expect(ellipsisTestId).toBeInTheDocument()
+    expect(ellipsisTestId).toHaveClass('className')
+    expect(ellipsisTestId).toHaveTextContent('text')
+    expect(tooltipQuery).toBeNull()
   })
 
   it('ref', () => {
@@ -36,5 +39,17 @@ describe('Ellipsis', () => {
 
     const results = await axe(container)
     expect(results).toHaveNoViolations()
+  })
+
+  it('overflow', async () => {
+    Object.defineProperty(HTMLElement.prototype, 'clientHeight', { configurable: true, value: 100 })
+    Object.defineProperty(HTMLElement.prototype, 'scrollHeight', { configurable: true, value: 200 })
+    render(<Ellipsis>text</Ellipsis>)
+    setTimeout(() => {
+      const tooltipQuery = screen.getByRole('tooltip')
+
+      expect(tooltipQuery).toBeInTheDocument()
+      expect(tooltipQuery).toHaveTextContent('text')
+    }, 0)
   })
 })

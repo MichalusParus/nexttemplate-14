@@ -22,7 +22,7 @@ describe('ScrollShadow', () => {
   it('vertical', () => {
     Object.defineProperty(HTMLElement.prototype, 'clientHeight', { configurable: true, value: 100 })
     Object.defineProperty(HTMLElement.prototype, 'scrollHeight', { configurable: true, value: 200 })
-    render(<ScrollShadow className="className">{textContent}</ScrollShadow>)
+    render(<ScrollShadow>{textContent}</ScrollShadow>)
     const topShadowTestId = screen.getByTestId('TopShadow')
     const bottomShadowTestId = screen.getByTestId('BottomShadow')
 
@@ -35,7 +35,7 @@ describe('ScrollShadow', () => {
   it('horizontal', () => {
     Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, value: 100 })
     Object.defineProperty(HTMLElement.prototype, 'scrollWidth', { configurable: true, value: 200 })
-    render(<ScrollShadow className="className">{textContent}</ScrollShadow>)
+    render(<ScrollShadow>{textContent}</ScrollShadow>)
     const leftShadowTestId = screen.getByTestId('LeftShadow')
     const rightShadowTestId = screen.getByTestId('RightShadow')
 
