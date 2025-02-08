@@ -31,12 +31,10 @@ export const PrimaryDefault: Story = {
     className: '',
     options: accordionOptions,
     exclusive: false,
-    gap: 'gap-4',
-    chevronPosition: 'end',
     variant: 'outlined',
     color: 'primary',
-    buttonProps: undefined,
-    paperProps: undefined,
+    gap: 'gap-4',
+    disclosuresProps: undefined,
   },
 }
 
@@ -50,49 +48,44 @@ export const Exclusive: Story = {
 export const ChevronFirst: Story = {
   args: {
     ...PrimaryDefault.args,
-    chevronPosition: 'start',
+    disclosuresProps: { chevronPosition: 'start' },
   },
 }
 
 export const Nested: Story = {
   args: {
     variant: 'text',
+    disclosuresProps: { chevronPosition: 'start' },
   },
   render: args => {
     return (
       <div className="flex flex-col gap-2">
         <Disclosure
-          variant={args.variant}
-          color={args.color}
-          chevronPosition={args.chevronPosition}
           title="Main Disclosure 1"
-          paperProps={undefined}
-        >
-          <div className="pl-4">
-            <Accordion {...args} ariaLevel={2} options={accordionOptions} />
-          </div>
-        </Disclosure>
-        <Disclosure
           variant={args.variant}
           color={args.color}
-          chevronPosition={args.chevronPosition}
+          chevronPosition={args.disclosuresProps?.chevronPosition}
+          height="h-max"
+        >
+          <Accordion className="pl-4" {...args} options={accordionOptions} />
+        </Disclosure>
+        <Disclosure
           title="Main Disclosure 2"
-          paperProps={undefined}
-        >
-          <div className="pl-4">
-            <Accordion {...args} ariaLevel={2} options={accordionOptions} />
-          </div>
-        </Disclosure>
-        <Disclosure
           variant={args.variant}
           color={args.color}
-          chevronPosition={args.chevronPosition}
-          title="Main Disclosure 3"
-          paperProps={undefined}
+          chevronPosition={args.disclosuresProps?.chevronPosition}
+          height="h-max"
         >
-          <div className="pl-4">
-            <Accordion {...args} ariaLevel={2} options={accordionOptions} />
-          </div>
+          <Accordion className="pl-4" {...args} options={accordionOptions} />
+        </Disclosure>
+        <Disclosure
+          title="Main Disclosure 3"
+          variant={args.variant}
+          color={args.color}
+          chevronPosition={args.disclosuresProps?.chevronPosition}
+          height="h-max"
+        >
+          <Accordion className="pl-4" {...args} options={accordionOptions} />
         </Disclosure>
       </div>
     )

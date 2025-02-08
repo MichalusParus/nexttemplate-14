@@ -160,9 +160,8 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
             variant={variant}
             color={color}
             size={size}
-            enableUseFocus={isOpen}
             aria-hidden={!isOpen}
-            paperProps={{ className: 'border-none' }}
+            // paperProps={{ className: 'border-none' }}
             onChange={handleOnChange}
             {...calendarProps}
           />

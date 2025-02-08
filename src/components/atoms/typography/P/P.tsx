@@ -35,7 +35,7 @@ export const P = forwardRef<HTMLParagraphElement, PropsWithChildren<PProps>>(
     },
     ref,
   ) => {
-    const expectedArray = new Array(expectedLines).fill(null)
+    const expectedArray = Array.from({ length: expectedLines }, (_, i) => i)
 
     return (
       <p

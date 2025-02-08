@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const modalPosition = cn(
-  'z-modal fixed left-1/2 top-1/2 max-w-[95vw] translate-x-[-50%] translate-y-[-50%] rounded-md bg-bg transition-position',
+  'fixed left-1/2 top-1/2 z-modal max-w-[95vw] translate-x-[-50%] translate-y-[-50%] rounded-md bg-bg transition-position',
 )
 
 export const openClass = cn('visible scale-100 opacity-100')

@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { PropsWithChildren, useState } from 'react'
 
 import { textContent } from '../../../../../.storybook/helpers'
-import { Disclosure } from '.'
+import { Disclosure, DisclosureProps } from '.'
 
 const meta: Meta<typeof Disclosure> = {
   title: 'Molecules/Common/Disclosure',
@@ -9,17 +10,27 @@ const meta: Meta<typeof Disclosure> = {
   tags: ['autodocs'],
   decorators: [
     Story => (
-      <div className="min-h-96">
+      <div className="min-h-[20rem]">
         <Story />
       </div>
     ),
   ],
   parameters: {
-    layout: 'fullscreen',
+    layout: 'padded',
   },
   argTypes: {
     children: { control: false },
   },
+}
+
+const DisclosureWithHooks = ({ children, ...props }: PropsWithChildren<DisclosureProps>) => {
+  const [isOpen, setIsOpen] = useState(true)
+
+  return (
+    <Disclosure {...props} expanded={isOpen} setIsOpen={setIsOpen}>
+      {children}
+    </Disclosure>
+  )
 }
 
 export default meta
@@ -32,11 +43,21 @@ export const PrimaryDefault: Story = {
     chevronPosition: 'end',
     variant: 'outlined',
     color: 'primary',
+    height: 'max-h-[40vh]',
     expanded: false,
     buttonProps: undefined,
     paperProps: undefined,
-    children: <div className="p-4">{textContent.slice(0, 500)}</div>,
+    scrollShadowProps: undefined,
+    setIsOpen: undefined,
+    children: textContent.slice(0, 500),
   },
+}
+
+export const Controlled: Story = {
+  args: {
+    ...PrimaryDefault.args,
+  },
+  render: args => <DisclosureWithHooks {...args} />,
 }
 
 export const Expanded: Story = {

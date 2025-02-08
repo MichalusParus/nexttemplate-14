@@ -26,7 +26,7 @@ export const Default: Story = {
     src: 'https://picsum.photos/2000/3000',
     alt: 'story',
     width: 'w-full',
-    ratio: 'aspect-w-16 aspect-h-9',
+    ratio: 'aspect-video',
     objectFit: 'object-contain',
     objectPosition: 'object-center',
   },

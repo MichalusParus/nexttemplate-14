@@ -1,13 +1,12 @@
+import { HTMLAttributes } from 'react'
+
 import { cn } from '@/utils/utils'
 
-type Props = {
-  className?: string
-  isOpen: boolean
-}
+type Props = HTMLAttributes<HTMLDivElement> & { isOpen: boolean }
 
-export function HamburgerIcon({ className, isOpen }: Props) {
+export const HamburgerIcon = ({ className, isOpen, ...rest }: Props) => {
   return (
-    <div className={cn('Hamburger', 'px-px', className)}>
+    <div className={cn('Hamburger', 'px-px', className)} {...rest}>
       <div className="relative">
         <div
           className={`absolute left-0 h-1 w-full bg-current transition-position ${

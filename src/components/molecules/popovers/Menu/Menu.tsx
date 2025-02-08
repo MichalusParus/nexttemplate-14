@@ -18,6 +18,9 @@ import { cn } from '@/utils/utils'
 import { Dropdown } from '../Dropdown'
 import { DropdownProps } from '../Dropdown/Dropdown'
 
+// fix menucheckbox gap
+// open sebmenu on hover
+
 export type MenuProps = Omit<StyleProps, 'size'> & {
   /** for passing custom tailwind classes */
   className?: string
@@ -61,14 +64,14 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
     const componentRef = useRef<HTMLDivElement>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
     useImperativeHandle(ref, () => componentRef.current!)
-    const [isLocallyOpen, setIsLocallyOpen] = useState(Boolean(isOpen))
-    const openState = setIsOpen ? Boolean(isOpen) : isLocallyOpen
+    const [isInternallyOpen, setIsInternallyOpen] = useState(Boolean(isOpen))
+    const openState = setIsOpen ? Boolean(isOpen) : isInternallyOpen
     const menuPosition = !setIsOpen ? 'relative' : ''
     const { focusableEl } = useFocus(
       openState,
       componentRef,
       ['button:not(.Overlay)', '[href]', 'input', '[tabindex]:not([tabindex="-1"])'],
-      setIsOpen ? () => setIsOpen(!isOpen) : () => setIsLocallyOpen(prev => !prev),
+      setIsOpen ? () => setIsOpen(!isOpen) : () => setIsInternallyOpen(prev => !prev),
       {
         portalRef: dropdownRef,
       },
@@ -78,7 +81,7 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
       if (setIsOpen) {
         setIsOpen(!isOpen)
       } else {
-        setIsLocallyOpen(prev => !prev)
+        setIsInternallyOpen(prev => !prev)
       }
       if (focusableEl[0] && openState) {
         focusableEl[0].focus()

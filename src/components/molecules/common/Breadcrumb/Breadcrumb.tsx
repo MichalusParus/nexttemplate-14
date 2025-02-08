@@ -1,11 +1,9 @@
-import { forwardRef, HTMLAttributes } from 'react'
+import { forwardRef, Fragment, HTMLAttributes } from 'react'
 
 import { Link } from '@/components/atoms/common/Link'
 import { Span } from '@/components/atoms/typography/Span'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
-
-// fix keys in map
 
 export type BreadcrumbProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> &
   Pick<StyleProps, 'color'> & {
@@ -22,8 +20,8 @@ export const Breadcrumb = forwardRef<HTMLDivElement, BreadcrumbProps>(
       <nav className={cn('Breadcrumb', className)} ref={ref} aria-label="breadcrumb" {...rest}>
         <ol className="flex flex-wrap items-center gap-2.5 break-words">
           {options.map((option, index) => (
-            <>
-              <li key={index}>
+            <Fragment key={`${option.href}-${index}`}>
+              <li>
                 {index !== options.length - 1 ? (
                   <Link
                     className="inline-flex items-center gap-1.5"
@@ -36,26 +34,22 @@ export const Breadcrumb = forwardRef<HTMLDivElement, BreadcrumbProps>(
                   </Link>
                 ) : (
                   <Span
-                    className={cn(
-                      'CurrentPageFakeLink',
-                      'cursor-default font-semibold underline hover:bg-transparent',
-                    )}
+                    className={cn('CurrentPageSpan', 'cursor-default font-semibold underline')}
                     variant="none"
                     color={color}
-                    role="link"
-                    aria-disabled="true"
                     aria-current="page"
+                    data-testid="CurrentPageSpan"
                   >
                     {option.label}
                   </Span>
                 )}
               </li>
               {index !== options.length - 1 && (
-                <li key={index + 'separator'} role="presentation" aria-hidden="true">
+                <li role="presentation" aria-hidden="true">
                   /
                 </li>
               )}
-            </>
+            </Fragment>
           ))}
         </ol>
       </nav>

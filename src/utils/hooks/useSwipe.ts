@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-/** useSwipe hook is used for enabling swipe on touch devices or detecting long touch. Passed onSwipe fn is called with value {x,y} or onTouch fn is called. Negative or positive values indicates swipe vector. */
+/** useSwipe hook is used for enabling swipe on touch devices. Passed onSwipe fn is called with value {x,y}. Negative or positive values indicates swipe vector. */
 export const useSwipe = (onSwipe: (value: { x: number; y: number }) => void) => {
   const componentRef = useRef<HTMLDivElement | null>(null)
   const swipeStartRef = useRef({ x: 0, y: 0 })

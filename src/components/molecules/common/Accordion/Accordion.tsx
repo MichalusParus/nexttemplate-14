@@ -1,46 +1,71 @@
 'use client'
-import { forwardRef, ReactNode, useState } from 'react'
+import { forwardRef, ReactNode, useEffect, useState } from 'react'
 
-import { cn, slugify } from '@/utils/utils'
+import { StyleProps } from '@/components/types'
+import { cn } from '@/utils/utils'
 
 import { Disclosure, DisclosureProps } from '../Disclosure/Disclosure'
 
 type DisclosureOption = {
-  title: string
+  title: ReactNode
   content: ReactNode
   expanded?: boolean
 }
 
-export type AccordionProps = Omit<DisclosureProps, 'title' | 'expanded' | 'children'> & {
+export type AccordionProps = Omit<StyleProps, 'size'> & {
+  /** for passing custom tailwind classes */
+  className?: string
   /** options for individual Disclosures */
   options: DisclosureOption[]
   /** optional boolean for exclusive mode, when only one Disclosure can be open at a time */
   exclusive?: boolean
   /** gap between Disclosures as tailwind class */
   gap?: string
+  /** for passing aditional props to all disclosures */
+  disclosuresProps?: Partial<Omit<DisclosureProps, 'title' | 'expanded' | 'setIsOpen'>>
 }
 
-/** Serves as set of Disclosures. Have exclusive one open mode and can be nested. DisclosureProps supported. USE CLIENT */
-export const Accordion = forwardRef<HTMLButtonElement, AccordionProps>(
-  ({ className, options, exclusive, gap = 'gap-4', ...rest }, ref) => {
+/** Serves as set of Disclosures. DisclosureProps supported. USE CLIENT */
+export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
+  (
+    {
+      className,
+      options,
+      exclusive,
+      variant = 'outlined',
+      color = 'primary',
+      gap = 'gap-4',
+      disclosuresProps = {},
+    },
+    ref,
+  ) => {
     const [openState, setOpenState] = useState<boolean[]>(
       options.map(({ expanded }) => Boolean(expanded)),
     )
 
+    useEffect(() => {
+      setOpenState(options.map(({ expanded }) => Boolean(expanded)))
+    }, [options])
+
+    const handleOpenStateChange = (index: number) => {
+      setOpenState(prev => prev.map((_, i) => i === index))
+    }
+
     return (
-      <div className={cn('Accordion', 'flex flex-col', gap, className)} data-testid="Accordion">
+      <div
+        className={cn('Accordion', 'flex flex-col', gap, className)}
+        ref={ref}
+        data-testid="Accordion"
+      >
         {options.map(({ content, title, expanded }, index) => (
           <Disclosure
-            key={slugify(title)}
+            key={`accordion-disclosure-${index}`}
             title={title}
-            ref={ref}
+            variant={variant}
+            color={color}
             expanded={exclusive ? openState[index] : expanded}
-            setIsOpen={
-              exclusive
-                ? () => setOpenState(options.map((_, i) => (i === index ? true : false)))
-                : undefined
-            }
-            {...rest}
+            setIsOpen={exclusive ? () => handleOpenStateChange(index) : undefined}
+            {...disclosuresProps}
           >
             {content}
           </Disclosure>

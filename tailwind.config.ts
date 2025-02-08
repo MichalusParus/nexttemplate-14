@@ -6,11 +6,7 @@ const config: Config = {
   future: {
     hoverOnlyWhenSupported: true,
   },
-  corePlugins: {
-    aspectRatio: false,
-  },
   plugins: [
-    require('@tailwindcss/aspect-ratio'),
     function ({ addVariant }: { addVariant: (name: string, selector: string) => void }) {
       addVariant('autofill', '&:-webkit-autofill')
     },
@@ -162,6 +158,7 @@ const config: Config = {
         lgHeaderHeight: '4.063rem',
         sideBarWidth: '16rem',
         smSideBarWidth: '6rem',
+        galleryInnerHeight: 'calc(100vh - 98px)',
       },
       boxShadow: {
         header: 'var(--shadow-header)',

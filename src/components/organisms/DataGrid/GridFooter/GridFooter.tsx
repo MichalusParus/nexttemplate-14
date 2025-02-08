@@ -47,9 +47,9 @@ export const GridFooter = forwardRef<HTMLDivElement, GridFooterProps>(
     },
     ref,
   ) => {
-    const rowPerPageOptions = new Array(5).fill(null).map((_, index) => ({
-      label: `${(index + 1) * 10}`,
-      value: `${(index + 1) * 10}`,
+    const rowPerPageOptions = Array.from({ length: 5 }, (_, i) => ({
+      label: `${(i + 1) * 10}`,
+      value: `${(i + 1) * 10}`,
     }))
 
     const handleRowsPerPage = (value: string) => {

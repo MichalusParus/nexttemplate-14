@@ -46,7 +46,7 @@ describe('RangeDatePicker', () => {
       />,
     )
     fireEvent.click(screen.getByRole('combobox'))
-    fireEvent.click(screen.getAllByRole('button')[4])
+    fireEvent.click(screen.getAllByRole('gridcell')[8])
     expect(spy).toHaveBeenCalled()
   })
 

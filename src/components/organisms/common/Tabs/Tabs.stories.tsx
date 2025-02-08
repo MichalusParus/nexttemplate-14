@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { MouseEvent, useState } from 'react'
+import { useState } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { PlusIcon } from '@/components/atoms/icons'
@@ -9,15 +9,18 @@ import { Tabs } from '.'
 import { TabsProps } from './Tabs'
 
 const meta: Meta<typeof Tabs> = {
-  title: 'Molecules/Common/Tabs',
+  title: 'Organisms/Common/Tabs',
   component: Tabs,
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',
+    nextjs: {
+      appDirectory: true,
+    },
   },
   argTypes: {
     tabs: { control: false },
-    linkProps: { control: false },
+    tabButtonProps: { control: false },
     dropdownProps: { control: false },
   },
 }
@@ -29,18 +32,7 @@ const TabsWithHooks = (args: TabsProps) => {
   const [param, setParam] = useState('label1')
   return (
     <div>
-      <Tabs
-        {...args}
-        name="tabs"
-        param={param}
-        tabs={args.tabs}
-        linkProps={{
-          onClick: (e: MouseEvent<HTMLAnchorElement>) => {
-            const target = e.target as HTMLAnchorElement & { computedName: string }
-            setParam(tabs.find(t => t.label === target.computedName)?.slug || '')
-          },
-        }}
-      />
+      <Tabs {...args} name="tabs" selectedValue={param} tabs={args.tabs} onTabChange={setParam} />
       {args.tabs.length === 4 && (
         <button onClick={() => setParam('hidden')}>Click to show hidden tab</button>
       )}
@@ -52,16 +44,40 @@ export const PrimaryDefault: Story = {
   args: {
     className: 'className',
     name: 'tabsStory',
-    param: '',
+    selectedValue: '',
     tabs: tabs,
     variant: 'text',
     color: 'primary',
     size: 'md',
     fullWidth: false,
     buttonProps: {},
-    linkProps: {},
+    tabButtonProps: {},
     dropdownProps: {},
     children: undefined,
+  },
+  render: args => <TabsWithHooks {...args} />,
+}
+
+export const FullWidth: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    fullWidth: true,
+  },
+  render: args => <TabsWithHooks {...args} />,
+}
+
+export const Content: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    tabs: tabs.map(tab => ({
+      ...tab,
+      content: (
+        <div className="flex gap-2">
+          <PlusIcon />
+          {tab.label}
+        </div>
+      ),
+    })),
   },
   render: args => <TabsWithHooks {...args} />,
 }
@@ -84,7 +100,7 @@ export const HiddenTab: Story = {
     tabs: [
       ...(PrimaryDefault?.args?.tabs || []),
       {
-        slug: 'hidden',
+        value: 'hidden',
         label: 'Hidden',
         isHidden: true,
         component: (
@@ -95,14 +111,6 @@ export const HiddenTab: Story = {
         ),
       },
     ],
-  },
-  render: args => <TabsWithHooks {...args} />,
-}
-
-export const FullWidth: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    fullWidth: true,
   },
   render: args => <TabsWithHooks {...args} />,
 }

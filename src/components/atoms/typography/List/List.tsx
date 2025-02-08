@@ -55,7 +55,8 @@ export const List = forwardRef<HTMLOListElement, ListProps>(
     },
     ref,
   ) => {
-    const ghostContent = isLoading && !content?.length ? new Array(expectedLines).fill(null) : []
+    const ghostContent =
+      isLoading && !content?.length ? Array.from({ length: expectedLines }, (_, i) => i) : []
     const completeContent = [...(content || []), ...ghostContent]
     const Element = type === 'ul' ? 'ul' : 'ol'
 

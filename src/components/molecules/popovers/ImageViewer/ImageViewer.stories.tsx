@@ -36,7 +36,7 @@ export const Default: Story = {
       <Image
         src="https://picsum.photos/2000/1250"
         alt="imageStory"
-        ratio="aspect-w-16 aspect-h-9"
+        ratio="aspect-video"
         objectFit="object-cover"
       />
     ),

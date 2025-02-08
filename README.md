@@ -63,7 +63,7 @@ Other scripts
 
 ParusUI Components are built with focus on minimal size, reusability and customization.
 
-- `Complex` - ParusUI contains 61 components and 7 hooks.
+- `Complex` - ParusUI contains 62 components and 8 hooks.
 
 - `LibraryFree` - ParusUI are lightweighted and fully custom builded with no additional libraries except React Hook Form, Zod and Popper.
 

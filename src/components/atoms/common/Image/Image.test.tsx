@@ -19,12 +19,11 @@ describe('Image', () => {
   })
 
   it('ratio/width', () => {
-    render(<Image alt="ddc" src="/#" ratio="aspect-w-16 aspect-h-9" width="w-96" />)
+    render(<Image alt="ddc" src="/#" ratio="aspect-video" width="w-96" />)
     const ratioWrapTestId = screen.getByTestId('ImageRatioWrap')
 
     expect(ratioWrapTestId).toBeInTheDocument()
-    expect(ratioWrapTestId).toHaveClass('aspect-w-16')
-    expect(ratioWrapTestId).toHaveClass('aspect-h-9')
+    expect(ratioWrapTestId).toHaveClass('aspect-video')
     expect(ratioWrapTestId).toHaveClass('w-96')
   })
 

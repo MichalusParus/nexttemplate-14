@@ -111,6 +111,22 @@ describe('List', () => {
     expect(svgQueries).toHaveLength(3)
   })
 
+  it('titleProps/pProps', () => {
+    render(
+      <List
+        title="title"
+        description="description"
+        titleProps={{ className: 'titleClass' }}
+        pProps={{ className: 'pClass' }}
+      />,
+    )
+    const titleRole = screen.getByRole('heading')
+    const descriptionText = screen.getByText('description')
+
+    expect(titleRole).toHaveClass('titleClass')
+    expect(descriptionText).toHaveClass('pClass')
+  })
+
   it('ref', () => {
     const ref = createRef<HTMLOListElement>()
     render(<List ref={ref} />)

@@ -152,6 +152,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               checkboxSize[size],
               checkVisibility,
             )}
+            data-testid="CheckIcon"
           />
         </div>
         {!fake && (

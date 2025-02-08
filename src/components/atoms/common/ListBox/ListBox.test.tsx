@@ -10,13 +10,14 @@ import { ListBox } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('ListBox', () => {
+  const options = getOptions('listboxTest', 20)
   it('default', () => {
     render(
       <ListBox
         className="className"
         name="listboxTest"
         value={[]}
-        options={getOptions('listboxTest', 20)}
+        options={options}
         onClick={() => {}}
       />,
     )
@@ -28,8 +29,9 @@ describe('ListBox', () => {
     expect(listboxRole).toHaveClass('className')
     expect(listboxRole).toHaveAttribute('id', 'listboxTest')
     expect(listboxRole).toHaveAttribute('aria-labelledby', 'listboxTest-label')
-    expect(optionRoles).toHaveLength(20)
-    expect(checkIconTestIds).toHaveLength(20)
+    expect(optionRoles).toHaveLength(options.length)
+    expect(optionRoles[0]).toHaveTextContent(options[0].label)
+    expect(checkIconTestIds).toHaveLength(options.length)
   })
 
   it('noOptions', () => {
@@ -55,7 +57,7 @@ describe('ListBox', () => {
         className="className"
         name="listboxTest"
         value={['value1listboxTest']}
-        options={getOptions('listboxTest', 20)}
+        options={options}
         onClick={() => {}}
       />,
     )
@@ -76,31 +78,13 @@ describe('ListBox', () => {
         className="className"
         name="listboxTest"
         value={[]}
-        options={getOptions('listboxTest', 20)}
+        options={options}
         onClick={spy}
       />,
     )
     const optionRoles = screen.getAllByRole('option')
 
     fireEvent.click(optionRoles[0])
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('value1listboxTest')
-  })
-
-  it('onKeyDown', () => {
-    const spy = jest.fn()
-    render(
-      <ListBox
-        className="className"
-        name="listboxTest"
-        value={[]}
-        options={getOptions('listboxTest', 20)}
-        onClick={spy}
-      />,
-    )
-    const optionRoles = screen.getAllByRole('option')
-
-    fireEvent.keyDown(optionRoles[0], { code: 'Space' })
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith('value1listboxTest')
   })
@@ -112,7 +96,7 @@ describe('ListBox', () => {
         className="className"
         name="listboxTest"
         value={[]}
-        options={getOptions('listboxTest', 20)}
+        options={options}
         isLoading
         onClick={spy}
       />,
@@ -132,7 +116,7 @@ describe('ListBox', () => {
         className="className"
         name="listboxTest"
         value={[]}
-        options={getOptions('listboxTest', 20)}
+        options={options}
         onClick={() => {}}
         hideCheckbox
       />,
@@ -142,17 +126,28 @@ describe('ListBox', () => {
     expect(checkIconTestIds).toHaveLength(0)
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLUListElement>()
+  it('buttonProps/checkboxProps', () => {
     render(
       <ListBox
-        ref={ref}
+        className="className"
         name="listboxTest"
         value={[]}
-        options={getOptions('listboxTest', 20)}
+        options={options}
+        buttonProps={{ className: 'buttonClass' }}
+        checkboxProps={{ className: 'checkboxClass' }}
         onClick={() => {}}
       />,
     )
+    const checkboxTestIds = screen.getAllByTestId('Checkbox')
+    const optionRoles = screen.getAllByRole('option')
+
+    expect(checkboxTestIds[0]).toHaveClass('checkboxClass')
+    expect(optionRoles[0]).toHaveClass('buttonClass')
+  })
+
+  it('ref', () => {
+    const ref = createRef<HTMLUListElement>()
+    render(<ListBox ref={ref} name="listboxTest" value={[]} options={options} onClick={() => {}} />)
 
     expect(ref.current).not.toBeNull()
     expect(ref.current?.focus).toBeDefined()
@@ -168,12 +163,7 @@ describe('ListBox', () => {
     const { container } = render(
       <>
         <div id="listboxTest-label">Label</div>
-        <ListBox
-          name="listboxTest"
-          value={[]}
-          options={getOptions('listboxTest', 20)}
-          onClick={() => {}}
-        />
+        <ListBox name="listboxTest" value={[]} options={options} onClick={() => {}} />
       </>,
     )
 

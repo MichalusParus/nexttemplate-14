@@ -36,7 +36,7 @@ export type ButtonProps = NativeButtonProps &
     /** hide button shadow */
     hideShadow?: boolean
     /** onClick function */
-    onClick?: () => void
+    onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   }
 
 /** Basic Button with loading state and icon handling. Default ButtonHTMLAttributes props supported. USE CLIENT */
@@ -95,7 +95,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled}
         aria-busy={isLoading}
         aria-disabled={isLoading || disabled}
-        onClick={!isLoading ? onClick : () => {}}
+        onClick={!isLoading ? onClick : undefined}
         ref={ref}
         {...rest}
       >

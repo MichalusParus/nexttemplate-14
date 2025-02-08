@@ -71,12 +71,12 @@ export const GridBody = forwardRef<HTMLDivElement, GridBodyProps>(
           ref={ref}
         >
           <ScrollShadow height={maxHeight} gutter disableHorizontal>
-            {new Array(rowsPerPage).fill(null).map((_, index) => (
+            {Array.from({ length: rowsPerPage || 10 }, (_, i) => (
               <div
-                key={`gridGhost${index}`}
+                key={`gridGhost${isRowInteractive}`}
                 className={cn('GhostRow', 'border border-transparent', checkboxSize[size])}
                 role="row"
-                aria-rowindex={index + (haveSubColumns ? 3 : 2)}
+                aria-rowindex={i + (haveSubColumns ? 3 : 2)}
               >
                 <Ghost size={size} />
               </div>

@@ -17,7 +17,7 @@ const preview: Preview = {
       values: [
         {
           name: 'bg',
-          value: 'rgb(var(--color-bg))',
+          value: 'rgb(var(--color-dark-50))',
         },
         {
           name: 'primary',

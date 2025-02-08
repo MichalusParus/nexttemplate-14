@@ -1,8 +1,8 @@
-type Props = {
-  className?: string
-}
+import { SVGProps } from 'react'
 
-export function CheckIcon({ className }: Props) {
+type Props = SVGProps<SVGSVGElement>
+
+export const CheckIcon = ({ className, ...rest }: Props) => {
   return (
     <svg
       className={className}
@@ -11,7 +11,7 @@ export function CheckIcon({ className }: Props) {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      data-testid="CheckIcon"
+      {...rest}
     >
       <g>
         <path

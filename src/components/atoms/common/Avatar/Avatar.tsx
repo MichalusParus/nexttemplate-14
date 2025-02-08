@@ -46,7 +46,7 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             className="min-h-full min-w-full"
             src={src}
             alt={username ? `${t('profile')} ${username}` : t('profile')}
-            ratio="aspect-w-4 aspect-h-4"
+            ratio="aspect-square"
           />
         )
       } else if (userInitials) {

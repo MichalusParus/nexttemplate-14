@@ -56,6 +56,14 @@ describe('Chip', () => {
     expect(spy).toHaveBeenCalled()
   })
 
+  it('buttonProps', () => {
+    const spy = jest.fn()
+    render(<Chip onClick={spy} buttonProps={{ className: 'className' }} />)
+    const buttonRole = screen.getByRole('button')
+
+    expect(buttonRole).toHaveClass('className')
+  })
+
   it('ref', () => {
     const ref = createRef<HTMLDivElement>()
     render(<Chip ref={ref}>Chip</Chip>)

@@ -32,7 +32,7 @@ export type ModalProps = Omit<StyleProps, 'size'> & {
   className?: string
   /** name string serves as id for aria purposes and as secondary aria label */
   name: string
-  /** boolean for open state */
+  /** optional boolean default open or with setIsOpen for constrolled open state */
   isOpen?: boolean
   /** optional title for modal window */
   title?: string
@@ -52,7 +52,7 @@ export type ModalProps = Omit<StyleProps, 'size'> & {
   paperProps?: Partial<PaperProps>
   /** for passing aditional props to title */
   titleProps?: Partial<TitleProps>
-  /** modal closing function */
+  /** optional setOpen function for constrolled open state */
   setIsOpen?: (value: boolean) => void
 }
 
@@ -82,15 +82,15 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
     const t = useTranslations('Components')
     const componentRef = useRef<HTMLDivElement>(null)
     useImperativeHandle(ref, () => componentRef.current!)
-    const [isLocallyOpen, setIsLocallyOpen] = useState(Boolean(isOpen))
+    const [isInternallyOpen, setIsInternallyOpen] = useState(Boolean(isOpen))
     const [mounted, setMounted] = useState(false)
-    const openState = setIsOpen ? Boolean(isOpen) : isLocallyOpen
+    const openState = setIsOpen ? Boolean(isOpen) : isInternallyOpen
     const modalOpenClass = openState ? openClass : closeClass
     const { focusableEl } = useFocus(
       openState,
       componentRef,
       ['[tabindex]:not([tabindex="-1"])', '.Link'],
-      setIsOpen ? () => setIsOpen(!isOpen) : () => setIsLocallyOpen(prev => !prev),
+      setIsOpen ? () => setIsOpen(!isOpen) : () => setIsInternallyOpen(prev => !prev),
       { trap: true },
     )
 
@@ -98,7 +98,7 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
       if (setIsOpen) {
         setIsOpen(!isOpen)
       } else {
-        setIsLocallyOpen(prev => !prev)
+        setIsInternallyOpen(prev => !prev)
       }
       if (focusableEl[0]) {
         focusableEl[0].focus()

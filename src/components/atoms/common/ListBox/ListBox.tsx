@@ -1,6 +1,6 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, KeyboardEvent, OlHTMLAttributes, useCallback } from 'react'
+import { forwardRef, OlHTMLAttributes, useCallback } from 'react'
 
 import { Checkbox } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
 import { CheckboxProps } from '@/components/molecules/form/inputs/CheckboxField/Checkbox/Checkbox'
@@ -8,7 +8,7 @@ import { OptionType, StyleProps } from '@/components/types'
 import { cn, filterOutKeys } from '@/utils/utils'
 
 import { Ghost } from '../../loaders/Ghost'
-import { buttonSize, buttonVariant } from '../Button/Button.style'
+import { Button, ButtonProps } from '../Button'
 
 type NativeListBoxProps = Omit<
   OlHTMLAttributes<HTMLUListElement>,
@@ -31,6 +31,8 @@ export type ListBoxProps = NativeListBoxProps &
     noOptionLabel?: string
     /** hide option checkbox */
     hideCheckbox?: boolean
+    /** optional props for option button */
+    buttonProps?: Partial<ButtonProps>
     /** optional props for checkbox */
     checkboxProps?: Partial<CheckboxProps>
     /** on Option click function */
@@ -51,6 +53,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
       isLoading,
       noOptionLabel,
       hideCheckbox,
+      buttonProps = {},
       checkboxProps = {},
       onClick,
       ...rest
@@ -69,16 +72,6 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
       [value],
     )
 
-    const handleOnKeyDown = useCallback(
-      (e: KeyboardEvent<HTMLLIElement>, value: string) => {
-        if (e.code === 'Enter' || e.code === 'Space') {
-          e.preventDefault()
-          onClick(value)
-        }
-      },
-      [onClick],
-    )
-
     return (
       <ul
         id={name}
@@ -90,42 +83,52 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
       >
         {options.length || isLoading ? (
           completeOptions.map(({ value: optionValue, label, content }) => (
-            <li
-              key={optionValue}
-              className={cn(
-                'Option',
-                'flex items-center border focus:outline-none',
-                getSelectedClass(optionValue),
-                buttonVariant[variant][color] + ' border-transparent dark:border-transparent',
-                buttonSize[size],
-                isLoading ? 'cursor-not-allowed' : 'cursor-pointer',
-              )}
-              role="option"
-              tabIndex={-1}
-              aria-selected={value.includes(optionValue)}
-              aria-disabled={isLoading}
-              onClick={() => (!isLoading ? onClick(optionValue) : () => {})}
-              onKeyDown={e => (!isLoading ? handleOnKeyDown(e, optionValue) : () => {})}
-            >
-              <>
-                {!hideCheckbox && (
-                  <Checkbox
-                    className={checkboxProps?.className}
-                    name={optionValue}
-                    label=""
-                    value={optionValue}
-                    variant={variant}
-                    color={color}
-                    size={size}
-                    isChecked={value.includes(optionValue)}
-                    disabled={isLoading}
-                    fake
-                    onChange={() => {}}
-                    {...filterOutKeys(checkboxProps, ['className'])}
-                  />
+            <li key={`${name}-${optionValue}-option`} role="presentation">
+              <Button
+                className={cn(
+                  'Option',
+                  'flex w-full items-center justify-start rounded-none border border-transparent focus:outline-none dark:border-transparent',
+                  getSelectedClass(optionValue),
+                  isLoading ? 'cursor-not-allowed' : 'cursor-pointer',
+                  buttonProps?.className,
                 )}
-                {isLoading ? <Ghost className="ml-0 mr-16 w-full" size={size} /> : content || label}
-              </>
+                variant={variant}
+                color={color}
+                size={size}
+                startIcon={
+                  !hideCheckbox && (
+                    <Checkbox
+                      className={checkboxProps?.className}
+                      name={optionValue}
+                      label=""
+                      value={optionValue}
+                      variant={variant}
+                      color={color}
+                      size={size}
+                      isChecked={value.includes(optionValue)}
+                      disabled={isLoading}
+                      fake
+                      aria-hidden="true"
+                      onChange={() => {}}
+                      {...filterOutKeys(checkboxProps, ['className'])}
+                    />
+                  )
+                }
+                role="option"
+                tabIndex={-1}
+                aria-selected={value.includes(optionValue)}
+                aria-disabled={isLoading}
+                onClick={() => (!isLoading ? onClick(optionValue) : undefined)}
+                {...filterOutKeys(buttonProps, ['className'])}
+              >
+                <>
+                  {isLoading ? (
+                    <Ghost className="ml-0 mr-16 w-full" size={size} />
+                  ) : (
+                    content || label
+                  )}
+                </>
+              </Button>
             </li>
           ))
         ) : (

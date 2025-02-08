@@ -15,7 +15,7 @@ const meta: Meta<typeof Calendar> = {
 }
 
 const CalendarWithHooks = (args: CalendarProps) => {
-  const [date, setDate] = useState<Date>(new Date())
+  const [date, setDate] = useState<Date>(args.date || new Date())
   return <Calendar {...args} date={date} onChange={setDate} />
 }
 
@@ -39,7 +39,7 @@ const RangeCalendarWithHooks = (args: CalendarProps) => {
 }
 
 const MultiCalendarWithHooks = (args: CalendarProps) => {
-  const [values, setValues] = useState<Date[]>([])
+  const [values, setValues] = useState<Date[]>(args.multiValue || [])
   const handleChange = (date: Date) => {
     if (values?.some(v => isSameDay(v, date))) {
       setValues(values.filter(v => !isSameDay(v, date)))
@@ -64,21 +64,12 @@ export const PrimaryDefault: Story = {
     color: 'primary',
     size: 'md',
     weekStart: 1,
-    readOnly: false,
     minMaxDate: undefined,
     unavailable: [],
-    enableUseFocus: undefined,
     buttonProps: undefined,
     paperProps: undefined,
   },
   render: args => <CalendarWithHooks {...args} />,
-}
-
-export const ReadOnly: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    readOnly: true,
-  },
 }
 
 export const MinMaxDate: Story = {
@@ -101,7 +92,6 @@ export const Range: Story = {
   args: {
     ...PrimaryDefault.args,
     range: { start: addDays(new Date(), -2), end: addDays(new Date(), 2) },
-    unavailable: [addDays(new Date(), -2), addDays(new Date(), 2), addDays(new Date(), 4)],
   },
   render: args => <RangeCalendarWithHooks {...args} />,
 }

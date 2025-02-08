@@ -13,6 +13,7 @@ import { Alert, AlertStatusType } from '@/components/atoms/common/Alert'
 import { cn } from '@/utils/utils'
 
 // research autofocus on display, screen readers
+// add alert props to toast, message as ReactNode
 
 type AddToast = (
   status: AlertStatusType,

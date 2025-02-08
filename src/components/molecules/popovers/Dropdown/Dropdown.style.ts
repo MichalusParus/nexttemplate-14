@@ -1,3 +1,3 @@
 import { cn } from '@/utils/utils'
 
-export const dropdownClass = cn('z-modal absolute transition-opacity')
+export const dropdownClass = cn('absolute z-modal transition-opacity')

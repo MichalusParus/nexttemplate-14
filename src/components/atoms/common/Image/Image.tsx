@@ -42,7 +42,7 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
   (
     {
       className,
-      ratio = 'aspect-w-16 aspect-h-9',
+      ratio = 'aspect-video',
       width = 'w-full',
       objectFit = 'object-contain',
       objectPosition = 'object-center',
@@ -52,11 +52,11 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
   ) => {
     return (
       <div
-        className={cn('ImageRatioWrap', 'relative overflow-hidden bg-dark-950/25', width, ratio)}
+        className={cn('ImageRatioWrap', 'relative max-h-full overflow-hidden', width, ratio)}
         data-testid="ImageRatioWrap"
       >
         <NextImage
-          className={cn(objectFit, objectPosition, className)}
+          className={cn('bg-dark-950/25', objectFit, objectPosition, className)}
           sizes="100%"
           fill
           ref={ref}

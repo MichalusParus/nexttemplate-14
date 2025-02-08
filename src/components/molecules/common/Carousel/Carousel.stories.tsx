@@ -6,7 +6,8 @@ import { Paper } from '@/components/atoms/containers/Paper'
 
 import { getGalleryItems } from '../../../../../.storybook/helpers'
 import { Carousel } from '.'
-import { CarouselItem, CarouselProps } from './Carousel'
+import { CarouselProps } from './Carousel'
+import { CarouselItem } from './CarouselItem'
 
 const meta: Meta<typeof Carousel> = {
   title: 'Molecules/Common/Carousel',
@@ -17,7 +18,7 @@ const meta: Meta<typeof Carousel> = {
   },
 }
 
-const cardsArray = new Array(20).fill(null).map((item, index) => index)
+const cardsArray = Array.from({ length: 20 }, (_, i) => i)
 
 export default meta
 type Story = StoryObj<typeof Carousel>
@@ -28,7 +29,7 @@ const ControlledCarousel = (args: PropsWithChildren<CarouselProps>) => {
     <Carousel {...args} currentPage={currentPage} setCurrentPage={setCurrentPage}>
       {getGalleryItems(8).map((img, index) => (
         <CarouselItem key={index}>
-          <Image src={img.src} alt={img.alt} ratio="aspect-w-16 aspect-h-9" width="w-full" />
+          <Image src={img.src} alt={img.alt} ratio="aspect-video" width="w-full" />
         </CarouselItem>
       ))}
     </Carousel>
@@ -39,10 +40,13 @@ export const Default: Story = {
   args: {
     className: 'className',
     pages: 8,
+    label: undefined,
     width: 'w-full',
-    ratio: 'aspect-w-16 aspect-h-9',
+    ratio: 'aspect-video',
     currentPage: undefined,
     autoplay: undefined,
+    autoplayInterval: undefined,
+    autoplayStopped: undefined,
     hideArrows: false,
     hideControlDotts: false,
     setCurrentPage: undefined,
@@ -51,7 +55,7 @@ export const Default: Story = {
     <Carousel {...args}>
       {getGalleryItems(8).map((img, index) => (
         <CarouselItem key={index}>
-          <Image src={img.src} alt={img.alt} ratio="aspect-w-16 aspect-h-9" width="w-full" />
+          <Image src={img.src} alt={img.alt} width="w-full" />
         </CarouselItem>
       ))}
     </Carousel>
@@ -66,7 +70,8 @@ export const Controled: Story = {
 export const Autoplay: Story = {
   args: {
     ...Default.args,
-    autoplay: { interval: 2000 },
+    autoplay: true,
+    autoplayInterval: 3000,
   },
   render: args => (
     <Carousel {...args}>
@@ -75,7 +80,7 @@ export const Autoplay: Story = {
           <Image
             src={img.src}
             alt={img.alt}
-            ratio="aspect-w-16 aspect-h-9"
+            ratio="aspect-video"
             width="w-full"
             role="group"
             aria-roledescription="slide"
@@ -84,6 +89,11 @@ export const Autoplay: Story = {
       ))}
     </Carousel>
   ),
+}
+
+export const HideControls: Story = {
+  args: { ...Default.args, autoplay: true, hideControlDotts: true, hideArrows: true },
+  render: args => <ControlledCarousel {...args} />,
 }
 
 export const Panels: Story = {
@@ -102,7 +112,11 @@ export const Panels: Story = {
               className="Panel relative flex h-full w-full flex-wrap justify-center gap-2"
             >
               {cardsArray.slice(index * 4, index * 4 + 4).map(item => (
-                <Paper key={item} className="flex h-28 w-1/3 shrink-0 items-center justify-center">
+                <Paper
+                  key={item}
+                  variant="contained"
+                  className="flex h-28 w-1/3 shrink-0 items-center justify-center"
+                >
                   {'Card ' + (item + 1)}
                 </Paper>
               ))}
