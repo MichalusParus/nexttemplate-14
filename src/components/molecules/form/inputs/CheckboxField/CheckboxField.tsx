@@ -38,6 +38,7 @@ export const CheckboxField = ({
           color={color || formColor}
           size={size || formSize}
           error={errorMessage}
+          aria-labelledby={`${name}-label`}
           aria-invalid={!!errorMessage}
           {...field}
           {...rest}

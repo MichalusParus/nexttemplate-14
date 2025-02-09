@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode, PropsWithChildren } from 'react'
+import React, { ReactElement, ReactNode, PropsWithChildren, useEffect } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
 import { NextIntlClientProvider } from 'next-intl'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,14 +19,14 @@ const JestFormProvider = ({
   className,
   fields,
   values,
-  required,
+  errors,
   onSubmit = () => {},
   children,
 }: PropsWithChildren<{
   className?: string
   fields: string[]
   values?: any[]
-  required?: boolean
+  errors?: string[]
   onSubmit?: (v: any) => void
 }>) => {
   const zodFields = Object.fromEntries(fields.map(field => [field, z.unknown()]))
@@ -36,6 +36,14 @@ const JestFormProvider = ({
     resolver: zodResolver(schema),
     defaultValues: formValues,
   })
+
+  useEffect(() => {
+    if (errors) {
+      errors.forEach((error, i) => {
+        form.setError(fields[i], { type: 'manual', message: error })
+      })
+    }
+  }, [form, errors])
 
   return (
     <Form className={className} name="jestForm" form={form} onSubmit={onSubmit}>
@@ -47,7 +55,7 @@ const JestFormProvider = ({
 type UseFormProviderProps = {
   fields: string[]
   values?: any[]
-  required?: boolean
+  errors?: string[]
   onSubmit?: (v: any) => void
 }
 

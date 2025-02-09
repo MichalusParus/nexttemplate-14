@@ -35,6 +35,7 @@ export const Default: Story = {
     error: undefined,
     description: '',
     fakeLabel: false,
+    legend: false,
     hideLabel: false,
     hideError: false,
     children: (

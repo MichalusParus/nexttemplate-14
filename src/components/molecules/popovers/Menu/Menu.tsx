@@ -20,6 +20,7 @@ import { DropdownProps } from '../Dropdown/Dropdown'
 
 // fix menucheckbox gap
 // open sebmenu on hover
+// use checkbox and radiogroup just change roles
 
 export type MenuProps = Omit<StyleProps, 'size'> & {
   /** for passing custom tailwind classes */

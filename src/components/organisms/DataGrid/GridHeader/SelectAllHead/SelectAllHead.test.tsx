@@ -18,7 +18,7 @@ describe('SelectAllHead', () => {
     render(<SelectAllHead className="className" name="SelectAllHeadTest" handleAll={() => {}} />)
     expect(screen.getByRole('columnheader')).toBeInTheDocument()
     expect(screen.getByRole('columnheader')).toHaveClass('className')
-    expect(screen.getByTestId('Checkbox')).toBeInTheDocument()
+    expect(screen.getByTestId('CheckboxWrap')).toBeInTheDocument()
   })
 
   it('handleAll', () => {

@@ -138,7 +138,7 @@ describe('ListBox', () => {
         onClick={() => {}}
       />,
     )
-    const checkboxTestIds = screen.getAllByTestId('Checkbox')
+    const checkboxTestIds = screen.getAllByTestId('CheckboxWrap')
     const optionRoles = screen.getAllByRole('option')
 
     expect(checkboxTestIds[0]).toHaveClass('checkboxClass')

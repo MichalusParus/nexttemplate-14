@@ -1,7 +1,12 @@
 import '@testing-library/jest-dom'
 
+import { axe, toHaveNoViolations } from 'jest-axe'
+import { createRef } from 'react'
+
 import { fireEvent, render, screen } from '../../../../../../../.jest/customRender'
 import { TextArea } from '.'
+
+expect.extend(toHaveNoViolations)
 
 describe('TextArea', () => {
   it('default', () => {
@@ -13,36 +18,74 @@ describe('TextArea', () => {
         onChange={() => {}}
       />,
     )
-    expect(screen.getByTestId('TextAreaWrap')).toBeInTheDocument()
-    expect(screen.getByTestId('TextAreaWrap')).toHaveClass('className')
-    expect(screen.getByRole('textbox')).toHaveAttribute('id', 'textAreaTest')
-    expect(screen.getByRole('textbox')).toHaveAttribute('name', 'textAreaTest')
-    expect(screen.getByRole('textbox')).toHaveAttribute('placeholder', 'placeholder')
+    const textAreaWrapTestId = screen.getByTestId('TextAreaWrap')
+    const textAreaRole = screen.getByRole('textbox')
+
+    expect(textAreaWrapTestId).toBeInTheDocument()
+    expect(textAreaWrapTestId).toHaveClass('className')
+    expect(textAreaRole).toHaveAttribute('id', 'textAreaTest')
+    expect(textAreaRole).toHaveAttribute('name', 'textAreaTest')
+    expect(textAreaRole).toHaveAttribute('placeholder', 'placeholder')
+    textAreaRole.focus()
+    expect(document.activeElement).toBe(textAreaRole)
   })
 
   it('value', () => {
     render(<TextArea name="name" value="value" onChange={() => {}} />)
-    expect(screen.getByRole('textbox')).toHaveValue('value')
+    const textAreaRole = screen.getByRole('textbox')
+
+    expect(textAreaRole).toHaveValue('value')
+  })
+
+  it('error', () => {
+    render(<TextArea name="name" error="error" onChange={() => {}} />)
+    const textAreaWrapTestId = screen.getByTestId('TextAreaWrap')
+
+    expect(textAreaWrapTestId).toHaveClass('error')
   })
 
   it('onChange', () => {
     const spy = jest.fn()
     render(<TextArea name="name" value="value" onChange={spy} />)
-    fireEvent.change(screen.getByRole('textbox'), {
+    const textAreaRole = screen.getByRole('textbox')
+
+    fireEvent.change(textAreaRole, {
       target: {
         value: 'newvalue',
       },
     })
     expect(spy).toHaveBeenCalledTimes(1)
-  })
-
-  it('error', () => {
-    render(<TextArea name="name" error="error" onChange={() => {}} />)
-    expect(screen.getByTestId('TextAreaWrap')).toHaveClass('error')
+    expect(spy).toHaveBeenCalledWith('newvalue')
   })
 
   it('disabled', () => {
     render(<TextArea name="name" value="" disabled onChange={() => {}} />)
-    expect(screen.getByRole('textbox')).toHaveAttribute('disabled', '')
+    const textAreaRole = screen.getByRole('textbox')
+
+    expect(textAreaRole).toHaveAttribute('disabled', '')
+    expect(textAreaRole).toHaveAttribute('tabindex', '-1')
+  })
+
+  it('ref', () => {
+    const ref = createRef<HTMLTextAreaElement>()
+    render(<TextArea ref={ref} name="textAreaTest" placeholder="placeholder" onChange={() => {}} />)
+
+    expect(ref.current).not.toBeNull()
+    expect(ref.current?.focus).toBeDefined()
+
+    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
+    ref.current?.focus()
+
+    expect(focusMock).toHaveBeenCalled()
+    focusMock.mockRestore()
+  })
+
+  it('axe', async () => {
+    const { container } = render(
+      <TextArea name="textAreaTest" placeholder="placeholder" onChange={() => {}} />,
+    )
+
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
   })
 })

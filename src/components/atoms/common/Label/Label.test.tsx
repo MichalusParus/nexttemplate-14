@@ -62,6 +62,19 @@ describe('Label', () => {
     expect(fakeLabelTestId).toBeInTheDocument()
     expect(fakeLabelTestId).toHaveTextContent('label')
     expect(fakeLabelTestId).toHaveAttribute('id', 'labelTest-label')
+    expect(fakeLabelTestId.tagName).toBe('DIV')
+  })
+
+  it('legend', () => {
+    render(<Label name="labelTest" label="label" legend />)
+    const labelQuery = screen.queryByTestId('Label')
+    const fakeLabelTestId = screen.getByTestId('FakeLabel')
+
+    expect(labelQuery).toBeNull()
+    expect(fakeLabelTestId).toBeInTheDocument()
+    expect(fakeLabelTestId).toHaveTextContent('label')
+    expect(fakeLabelTestId).toHaveAttribute('id', 'labelTest-label')
+    expect(fakeLabelTestId.tagName).toBe('LEGEND')
   })
 
   it('hideLabel', () => {

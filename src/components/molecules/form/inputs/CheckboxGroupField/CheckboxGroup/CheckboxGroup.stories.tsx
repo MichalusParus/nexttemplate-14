@@ -38,6 +38,7 @@ export const PrimaryDefault: Story = {
     size: 'md',
     error: '',
     disabled: false,
+    checkboxProps: {},
     onChange: value => console.log(value),
   },
   render: args => <CheckboxGroupWithHooks {...args} />,

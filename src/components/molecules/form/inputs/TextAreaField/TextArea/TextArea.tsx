@@ -48,7 +48,6 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       <div
         className={cn(
           'TextAreaWrap',
-          'flex',
           inputWrapClass,
           inputVariant[variant][color],
           error && 'error ' + inputErrorClass,
@@ -64,7 +63,6 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           value={value}
           disabled={disabled}
           tabIndex={disabled ? -1 : 0}
-          aria-describedby={`${name}-description`}
           onChange={e => onChange(e.target.value)}
           ref={ref}
           {...rest}

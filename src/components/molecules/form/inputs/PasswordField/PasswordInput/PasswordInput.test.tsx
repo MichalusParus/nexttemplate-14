@@ -1,7 +1,12 @@
 import '@testing-library/jest-dom'
 
+import { axe, toHaveNoViolations } from 'jest-axe'
+import { createRef } from 'react'
+
 import { fireEvent, render, screen } from '../../../../../../../.jest/customRender'
 import { PasswordInput } from '.'
+
+expect.extend(toHaveNoViolations)
 
 describe('PasswordInput', () => {
   it('default', () => {
@@ -13,43 +18,89 @@ describe('PasswordInput', () => {
         onChange={() => {}}
       />,
     )
-    expect(screen.getByTestId('InputWrap')).toBeInTheDocument()
-    expect(screen.getByTestId('InputWrap')).toHaveClass('className')
-    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('type', 'password')
-    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('id', 'passwordTest')
-    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('name', 'passwordTest')
-    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('placeholder', 'placeholder')
+    const inputWrapTestId = screen.getByTestId('InputWrap')
+    const passwordtestId = screen.getByTestId('PasswordInput')
+
+    expect(inputWrapTestId).toBeInTheDocument()
+    expect(inputWrapTestId).toHaveClass('className')
+    expect(passwordtestId).toHaveAttribute('type', 'password')
+    expect(passwordtestId).toHaveAttribute('id', 'passwordTest')
+    expect(passwordtestId).toHaveAttribute('name', 'passwordTest')
+    expect(passwordtestId).toHaveAttribute('placeholder', 'placeholder')
+    passwordtestId.focus()
+    expect(document.activeElement).toBe(passwordtestId)
   })
 
   it('value', () => {
     render(<PasswordInput name="name" value="value" onChange={() => {}} />)
-    expect(screen.getByTestId('PasswordInput')).toHaveValue('value')
+    const passwordtestId = screen.getByTestId('PasswordInput')
+
+    expect(passwordtestId).toHaveValue('value')
+  })
+
+  it('unmask', () => {
+    render(<PasswordInput name="name" value="value" onChange={() => {}} />)
+    const buttonRole = screen.getByRole('button')
+    const passwordtestId = screen.getByTestId('PasswordInput')
+
+    expect(passwordtestId).toHaveAttribute('type', 'password')
+    expect(buttonRole).toBeInTheDocument()
+    expect(buttonRole).toHaveAttribute('aria-label')
+    fireEvent.click(buttonRole)
+    expect(passwordtestId).toHaveAttribute('type', 'text')
+  })
+
+  it('error', () => {
+    render(<PasswordInput name="name" error="error" onChange={() => {}} />)
+    const inputWrapTestId = screen.getByTestId('InputWrap')
+
+    expect(inputWrapTestId).toHaveClass('error')
   })
 
   it('onChange', () => {
     const spy = jest.fn()
     render(<PasswordInput name="name" value="value" onChange={spy} />)
-    fireEvent.change(screen.getByTestId('PasswordInput'), {
+    const passwordtestId = screen.getByTestId('PasswordInput')
+
+    fireEvent.change(passwordtestId, {
       target: {
         value: 'newvalue',
       },
     })
     expect(spy).toHaveBeenCalledTimes(1)
-  })
-
-  it('visible', () => {
-    render(<PasswordInput name="name" value="value" onChange={() => {}} />)
-    fireEvent.click(screen.getByRole('button'))
-    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('type', 'text')
-  })
-
-  it('error', () => {
-    render(<PasswordInput name="name" error="error" onChange={() => {}} />)
-    expect(screen.getByTestId('InputWrap')).toHaveClass('error')
+    expect(spy).toHaveBeenCalledWith('newvalue')
   })
 
   it('disabled', () => {
     render(<PasswordInput name="name" value="" disabled onChange={() => {}} />)
-    expect(screen.getByTestId('PasswordInput')).toHaveAttribute('disabled', '')
+    const passwordtestId = screen.getByTestId('PasswordInput')
+
+    expect(passwordtestId).toHaveAttribute('disabled')
+    expect(passwordtestId).toHaveAttribute('tabindex', '-1')
+  })
+
+  it('ref', () => {
+    const ref = createRef<HTMLInputElement>()
+    render(
+      <PasswordInput ref={ref} name="passwordTest" placeholder="placeholder" onChange={() => {}} />,
+    )
+
+    expect(ref.current).not.toBeNull()
+    expect(ref.current?.focus).toBeDefined()
+
+    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
+    ref.current?.focus()
+
+    expect(focusMock).toHaveBeenCalled()
+    focusMock.mockRestore()
+  })
+
+  it('axe', async () => {
+    const { container } = render(
+      <PasswordInput name="passwordTest" placeholder="placeholder" onChange={() => {}} />,
+    )
+
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
   })
 })

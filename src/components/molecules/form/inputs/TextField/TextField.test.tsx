@@ -1,63 +1,135 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
-import { JestFormProvider } from '../../../../../../.storybook/helpers'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { axe, toHaveNoViolations } from 'jest-axe'
+import { useForm } from 'react-hook-form'
+import z from 'zod'
+
+import { fireEvent, render, screen, waitFor } from '../../../../../../.jest/customRender'
+import { Form } from '../../Form'
 import { TextField } from '.'
+
+expect.extend(toHaveNoViolations)
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const FieldWithHooks = (props: any) => {
+  const formSchema = z.object({
+    fieldTest: z.string().min(3, 'min 3 characters'),
+  })
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { fieldTest: 'value' },
+  })
+  return (
+    <Form name="testForm" form={form} onSubmit={() => {}}>
+      <TextField
+        className="className"
+        name="fieldTest"
+        label="Label"
+        placeholder="placeholder"
+        {...props}
+      />
+      <button form="testForm" type="submit" data-testid="submitButton">
+        Submit
+      </button>
+    </Form>
+  )
+}
 
 describe('TextField', () => {
   it('default', () => {
-    render(<TextField className="className" type="text" name="inputTest" label="label" />, {
-      useFormProvider: { fields: ['inputTest'] },
-    })
-    fireEvent.change(screen.getByRole('textbox'), {
+    render(<FieldWithHooks />)
+    const fieldWrapTestId = screen.getByTestId('InputWrap')
+    const inputRole = screen.getByRole('textbox')
+    const labelTestId = screen.getByTestId('Label')
+    const alertTestId = screen.getByTestId('Alert')
+    const alertQuery = screen.queryByRole('alert')
+
+    expect(fieldWrapTestId).toBeInTheDocument()
+    expect(fieldWrapTestId).toHaveClass('className')
+    expect(inputRole).toHaveAttribute('id', 'fieldTest')
+    expect(inputRole).toHaveAttribute('name', 'fieldTest')
+    expect(inputRole).toHaveAttribute('type', 'text')
+    expect(inputRole).toHaveAttribute('value', 'value')
+    expect(inputRole).toHaveAttribute('placeholder', 'placeholder')
+    expect(inputRole).toHaveAttribute('aria-labelledby', 'fieldTest-label')
+    expect(inputRole).toHaveAttribute('aria-invalid', 'false')
+    expect(inputRole).not.toHaveAttribute('aria-describedby')
+    expect(labelTestId).toBeInTheDocument()
+    expect(labelTestId).toHaveTextContent('Label')
+    expect(labelTestId).toHaveAttribute('for', 'fieldTest')
+    expect(labelTestId).toHaveAttribute('id', 'fieldTest-label')
+    expect(alertTestId).toBeInTheDocument()
+    expect(alertTestId).toHaveTextContent('')
+    expect(alertTestId).toHaveAttribute('id', 'fieldTest-description')
+    expect(alertQuery).toBeNull()
+  })
+
+  it('value', () => {
+    render(<FieldWithHooks />)
+    const inputRole = screen.getByRole('textbox')
+
+    expect(inputRole).toHaveAttribute('value', 'value')
+
+    fireEvent.change(inputRole, {
       target: {
-        value: 'inputTest',
+        value: 'newValue',
       },
     })
-    expect(screen.getByTestId('InputWrap')).toBeInTheDocument()
-    expect(screen.getByTestId('InputWrap')).toHaveClass('className')
-    expect(screen.getByRole('textbox')).toHaveAttribute('id', 'inputTest')
-    expect(screen.getByRole('textbox')).toHaveAttribute('name', 'inputTest')
-    expect(screen.getByRole('textbox')).toHaveAttribute('type', 'text')
-    expect(screen.getByRole('textbox')).toHaveAttribute('value', 'inputTest')
-    expect(screen.getByRole('textbox')).toHaveAttribute('aria-labelledby', 'inputTest-label')
-    expect(screen.getByTestId('Label')).toBeInTheDocument()
-    expect(screen.getByTestId('Label')).toHaveTextContent('label')
+
+    expect(inputRole).toHaveAttribute('value', 'newValue')
+  })
+
+  it('description', () => {
+    render(<FieldWithHooks labelProps={{ description: 'description' }} />)
+    const inputRole = screen.getByRole('textbox')
+    const alertTestId = screen.getByTestId('Alert')
+
+    expect(alertTestId).toBeInTheDocument()
+    expect(alertTestId).toHaveTextContent('description')
+    expect(inputRole).toHaveAttribute('aria-describedby', 'fieldTest-description')
+  })
+
+  it('error', async () => {
+    render(<FieldWithHooks />)
+    const inputRole = screen.getByRole('textbox')
+    const alertRole = screen.getByTestId('Alert')
+    fireEvent.change(inputRole, {
+      target: {
+        value: '',
+      },
+    })
+    fireEvent.submit(screen.getByTestId('submitButton'))
+
+    await waitFor(() => {
+      expect(alertRole).toBeInTheDocument()
+      expect(alertRole).toHaveTextContent('min 3 characters')
+      expect(alertRole).toHaveAttribute('role', 'alert')
+      expect(inputRole).toHaveAttribute('aria-describedby', 'fieldTest-description')
+      expect(inputRole).toHaveAttribute('aria-invalid', 'true')
+    })
+  })
+
+  it('labelProps', () => {
+    render(<FieldWithHooks labelProps={{ className: 'className' }} />)
+    const labelWrapTestId = screen.getByTestId('LabelWrap')
+
+    expect(labelWrapTestId).toHaveClass('className')
   })
 
   it('onSubmit', () => {
     const spy = jest.fn()
-    render(
-      <>
-        <TextField className="className" type="text" name="inputTest" label="label" />
-        <button type="submit" />
-      </>,
-      {
-        useFormProvider: { fields: ['inputTest'], onSubmit: spy },
-      },
-    )
+    render(<FieldWithHooks />)
     screen.getByTestId('Form').onsubmit = spy
-    fireEvent.click(screen.getByRole('button'))
+    fireEvent.click(screen.getByTestId('submitButton'))
+    // TODO beenCalledWith, spy return native event and not values
     expect(spy).toHaveBeenCalled()
   })
 
-  it('description', () => {
-    render(
-      <JestFormProvider fields={['inputTest']}>
-        <TextField
-          className="className"
-          type="text"
-          name="inputTest"
-          label="label"
-          labelProps={{ description: 'description' }}
-        />
-        <button type="submit" />
-      </JestFormProvider>,
-      {
-        useFormProvider: { fields: ['inputTest'] },
-      },
-    )
-    expect(screen.getByTestId('Alert')).toBeInTheDocument()
-    expect(screen.getByTestId('Alert')).toHaveTextContent('description')
+  it('axe', async () => {
+    const { container } = render(<FieldWithHooks />)
+
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
   })
 })

@@ -35,7 +35,7 @@ export const RadioGroupField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size} error={errorMessage} {...labelProps} fakeLabel>
+        <Label name={name} label={label} size={size} error={errorMessage} {...labelProps} legend>
           <RadioGroup
             className={className}
             variant={variant || formVariant}

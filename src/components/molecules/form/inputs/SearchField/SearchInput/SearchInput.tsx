@@ -52,7 +52,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         variant={variant}
         color={color}
         size={size}
-        startIcon={<SearchIcon />}
+        startIcon={<SearchIcon aria-hidden data-testid="SearchIcon" />}
         endIcon={
           <Button
             className={cn(

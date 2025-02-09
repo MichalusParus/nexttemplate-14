@@ -1,17 +1,18 @@
 'use client'
-import { forwardRef, InputHTMLAttributes } from 'react'
+import { FieldsetHTMLAttributes, forwardRef, InputHTMLAttributes } from 'react'
 
 import { InputProps, OptionType, StyleProps } from '@/components/types'
-import { cn } from '@/utils/utils'
+import { cn, filterOutKeys } from '@/utils/utils'
 
+import { inputErrorClass } from '../../TextField/TextInput/TextInput.style'
 import { afterClass, disableVariant, radioClass, radioSize, radioVariant } from './RadioGroup.style'
 
 type NativeRadioGroupProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  'color' | 'size' | 'onChange' | 'type' | 'className' | 'name' | 'width' | 'value'
+  'color' | 'size' | 'onChange' | 'type' | 'name' | 'width' | 'value'
 >
 
-export type RadioGroupProps = NativeRadioGroupProps &
+export type RadioGroupProps = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'onChange'> &
   InputProps &
   StyleProps & {
     /** value of radiogroup */
@@ -20,12 +21,14 @@ export type RadioGroupProps = NativeRadioGroupProps &
     options: OptionType[]
     /** display radio inputs in column */
     column?: boolean
+    /** optional radio props */
+    radioProps?: Partial<NativeRadioGroupProps>
     /** onChange function */
     onChange: (value: string) => void
   }
 
-/** Basic styled uncontroled RadioGroup. For form purposes use RadioGroupField. Default InputHTMLAttributes props supported. USE CLIENT */
-export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
+/** Basic styled uncontroled RadioGroup. For form purposes use RadioGroupField. Default FieldsetHTMLAttributes and Radio props supported. USE CLIENT */
+export const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(
   (
     {
       className,
@@ -38,15 +41,18 @@ export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
       size = 'md',
       disabled,
       error,
+      radioProps = {},
       onChange,
       ...rest
     },
     ref,
   ) => {
     return (
-      <div
+      <fieldset
+        id={name}
         className={cn('RadioGroupWrap', 'flex flex-wrap', column && 'flex-col', className)}
-        role="radiogroup"
+        ref={ref}
+        {...rest}
       >
         {options.map(({ value: radioValue, label: radioLabel, content }) => (
           <div
@@ -55,30 +61,35 @@ export const RadioGroup = forwardRef<HTMLInputElement, RadioGroupProps>(
             data-testid="Radio"
           >
             <input
+              id={radioValue}
               className={cn(
                 radioClass,
                 radioVariant[variant][color],
                 disableVariant[variant],
                 afterClass,
-                error && 'border-error-800 shadow-error',
+                error && 'error ' + inputErrorClass,
+                radioProps?.className,
               )}
-              id={radioValue}
               name={name}
               type="radio"
               value={radioValue}
               onChange={e => onChange(e.target.value)}
               checked={Boolean(value === radioValue)}
-              aria-describedby={`${name}-description`}
               disabled={disabled}
-              ref={ref}
-              {...rest}
+              tabIndex={disabled ? -1 : 0}
+              {...filterOutKeys(radioProps, ['className'])}
             />
-            <label htmlFor={radioValue} className={cn('Label')}>
+            <label
+              id={`${radioValue}-label`}
+              htmlFor={radioValue}
+              className={cn('Label')}
+              data-testid="Label"
+            >
               {content || radioLabel}
             </label>
           </div>
         ))}
-      </div>
+      </fieldset>
     )
   },
 )

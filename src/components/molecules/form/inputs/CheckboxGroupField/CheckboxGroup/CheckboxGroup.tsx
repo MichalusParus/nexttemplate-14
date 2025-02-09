@@ -1,29 +1,30 @@
 'use client'
-import { forwardRef, useCallback } from 'react'
+import { FieldsetHTMLAttributes, forwardRef, useCallback } from 'react'
 
-import { OptionType } from '@/components/types'
+import { InputProps, OptionType, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { Checkbox, CheckboxProps } from '../../CheckboxField/Checkbox/Checkbox'
 
-export type CheckboxGroupProps = Omit<
-  CheckboxProps,
-  'value' | 'isChecked' | 'onChange' | 'fake' | 'label' | 'content'
-> & {
-  /** name of form field */
-  name: string
-  /** checkboxGroup value */
-  value: string[]
-  /** group options for individual radio inputs */
-  options: OptionType[]
-  /** display radio inputs in column */
-  column?: boolean
-  /** onChange function */
-  onChange: (value: string[]) => void
-}
+export type CheckboxGroupProps = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'onChange'> &
+  InputProps &
+  Omit<StyleProps, 'variant'> & {
+    /** checkboxGroup value */
+    value: string[]
+    /** group options for individual radio inputs */
+    options: OptionType[]
+    /** display radio inputs in column */
+    column?: boolean
+    /** style variant of component */
+    variant?: StyleProps['variant'] | 'switch'
+    /** optional checkbox props */
+    checkboxProps?: Partial<CheckboxProps>
+    /** onChange function */
+    onChange: (value: string[]) => void
+  }
 
-/** Basic styled CheckboxGroup. For form purposes use CheckboxGroupField. Default InputHTMLAttributes props supported. USE CLIENT */
-export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
+/** Basic styled CheckboxGroup. For form purposes use CheckboxGroupField. Default FieldsetHTMLAttributes and Checkbox props supported. USE CLIENT */
+export const CheckboxGroup = forwardRef<HTMLFieldSetElement, CheckboxGroupProps>(
   (
     {
       className,
@@ -36,6 +37,7 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
       size = 'md',
       disabled,
       error,
+      checkboxProps = {},
       onChange,
       ...rest
     },
@@ -64,9 +66,12 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
     )
 
     return (
-      <div
+      <fieldset
+        id={name}
         className={cn('CheckboxGroup', 'flex flex-wrap', column && 'flex-col', className)}
-        data-testid="CheckboxGroup"
+        aria-labelledby={`${name}-label`}
+        ref={ref}
+        {...rest}
       >
         {options.map(({ value: checkboxValue, label: checkboxLabel, content }) => (
           <Checkbox
@@ -79,15 +84,13 @@ export const CheckboxGroup = forwardRef<HTMLInputElement, CheckboxGroupProps>(
             color={color}
             size={size}
             isChecked={isChecked(checkboxValue)}
-            error={error}
             disabled={disabled}
+            error={error}
             onChange={handleOnChange}
-            aria-describedby={`${name}-description`}
-            ref={ref}
-            {...rest}
+            {...checkboxProps}
           />
         ))}
-      </div>
+      </fieldset>
     )
   },
 )

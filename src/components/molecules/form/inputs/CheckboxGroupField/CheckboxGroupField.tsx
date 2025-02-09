@@ -35,7 +35,7 @@ export const CheckboxGroupField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size} error={errorMessage} {...labelProps} fakeLabel>
+        <Label name={name} label={label} size={size} error={errorMessage} {...labelProps} legend>
           <CheckboxGroup
             className={className}
             variant={variant || formVariant}

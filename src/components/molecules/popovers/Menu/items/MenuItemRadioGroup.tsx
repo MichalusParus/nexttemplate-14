@@ -34,7 +34,7 @@ export const MenuItemRadioGroup = forwardRef<HTMLInputElement, MenuItemRadioGrou
   ) => {
     return (
       <li role="presentation">
-        <div
+        <fieldset
           className={cn(
             'MenuItemRadioGroupWrap',
             'flex flex-wrap',
@@ -42,6 +42,7 @@ export const MenuItemRadioGroup = forwardRef<HTMLInputElement, MenuItemRadioGrou
             className,
           )}
           role="radiogroup"
+          {...rest}
         >
           {options.map(({ value: radioValue, label: radioLabel, content }) => (
             <div
@@ -72,14 +73,13 @@ export const MenuItemRadioGroup = forwardRef<HTMLInputElement, MenuItemRadioGrou
                 ref={ref}
                 role="menuitemradio"
                 onChange={e => onChange(e.target.value)}
-                {...rest}
               />
               <label htmlFor={radioValue} className={cn('Label', 'w-full font-semibold')}>
                 {content || radioLabel}
               </label>
             </div>
           ))}
-        </div>
+        </fieldset>
       </li>
     )
   },

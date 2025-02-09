@@ -38,6 +38,7 @@ export const PrimaryDefault: Story = {
     size: 'md',
     error: '',
     disabled: false,
+    radioProps: {},
     onChange: () => {},
   },
   render: args => <RadioGroupWithHooks {...args} />,

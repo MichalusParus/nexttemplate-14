@@ -5,6 +5,7 @@ import { CheckIcon } from '@/components/atoms/icons'
 import { FieldProps, InputProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
+import { inputErrorClass } from '../../TextField/TextInput/TextInput.style'
 import {
   checkboxMargin,
   checkboxSize,
@@ -62,7 +63,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     },
     ref,
   ) => {
-    const errorShadow = error ? 'error shadow-error border-error-800' : ''
     const checkVisibility = isChecked || disabled ? 'opacity-100' : 'opacity-0'
     const thumbPosition = isChecked || disabled ? switchLeft[size] : 'left-0'
 
@@ -70,7 +70,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       return (
         <div
           className={cn('SwitchWrap', 'flex items-start', checkboxMargin[size], className)}
-          data-testid="Switch"
+          data-testid="SwitchWrap"
         >
           <div className={cn('relative mr-2 flex', switchSize[size])}>
             <input
@@ -79,7 +79,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 switchClass,
                 checkboxVariant[variant][color],
                 disabledVariant[variant],
-                errorShadow,
+                error && 'error ' + inputErrorClass,
               )}
               type="checkbox"
               name={name}
@@ -87,6 +87,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               onChange={e => onChange(e.target.value)}
               checked={isChecked}
               disabled={disabled}
+              tabIndex={disabled ? -1 : 0}
               ref={ref}
               {...rest}
             />
@@ -101,7 +102,12 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               data-testid="SwitchThumb"
             />
           </div>
-          <label htmlFor={name} className={cn('Label', 'group relative flex items-center')}>
+          <label
+            id={`${name}-label`}
+            htmlFor={name}
+            className={cn('Label', 'group relative flex items-center')}
+            data-testid="Label"
+          >
             {content || label}
           </label>
         </div>
@@ -111,7 +117,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     return (
       <div
         className={cn('CheckboxWrap', 'flex items-start', !fake && checkboxMargin[size], className)}
-        data-testid="Checkbox"
+        data-testid="CheckboxWrap"
       >
         <div
           className={cn(
@@ -122,7 +128,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             checkboxSize[size],
             disabled && 'disabled',
             disabled && disabledVariant[variant],
-            errorShadow,
+            error && 'error ' + inputErrorClass,
           )}
           data-testid="CheckboxInputWrap"
         >
@@ -139,6 +145,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               onChange={e => onChange(e.target.value)}
               checked={isChecked}
               disabled={disabled}
+              tabIndex={disabled ? -1 : 0}
+              aria-labelledby={`${name}-label`}
               ref={ref}
               {...rest}
             />
@@ -156,7 +164,12 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           />
         </div>
         {!fake && (
-          <label htmlFor={name} className={cn('Label', checkLabelSize[size])}>
+          <label
+            id={`${name}-label`}
+            htmlFor={name}
+            className={cn('Label', checkLabelSize[size])}
+            data-testid="Label"
+          >
             {content || label}
           </label>
         )}

@@ -20,6 +20,8 @@ export type LabelProps = NativeLabelProps &
     width?: string
     /** optional form component description */
     description?: string
+    /** optional for legend instead of label */
+    legend?: boolean
     /** change label for div FakeLabel */
     fakeLabel?: boolean
     /** hide visually label for minimalitic form components */
@@ -39,6 +41,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
       width = 'w-full',
       error,
       description,
+      legend,
       fakeLabel,
       hideLabel,
       hideError,
@@ -48,20 +51,21 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
     ref,
   ) => {
     const labelVisibility = hideLabel && 'hidden'
+    const Element = legend ? 'legend' : 'div'
 
     return (
       <div
         className={cn('LabelWrap', 'relative flex flex-col items-start gap-0.5', width, className)}
         data-testid="LabelWrap"
       >
-        {fakeLabel ? (
-          <div
+        {fakeLabel || legend ? (
+          <Element
             id={`${name}-label`}
             className={cn('FakeLabel', labelClass, textSize[size], labelVisibility)}
             data-testid="FakeLabel"
           >
             {label}
-          </div>
+          </Element>
         ) : (
           <label
             id={`${name}-label`}
