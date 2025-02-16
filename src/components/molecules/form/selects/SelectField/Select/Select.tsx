@@ -12,8 +12,6 @@ import { cn } from '@/utils/utils'
 
 import { SelectCombobox, SelectComboboxProps } from './SelectCombobox'
 
-// reword all options to take Generic type
-
 export type SelectProps = Omit<
   SelectComboboxProps,
   'isOpen' | 'handleOpen' | 'selectedOptions' | 'handleOnChange'
