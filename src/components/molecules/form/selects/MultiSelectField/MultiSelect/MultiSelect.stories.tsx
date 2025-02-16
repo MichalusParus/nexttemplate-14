@@ -45,6 +45,7 @@ export const PrimaryDefault: Story = {
     size: 'md',
     placement: 'bottom',
     error: '',
+    chipProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
     onChange: value => console.log(value),
