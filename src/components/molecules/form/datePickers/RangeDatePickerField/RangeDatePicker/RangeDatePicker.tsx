@@ -5,7 +5,10 @@ import { forwardRef } from 'react'
 import { DatePicker } from '../../DatePickerField/DatePicker'
 import { DatePickerProps } from '../../DatePickerField/DatePicker/DatePicker'
 
-export type RangeDatePickerProps = Omit<DatePickerProps, 'value' | 'onChange'> & {
+export type RangeDatePickerProps = Omit<
+  DatePickerProps,
+  'value' | 'onChange' | 'onClear' | 'onClose'
+> & {
   /** current value of component */
   value: { start?: Date; end?: Date }
   /** onChange function */
@@ -13,7 +16,7 @@ export type RangeDatePickerProps = Omit<DatePickerProps, 'value' | 'onChange'> &
 }
 
 /** Basic custom RangeDatePicker. For form purposes use RangeDatePicker. Button, Dropdown and Calendar props supported. USE CLIENT */
-export const RangeDatePicker = forwardRef<HTMLDivElement, RangeDatePickerProps>(
+export const RangeDatePicker = forwardRef<HTMLButtonElement, RangeDatePickerProps>(
   ({ name, value, error, calendarProps, onChange, ...rest }, ref) => {
     const handleChange = (date: Date) => {
       if (!value?.start || (value.start && value.end)) {
@@ -31,12 +34,19 @@ export const RangeDatePicker = forwardRef<HTMLDivElement, RangeDatePickerProps>(
       }
     }
 
+    const handleClose = () => {
+      if (!value?.end) {
+        onChange({})
+      }
+    }
+
     return (
       <DatePicker
         name={name}
         value={value?.start}
         error={error}
         calendarProps={{ ...calendarProps, range: value }}
+        onClose={handleClose}
         onChange={handleChange}
         ref={ref}
         {...rest}

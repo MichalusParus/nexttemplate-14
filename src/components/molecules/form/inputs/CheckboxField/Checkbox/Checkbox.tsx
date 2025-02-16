@@ -10,7 +10,6 @@ import {
   checkboxMargin,
   checkboxSize,
   checkboxVariant,
-  checkClass,
   checkLabelSize,
   checkVariant,
   disabledVariant,
@@ -65,6 +64,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   ) => {
     const checkVisibility = isChecked || disabled ? 'opacity-100' : 'opacity-0'
     const thumbPosition = isChecked || disabled ? switchLeft[size] : 'left-0'
+    console.log(isChecked)
 
     if (variant === 'switch') {
       return (
@@ -154,8 +154,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           <CheckIcon
             className={cn(
               'CheckIcon',
+              'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
               disabled && 'disabled',
-              !fake && checkClass,
               checkVariant[variant][color],
               checkboxSize[size],
               checkVisibility,

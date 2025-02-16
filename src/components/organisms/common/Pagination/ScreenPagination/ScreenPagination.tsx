@@ -4,7 +4,7 @@ import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { ChevronIcon } from '@/components/atoms/icons'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { MobilePaginationProps } from '../MobilePagination/MobilePagination'
 import { chevronPosition } from '../MobilePagination/MobilePagination.style'
@@ -38,6 +38,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
     const t = useTranslations('Components')
     const componentRef = useRef<HTMLDivElement | null>(null)
     useImperativeHandle(ref, () => componentRef.current!)
+    const { className: buttonClassName, ...restButtonProps } = buttonProps
     const pages = Array.from({ length: count }, (_, i) => i + 1)
     const sidePagesCount = (pageSpread - 5) / 2
 
@@ -77,7 +78,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
             className={cn(
               'LeftChevronButton',
               'absolute top-1/2 translate-y-[-50%] [&_svg]:rotate-90',
-              buttonProps.className,
+              buttonClassName,
             )}
             variant={variant}
             color={color}
@@ -85,7 +86,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
             startIcon={<ChevronIcon />}
             onClick={() => setSelectedPage(selectedPage - 1)}
             aria-label={t('previousPage', { page: selectedPage - 1 })}
-            {...filterOutKeys(buttonProps, ['className'])}
+            {...restButtonProps}
           />
         )}
         {count > sidePagesCount * 2 + 6 && selectedPage > sidePagesCount + 3 && (
@@ -94,7 +95,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
               'PageButton',
               pageButtonSize[size],
               getSelectedClass(pages[0]),
-              buttonProps.className,
+              buttonClassName,
             )}
             variant={variant}
             color={color}
@@ -103,7 +104,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
             onClick={() => setSelectedPage(pages[0])}
             tabIndex={-1}
             aria-label={t('page', { page: pages[0] })}
-            {...filterOutKeys(buttonProps, ['className'])}
+            {...restButtonProps}
           />
         )}
         {count > sidePagesCount * 2 + 6 && selectedPage > sidePagesCount + 3 && (
@@ -120,7 +121,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
               'PageButton',
               pageButtonSize[size],
               getSelectedClass(page),
-              buttonProps.className,
+              buttonClassName,
             )}
             variant={variant}
             color={color}
@@ -129,7 +130,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
             onClick={() => setSelectedPage(page)}
             tabIndex={-1}
             aria-label={t('page', { page: page })}
-            {...filterOutKeys(buttonProps, ['className'])}
+            {...restButtonProps}
           />
         ))}
         {count > sidePagesCount * 2 + 6 && selectedPage < count - (sidePagesCount + 2) && (
@@ -145,7 +146,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
               'PageButton',
               pageButtonSize[size],
               getSelectedClass(pages[count - 1]),
-              buttonProps.className,
+              buttonClassName,
             )}
             variant={variant}
             color={color}
@@ -154,7 +155,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
             onClick={() => setSelectedPage(pages[count - 1])}
             tabIndex={-1}
             aria-label={t('page', { page: pages[count - 1] })}
-            {...filterOutKeys(buttonProps, ['className'])}
+            {...restButtonProps}
           />
         )}
         {selectedPage + loadMoreCount < count && (
@@ -162,7 +163,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
             className={cn(
               'RightChevronButton',
               'absolute top-1/2 translate-y-[-50%] [&_svg]:-rotate-90',
-              buttonProps.className,
+              buttonClassName,
             )}
             variant={variant}
             color={color}
@@ -172,7 +173,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
             aria-label={t('nextPage', {
               page: selectedPage + 1,
             })}
-            {...filterOutKeys(buttonProps, ['className'])}
+            {...restButtonProps}
           />
         )}
       </div>

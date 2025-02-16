@@ -104,7 +104,6 @@ export const PrimaryDefault: Story = {
     isLoading: false,
     error: '',
     disabled: false,
-    buttonProps: undefined,
     inputProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,

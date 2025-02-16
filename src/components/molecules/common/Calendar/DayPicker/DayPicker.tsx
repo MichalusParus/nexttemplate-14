@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { P } from '@/components/atoms/typography/P'
 import { StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 export type DateButtonType = {
   day: Date
@@ -37,6 +37,7 @@ export const DayPicker = ({
   onChange,
 }: DayPickerProps) => {
   const t = useTranslations('Components')
+  const { className: buttonClassName, ...restButtonProps } = buttonProps
   const daysInWeek = useMemo(
     () =>
       eachDayOfInterval({
@@ -72,7 +73,7 @@ export const DayPicker = ({
                 'w-full border-none font-normal',
                 isSelected && 'selected shadow-ring',
                 !isCurrent && 'opacity-50',
-                buttonProps.className,
+                buttonClassName,
               )}
               variant={variant}
               color={color}
@@ -86,7 +87,7 @@ export const DayPicker = ({
               aria-current={isSameDay(day, new Date()) ? 'date' : undefined}
               disabled={isDisabled}
               onClick={() => onChange(day)}
-              {...filterOutKeys(buttonProps, ['className'])}
+              {...restButtonProps}
             />
           ))}
         </div>

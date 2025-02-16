@@ -5,7 +5,7 @@ import { forwardRef, OlHTMLAttributes, useCallback } from 'react'
 import { Checkbox } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
 import { CheckboxProps } from '@/components/molecules/form/inputs/CheckboxField/Checkbox/Checkbox'
 import { OptionType, StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { Ghost } from '../../loaders/Ghost'
 import { Button, ButtonProps } from '../Button'
@@ -22,7 +22,7 @@ export type ListBoxProps = NativeListBoxProps &
     /** name of the listbox for aria-controls */
     name: string
     /** current values of selected options */
-    value: string[]
+    value?: string[]
     /** options for display */
     options: OptionType[]
     /** loading state for options fetching, loading is delayed for 1 second to prevent flickering */
@@ -45,7 +45,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
     {
       className,
       name,
-      value,
+      value = [],
       options,
       variant = 'outlined',
       color = 'primary',
@@ -64,6 +64,8 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
     const ghostOptions =
       isLoading && !options.length ? [{ value: 'ghost', label: 'ghost', content: '' }] : []
     const completeOptions = [...options, ...ghostOptions]
+    const { className: buttonClassName, ...restButtonProps } = buttonProps
+    const { className: checkboxClassName, ...restCheckboxProps } = checkboxProps
 
     const getSelectedClass = useCallback(
       (optionValue: string) => {
@@ -79,6 +81,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
         aria-labelledby={`${name}-label`}
         role="listbox"
         ref={ref}
+        data-testid="ListBox"
         {...rest}
       >
         {options.length || isLoading ? (
@@ -90,7 +93,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                   'flex w-full items-center justify-start rounded-none border border-transparent focus:outline-none dark:border-transparent',
                   getSelectedClass(optionValue),
                   isLoading ? 'cursor-not-allowed' : 'cursor-pointer',
-                  buttonProps?.className,
+                  buttonClassName,
                 )}
                 variant={variant}
                 color={color}
@@ -98,7 +101,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                 startIcon={
                   !hideCheckbox && (
                     <Checkbox
-                      className={checkboxProps?.className}
+                      className={checkboxClassName}
                       name={optionValue}
                       label=""
                       value={optionValue}
@@ -110,7 +113,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                       fake
                       aria-hidden="true"
                       onChange={() => {}}
-                      {...filterOutKeys(checkboxProps, ['className'])}
+                      {...restCheckboxProps}
                     />
                   )
                 }
@@ -119,7 +122,7 @@ export const ListBox = forwardRef<HTMLUListElement, ListBoxProps>(
                 aria-selected={value.includes(optionValue)}
                 aria-disabled={isLoading}
                 onClick={() => (!isLoading ? onClick(optionValue) : undefined)}
-                {...filterOutKeys(buttonProps, ['className'])}
+                {...restButtonProps}
               >
                 <>
                   {isLoading ? (

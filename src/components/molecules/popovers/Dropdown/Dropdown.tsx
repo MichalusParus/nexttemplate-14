@@ -18,7 +18,7 @@ import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
 import { StyleProps } from '@/components/types'
 import { usePopper } from '@/utils/hooks/usePopper'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { dropdownClass } from './Dropdown.style'
 
@@ -80,6 +80,7 @@ export const Dropdown = forwardRef<HTMLDivElement, PropsWithChildren<DropdownPro
     const { anchorRef, popoverEl, setPopoverEl } = usePopper(placement, offset)
     useImperativeHandle(anchorRef, () => parentRef.current!)
     useImperativeHandle(ref, () => popoverEl!)
+    const { className: paperClassName, ...restPaperProps } = paperProps
 
     useEffect(() => {
       setMounted(true)
@@ -123,12 +124,12 @@ export const Dropdown = forwardRef<HTMLDivElement, PropsWithChildren<DropdownPro
                 {...rest}
               >
                 <Paper
-                  className={cn('overflow-hidden', paperProps.className)}
+                  className={cn('overflow-hidden', paperClassName)}
                   variant={variant}
                   color={color}
                   padding={padding}
                   hideShadow={hideShadow}
-                  {...filterOutKeys(paperProps, ['className'])}
+                  {...restPaperProps}
                 >
                   <ScrollShadow height={height} {...scrollShadowProps}>
                     {children}

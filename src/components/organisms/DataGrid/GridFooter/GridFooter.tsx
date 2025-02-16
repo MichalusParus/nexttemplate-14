@@ -83,7 +83,11 @@ export const GridFooter = forwardRef<HTMLDivElement, GridFooterProps>(
         <div className={cn('GridRow', rowClass, gridRowPadding[size])} role="row">
           <div className={cn('LeftWrap', 'flex items-center')}>
             <Select
-              className={cn('RowsPerPageSelect', 'items-center', pages.length <= 1 && 'hidden')}
+              className={cn(
+                'RowsPerPageSelect',
+                'items-center border-transparent dark:border-transparent',
+                pages.length <= 1 && 'hidden',
+              )}
               name="rowsPerPage"
               placement="top"
               placeholder="Rows"
@@ -92,10 +96,7 @@ export const GridFooter = forwardRef<HTMLDivElement, GridFooterProps>(
               variant={variant}
               color={color}
               size={size}
-              buttonProps={{
-                className: 'border-transparent dark:border-transparent',
-                tabIndex: -1,
-              }}
+              tabIndex={-1}
               onChange={(value: string) => handleRowsPerPage(value)}
             />
             {!hideExport && (

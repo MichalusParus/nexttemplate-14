@@ -19,7 +19,7 @@ import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import { Paper } from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import { StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { calendarSize } from './Calendar.styles'
 import { CalendarHeader } from './CalendarHeader'
@@ -70,6 +70,7 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       buttonProps = {},
       paperProps = {},
       onChange,
+      ...rest
     },
     ref,
   ) => {
@@ -77,15 +78,14 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
     useImperativeHandle(ref, () => componentRef.current!)
     const [calendarState, setCalendarState] = useState<'days' | 'months' | 'years'>('days')
     const [currentMonth, setCurrentMonth] = useState<Date>(date || new Date())
+    const { className: paperClassName, ...restPaperProps } = paperProps
 
     const handleOnChange = useCallback(
       (value: Date) => {
         onChange(value)
         setCurrentMonth(value)
-        if (calendarState === 'years') setCalendarState('months')
-        else if (calendarState === 'months') setCalendarState('days')
       },
-      [onChange, calendarState],
+      [setCurrentMonth, onChange],
     )
 
     const isSelected = useCallback(
@@ -144,6 +144,8 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       color,
       size,
       buttonProps,
+      setCalendarState,
+      setCurrentMonth,
       onChange: handleOnChange,
     }
 
@@ -153,14 +155,15 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
         className={cn('Calendar relative', className)}
         ref={componentRef}
         data-testid="Calendar"
+        {...rest}
       >
         <Paper
-          className={cn(calendarSize[size], paperProps.className)}
+          className={cn(calendarSize[size], paperClassName)}
           variant={variant}
           color={color}
           padding="p-2"
           hideShadow
-          {...filterOutKeys(paperProps, ['className'])}
+          {...restPaperProps}
         >
           <CalendarHeader
             currentMonth={currentMonth}

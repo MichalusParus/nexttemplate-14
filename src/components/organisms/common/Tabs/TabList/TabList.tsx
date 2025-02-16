@@ -4,7 +4,7 @@ import { PropsWithChildren, ReactNode } from 'react'
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { Paper } from '@/components/atoms/containers/Paper'
 import { OptionType, StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 export type TabOption = OptionType & {
   component: ReactNode
@@ -44,6 +44,8 @@ export const TabList = ({
   onTabChange,
   children,
 }: PropsWithChildren<TabListProps>) => {
+  const { className: buttonClassName, ...restButtonProps } = tabButtonProps
+
   return (
     <Paper
       className={cn('TabListPaper', className)}
@@ -73,7 +75,7 @@ export const TabList = ({
                 'rounded-none border-none',
                 selectedTab.value === tab.value && 'selected',
                 fullWidth && 'w-full',
-                tabButtonProps?.className,
+                buttonClassName,
               )}
               variant={variant}
               color={color}
@@ -83,7 +85,7 @@ export const TabList = ({
               aria-controls={`${name}-tabpanel`}
               aria-selected={tab.value === selectedTab.value}
               onClick={() => onTabChange(tab.value)}
-              {...filterOutKeys(tabButtonProps, ['className'])}
+              {...restButtonProps}
             >
               {tab.content || tab.label}
             </Button>

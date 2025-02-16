@@ -5,7 +5,7 @@ import { forwardRef, useId, useRef, useState } from 'react'
 import { Image } from '@/components/atoms/common/Image'
 import { Paper, PaperProps } from '@/components/atoms/containers/Paper'
 import { StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { Carousel, CarouselProps } from '../../../molecules/common/Carousel'
 import { CarouselItem } from '../../../molecules/common/Carousel/CarouselItem'
@@ -58,17 +58,19 @@ export const Gallery = forwardRef<HTMLDivElement, GalleryProps>(
     const testRef = useRef<HTMLDivElement>(null)
     const [isOpen, setIsOpen] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
+    const { className: paperClassName, ...restPaperProps } = paperProps
+    const { className: carouselClassName, ...restCarouselProps } = carouselProps
 
     return (
       <Paper
-        className={cn('Gallery', 'overflow-hidden', paperProps.className, className)}
+        className={cn('Gallery', 'overflow-hidden', paperClassName, className)}
         variant={variant}
         color={color}
         padding="p-0"
         hideShadow
         aria-label={label || t('gallery')}
         ref={ref}
-        {...filterOutKeys(paperProps, ['className'])}
+        {...restPaperProps}
       >
         <ImageViewer
           className="rounded-none"
@@ -82,7 +84,7 @@ export const Gallery = forwardRef<HTMLDivElement, GalleryProps>(
               'GalleryCarousel',
               'h-full w-full',
               isOpen && '[&>.CarouselRatioWrap]:max-h-galleryInnerHeight',
-              carouselProps.className,
+              carouselClassName,
             )}
             pages={items.length}
             currentPage={currentPage}
@@ -93,7 +95,7 @@ export const Gallery = forwardRef<HTMLDivElement, GalleryProps>(
             hideControlDotts
             setCurrentPage={setCurrentPage}
             ref={testRef}
-            {...filterOutKeys(carouselProps, ['className'])}
+            {...restCarouselProps}
           >
             {items.map(item => (
               <CarouselItem key={item.alt} className="flex items-center justify-center">

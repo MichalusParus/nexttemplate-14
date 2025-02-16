@@ -1,5 +1,5 @@
 'use client'
-import { forwardRef, KeyboardEvent, MouseEvent, useCallback } from 'react'
+import { forwardRef, useCallback } from 'react'
 
 import { Select, SelectProps } from '../../SelectField/Select/Select'
 
@@ -14,7 +14,7 @@ export type MultiSelectProps = Omit<
 }
 
 /** Basic custom uncontroled MultiSelect. For form purposes use MultiSelectField. Button, Dropdown and ListBox props supported. USE CLIENT */
-export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
+export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
   ({ value, onChange, ...rest }, ref) => {
     const handleOnChange = useCallback(
       (v: string) => {
@@ -27,20 +27,12 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
       [value, onChange],
     )
 
-    const handleClear = useCallback(
-      (e: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => {
-        e.stopPropagation()
-        onChange([])
-      },
-      [onChange],
-    )
-
     return (
       <Select
         value={value[0]}
         multiValue={value}
         onChange={handleOnChange}
-        onClear={handleClear}
+        onClear={() => onChange([])}
         ref={ref}
         {...rest}
       />

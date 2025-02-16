@@ -21,7 +21,7 @@ type NativeButtonProps = Omit<
 
 export type ButtonProps = NativeButtonProps &
   Pick<StyleProps, 'variant'> & {
-    /** for passing custom tailwind classes, pass "selected" for active state style or "error" for error shadow */
+    /** for passing custom tailwind classes */
     className?: string
     /** theme color of component, none disable styles for custom styling via className */
     color?: StyleProps['color'] | 'error'
@@ -39,7 +39,7 @@ export type ButtonProps = NativeButtonProps &
     onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   }
 
-/** Basic Button with loading state and icon handling. Default ButtonHTMLAttributes props supported. USE CLIENT */
+/** Basic Button with loading state and icon handling. Selected class enables active state styles, or error class for error state. Default ButtonHTMLAttributes props supported. USE CLIENT */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {

@@ -39,13 +39,12 @@ export const PrimaryDefault: Story = {
     placeholder: 'MultiSelect',
     value: [],
     options: getOptions('multiSelectStory', 5),
-    expandable: false,
+    displayChips: false,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
     placement: 'bottom',
     error: '',
-    buttonProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
     onChange: value => console.log(value),
@@ -53,13 +52,12 @@ export const PrimaryDefault: Story = {
   render: args => <MultiSelectWithHooks {...args} />,
 }
 
-export const Expandable: Story = {
+export const DisplayChips: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'multiSelectStory2',
     options: getOptions('multiSelectStory2', 5),
-
-    expandable: true,
+    displayChips: true,
   },
   render: args => <MultiSelectWithHooks {...args} />,
 }

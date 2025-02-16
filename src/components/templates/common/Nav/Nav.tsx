@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import { forwardRef } from 'react'
 
 import { Link, LinkProps } from '@/components/atoms/common/Link'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { navLinkClass } from './Nav.style'
 
@@ -28,6 +28,7 @@ export type NavProps = {
 export const Nav = forwardRef<HTMLDivElement, NavProps>(
   ({ className, navLinks, menu, linkProps = {} }, ref) => {
     const pathName = usePathname()
+    const { className: linkClassName, ...restLinkProps } = linkProps
 
     return (
       <nav className={className} ref={ref}>
@@ -45,13 +46,13 @@ export const Nav = forwardRef<HTMLDivElement, NavProps>(
                   navLinkClass,
                   menu ? 'w-full' : 'rounded-md px-3 py-1',
                   pathName === slug && 'selected',
-                  linkProps.className,
+                  linkClassName,
                 )}
                 href={slug}
                 variant={menu ? 'text' : 'contained'}
                 size={menu ? 'md' : 'none'}
                 hideShadow
-                {...filterOutKeys(linkProps, ['className'])}
+                {...restLinkProps}
               >
                 {title}
               </Link>

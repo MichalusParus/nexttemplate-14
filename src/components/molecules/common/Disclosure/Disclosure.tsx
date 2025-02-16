@@ -7,7 +7,7 @@ import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import { ScrollShadow, ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow'
 import { ChevronIcon } from '@/components/atoms/icons'
 import { StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 export type DisclosureProps = Omit<StyleProps, 'size'> & {
   /** for passing custom tailwind classes */
@@ -51,6 +51,8 @@ export const Disclosure = forwardRef<HTMLDivElement, PropsWithChildren<Disclosur
   ) => {
     const [isInternallyOpen, setIsInternallyOpen] = useState(Boolean(expanded))
     const openState = setIsOpen ? expanded : isInternallyOpen
+    const { className: buttonClassName, ...restButtonProps } = buttonProps
+    const { className: paperClassName, ...restPaperProps } = paperProps
     const id = useId()
     const dropdownId = `disclosureDropdown-${id}`
     const buttonId = `disclosureButton-${id}`
@@ -73,14 +75,14 @@ export const Disclosure = forwardRef<HTMLDivElement, PropsWithChildren<Disclosur
       >
         <Button
           id={buttonId}
-          className={cn('w-full', buttonProps.className)}
+          className={cn('w-full', buttonClassName)}
           variant={variant}
           color={color}
           hideShadow
           aria-expanded={openState}
           aria-controls={dropdownId}
           onClick={handleChange}
-          {...filterOutKeys(buttonProps, ['className'])}
+          {...restButtonProps}
         >
           <div className={cn('ButtonInnerWrap', 'flex w-full justify-between')}>
             <div className={cn('ButtonStartWrap', 'flex gap-1')}>
@@ -114,11 +116,11 @@ export const Disclosure = forwardRef<HTMLDivElement, PropsWithChildren<Disclosur
           data-testid="DisclosureDropdown"
         >
           <Paper
-            className={cn('overflow-hidden', paperProps.className)}
+            className={cn('overflow-hidden', paperClassName)}
             variant={variant}
             color={color}
             hideShadow
-            {...filterOutKeys(paperProps, ['className'])}
+            {...restPaperProps}
           >
             <ScrollShadow
               key={openState ? 'open' : 'closed'}

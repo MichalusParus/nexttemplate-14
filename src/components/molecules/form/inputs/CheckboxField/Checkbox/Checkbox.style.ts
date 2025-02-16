@@ -10,8 +10,6 @@ export const switchClass = cn(
   'disabled:cursor-not-allowed disabled:opacity-50 [&.disabled]:cursor-not-allowed [&.disabled]:opacity-50',
 )
 
-export const checkClass = cn('absolute -left-px -top-px bottom-0 right-0')
-
 export const thumbClass = cn('absolute rounded-full transition-position')
 
 export const checkboxVariant = {

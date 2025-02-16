@@ -103,7 +103,6 @@ export const PrimaryDefault: Story = {
     placement: 'bottom',
     isLoading: false,
     error: '',
-    buttonProps: undefined,
     inputProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,

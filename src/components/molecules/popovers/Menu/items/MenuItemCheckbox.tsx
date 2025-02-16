@@ -4,7 +4,7 @@ import { forwardRef } from 'react'
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { Checkbox, CheckboxProps } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
 import { StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 export type MenuItemCheckboxProps = Omit<ButtonProps, 'variant' | 'color' | 'size'> &
   StyleProps & {
@@ -32,6 +32,8 @@ export const MenuItemCheckbox = forwardRef<HTMLButtonElement, MenuItemCheckboxPr
     },
     ref,
   ) => {
+    const { className: checkboxClassName, ...restCheckboxProps } = checkboxProps
+
     return (
       <li role="presentation">
         <Button
@@ -50,7 +52,7 @@ export const MenuItemCheckbox = forwardRef<HTMLButtonElement, MenuItemCheckboxPr
           {...rest}
         >
           <Checkbox
-            className={cn('mr-4', checkboxProps?.className)}
+            className={cn('mr-4', checkboxClassName)}
             name=""
             label=""
             variant={variant}
@@ -59,7 +61,7 @@ export const MenuItemCheckbox = forwardRef<HTMLButtonElement, MenuItemCheckboxPr
             isChecked={isChecked}
             fake
             onChange={() => {}}
-            {...filterOutKeys(checkboxProps, ['className'])}
+            {...restCheckboxProps}
           />
           {children}
         </Button>

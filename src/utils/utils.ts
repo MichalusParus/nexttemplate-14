@@ -14,13 +14,6 @@ export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs))
 }
 
-export const filterOutKeys = (object: object, keys: string[]) => {
-  const newObject = Object.fromEntries(
-    Object.entries(object).filter(([key]) => !keys.includes(key)),
-  )
-  return newObject
-}
-
 // eslint-disable-next-line
 export const debounce = <F extends (...args: any[]) => void>(
   fn: F,

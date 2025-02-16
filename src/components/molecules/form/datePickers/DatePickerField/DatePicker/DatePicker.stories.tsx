@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { addDays, addMonths } from 'date-fns'
 import { useState } from 'react'
 
 import { DatePicker, DatePickerProps } from './DatePicker'
@@ -16,7 +17,7 @@ const DatePickerWithHooks = (args: DatePickerProps) => {
   const [value, setValue] = useState<Date | undefined>(undefined)
   return (
     <div
-      className={`flex h-80 justify-center ${args.placement === 'top-start' ? 'items-end' : ''}`}
+      className={`flex h-80 justify-center ${args.placement === 'top-start' ? 'items-end' : 'items-start'}`}
     >
       <DatePicker {...args} value={value} onChange={setValue} />
     </div>
@@ -32,15 +33,19 @@ export const PrimaryDefault: Story = {
     name: 'datePickerStory',
     placeholder: 'Placeholder',
     value: undefined,
+    displayChips: false,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
     placement: 'bottom-start',
     error: '',
     disabled: false,
-    buttonProps: undefined,
+    hideShadow: false,
+    chipProps: undefined,
     dropdownProps: undefined,
     calendarProps: undefined,
+    onClear: undefined,
+    onClose: undefined,
     onChange: value => console.log(value),
   },
   render: args => <DatePickerWithHooks {...args} />,
@@ -55,11 +60,33 @@ export const Top: Story = {
   render: args => <DatePickerWithHooks {...args} />,
 }
 
+export const MinMax: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'datePickerStory2',
+    calendarProps: {
+      minMaxDate: { min: addMonths(new Date(), -2), max: addMonths(new Date(), 2) },
+    },
+  },
+  render: args => <DatePickerWithHooks {...args} />,
+}
+
+export const Unavailable: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'datePickerStory2',
+    calendarProps: {
+      unavailable: [addDays(new Date(), -2), addDays(new Date(), 2), addDays(new Date(), 4)],
+    },
+  },
+  render: args => <DatePickerWithHooks {...args} />,
+}
+
 export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
-    error: 'error',
     name: 'datePickerStory5',
+    error: 'error',
   },
   render: args => <DatePickerWithHooks {...args} />,
 }

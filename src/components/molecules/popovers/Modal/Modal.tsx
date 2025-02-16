@@ -23,7 +23,7 @@ import { Title } from '@/components/atoms/typography/Title'
 import { TitleProps } from '@/components/atoms/typography/Title/Title'
 import { StyleProps } from '@/components/types'
 import { useFocus } from '@/utils/hooks/useFocus'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { closeClass, modalPosition, openClass } from './Modal.style'
 
@@ -86,6 +86,7 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
     const [mounted, setMounted] = useState(false)
     const openState = setIsOpen ? Boolean(isOpen) : isInternallyOpen
     const modalOpenClass = openState ? openClass : closeClass
+    const { className: paperClassName, ...restPaperProps } = paperProps
     const { focusableEl } = useFocus(
       openState,
       componentRef,
@@ -139,11 +140,11 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
               aria-label={title || name}
             >
               <Paper
-                className={cn('relative h-full w-full shadow-modal', paperProps.className)}
+                className={cn('relative h-full w-full shadow-modal', paperClassName)}
                 variant={variant}
                 color={color}
                 padding={padding}
-                {...filterOutKeys(paperProps, ['className'])}
+                {...restPaperProps}
               >
                 <div className={cn('ModalTitleWrap', 'pb-8')}>
                   {title && (

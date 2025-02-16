@@ -5,7 +5,7 @@ import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { ListBox } from '@/components/atoms/common/ListBox'
 import { ChevronIcon } from '@/components/atoms/icons'
 import { Dropdown, DropdownProps } from '@/components/molecules/popovers/Dropdown'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { TabListProps } from '../TabList'
 
@@ -33,6 +33,7 @@ export const DropdownTabList = ({
 }: PropsWithChildren<DropdownTabListProps>) => {
   const comboboxRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
+  const { className: buttonClassName, ...restButtonProps } = buttonProps
 
   useEffect(() => {
     setIsOpen(false)
@@ -45,7 +46,7 @@ export const DropdownTabList = ({
       data-testid="DropdownTabListWrap"
     >
       <Button
-        className={cn('TabsDropdownCombobox', 'w-full justify-between', buttonProps?.className)}
+        className={cn('TabsDropdownCombobox', 'w-full justify-between', buttonClassName)}
         variant={variant}
         color={color}
         size={size}
@@ -54,7 +55,7 @@ export const DropdownTabList = ({
         aria-controls={`${name}-tablist`}
         aria-owns={`${name}-tablist`}
         onClick={() => setIsOpen(prev => !prev)}
-        {...filterOutKeys(buttonProps, ['className'])}
+        {...restButtonProps}
       >
         {selectedTab.label}
         <ChevronIcon className={cn('text-inherit transition-transform', isOpen && 'rotate-180')} />

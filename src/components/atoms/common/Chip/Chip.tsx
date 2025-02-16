@@ -1,13 +1,9 @@
-'use client'
-import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes, ReactNode } from 'react'
 
 import { StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
-import { XIcon } from '../../icons'
 import { Span } from '../../typography/Span'
-import { Button, ButtonProps } from '../Button/Button'
 import { buttonIconSize } from '../Button/Button.style'
 import { chipClass, chipSize, chipVariant } from './Chip.style'
 
@@ -21,13 +17,11 @@ export type ChipProps = NativeChipProps &
     title?: string
     /** pass svg icon before children */
     startIcon?: ReactNode
-    /** optional props for button */
-    buttonProps?: Partial<ButtonProps>
-    /** onClick function */
-    onClick?: () => void
+    /** pass svg icon behind children */
+    endIcon?: ReactNode
   }
 
-/** Small styled wrapper for displaying selected options with optional button. Default HTMLAttributes props supported. USE CLIENT */
+/** Small styled wrapper for displaying selected options. Default HTMLAttributes props supported. */
 export const Chip = forwardRef<HTMLDivElement, ChipProps>(
   (
     {
@@ -37,16 +31,12 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
       size = 'md',
       title,
       startIcon,
-      buttonProps = {},
-      onClick,
+      endIcon,
       children,
       ...rest
     },
     ref,
   ) => {
-    const t = useTranslations('Components')
-    const buttonLabel = `${t('delete')} ${title || (typeof children === 'string' ? children : '')}`
-
     return (
       <div
         className={cn(
@@ -62,25 +52,13 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
         {...rest}
       >
         {startIcon && startIcon}
-        <div className="ChipInnerWrap flex flex-col px-2">
+        <div className="ChipInnerWrap flex flex-col">
           {title && <Span variant="bold">{title}</Span>}
           <Span className="whitespace-nowrap" variant="none">
             {children}
           </Span>
         </div>
-        {onClick && (
-          <Button
-            className={cn('ChipAction', 'rounded-full border-0', buttonProps?.className)}
-            startIcon={<XIcon />}
-            variant={variant}
-            color={color}
-            size="none"
-            hideShadow
-            aria-label={buttonLabel}
-            onClick={onClick}
-            {...filterOutKeys(buttonProps, ['className'])}
-          />
-        )}
+        {endIcon && endIcon}
       </div>
     )
   },

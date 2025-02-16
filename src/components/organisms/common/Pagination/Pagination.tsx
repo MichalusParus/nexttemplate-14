@@ -5,7 +5,7 @@ import { forwardRef } from 'react'
 import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import { StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { MobilePagination } from './MobilePagination'
 import { MobilePaginationProps } from './MobilePagination/MobilePagination'
@@ -45,6 +45,7 @@ export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
     ref,
   ) => {
     const t = useTranslations('Components')
+    const { className: buttonClassName, ...restButtonProps } = loadMoreButtonProps
 
     const getPageSpread = (value: number) => {
       if (maxSpread) {
@@ -65,12 +66,12 @@ export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
       >
         {onLoadMore && selectedPage + loadMoreCount < count && (
           <Button
-            className={cn('LoadMoreButton', 'mb-6', loadMoreButtonProps.className)}
+            className={cn('LoadMoreButton', 'mb-6', buttonClassName)}
             variant={variant}
             color={color}
             size={size}
             onClick={onLoadMore}
-            {...filterOutKeys(loadMoreButtonProps, ['className', 'children'])}
+            {...restButtonProps}
           >
             {loadMoreButtonProps.children || t('loadMore')}
           </Button>

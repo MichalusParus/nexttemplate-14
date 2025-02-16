@@ -12,7 +12,7 @@ const date = new Date('2023-03-04')
 
 describe('MonthPicker', () => {
   it('default', () => {
-    render(<MonthPicker month={date} onChange={() => {}} />)
+    render(<MonthPicker month={date} setCalendarState={() => {}} setCurrentMonth={() => {}} />)
     const gridRole = screen.getByRole('grid')
     const rowRoles = screen.getAllByRole('row')
     const cellRoles = screen.getAllByRole('gridcell')
@@ -37,7 +37,8 @@ describe('MonthPicker', () => {
       <MonthPicker
         month={date}
         minMaxDate={{ min: addMonths(startOfDay(date), -1), max: addMonths(startOfDay(date), 1) }}
-        onChange={() => {}}
+        setCalendarState={() => {}}
+        setCurrentMonth={() => {}}
       />,
     )
     const cellRoles = screen.getAllByRole('gridcell')
@@ -48,7 +49,12 @@ describe('MonthPicker', () => {
 
   it('buttonProps', () => {
     render(
-      <MonthPicker month={date} onChange={() => {}} buttonProps={{ className: 'className' }} />,
+      <MonthPicker
+        month={date}
+        setCalendarState={() => {}}
+        setCurrentMonth={() => {}}
+        buttonProps={{ className: 'className' }}
+      />,
     )
     const cellRoles = screen.getAllByRole('gridcell')
 
@@ -56,17 +62,21 @@ describe('MonthPicker', () => {
     expect(cellRoles[1]).toHaveClass('className')
   })
 
-  it('onChange', () => {
+  it('setCurrentMonth', () => {
     const spy = jest.fn()
-    render(<MonthPicker month={date} onChange={spy} />)
+    render(<MonthPicker month={date} setCalendarState={spy} setCurrentMonth={spy} />)
     const cellRoles = screen.getAllByRole('gridcell')
 
     fireEvent.click(cellRoles[2])
+    expect(spy).toHaveBeenCalledTimes(2)
     expect(spy).toHaveBeenCalledWith(startOfDay(date))
+    expect(spy).toHaveBeenCalledWith('days')
   })
 
   it('axe', async () => {
-    const { container } = render(<MonthPicker month={date} onChange={() => {}} />)
+    const { container } = render(
+      <MonthPicker month={date} setCalendarState={() => {}} setCurrentMonth={() => {}} />,
+    )
     const results = await axe(container)
     expect(results).toHaveNoViolations()
   })

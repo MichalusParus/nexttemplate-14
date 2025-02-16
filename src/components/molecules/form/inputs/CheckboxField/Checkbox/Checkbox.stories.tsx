@@ -34,6 +34,7 @@ export const PrimaryDefault: Story = {
     className: '',
     name: 'checkboxStory',
     label: 'Label',
+    value: 'value',
     content: undefined,
     variant: 'outlined',
     color: 'primary',

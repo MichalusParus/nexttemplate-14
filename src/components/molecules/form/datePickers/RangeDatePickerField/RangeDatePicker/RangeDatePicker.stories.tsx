@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { addDays, addMonths } from 'date-fns'
 import { useState } from 'react'
 
 import { RangeDatePicker, RangeDatePickerProps } from './RangeDatePicker'
@@ -19,7 +20,7 @@ const RangeDatePickerWithHooks = (args: RangeDatePickerProps) => {
   })
   return (
     <div
-      className={`flex h-80 justify-center ${args.placement === 'top-start' ? 'items-end' : ''}`}
+      className={`flex h-80 justify-center ${args.placement === 'top-start' ? 'items-end' : 'items-start'}`}
     >
       <RangeDatePicker {...args} value={value} onChange={setValue} />
     </div>
@@ -40,7 +41,6 @@ export const PrimaryDefault: Story = {
     size: 'md',
     placement: 'bottom-start',
     error: '',
-    buttonProps: undefined,
     dropdownProps: undefined,
     calendarProps: undefined,
     onChange: value => console.log(value),
@@ -53,6 +53,28 @@ export const Top: Story = {
     ...PrimaryDefault.args,
     placement: 'top-start',
     name: 'datePickerStory2',
+  },
+  render: args => <RangeDatePickerWithHooks {...args} />,
+}
+
+export const MinMax: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'datePickerStory2',
+    calendarProps: {
+      minMaxDate: { min: addMonths(new Date(), -2), max: addMonths(new Date(), 2) },
+    },
+  },
+  render: args => <RangeDatePickerWithHooks {...args} />,
+}
+
+export const Unavailable: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'datePickerStory2',
+    calendarProps: {
+      unavailable: [addDays(new Date(), -2), addDays(new Date(), 2), addDays(new Date(), 4)],
+    },
   },
   render: args => <RangeDatePickerWithHooks {...args} />,
 }

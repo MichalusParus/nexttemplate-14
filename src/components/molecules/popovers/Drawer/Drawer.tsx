@@ -16,7 +16,7 @@ import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
 import { StyleProps } from '@/components/types'
 import { useFocus } from '@/utils/hooks/useFocus'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { closeClass, drawerClass, openClass } from './Drawer.style'
 
@@ -69,6 +69,7 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
     const componentRef = useRef<HTMLDivElement>(null)
     useImperativeHandle(ref, () => componentRef.current!)
     const [mounted, setMounted] = useState(false)
+    const { className: paperClassName, ...restPaperProps } = paperProps
     const container = portalContainer ? document.getElementById(portalContainer) : undefined
     const { focusableEl } = useFocus(
       isOpen,
@@ -113,12 +114,12 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
                 aria-label={name}
               >
                 <Paper
-                  className={cn('relative h-full', paperProps.className)}
+                  className={cn('relative h-full', paperClassName)}
                   variant={variant}
                   color={color}
                   padding={padding}
                   rounded={placement === 'left' ? 'rounded-r-md' : 'rounded-l-md'}
-                  {...filterOutKeys(paperProps, ['className'])}
+                  {...restPaperProps}
                 >
                   <ScrollShadow {...scrollShadowProps}>{children}</ScrollShadow>
                 </Paper>

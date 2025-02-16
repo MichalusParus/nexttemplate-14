@@ -14,7 +14,7 @@ const date = new Date('2023-03-04')
 
 describe('YearPicker', () => {
   it('default', () => {
-    render(<YearPicker year={date} onChange={() => {}} />)
+    render(<YearPicker year={date} setCalendarState={() => {}} setCurrentMonth={() => {}} />)
     const gridRole = screen.getByRole('grid')
     const rowRoles = screen.getAllByRole('row')
     const cellRoles = screen.getAllByRole('gridcell')
@@ -38,7 +38,8 @@ describe('YearPicker', () => {
       <YearPicker
         year={date}
         minMaxDate={{ min: addYears(date, -1), max: addYears(date, 1) }}
-        onChange={() => {}}
+        setCalendarState={() => {}}
+        setCurrentMonth={() => {}}
       />,
     )
     const previousYearText = screen.queryByText('2021')
@@ -49,24 +50,35 @@ describe('YearPicker', () => {
   })
 
   it('buttonProps', () => {
-    render(<YearPicker year={date} onChange={() => {}} buttonProps={{ className: 'className' }} />)
+    render(
+      <YearPicker
+        year={date}
+        setCalendarState={() => {}}
+        setCurrentMonth={() => {}}
+        buttonProps={{ className: 'className' }}
+      />,
+    )
     const cellRoles = screen.getAllByRole('gridcell')
 
     expect(cellRoles[0]).toHaveClass('className')
     expect(cellRoles[1]).toHaveClass('className')
   })
 
-  it('onChange', () => {
+  it('setCurrentMondth', () => {
     const spy = jest.fn()
-    render(<YearPicker year={date} onChange={spy} />)
+    render(<YearPicker year={date} setCalendarState={spy} setCurrentMonth={spy} />)
     const currentYearText = screen.getByText('2023')
 
     fireEvent.click(currentYearText)
+    expect(spy).toHaveBeenCalledTimes(2)
     expect(spy).toHaveBeenCalledWith(date)
+    expect(spy).toHaveBeenCalledWith('months')
   })
 
   it('axe', async () => {
-    const { container } = render(<YearPicker year={date} onChange={() => {}} />)
+    const { container } = render(
+      <YearPicker year={date} setCalendarState={() => {}} setCurrentMonth={() => {}} />,
+    )
     const results = await axe(container)
     expect(results).toHaveNoViolations()
   })

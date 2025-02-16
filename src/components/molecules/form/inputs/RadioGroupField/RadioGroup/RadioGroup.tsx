@@ -2,7 +2,7 @@
 import { FieldsetHTMLAttributes, forwardRef, InputHTMLAttributes } from 'react'
 
 import { InputProps, OptionType, StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { inputErrorClass } from '../../TextField/TextInput/TextInput.style'
 import { afterClass, disableVariant, radioClass, radioSize, radioVariant } from './RadioGroup.style'
@@ -47,6 +47,8 @@ export const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(
     },
     ref,
   ) => {
+    const { className: radioClassName, ...restRadioProps } = radioProps
+
     return (
       <fieldset
         id={name}
@@ -68,7 +70,7 @@ export const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(
                 disableVariant[variant],
                 afterClass,
                 error && 'error ' + inputErrorClass,
-                radioProps?.className,
+                radioClassName,
               )}
               name={name}
               type="radio"
@@ -77,7 +79,7 @@ export const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(
               checked={Boolean(value === radioValue)}
               disabled={disabled}
               tabIndex={disabled ? -1 : 0}
-              {...filterOutKeys(radioProps, ['className'])}
+              {...restRadioProps}
             />
             <label
               id={`${radioValue}-label`}

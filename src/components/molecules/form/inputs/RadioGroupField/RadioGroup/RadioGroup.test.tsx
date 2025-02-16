@@ -72,8 +72,8 @@ describe('RadioGroup', () => {
     const labelTestIds = screen.getAllByTestId('Label')
 
     expect(contentTexts).toHaveLength(20)
-    expect(labelTestIds[0]).toHaveTextContent(`label 1${textContent.slice(0, 21)}`)
-    expect(labelTestIds[3]).toHaveTextContent(`label 4${textContent.slice(0, 21)}`)
+    expect(labelTestIds[0]).toHaveTextContent(`very long label1${textContent.slice(0, 21)}`)
+    expect(labelTestIds[3]).toHaveTextContent(`very long label4${textContent.slice(0, 21)}`)
   })
 
   it('value', () => {

@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { PlusIcon, ProfileIcon } from '../../icons'
+import { ProfileIcon, XIcon } from '../../icons'
 import { Avatar } from '../Avatar'
+import { Button } from '../Button'
 import { Chip } from '.'
 
 const meta: Meta<typeof Chip> = {
@@ -13,6 +14,7 @@ const meta: Meta<typeof Chip> = {
   },
   argTypes: {
     startIcon: { control: false },
+    endIcon: { control: false },
   },
 }
 
@@ -26,9 +28,17 @@ export const PrimaryDefault: Story = {
     color: 'primary',
     size: 'md',
     startIcon: undefined,
-    onClick: undefined,
-    buttonProps: undefined,
+    endIcon: undefined,
     children: 'Chip',
+  },
+}
+
+export const Title: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    className: 'px-3',
+    title: 'Title',
+    children: 'Description',
   },
 }
 
@@ -43,25 +53,33 @@ export const TitleOnly: Story = {
 export const StartIcon: Story = {
   args: {
     ...PrimaryDefault.args,
+    className: 'pl-0',
     startIcon: <ProfileIcon />,
   },
 }
 
-export const OnClick: Story = {
-  args: { ...PrimaryDefault.args, onClick: () => console.log('click') },
-}
-
-export const CustomIcon: Story = {
+export const EndIconButton: Story = {
   args: {
     ...PrimaryDefault.args,
-    buttonProps: { startIcon: <PlusIcon /> },
-    onClick: () => console.log('click'),
+    className: 'pr-0',
+    endIcon: (
+      <Button
+        className="rounded-full border-0 text-current"
+        startIcon={<XIcon />}
+        variant="text"
+        color="none"
+        size="none"
+        hideShadow
+        onClick={() => console.log('click')}
+      />
+    ),
   },
 }
 
 export const AvatarTitleChip: Story = {
   args: {
     ...PrimaryDefault.args,
+    className: 'pl-0',
     title: 'Jack Black',
     children: 'some info',
   },
@@ -75,12 +93,23 @@ export const AvatarTitleChip: Story = {
   ),
 }
 
-export const AvatarOnclickChip: Story = {
+export const AvatarOnClickChip: Story = {
   args: {
     ...PrimaryDefault.args,
+    className: 'px-0',
     title: 'Jack Black',
-    onClick: () => console.log('click'),
     children: 'some info',
+    endIcon: (
+      <Button
+        className="rounded-full border-0 text-current"
+        startIcon={<XIcon />}
+        variant="text"
+        color="none"
+        size="none"
+        hideShadow
+        onClick={() => console.log('click')}
+      />
+    ),
   },
   render: args => (
     <Chip

@@ -6,7 +6,7 @@ import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import { ChevronIcon } from '@/components/atoms/icons'
 import { StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { arrowClass, chevronPosition } from './MobilePagination.style'
 
@@ -42,6 +42,7 @@ export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps
     ref,
   ) => {
     const t = useTranslations('Components')
+    const { className: buttonClassName, ...restButtonProps } = buttonProps
 
     return (
       <div
@@ -57,7 +58,7 @@ export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps
       >
         {selectedPage !== 1 && (
           <Button
-            className={cn('LeftChevronButton', 'rotate-90', arrowClass, buttonProps.className)}
+            className={cn('LeftChevronButton', 'rotate-90', arrowClass, buttonClassName)}
             variant={variant}
             color={color}
             size={size}
@@ -65,7 +66,7 @@ export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps
             onClick={() => setSelectedPage(selectedPage - 1)}
             aria-label={t('previousPage', { page: selectedPage - 1 })}
             hideShadow
-            {...filterOutKeys(buttonProps, ['className'])}
+            {...restButtonProps}
           />
         )}
         <div
@@ -76,7 +77,7 @@ export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps
         </div>
         {selectedPage + loadMoreCount < count && (
           <Button
-            className={cn('RightChevronButton', '-rotate-90', arrowClass, buttonProps.className)}
+            className={cn('RightChevronButton', '-rotate-90', arrowClass, buttonClassName)}
             variant={variant}
             color={color}
             size={size}
@@ -86,7 +87,7 @@ export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps
               page: selectedPage + 1,
             })}
             hideShadow
-            {...filterOutKeys(buttonProps, ['className'])}
+            {...restButtonProps}
           />
         )}
       </div>

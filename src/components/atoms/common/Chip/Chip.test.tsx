@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { createRef } from 'react'
 
-import { fireEvent, render, screen } from '../../../../../.jest/customRender'
+import { render, screen } from '../../../../../.jest/customRender'
 import { Chip } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -27,41 +27,17 @@ describe('Chip', () => {
     expect(infoText).toBeInTheDocument()
   })
 
-  it('startIcon', () => {
-    render(<Chip startIcon={<svg role="img" />}>Chip</Chip>)
-    const imgRole = screen.getByRole('img')
+  it('startIcon/endIcon', () => {
+    render(
+      <Chip startIcon={<svg data-testid="startIcon" />} endIcon={<svg data-testid="endIcon" />}>
+        Chip
+      </Chip>,
+    )
+    const startTestId = screen.getByTestId('startIcon')
+    const endTestId = screen.getByTestId('endIcon')
 
-    expect(imgRole).toBeInTheDocument()
-  })
-
-  it('buttonIcon', () => {
-    const spy = jest.fn()
-    render(<Chip onClick={spy} buttonProps={{ startIcon: <svg role="img" /> }} />)
-    const buttonRole = screen.getByRole('button')
-    const imgRole = screen.getByRole('img')
-
-    fireEvent.click(buttonRole)
-    expect(spy).toHaveBeenCalled()
-    expect(imgRole).toBeInTheDocument()
-  })
-
-  it('onClick', () => {
-    const spy = jest.fn()
-    render(<Chip onClick={spy} />)
-    const buttonRole = screen.getByRole('button')
-
-    buttonRole.focus()
-    expect(document.activeElement).toBe(buttonRole)
-    fireEvent.click(buttonRole)
-    expect(spy).toHaveBeenCalled()
-  })
-
-  it('buttonProps', () => {
-    const spy = jest.fn()
-    render(<Chip onClick={spy} buttonProps={{ className: 'className' }} />)
-    const buttonRole = screen.getByRole('button')
-
-    expect(buttonRole).toHaveClass('className')
+    expect(startTestId).toBeInTheDocument()
+    expect(endTestId).toBeInTheDocument()
   })
 
   it('ref', () => {

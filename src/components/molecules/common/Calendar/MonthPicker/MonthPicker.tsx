@@ -9,13 +9,14 @@ import {
   setMonth,
   startOfDay,
   startOfMonth,
+  startOfYear,
 } from 'date-fns'
 import { useTranslations } from 'next-intl'
 import { useCallback, useMemo } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 export type MonthPickerProps = StyleProps & {
   /** current month */
@@ -24,8 +25,10 @@ export type MonthPickerProps = StyleProps & {
   minMaxDate?: { min?: Date; max?: Date }
   /** optional combobox props for select combobox */
   buttonProps?: Partial<ButtonProps>
-  /** onChange function */
-  onChange: (date: Date) => void
+  /** set calendar state function */
+  setCalendarState: (state: 'days' | 'months' | 'years') => void
+  /** set current month function */
+  setCurrentMonth: (date: Date) => void
 }
 
 /** Month picker subcomponent for calendar. USE CLIENT */
@@ -36,27 +39,29 @@ export const MonthPicker = ({
   color = 'primary',
   size = 'md',
   buttonProps = {},
-  onChange,
+  setCalendarState,
+  setCurrentMonth,
 }: MonthPickerProps) => {
   const t = useTranslations('Components')
+  const { className: buttonClassName, ...restButtonProps } = buttonProps
   const monthRows = useMemo(() => {
-    const date = new Date('2023-01-01')
-    const months = eachMonthOfInterval({ start: date, end: endOfYear(date) })
+    const months = eachMonthOfInterval({ start: startOfYear(month), end: endOfYear(month) })
     return Array.from({ length: 4 }, (_, i) => months.slice(i * 3, i * 3 + 3))
-  }, [])
+  }, [month])
 
   const handleMonthChange = useCallback(
     (m: Date) => {
       const newDate = startOfDay(setMonth(month, getMonth(m)))
       if (minMaxDate?.min && isBefore(newDate, startOfDay(minMaxDate?.min))) {
-        onChange(minMaxDate?.min)
+        setCurrentMonth(minMaxDate?.min)
       } else if (minMaxDate?.max && isAfter(newDate, startOfDay(minMaxDate?.max))) {
-        onChange(minMaxDate?.max)
+        setCurrentMonth(minMaxDate?.max)
       } else {
-        onChange(newDate)
+        setCurrentMonth(newDate)
       }
+      setCalendarState('days')
     },
-    [month, minMaxDate, onChange],
+    [month, minMaxDate, setCalendarState, setCurrentMonth],
   )
 
   return (
@@ -74,7 +79,7 @@ export const MonthPicker = ({
                 'DateButton',
                 'w-full border-none font-normal',
                 isSameMonth(m, month) && 'selected shadow-ring',
-                buttonProps.className,
+                buttonClassName,
               )}
               variant={variant}
               color={color}
@@ -91,7 +96,7 @@ export const MonthPicker = ({
               aria-selected={isSameMonth(m, month)}
               aria-current={isSameMonth(m, new Date()) ? 'date' : undefined}
               onClick={() => handleMonthChange(m)}
-              {...filterOutKeys(buttonProps, ['className'])}
+              {...restButtonProps}
             />
           ))}
         </div>

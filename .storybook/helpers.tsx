@@ -55,9 +55,9 @@ export const optionsWithContent = Array.from({ length: 20 }, (_, i) => ({
   label: i % 3 === 0 ? 'very long label' + (i + 1) : 'label' + (i + 1),
   value: 'value' + (i + 1),
   content: (
-    <div className="flex w-full items-center">
-      <div>
-        <p>label {i + 1}</p>
+    <div className="flex w-full items-center justify-between">
+      <div className="text-start">
+        <p>{i % 3 === 0 ? 'very long label' + (i + 1) : 'label' + (i + 1)}</p>
         <p className="text-sm">{textContent.slice(0, 21)}</p>
       </div>
       <PlusIcon />
@@ -96,7 +96,7 @@ export const MenuLinks = ({
         onChange={v => setRadioValue(v)}
       />
       <li className="py-4" role="presentation">
-        <Divider />
+        <Divider className="px-8" />
       </li>
       <MenuItemCheckbox
         name={'menuCheckboxStory1' + index}
@@ -132,7 +132,7 @@ export const MenuLinks = ({
         MenuCheckbox3
       </MenuItemCheckbox>
       <li className="py-4" role="presentation">
-        <Divider />
+        <Divider className="px-8" />
       </li>
       {Array.from({ length: length }, (_, i) => (
         <MenuItemButton key={i + 'btn' + index} variant={variant} color={color} hideShadow>

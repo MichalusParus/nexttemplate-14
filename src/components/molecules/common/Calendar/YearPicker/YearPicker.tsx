@@ -17,7 +17,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { StyleProps } from '@/components/types'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { scrollHeight } from '../Calendar.styles'
 
@@ -28,8 +28,10 @@ export type YearPickerProps = StyleProps & {
   minMaxDate?: { min?: Date; max?: Date }
   /** optional combobox props for select combobox */
   buttonProps?: Partial<ButtonProps>
-  /** onChange function */
-  onChange: (date: Date) => void
+  /** set calendar state function */
+  setCalendarState: (state: 'days' | 'months' | 'years') => void
+  /** set current month function */
+  setCurrentMonth: (date: Date) => void
 }
 
 /** Year picker subcomponent for calendar. USE CLIENT */
@@ -40,9 +42,11 @@ export const YearPicker = ({
   color = 'primary',
   size = 'md',
   buttonProps = {},
-  onChange,
+  setCalendarState,
+  setCurrentMonth,
 }: YearPickerProps) => {
   const scrollRef = useRef<HTMLDivElement>(null)
+  const { className: buttonClassName, ...restButtonProps } = buttonProps
   const yearRows = useMemo(() => {
     const date = new Date()
     const years = eachYearOfInterval({
@@ -64,14 +68,15 @@ export const YearPicker = ({
     (y: Date) => {
       const newDate = setYear(year, getYear(y))
       if (minMaxDate?.min && isBefore(startOfMonth(newDate), startOfMonth(minMaxDate?.min))) {
-        onChange(minMaxDate?.min)
+        setCurrentMonth(minMaxDate?.min)
       } else if (minMaxDate?.max && isAfter(startOfMonth(newDate), startOfMonth(minMaxDate?.max))) {
-        onChange(minMaxDate?.max)
+        setCurrentMonth(minMaxDate?.max)
       } else {
-        onChange(newDate)
+        setCurrentMonth(newDate)
       }
+      setCalendarState('months')
     },
-    [year, minMaxDate, onChange],
+    [year, minMaxDate, setCalendarState, setCurrentMonth],
   )
 
   useEffect(() => {
@@ -97,7 +102,7 @@ export const YearPicker = ({
                   'DateButton',
                   'w-full border-none font-normal',
                   isSameYear(y, year) && 'selected shadow-ring',
-                  buttonProps.className,
+                  buttonClassName,
                 )}
                 variant={variant}
                 color={color}
@@ -114,7 +119,7 @@ export const YearPicker = ({
                 aria-selected={isSameYear(y, year)}
                 aria-current={isSameYear(y, new Date()) ? 'date' : undefined}
                 onClick={() => handleYearChange(y)}
-                {...filterOutKeys(buttonProps, ['className'])}
+                {...restButtonProps}
               />
             ))}
           </div>

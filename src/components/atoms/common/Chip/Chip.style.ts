@@ -1,6 +1,8 @@
 import { cn } from '@/utils/utils'
 
-export const chipClass = cn('flex max-w-max items-center rounded-3xl border')
+export const chipClass = cn(
+  'flex max-w-max items-center gap-1 rounded-3xl border px-2 text-inherit',
+)
 
 export const chipVariant = {
   text: {
@@ -35,8 +37,8 @@ export const chipVariant = {
 }
 
 export const chipSize = {
-  sm: cn('text-sm [&_span]:leading-4 [&_svg]:h-smIcon [&_svg]:min-w-smIcon'),
-  md: cn('text-base [&_span]:leading-5 [&_svg]:h-mdIcon [&_svg]:min-w-mdIcon'),
-  lg: cn('text-lg [&_span]:leading-6 [&_svg]:h-lgIcon [&_svg]:min-w-lgIcon'),
+  sm: cn('text-sm leading-4 [&_svg]:h-smIcon [&_svg]:min-w-smIcon'),
+  md: cn('text-base leading-5 [&_svg]:h-mdIcon [&_svg]:min-w-mdIcon'),
+  lg: cn('text-lg leading-6 [&_svg]:h-lgIcon [&_svg]:min-w-lgIcon'),
   none: '',
 }

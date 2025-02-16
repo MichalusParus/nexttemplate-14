@@ -5,7 +5,10 @@ import { FieldValues, FormProvider, UseFormReturn } from 'react-hook-form'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-type NativeFormProps = Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'color' | 'name'>
+type NativeFormProps = Omit<
+  FormHTMLAttributes<HTMLFormElement>,
+  'onSubmit' | 'color' | 'name' | 'className'
+>
 
 export type FormProps<T extends FieldValues> = NativeFormProps &
   StyleProps & {

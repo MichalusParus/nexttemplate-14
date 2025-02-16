@@ -12,7 +12,6 @@ import {
   useState,
 } from 'react'
 
-import { ButtonProps } from '@/components/atoms/common/Button'
 import { buttonSize } from '@/components/atoms/common/Button/Button.style'
 import { ListBox } from '@/components/atoms/common/ListBox'
 import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
@@ -21,7 +20,7 @@ import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
 import { InputProps, OptionType, StyleProps } from '@/components/types'
 import { useFocus } from '@/utils/hooks/useFocus'
-import { cn, filterOutKeys } from '@/utils/utils'
+import { cn } from '@/utils/utils'
 
 import { TextInput, TextInputProps } from '../../../inputs/TextField/TextInput/TextInput'
 import { inputVariant } from '../../../inputs/TextField/TextInput/TextInput.style'
@@ -46,8 +45,6 @@ export type AutocompleteProps = Pick<TextInputProps, 'disabled'> &
     isLoading?: boolean
     /** optional for enabling expandable type of multiselect */
     expandable?: boolean
-    /** for passing aditional props to combobox */
-    buttonProps?: Partial<ButtonProps>
     /** optional input props for autocomplete input */
     inputProps?: Partial<InputProps>
     /** for passing aditional props to dropdown */
@@ -80,7 +77,6 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
       isLoading,
       error,
       disabled,
-      buttonProps = {},
       inputProps = {},
       dropdownProps = {},
       listboxProps = {},
@@ -97,6 +93,7 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
     const dropdownRef = useRef<HTMLDivElement>(null)
     const autocompleteValueRef = useRef<HTMLDivElement>(null)
     useImperativeHandle(ref, () => componentRef.current!)
+    const { className: inputClassName, ...restInputProps } = inputProps
     const [isOpen, setIsOpen] = useState(false)
     const [inputValue, setInputValue] = useState<string>('')
     const [isTruncate, setIsTruncate] = useState(false)
@@ -182,9 +179,7 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
             inputVariant[variant][color],
             buttonSize[size],
             disabledVariant[variant],
-            buttonProps.className,
           )}
-          {...filterOutKeys(buttonProps, ['className'])}
         >
           <AutocompleteValue
             selectedOptions={selectedOptions}
@@ -199,7 +194,7 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
             <div className="relative min-w-[30%] grow bg-inherit ">
               <TextInput
                 id={name}
-                className={cn('AutocompleteCombobox', 'w-auto border-none', inputProps.className)}
+                className={cn('AutocompleteCombobox', 'w-auto border-none', inputClassName)}
                 name={name}
                 type="text"
                 value={inputValue}
@@ -221,7 +216,7 @@ export const Autocomplete = forwardRef<HTMLDivElement, PropsWithChildren<Autocom
                     ? setIsOpen(prev => !prev)
                     : null
                 }
-                {...filterOutKeys(inputProps, ['className'])}
+                {...restInputProps}
                 {...rest}
               />
               <div
