@@ -3,16 +3,22 @@ import '@testing-library/jest-dom'
 import { addMonths, startOfDay } from 'date-fns'
 import { axe, toHaveNoViolations } from 'jest-axe'
 
+import { defaultTestDate } from '@/components/molecules/form/comboboxes/DatePickerField/DatePicker/DatePicker.test'
+
 import { fireEvent, render, screen, within } from '../../../../../../.jest/customRender'
 import { MonthPicker } from '.'
 
 expect.extend(toHaveNoViolations)
 
-const date = new Date('2023-03-04')
-
 describe('MonthPicker', () => {
   it('default', () => {
-    render(<MonthPicker month={date} setCalendarState={() => {}} setCurrentMonth={() => {}} />)
+    render(
+      <MonthPicker
+        month={defaultTestDate}
+        setCalendarState={() => {}}
+        setCurrentMonth={() => {}}
+      />,
+    )
     const gridRole = screen.getByRole('grid')
     const rowRoles = screen.getAllByRole('row')
     const cellRoles = screen.getAllByRole('gridcell')
@@ -35,8 +41,11 @@ describe('MonthPicker', () => {
   it('minMax', () => {
     render(
       <MonthPicker
-        month={date}
-        minMaxDate={{ min: addMonths(startOfDay(date), -1), max: addMonths(startOfDay(date), 1) }}
+        month={defaultTestDate}
+        minMaxDate={{
+          min: addMonths(startOfDay(defaultTestDate), -1),
+          max: addMonths(startOfDay(defaultTestDate), 1),
+        }}
         setCalendarState={() => {}}
         setCurrentMonth={() => {}}
       />,
@@ -50,7 +59,7 @@ describe('MonthPicker', () => {
   it('buttonProps', () => {
     render(
       <MonthPicker
-        month={date}
+        month={defaultTestDate}
         setCalendarState={() => {}}
         setCurrentMonth={() => {}}
         buttonProps={{ className: 'className' }}
@@ -64,18 +73,22 @@ describe('MonthPicker', () => {
 
   it('setCurrentMonth', () => {
     const spy = jest.fn()
-    render(<MonthPicker month={date} setCalendarState={spy} setCurrentMonth={spy} />)
+    render(<MonthPicker month={defaultTestDate} setCalendarState={spy} setCurrentMonth={spy} />)
     const cellRoles = screen.getAllByRole('gridcell')
 
     fireEvent.click(cellRoles[2])
     expect(spy).toHaveBeenCalledTimes(2)
-    expect(spy).toHaveBeenCalledWith(startOfDay(date))
+    expect(spy).toHaveBeenCalledWith(startOfDay(defaultTestDate))
     expect(spy).toHaveBeenCalledWith('days')
   })
 
   it('axe', async () => {
     const { container } = render(
-      <MonthPicker month={date} setCalendarState={() => {}} setCurrentMonth={() => {}} />,
+      <MonthPicker
+        month={defaultTestDate}
+        setCalendarState={() => {}}
+        setCurrentMonth={() => {}}
+      />,
     )
     const results = await axe(container)
     expect(results).toHaveNoViolations()

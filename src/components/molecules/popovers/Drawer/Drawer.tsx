@@ -1,4 +1,5 @@
 'use client'
+import { useTranslations } from 'next-intl'
 import {
   forwardRef,
   PropsWithChildren,
@@ -15,7 +16,7 @@ import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
 import { StyleProps } from '@/components/types'
-import { useFocus } from '@/utils/hooks/useFocus'
+// import { useFocus } from '@/utils/hooks/useFocus'
 import { cn } from '@/utils/utils'
 
 import { closeClass, drawerClass, openClass } from './Drawer.style'
@@ -27,6 +28,8 @@ export type DrawerProps = Omit<StyleProps, 'size'> & {
   name: string
   /** boolean for open state */
   isOpen: boolean
+  /** optional label for drawer */
+  label?: string
   /** position of drawer */
   placement?: 'left' | 'right'
   /** for setting top or bottom offset from relative parent */
@@ -36,7 +39,7 @@ export type DrawerProps = Omit<StyleProps, 'size'> & {
   /** for setting internal padding of Paper component */
   padding?: string
   /** optional id for portal container */
-  portalContainer?: string
+  portalContainerId?: string
   /** for passing aditional props to Paper */
   paperProps?: Partial<PaperProps>
   /** for passing aditional props to Scrollshadow */
@@ -45,20 +48,25 @@ export type DrawerProps = Omit<StyleProps, 'size'> & {
   onClose?: () => void
 }
 
-/** Drawer is controled menu popover that appears from sides of relative parent. Should contain somponents with role menuitem. Paper and ScrollShadow props supported. USE CLIENT */
-export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>(
+// tests
+// stories check
+// rethink scroll hide or make it optional, modal prop
+
+/** Drawer is controled menu popover that appears from sides of relative parent. Paper and ScrollShadow props supported. USE CLIENT */
+export const Drawer = forwardRef<HTMLDivElement | null, PropsWithChildren<DrawerProps>>(
   (
     {
       className,
       name,
       isOpen,
+      label,
       placement = 'left',
       variant = 'outlined',
       color = 'primary',
       offsetY = 'top-0 bottom-0',
       width = 'w-1/3',
       padding = 'p-0',
-      portalContainer,
+      portalContainerId,
       paperProps = {},
       scrollShadowProps = {},
       children,
@@ -66,69 +74,82 @@ export const Drawer = forwardRef<HTMLDivElement, PropsWithChildren<DrawerProps>>
     },
     ref,
   ) => {
-    const componentRef = useRef<HTMLDivElement>(null)
-    useImperativeHandle(ref, () => componentRef.current!)
-    const [mounted, setMounted] = useState(false)
-    const { className: paperClassName, ...restPaperProps } = paperProps
-    const container = portalContainer ? document.getElementById(portalContainer) : undefined
-    const { focusableEl } = useFocus(
-      isOpen,
-      componentRef,
-      ['[tabindex]:not([tabindex="-1"])', '.Link'],
-      onClose,
+    const t = useTranslations('Components')
+    const componentRef = useRef<HTMLDivElement | null>(null)
+    const [isMounted, setIsMounted] = useState(false)
+    const [startTransition, setStartTransition] = useState(false)
+    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
+      ref,
+      () => componentRef.current,
     )
+    const { className: paperClassName, ...restPaperProps } = paperProps
+    // const { focusableEl } = useFocus(
+    //   isOpen,
+    //   componentRef,
+    //   ['[tabindex]:not([tabindex="-1"])', '.Link'],
+    //   onClose,
+    // )
 
     const handleClose = () => {
-      if (focusableEl[0]) {
-        focusableEl[0].focus()
-      }
+      // if (focusableEl[0]) {
+      //   focusableEl[0].focus()
+      // }
       onClose()
     }
 
     useEffect(() => {
-      document.body.style.overflow = isOpen ? 'hidden' : 'unset'
+      setIsMounted(true)
+      if (isOpen) {
+        document.body.style.overflow = 'hidden'
+        setStartTransition(true)
+      } else {
+        document.body.style.overflow = ''
+        setStartTransition(false)
+      }
+      return () => {
+        document.body.style.overflow = ''
+      }
     }, [isOpen])
 
-    useEffect(() => {
-      setMounted(true)
-    }, [])
+    if (!isMounted || !isOpen) return null
 
-    return (
+    const container = portalContainerId
+      ? document.getElementById(portalContainerId) || document.body
+      : document.body
+
+    return createPortal(
       <>
-        {mounted &&
-          createPortal(
-            <>
-              <div
-                id={name}
-                className={cn(
-                  'Drawer',
-                  drawerClass,
-                  offsetY,
-                  width,
-                  isOpen ? openClass[placement] : closeClass[placement],
-                  className,
-                )}
-                ref={componentRef}
-                role="menu"
-                aria-hidden={!isOpen}
-                aria-label={name}
-              >
-                <Paper
-                  className={cn('relative h-full', paperClassName)}
-                  variant={variant}
-                  color={color}
-                  padding={padding}
-                  rounded={placement === 'left' ? 'rounded-r-md' : 'rounded-l-md'}
-                  {...restPaperProps}
-                >
-                  <ScrollShadow {...scrollShadowProps}>{children}</ScrollShadow>
-                </Paper>
-              </div>
-              <Overlay isOpen={isOpen} onClose={handleClose} />
-            </>,
-            container ? container : document.body,
+        <aside
+          id={name}
+          className={cn(
+            'Drawer',
+            drawerClass,
+            offsetY,
+            width,
+            closeClass[placement],
+            startTransition && openClass[placement],
+            className,
           )}
-      </>
+          ref={componentRef}
+          role="dialog"
+          aria-modal="true"
+          aria-hidden={!isOpen}
+          aria-label={label || t('drawer')}
+        >
+          <Paper
+            className={cn('relative h-full', paperClassName)}
+            variant={variant}
+            color={color}
+            padding={padding}
+            rounded={placement === 'left' ? 'rounded-r-md' : 'rounded-l-md'}
+            {...restPaperProps}
+          >
+            <ScrollShadow {...scrollShadowProps}>{children}</ScrollShadow>
+          </Paper>
+        </aside>
+        <Overlay isOpen={isOpen} onClose={handleClose} />
+      </>,
+      container,
     )
   },
 )

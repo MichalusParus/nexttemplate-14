@@ -1,12 +1,32 @@
-import { ReactNode } from 'react'
+import { HTMLAttributes, InputHTMLAttributes, ReactNode } from 'react'
 
 import { LabelProps } from './atoms/common/Label/Label'
 
-export type OptionType = {
+export type OptionType<T = string> = {
   label: string
-  value: string
+  value: T
   content?: ReactNode
 }
+
+export type NativeDivProps = Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'className' | 'title' | 'color' | 'onClick' | 'label' | 'onChange'
+>
+
+export type NativeInputProps = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  | 'color'
+  | 'size'
+  | 'onChange'
+  | 'name'
+  | 'className'
+  | 'value'
+  | 'placeholder'
+  | 'type'
+  | 'width'
+  | 'content'
+  | 'onDrop'
+>
 
 export type InputProps = {
   /** for passing custom tailwind classes */

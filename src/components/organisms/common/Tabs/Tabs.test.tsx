@@ -71,6 +71,8 @@ describe('Tabs', () => {
         dropdownProps={{ className: 'dropdownClass' }}
       />,
     )
+    const buttonTestId = screen.getByTestId('DropdownTabListButton')
+    fireEvent.click(buttonTestId)
     const tabRoles = screen.getAllByRole('tab')
     const buttonRoles = screen.getAllByRole('button')
     const dropdownTestId = screen.getByTestId('Dropdown')

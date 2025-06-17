@@ -44,7 +44,7 @@ export type MenuProps = Omit<StyleProps, 'size'> & {
 }
 
 /** Menu is dropdown popover for displaying additional settings. Uncontroled by default or controled with isOpen and onClose props. Should contain somponents with role menuitem. Button and Dropdown props supported. USE CLIENT */
-export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
+export const Menu = forwardRef<HTMLDivElement | null, PropsWithChildren<MenuProps>>(
   (
     {
       className,
@@ -64,7 +64,10 @@ export const Menu = forwardRef<HTMLDivElement, PropsWithChildren<MenuProps>>(
   ) => {
     const componentRef = useRef<HTMLDivElement>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
-    useImperativeHandle(ref, () => componentRef.current!)
+    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
+      ref,
+      () => componentRef.current,
+    )
     const [isInternallyOpen, setIsInternallyOpen] = useState(Boolean(isOpen))
     const openState = setIsOpen ? Boolean(isOpen) : isInternallyOpen
     const menuPosition = !setIsOpen ? 'relative' : ''

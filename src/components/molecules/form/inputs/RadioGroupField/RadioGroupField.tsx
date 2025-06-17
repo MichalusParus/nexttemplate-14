@@ -10,9 +10,10 @@ import { FormStyleContext } from '../../Form/Form'
 import { RadioGroup, RadioGroupProps } from './RadioGroup/RadioGroup'
 
 export type RadioGroupFieldProps = Omit<RadioGroupProps, 'value' | 'error' | 'onChange'> &
+  Partial<Pick<RadioGroupProps, 'onChange'>> &
   FieldProps
 
-/** Form and style context wrapper for RadioGroup inside fake Label component. Default InputHTMLAttributes and Label props supported. USE CLIENT */
+/** Form and style context wrapper for RadioGroup inside fake Label component. Native InputHTMLAttributes and Label props supported. USE CLIENT */
 export const RadioGroupField = ({
   className,
   name,
@@ -21,6 +22,7 @@ export const RadioGroupField = ({
   color,
   size,
   labelProps = {},
+  onChange,
   ...rest
 }: RadioGroupFieldProps) => {
   const {
@@ -42,12 +44,15 @@ export const RadioGroupField = ({
             color={color || formColor}
             size={size || formSize}
             error={errorMessage}
-            aria-labelledby={`${name}-label`}
             aria-describedby={
               errorMessage || labelProps.description ? `${name}-description` : undefined
             }
             aria-invalid={!!errorMessage}
             {...field}
+            onChange={v => {
+              field.onChange(v)
+              onChange?.(v)
+            }}
             {...rest}
           />
         </Label>

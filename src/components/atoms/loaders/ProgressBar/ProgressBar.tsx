@@ -1,15 +1,13 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, HTMLAttributes } from 'react'
+import { forwardRef } from 'react'
 
-import { StyleProps } from '@/components/types'
+import { NativeDivProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { progressClass, progressColor } from './ProgressBar.style'
 
-type NativeProgressBarProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'>
-
-export type ProgressBarProps = NativeProgressBarProps & {
+export type ProgressBarProps = NativeDivProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** progress number 0 to 100 */
@@ -20,8 +18,8 @@ export type ProgressBarProps = NativeProgressBarProps & {
   height?: string
 }
 
-/** Progress bar for displaying loading state or visual representation of data. Default HTMLAttributes props supported. USE CLIENT */
-export const ProgressBar = forwardRef<HTMLDivElement, ProgressBarProps>(
+/** Progress bar for displaying loading state or visual representation of data. Native HTMLAttributes props supported. USE CLIENT */
+export const ProgressBar = forwardRef<HTMLDivElement | null, ProgressBarProps>(
   ({ className, progress = 0, color = 'primary', height = 'h-3', ...rest }, ref) => {
     const t = useTranslations('Components')
     const min = 0

@@ -16,8 +16,8 @@ export type InlineLoaderProps = NativeInlineLoaderProps & {
   size?: StyleProps['size'] | 'inline'
 }
 
-/** Serves as inline loader, takes current text color. Default HTMLAttributes props supported. USE CLIENT */
-export const InlineLoader = forwardRef<HTMLSpanElement, InlineLoaderProps>(
+/** Serves as inline loader, takes current text color. Native HTMLAttributes props supported. USE CLIENT */
+export const InlineLoader = forwardRef<HTMLSpanElement | null, InlineLoaderProps>(
   ({ className, size = 'md', ...rest }, ref) => {
     const t = useTranslations('Components')
 

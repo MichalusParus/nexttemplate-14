@@ -27,8 +27,8 @@ export type TextAreaProps = NativeTextAreaProps &
     onChange: (value: string) => void
   }
 
-/** Basic styled uncontroled TextArea. For form purposes use TextAreaField. Default TextareaHTMLAttributes props supported. USE CLIENT */
-export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
+/** Basic styled uncontroled TextArea. For form purposes use TextAreaField. Native TextareaHTMLAttributes props supported. USE CLIENT */
+export const TextArea = forwardRef<HTMLTextAreaElement | null, TextAreaProps>(
   (
     {
       className,
@@ -62,7 +62,6 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           name={name}
           value={value}
           disabled={disabled}
-          tabIndex={disabled ? -1 : 0}
           onChange={e => onChange(e.target.value)}
           ref={ref}
           {...rest}

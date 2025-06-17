@@ -30,7 +30,7 @@ describe('RangeInput', () => {
   })
 
   it('value', () => {
-    render(<RangeInput name="rangeTest" value="50" onChange={() => {}} />)
+    render(<RangeInput name="rangeTest" value={50} onChange={() => {}} />)
     const rangeRole = screen.getByRole('slider')
     const spanTestId = screen.getByTestId('Span')
 
@@ -49,13 +49,15 @@ describe('RangeInput', () => {
   it('onChange', () => {
     const spy = jest.fn()
     render(<RangeInput name="rangeTest" onChange={spy} />)
-    fireEvent.change(screen.getByRole('slider'), {
+    const rangeRole = screen.getByRole('slider')
+
+    fireEvent.change(rangeRole, {
       target: {
         value: 50,
       },
     })
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('50')
+    expect(spy).toHaveBeenCalledWith(50)
   })
 
   it('disabled', () => {
@@ -63,7 +65,6 @@ describe('RangeInput', () => {
     const rangeRole = screen.getByRole('slider')
 
     expect(rangeRole).toHaveAttribute('disabled')
-    expect(rangeRole).toHaveAttribute('tabindex', '-1')
   })
 
   it('ref', () => {

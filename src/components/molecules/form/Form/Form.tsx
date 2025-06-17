@@ -32,7 +32,7 @@ export const FormStyleContext = createContext<{
   formSize: undefined,
 })
 
-/** Form with useForm and style context provider for form fields. Default FormHTMLAttributes props supported. USE CLIENT */
+/** Form with useForm and style context provider for form fields. Native FormHTMLAttributes props supported. USE CLIENT */
 export const Form = <T extends FieldValues>({
   className,
   name,

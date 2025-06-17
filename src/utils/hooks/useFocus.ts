@@ -3,7 +3,7 @@ import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'reac
 /** useFocus hook is used for trapping focus inside componentRef El. Pass state for open state, closing fn. Optionally choose focusable for targeting specific elements. */
 export const useFocus = (
   isActive: boolean,
-  componentRef: MutableRefObject<HTMLDivElement | null>,
+  componentRef: MutableRefObject<HTMLElement | null>,
   selectableClasses: string[],
   onClose: () => void,
   options?: {

@@ -51,7 +51,6 @@ describe('TextAreaField', () => {
     expect(inputRole).toHaveAttribute('name', 'fieldTest')
     expect(inputRole).toHaveValue('value')
     expect(inputRole).toHaveAttribute('placeholder', 'placeholder')
-    expect(inputRole).toHaveAttribute('aria-labelledby', 'fieldTest-label')
     expect(inputRole).toHaveAttribute('aria-invalid', 'false')
     expect(inputRole).not.toHaveAttribute('aria-describedby')
     expect(labelTestId).toBeInTheDocument()
@@ -107,6 +106,21 @@ describe('TextAreaField', () => {
       expect(inputRole).toHaveAttribute('aria-describedby', 'fieldTest-description')
       expect(inputRole).toHaveAttribute('aria-invalid', 'true')
     })
+  })
+
+  it('onChange', () => {
+    const spy = jest.fn()
+    render(<FieldWithHooks onChange={spy} />)
+    const inputRole = screen.getByRole('textbox')
+
+    fireEvent.change(inputRole, {
+      target: {
+        value: 'newValue',
+      },
+    })
+
+    expect(spy).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalledWith('newValue')
   })
 
   it('labelProps', () => {

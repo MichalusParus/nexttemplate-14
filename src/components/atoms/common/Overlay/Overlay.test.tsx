@@ -16,6 +16,7 @@ describe('Overlay', () => {
     expect(overlayTestId).toBeInTheDocument()
     expect(overlayTestId).toHaveClass('className')
     expect(overlayTestId).toHaveAttribute('type', 'button')
+    expect(overlayTestId).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('onClose', () => {

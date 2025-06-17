@@ -92,6 +92,30 @@ export const buttonVariant = {
   },
 }
 
+export const buttonFocusWithinVariant = {
+  text: {
+    primary: 'focus-within:bg-primary-100 dark:focus-within:bg-primary-900',
+    secondary: 'focus-within:bg-secondary-200 dark:focus-within:bg-secondary-900',
+    terciary: 'focus-within:bg-terciary-200 dark:focus-within:bg-terciary-900',
+    error: 'focus-within:bg-error-200 dark:focus-within:bg-error-900',
+    none: '',
+  },
+  outlined: {
+    primary: 'focus-within:bg-primary-100 dark:focus-within:bg-primary-900',
+    secondary: 'focus-within:bg-secondary-200 dark:focus-within:bg-secondary-900',
+    terciary: 'focus-within:bg-terciary-200 dark:focus-within:bg-terciary-900',
+    error: 'focus-within:bg-error-200 dark:focus-within:bg-error-900',
+    none: '',
+  },
+  contained: {
+    primary: 'focus-within:border-primary-900 focus-within:bg-primary-900',
+    secondary: 'focus-within:border-secondary-900 focus-within:bg-secondary-900',
+    terciary: 'focus-within:border-terciary-900 focus-within:bg-terciary-900',
+    error: 'focus-within:border-error-900 focus-within:bg-error-900',
+    none: '',
+  },
+}
+
 export const buttonDisabledVariant = {
   text: cn(
     'disabled:cursor-not-allowed disabled:bg-dark-200 disabled:text-dark-500 disabled:opacity-50',

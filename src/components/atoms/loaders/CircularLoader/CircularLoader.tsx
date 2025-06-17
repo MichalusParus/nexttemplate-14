@@ -1,13 +1,13 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, HTMLAttributes } from 'react'
+import { forwardRef } from 'react'
 
-import { StyleProps } from '@/components/types'
+import { NativeDivProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { spinnerClass, spinnerColor, spinnerSize } from './CircularLoader.style'
 
-type NativeCircularLoaderProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'>
+type NativeCircularLoaderProps = NativeDivProps
 
 export type CircularLoaderProps = NativeCircularLoaderProps &
   Omit<StyleProps, 'variant'> & {
@@ -19,8 +19,8 @@ export type CircularLoaderProps = NativeCircularLoaderProps &
     hideLabel?: boolean
   }
 
-/** Serves as block loader. Default HTMLAttributes props supported. USE CLIENT */
-export const CircularLoader = forwardRef<HTMLDivElement, CircularLoaderProps>(
+/** Serves as block loader. Native HTMLAttributes props supported. USE CLIENT */
+export const CircularLoader = forwardRef<HTMLDivElement | null, CircularLoaderProps>(
   (
     { className, color = 'primary', size = 'md', label = 'Loading...', hideLabel, ...rest },
     ref,

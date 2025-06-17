@@ -52,7 +52,6 @@ describe('SearchField', () => {
     expect(inputRole).toHaveAttribute('type', 'search')
     expect(inputRole).toHaveAttribute('value', 'value')
     expect(inputRole).toHaveAttribute('placeholder', 'placeholder')
-    expect(inputRole).toHaveAttribute('aria-labelledby', 'fieldTest-label')
     expect(inputRole).toHaveAttribute('aria-invalid', 'false')
     expect(inputRole).not.toHaveAttribute('aria-describedby')
     expect(labelTestId).toBeInTheDocument()

@@ -6,9 +6,10 @@ import { Controller, useFormContext } from 'react-hook-form'
 import { FormStyleContext } from '../../Form/Form'
 import { Checkbox, CheckboxProps } from './Checkbox/Checkbox'
 
-export type CheckboxFieldProps = Omit<CheckboxProps, 'value' | 'error' | 'isChecked' | 'onChange'>
+export type CheckboxFieldProps = Omit<CheckboxProps, 'value' | 'error' | 'isChecked' | 'onChange'> &
+  Partial<Pick<CheckboxProps, 'onChange'>>
 
-/** Form and style context wrapper for Checkbox component. Default InputHTMLAttributes props supported. USE CLIENT */
+/** Form and style context wrapper for Checkbox component. Native InputHTMLAttributes props supported. USE CLIENT */
 export const CheckboxField = ({
   className,
   name,
@@ -16,6 +17,7 @@ export const CheckboxField = ({
   variant,
   color,
   size,
+  onChange,
   ...rest
 }: CheckboxFieldProps) => {
   const {
@@ -38,11 +40,13 @@ export const CheckboxField = ({
           color={color || formColor}
           size={size || formSize}
           error={errorMessage}
-          aria-labelledby={`${name}-label`}
           aria-invalid={!!errorMessage}
           {...field}
+          onChange={() => {
+            field.onChange(field.value === name ? '' : name)
+            onChange?.(field.value === name ? '' : name)
+          }}
           {...rest}
-          onChange={() => field.onChange(field.value === name ? '' : name)}
         />
       )}
     />

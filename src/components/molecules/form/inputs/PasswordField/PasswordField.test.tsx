@@ -52,7 +52,6 @@ describe('PasswordField', () => {
     expect(inputTestId).toHaveAttribute('type', 'password')
     expect(inputTestId).toHaveAttribute('value', 'value')
     expect(inputTestId).toHaveAttribute('placeholder', 'placeholder')
-    expect(inputTestId).toHaveAttribute('aria-labelledby', 'fieldTest-label')
     expect(inputTestId).toHaveAttribute('aria-invalid', 'false')
     expect(inputTestId).not.toHaveAttribute('aria-describedby')
     expect(labelTestId).toBeInTheDocument()
@@ -108,6 +107,21 @@ describe('PasswordField', () => {
       expect(inputTestId).toHaveAttribute('aria-describedby', 'fieldTest-description')
       expect(inputTestId).toHaveAttribute('aria-invalid', 'true')
     })
+  })
+
+  it('onChange', () => {
+    const spy = jest.fn()
+    render(<FieldWithHooks onChange={spy} />)
+    const inputTestId = screen.getByTestId('PasswordInput')
+
+    fireEvent.change(inputTestId, {
+      target: {
+        value: 'newValue',
+      },
+    })
+
+    expect(spy).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalledWith('newValue')
   })
 
   it('labelProps', () => {

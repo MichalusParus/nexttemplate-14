@@ -39,8 +39,8 @@ export type ButtonProps = NativeButtonProps &
     onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   }
 
-/** Basic Button with loading state and icon handling. Selected class enables active state styles, or error class for error state. Default ButtonHTMLAttributes props supported. USE CLIENT */
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+/** Basic Button with loading state and icon handling. Selected class enables active state styles, or error class for error state. Native ButtonHTMLAttributes props supported. USE CLIENT */
+export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(
   (
     {
       className,
@@ -50,9 +50,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       size = 'md',
       startIcon,
       endIcon,
-      isLoading,
-      hideShadow,
-      disabled,
+      isLoading = false,
+      hideShadow = false,
+      disabled = false,
       children,
       onClick,
       ...rest
@@ -87,7 +87,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           iconOnly ? iconOnlySize[size] : buttonSize[size],
           buttonIconSize[size],
           buttonDisabledVariant[variant],
-          isLoading && 'selected',
+          isLoading && 'selected cursor-progress opacity-80',
           variant === 'contained' && !hideShadow && 'shadow-button active:shadow-none',
           className,
         )}
@@ -99,7 +99,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...rest}
       >
-        {isLoading ? (
+        {isLoading && !iconOnly ? (
           renderLoadingState()
         ) : (
           <>

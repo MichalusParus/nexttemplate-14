@@ -16,8 +16,8 @@ export type GhostProps = NativeGhostProps & {
   size?: StyleProps['size'] | 'xl' | '2xl' | '3xl' | 'none'
 }
 
-/** Ghost is loading template for text, images, boxes and sections. Height and width must be set through className, for inline use theme heights. Default HTMLAttributes props supported. USE CLIENT */
-export const Ghost = forwardRef<HTMLSpanElement, GhostProps>(
+/** Ghost is loading template for text, images, boxes and sections. Height and width must be set through className, for inline use size prop. Native HTMLAttributes props supported. USE CLIENT */
+export const Ghost = forwardRef<HTMLSpanElement | null, GhostProps>(
   ({ className, size = 'none', ...rest }, ref) => {
     const t = useTranslations('Components')
 

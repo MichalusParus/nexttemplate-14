@@ -25,55 +25,59 @@ export type ComponentTemplateProps = SpanProps & {
 }
 
 /** Text wrapper for displaying text with ellipsis and tooltip. Tooltip and Span props supported. USE CLIENT */
-export const Ellipsis = forwardRef<HTMLSpanElement, PropsWithChildren<ComponentTemplateProps>>(
-  ({ className, tooltipProps, children, ...rest }, ref) => {
-    const [isOverflow, setIsOverflow] = useState(false)
-    const componentRef = useRef<HTMLSpanElement>(null)
-    useImperativeHandle(ref, () => componentRef.current!)
+export const Ellipsis = forwardRef<
+  HTMLSpanElement | null,
+  PropsWithChildren<ComponentTemplateProps>
+>(({ className, tooltipProps, children, ...rest }, ref) => {
+  const [isOverflow, setIsOverflow] = useState(false)
+  const componentRef = useRef<HTMLSpanElement>(null)
+  useImperativeHandle<HTMLSpanElement | null, HTMLSpanElement | null>(
+    ref,
+    () => componentRef.current,
+  )
 
-    const checkOverflow = () => {
-      if (componentRef.current) {
-        setIsOverflow(componentRef.current?.scrollHeight > componentRef.current.clientHeight)
-      }
+  const checkOverflow = () => {
+    if (componentRef.current) {
+      setIsOverflow(componentRef.current?.scrollHeight > componentRef.current.clientHeight)
     }
+  }
 
-    useLayoutEffect(() => {
-      checkOverflow()
-      window.addEventListener('resize', checkOverflow)
-      return () => {
-        window.removeEventListener('resize', checkOverflow)
-      }
-    }, [children])
+  useLayoutEffect(() => {
+    checkOverflow()
+    window.addEventListener('resize', checkOverflow)
+    return () => {
+      window.removeEventListener('resize', checkOverflow)
+    }
+  }, [children])
 
-    useEffect(() => {
-      checkOverflow()
-    }, [children])
+  useEffect(() => {
+    checkOverflow()
+  }, [children])
 
-    if (!isOverflow)
-      return (
-        <Span
-          className={cn('Ellipsis', ellipsisClass, className)}
-          ref={componentRef}
-          data-testid="Ellipsis"
-          {...rest}
-        >
-          {children}
-        </Span>
-      )
-
+  if (!isOverflow)
     return (
-      <Tooltip title={children} {...tooltipProps}>
-        <Span
-          className={cn('Ellipsis', ellipsisClass, className)}
-          ref={componentRef}
-          data-testid="Ellipsis"
-          {...rest}
-        >
-          {children}
-        </Span>
-      </Tooltip>
+      <Span
+        className={cn('Ellipsis', ellipsisClass, className)}
+        ref={componentRef}
+        data-testid="Ellipsis"
+        {...rest}
+      >
+        {children}
+      </Span>
     )
-  },
-)
+
+  return (
+    <Tooltip title={children} {...tooltipProps}>
+      <Span
+        className={cn('Ellipsis', ellipsisClass, className)}
+        ref={componentRef}
+        data-testid="Ellipsis"
+        {...rest}
+      >
+        {children}
+      </Span>
+    </Tooltip>
+  )
+})
 
 Ellipsis.displayName = 'Ellipsis'

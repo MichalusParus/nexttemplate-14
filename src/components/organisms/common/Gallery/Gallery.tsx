@@ -37,7 +37,7 @@ export type GalleryProps = Omit<StyleProps, 'size'> & {
 }
 
 /** Gallery component can display multiple images with autoplay and image controll. RatioWrapProps supported. USE CLIENT */
-export const Gallery = forwardRef<HTMLDivElement, GalleryProps>(
+export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
   (
     {
       className,

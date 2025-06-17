@@ -25,7 +25,7 @@ export type NavProps = {
 }
 
 /** Nav component. USE CLIENT */
-export const Nav = forwardRef<HTMLDivElement, NavProps>(
+export const Nav = forwardRef<HTMLDivElement | null, NavProps>(
   ({ className, navLinks, menu, linkProps = {} }, ref) => {
     const pathName = usePathname()
     const { className: linkClassName, ...restLinkProps } = linkProps

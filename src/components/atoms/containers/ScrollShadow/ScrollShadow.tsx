@@ -1,11 +1,12 @@
 'use client'
-import { forwardRef, HTMLAttributes, useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 
+import { NativeDivProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { shadowClass, shadowPosition } from './ScrollShadow.style'
 
-export type ScrollShadowProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> & {
+export type ScrollShadowProps = NativeDivProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** for setting height or maxHeight in tailwind classes */
@@ -18,8 +19,8 @@ export type ScrollShadowProps = Omit<HTMLAttributes<HTMLDivElement>, 'className'
   disableHorizontal?: boolean
 }
 
-/** Content wrapper for scroll shadow effect. Parent must have from-"bgColor" or be specified in color prop. Default HTMLAttributes props supported. USE CLIENT  */
-export const ScrollShadow = forwardRef<HTMLDivElement, ScrollShadowProps>(
+/** Content wrapper for scroll shadow effect. Use inside Paper or other wrap with from-"bgColor" class or be specify color prop. Native HTMLAttributes props supported. USE CLIENT  */
+export const ScrollShadow = forwardRef<HTMLDivElement | null, ScrollShadowProps>(
   (
     {
       className,

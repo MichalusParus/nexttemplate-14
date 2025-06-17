@@ -26,7 +26,7 @@ export type MobilePaginationProps = StyleProps & {
 }
 
 /** Minimalistic mobile screen pagination. ButtonProps supported. USE CLIENT */
-export const MobilePagination = forwardRef<HTMLDivElement, MobilePaginationProps>(
+export const MobilePagination = forwardRef<HTMLDivElement | null, MobilePaginationProps>(
   (
     {
       className,

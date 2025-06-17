@@ -9,21 +9,23 @@ import { Label } from '@/components/atoms/common/Label'
 import { useFilterData } from '@/utils/hooks/useFilterData'
 
 import { formSchema, getOptions, initialValues } from '../../../../../.storybook/helpers'
-import { DatePickerField } from '../datePickers/DatePickerField'
-import { MultiDatePickerField } from '../datePickers/MultiDatePickerField'
-import { RangeDatePickerField } from '../datePickers/RangeDatePickerField'
+import { AutocompleteField } from '../comboboxes/AutocompleteField'
+import { DatePickerField } from '../comboboxes/DatePickerField'
+import { MultiAutocompleteField } from '../comboboxes/MultiAutocompleteField'
+import { MultiDatePickerField } from '../comboboxes/MultiDatePickerField'
+import { MultiSelectField } from '../comboboxes/MultiSelectField'
+import { RangeDatePickerField } from '../comboboxes/RangeDatePickerField'
+import { SelectField } from '../comboboxes/SelectField'
 import { CheckboxField } from '../inputs/CheckboxField'
 import { CheckboxGroupField } from '../inputs/CheckboxGroupField'
+import { FileField } from '../inputs/FileField'
+import { NumberField } from '../inputs/NumberField'
 import { PasswordField } from '../inputs/PasswordField'
 import { RadioGroupField } from '../inputs/RadioGroupField'
 import { RangeField } from '../inputs/RangeField'
 import { SearchField } from '../inputs/SearchField'
 import { TextAreaField } from '../inputs/TextAreaField'
 import { TextField } from '../inputs/TextField'
-import { AutocompleteField } from '../selects/AutocompleteField'
-import { MultiAutocompleteField } from '../selects/MultiAutocompleteField'
-import { MultiSelectField } from '../selects/MultiSelectField'
-import { SelectField } from '../selects/SelectField'
 import { Form } from '.'
 import { FormProps } from './Form'
 
@@ -56,11 +58,20 @@ const FormWithHooks = (args: FormProps<object>) => {
   const { filteredData: multiAutocompleteOptions, setFilter: setMultiAutocompleteFilter } =
     useFilterData(optionsRef.current)
 
+  const handleMockUpload = async (file: File): Promise<File> => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        console.log('upload', file)
+        resolve(file)
+      }, 2000)
+    })
+  }
+
   return (
     <div className="px-40">
       <Form {...args} form={form}>
         <TextField name="inputStory" label="TextInput:" placeholder="input" />
-        <TextField name="numberStory" type="number" label="NumberInput:" placeholder="number" />
+        <NumberField name="numberStory" label="NumberInput:" placeholder="number" />
         <PasswordField name="passwordStory" label="PasswordInput:" placeholder="password" />
         <SearchField
           name="searchStory"
@@ -69,7 +80,19 @@ const FormWithHooks = (args: FormProps<object>) => {
           labelProps={{ description: 'Some description' }}
         />
         <TextAreaField name="textareaStory" label="Textarea:" placeholder="textarea" />
-        <RangeField name="rangeStory" label="Range:" min={100} max={200} />
+        <FileField
+          name="fileStory"
+          label="FileInput:"
+          onDrop={handleMockUpload}
+          onDelete={async file => console.log('delete', file)}
+        />
+        <RangeField
+          name="rangeStory"
+          label="Range:"
+          min={100}
+          max={200}
+          onChange={v => console.log(v)}
+        />
         <Label name="checkboxStory" label="Fake label:" fakeLabel>
           <CheckboxField name="checkboxStory" label="checkbox" />
         </Label>
@@ -91,7 +114,12 @@ const FormWithHooks = (args: FormProps<object>) => {
         />
         <DatePickerField name="dateStory" label="DatePicker:" placeholder="date" />
         <RangeDatePickerField name="dateRangeStory" label="RangeDatePicker:" placeholder="range" />
-        <MultiDatePickerField name="dateMultiStory" label="MultiDatePicker:" placeholder="multi" />
+        <MultiDatePickerField
+          name="dateMultiStory"
+          label="MultiDatePicker:"
+          placeholder="multi"
+          onChange={v => console.log(v)}
+        />
         <SelectField
           name="selectStory"
           label="Select:"

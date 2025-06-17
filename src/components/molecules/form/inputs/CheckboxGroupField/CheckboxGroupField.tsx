@@ -10,9 +10,10 @@ import { FormStyleContext } from '../../Form/Form'
 import { CheckboxGroup, CheckboxGroupProps } from './CheckboxGroup/CheckboxGroup'
 
 export type CheckboxGroupFieldProps = Omit<CheckboxGroupProps, 'value' | 'error' | 'onChange'> &
+  Partial<Pick<CheckboxGroupProps, 'onChange'>> &
   FieldProps
 
-/** Form and style context wrapper for CheckboxGroup inside fake Label component. Default InputHTMLAttributes and Label props supported. USE CLIENT */
+/** Form and style context wrapper for CheckboxGroup inside fake Label component. Native InputHTMLAttributes and Label props supported. USE CLIENT */
 export const CheckboxGroupField = ({
   className,
   name,
@@ -21,6 +22,7 @@ export const CheckboxGroupField = ({
   color,
   size,
   labelProps = {},
+  onChange,
   ...rest
 }: CheckboxGroupFieldProps) => {
   const {
@@ -42,12 +44,15 @@ export const CheckboxGroupField = ({
             color={color || formColor}
             size={size || formSize}
             error={errorMessage}
-            aria-labelledby={`${name}-label`}
             aria-describedby={
               errorMessage || labelProps.description ? `${name}-description` : undefined
             }
             aria-invalid={!!errorMessage}
             {...field}
+            onChange={v => {
+              field.onChange(v)
+              onChange?.(v)
+            }}
             {...rest}
           />
         </Label>

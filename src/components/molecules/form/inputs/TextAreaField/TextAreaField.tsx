@@ -9,9 +9,11 @@ import { FieldProps } from '@/components/types'
 import { FormStyleContext } from '../../Form/Form'
 import { TextArea, TextAreaProps } from './TextArea/TextArea'
 
-export type TextAreaFieldProps = Omit<TextAreaProps, 'value' | 'error' | 'onChange'> & FieldProps
+export type TextAreaFieldProps = Omit<TextAreaProps, 'value' | 'error' | 'onChange'> &
+  Partial<Pick<TextAreaProps, 'onChange'>> &
+  FieldProps
 
-/** Form and style context wrapper for TextArea inside Label component. Default TextareaHTMLAttributes and Label props supported. USE CLIENT  */
+/** Form and style context wrapper for TextArea inside Label component. Native TextareaHTMLAttributes and Label props supported. USE CLIENT  */
 export const TextAreaField = ({
   className,
   name,
@@ -20,6 +22,7 @@ export const TextAreaField = ({
   color,
   size,
   labelProps = {},
+  onChange,
   ...rest
 }: TextAreaFieldProps) => {
   const {
@@ -47,12 +50,15 @@ export const TextAreaField = ({
             color={color || formColor}
             size={size || formSize}
             error={errorMessage}
-            aria-labelledby={`${name}-label`}
             aria-describedby={
               errorMessage || labelProps.description ? `${name}-description` : undefined
             }
             aria-invalid={!!errorMessage}
             {...field}
+            onChange={v => {
+              field.onChange(v)
+              onChange?.(v)
+            }}
             {...rest}
           />
         </Label>

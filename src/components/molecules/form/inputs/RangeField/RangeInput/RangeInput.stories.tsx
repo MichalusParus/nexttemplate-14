@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { RangeInput, RangeProps } from './RangeInput'
 
 const meta: Meta<typeof RangeInput> = {
-  title: 'Molecules/Form/RangeInput',
+  title: 'Molecules/Form/inputs/RangeInput',
   component: RangeInput,
   tags: ['autodocs'],
   parameters: {
@@ -13,7 +13,7 @@ const meta: Meta<typeof RangeInput> = {
 }
 
 const RangeWithHooks = (args: RangeProps) => {
-  const [value, setValue] = useState<string>()
+  const [value, setValue] = useState<number>()
   return <RangeInput {...args} value={value} onChange={value => setValue(value)} />
 }
 

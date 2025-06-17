@@ -3,7 +3,7 @@ import { forwardRef } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { SignInIcon } from '@/components/atoms/icons'
-import { Select } from '@/components/molecules/form/selects/SelectField/Select'
+import { Select } from '@/components/molecules/form/comboboxes/SelectField/Select'
 import { Tooltip } from '@/components/molecules/popovers/Tooltip'
 import { StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
@@ -31,7 +31,7 @@ export type GridFooterProps = StyleProps & {
 }
 
 /** Footer for DataGrid with rows per page, export and pagination. USE CLIENT */
-export const GridFooter = forwardRef<HTMLDivElement, GridFooterProps>(
+export const GridFooter = forwardRef<HTMLDivElement | null, GridFooterProps>(
   (
     {
       filteredData,

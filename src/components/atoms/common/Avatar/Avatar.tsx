@@ -1,17 +1,15 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, HTMLAttributes } from 'react'
+import { forwardRef } from 'react'
 
-import { StyleProps } from '@/components/types'
+import { NativeDivProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { ProfileIcon } from '../../icons'
 import { Image } from '../Image'
 import { avatarClass, avatarSize, avatarVariant } from './Avatar.style'
 
-type NativeAvatarProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'>
-
-export type AvatarProps = NativeAvatarProps &
+export type AvatarProps = NativeDivProps &
   StyleProps & {
     /** for passing custom tailwind classes */
     className?: string
@@ -21,8 +19,8 @@ export type AvatarProps = NativeAvatarProps &
     username?: string
   }
 
-/** Avatar component for displaying user initials. By default shows profile icon. Default HTMLAttributes props supported. USE CLIENT */
-export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
+/** Avatar component for displaying user initials. By default shows profile icon. Native HTMLAttributes props supported. USE CLIENT */
+export const Avatar = forwardRef<HTMLDivElement | null, AvatarProps>(
   (
     { className, src, username, variant = 'outlined', color = 'primary', size = 'md', ...rest },
     ref,

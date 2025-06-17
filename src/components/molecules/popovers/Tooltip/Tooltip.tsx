@@ -2,7 +2,6 @@
 import { Placement } from '@popperjs/core'
 import {
   forwardRef,
-  HTMLAttributes,
   PropsWithChildren,
   ReactNode,
   useCallback,
@@ -12,12 +11,13 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 
+import { NativeDivProps } from '@/components/types'
 import { usePopper } from '@/utils/hooks/usePopper'
 import { cn } from '@/utils/utils'
 
 import { tooltipClass, tooltipPointer, tooltipVisibility } from './Tooltip.style'
 
-export type TooltipProps = Omit<HTMLAttributes<HTMLDivElement>, 'title' | 'className'> & {
+export type TooltipProps = NativeDivProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** position of tooltip */
@@ -30,16 +30,15 @@ export type TooltipProps = Omit<HTMLAttributes<HTMLDivElement>, 'title' | 'class
   delay?: string
 }
 
-/** Small popover for displaying aditional information on children hover or focus. TouchScreen supported. Default HTMLDivElement props supported. USE CLIENT */
-export const Tooltip = forwardRef<HTMLDivElement, PropsWithChildren<TooltipProps>>(
+/** Small popover for displaying aditional information on children hover or focus. TouchScreen supported. Native HTMLDivElement props supported. USE CLIENT */
+export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<TooltipProps>>(
   (
     { className, placement = 'top', offset, title, delay = 'delay-500', children, ...rest },
     ref,
   ) => {
     const [isVisible, setIsVisible] = useState(false)
-    const [mounted, setMounted] = useState(false)
     const { anchorRef, adjustedPlacement, setPopoverEl } = usePopper(placement, offset)
-    useImperativeHandle(ref, () => anchorRef.current!)
+    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => anchorRef.current)
 
     const handleVisible = useCallback(() => {
       setIsVisible(true)
@@ -60,36 +59,31 @@ export const Tooltip = forwardRef<HTMLDivElement, PropsWithChildren<TooltipProps
     )
 
     useEffect(() => {
-      setMounted(true)
-    }, [])
-
-    useEffect(() => {
       if (typeof window !== 'undefined' && anchorRef.current) {
+        const controller = new AbortController()
+        const { signal } = controller
+
         const element = anchorRef.current
-        window.addEventListener('click', handleClickOutside)
-        element?.addEventListener('mouseenter', handleVisible)
-        element?.addEventListener('mouseleave', handleClose)
-        element?.addEventListener('focusin', handleVisible)
-        element?.addEventListener('focusout', handleClose)
+        window.addEventListener('click', handleClickOutside, { signal })
+        element?.addEventListener('mouseenter', handleVisible, { signal })
+        element?.addEventListener('mouseleave', handleClose, { signal })
+        element?.addEventListener('focusin', handleVisible, { signal })
+        element?.addEventListener('focusout', handleClose, { signal })
         return () => {
-          window.removeEventListener('click', handleClickOutside)
-          element?.removeEventListener('mouseenter', handleVisible)
-          element?.removeEventListener('mouseleave', handleClose)
-          element?.removeEventListener('focusin', handleVisible)
-          element?.removeEventListener('focusout', handleClose)
+          controller.abort()
         }
       }
     }, [anchorRef, handleVisible, handleClose, handleClickOutside])
 
     return (
       <div
-        className={cn('TooltipWrap', 'group/tooltip relative max-w-max')}
+        className={cn('TooltipWrap', 'group/tooltip relative max-w-max text-left')}
         aria-describedby={String(title)}
         data-testid="TooltipWrap"
         ref={anchorRef}
         aria-owns={String(title)}
       >
-        {mounted &&
+        {typeof window !== 'undefined' &&
           createPortal(
             <div
               id={String(title)}

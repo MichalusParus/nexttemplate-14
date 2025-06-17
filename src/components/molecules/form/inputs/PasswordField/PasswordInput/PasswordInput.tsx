@@ -1,19 +1,14 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, InputHTMLAttributes, useState } from 'react'
+import { forwardRef, useState } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
 import { CloseEyeIcon, OpenEyeIcon } from '@/components/atoms/icons'
-import { InputProps, StyleProps } from '@/components/types'
+import { InputProps, NativeInputProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { TextInput } from '../../TextField/TextInput'
-
-type NativeInputProps = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  'color' | 'size' | 'onChange' | 'name' | 'className' | 'value' | 'type' | 'placeholder' | 'width'
->
 
 export type PasswordInputProps = NativeInputProps &
   InputProps &
@@ -24,8 +19,8 @@ export type PasswordInputProps = NativeInputProps &
     onChange: (value: string) => void
   }
 
-/** Basic styled uncontroled PasswordInput. For form purposes use PasswordField. Default InputHTMLAttributes props supported. USE CLIENT */
-export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
+/** Basic styled uncontroled PasswordInput. For form purposes use PasswordField. Native InputHTMLAttributes props supported. USE CLIENT */
+export const PasswordInput = forwardRef<HTMLInputElement | null, PasswordInputProps>(
   (
     {
       name,

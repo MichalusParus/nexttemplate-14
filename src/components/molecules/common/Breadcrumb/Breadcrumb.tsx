@@ -1,11 +1,11 @@
-import { forwardRef, Fragment, HTMLAttributes } from 'react'
+import { forwardRef, Fragment } from 'react'
 
 import { Link } from '@/components/atoms/common/Link'
 import { Span } from '@/components/atoms/typography/Span'
-import { StyleProps } from '@/components/types'
+import { NativeDivProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-export type BreadcrumbProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'> &
+export type BreadcrumbProps = NativeDivProps &
   Pick<StyleProps, 'color'> & {
     /** for passing custom tailwind classes */
     className?: string
@@ -13,8 +13,8 @@ export type BreadcrumbProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' |
     options: { label: string; href: string }[]
   }
 
-/** Breadcrumb navigation component. Default HTMLAttributes props supported. */
-export const Breadcrumb = forwardRef<HTMLDivElement, BreadcrumbProps>(
+/** Breadcrumb navigation component. Native HTMLAttributes props supported. */
+export const Breadcrumb = forwardRef<HTMLDivElement | null, BreadcrumbProps>(
   ({ className, options, color = 'none', ...rest }, ref) => {
     return (
       <nav className={cn('Breadcrumb', className)} ref={ref} aria-label="breadcrumb" {...rest}>

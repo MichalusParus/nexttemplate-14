@@ -23,8 +23,8 @@ export type TitleProps = NativeHeadingProps & {
   isLoading?: boolean
 }
 
-/** Heading component H1-6 with ghost loading. Default HTMLAttributes props supported. */
-export const Title = forwardRef<HTMLHeadingElement, TitleProps>(
+/** Heading component H1-6 with ghost loading. Native HTMLAttributes props supported. */
+export const Title = forwardRef<HTMLHeadingElement | null, TitleProps>(
   (
     {
       className,
@@ -44,7 +44,7 @@ export const Title = forwardRef<HTMLHeadingElement, TitleProps>(
 
     return (
       <Element
-        className={cn(titleColor[color], titleSize[size], align, className)}
+        className={cn('w-full font-semibold', titleColor[color], titleSize[size], align, className)}
         ref={ref}
         {...rest}
       >

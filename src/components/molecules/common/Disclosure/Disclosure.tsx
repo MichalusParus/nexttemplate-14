@@ -31,7 +31,7 @@ export type DisclosureProps = Omit<StyleProps, 'size'> & {
 }
 
 /** Disclosure is dropdown for displaying additional info. Button, Paper and ScrollShadow props supported. USE CLIENT */
-export const Disclosure = forwardRef<HTMLDivElement, PropsWithChildren<DisclosureProps>>(
+export const Disclosure = forwardRef<HTMLDivElement | null, PropsWithChildren<DisclosureProps>>(
   (
     {
       className,

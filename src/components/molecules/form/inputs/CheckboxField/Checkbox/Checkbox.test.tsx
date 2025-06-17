@@ -143,7 +143,6 @@ describe('Checkbox', () => {
     const checkboxRole = screen.getByRole('checkbox')
 
     expect(checkboxRole).toHaveAttribute('disabled')
-    expect(checkboxRole).toHaveAttribute('tabindex', '-1')
   })
 
   it('ref', () => {

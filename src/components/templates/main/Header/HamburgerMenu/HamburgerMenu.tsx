@@ -52,7 +52,7 @@ export const HamburgerMenu = ({ className, navLinks }: HamburgerMenuProps) => {
         <HamburgerIcon className="h-9 w-9" isOpen={isOpen} />
       </Button>
       <Drawer
-        className="fixed"
+        className="fixed md:hidden"
         name="hamburgerMainMenu"
         isOpen={isOpen}
         offsetY="top-smHeaderHeight bottom-0"

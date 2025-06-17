@@ -19,7 +19,7 @@ export const Default: Story = {
 }
 
 export const Inline: Story = {
-  args: { className: 'h-sm w-60', size: 'none' },
+  args: { className: 'w-20', size: 'md' },
 }
 
 export const Box: Story = {

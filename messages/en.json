@@ -13,7 +13,11 @@
         "minOneUpperCase": "{field} must contain at least one uppercase letter.",
         "minOneLowerCase": "{field} must contain at least one lowercase letter.",
         "noSpaces": "{field} must not contain spaces.",
-        "passwordsDontMatch": "Passwords don't match."
+        "passwordsDontMatch": "Passwords don't match.",
+        "maxFileCount": "You can upload a maximum of {maxFileCount} files at once.",
+        "maxFileSize": "File {fileName} exceeds the maximum size of {maxFileSize} MB.",
+        "fileAlreadySelected": "File {fileName} is already uploaded.",
+        "uploadFailed": "Uploading file {fileName} failed."
       }
     },
     "Navigation": {
@@ -27,7 +31,7 @@
       "initials": "initials",
       "close": "close",
       "clear": "clear",
-      "delete": "delete",
+      "delete": "delete {label}",
       "loading": "loading",
       "noOptions": "No options found",
       "noOptionsMatch": "No options match {value}",
@@ -49,6 +53,9 @@
       "play": "Play",
       "hidePassword": "Hide password",
       "showPassword": "Show password",
+      "drawer": "Drawer",
+      "fileMessage": "Drag 'n' drop some files here, or click to select files",
+      "fileDropMessage": "Drop the files here ...",
       "days": {
         "0": "Sunday",
         "1": "Monday",

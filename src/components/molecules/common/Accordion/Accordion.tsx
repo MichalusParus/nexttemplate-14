@@ -26,7 +26,7 @@ export type AccordionProps = Omit<StyleProps, 'size'> & {
 }
 
 /** Serves as set of Disclosures. DisclosureProps supported. USE CLIENT */
-export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
+export const Accordion = forwardRef<HTMLDivElement | null, AccordionProps>(
   (
     {
       className,

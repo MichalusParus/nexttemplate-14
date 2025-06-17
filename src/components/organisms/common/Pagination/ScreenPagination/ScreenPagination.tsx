@@ -18,7 +18,7 @@ export type ScreenPaginationProps = MobilePaginationProps & {
 }
 
 /** Static pagination component with fixed page spread. ButtonProps supported. USE CLIENT */
-export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps>(
+export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginationProps>(
   (
     {
       className,
@@ -37,7 +37,10 @@ export const ScreenPagination = forwardRef<HTMLDivElement, ScreenPaginationProps
   ) => {
     const t = useTranslations('Components')
     const componentRef = useRef<HTMLDivElement | null>(null)
-    useImperativeHandle(ref, () => componentRef.current!)
+    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
+      ref,
+      () => componentRef.current,
+    )
     const { className: buttonClassName, ...restButtonProps } = buttonProps
     const pages = Array.from({ length: count }, (_, i) => i + 1)
     const sidePagesCount = (pageSpread - 5) / 2

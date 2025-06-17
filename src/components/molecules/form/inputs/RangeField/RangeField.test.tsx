@@ -14,11 +14,11 @@ expect.extend(toHaveNoViolations)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const FieldWithHooks = (props: any) => {
   const formSchema = z.object({
-    fieldTest: z.string().min(3, 'min 3 characters'),
+    fieldTest: z.number().min(3, 'min 3 characters'),
   })
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { fieldTest: '50' },
+    defaultValues: { fieldTest: 50 },
   })
   return (
     <Form name="testForm" form={form} onSubmit={() => {}}>
@@ -52,7 +52,6 @@ describe('RangeField', () => {
     expect(inputRole).toHaveAttribute('type', 'range')
     expect(inputRole).toHaveAttribute('value', '50')
     expect(inputRole).toHaveAttribute('placeholder', 'placeholder')
-    expect(inputRole).toHaveAttribute('aria-labelledby', 'fieldTest-label')
     expect(inputRole).toHaveAttribute('aria-invalid', 'false')
     expect(inputRole).not.toHaveAttribute('aria-describedby')
     expect(labelTestId).toBeInTheDocument()
@@ -96,7 +95,7 @@ describe('RangeField', () => {
     const alertRole = screen.getByTestId('Alert')
     fireEvent.change(inputRole, {
       target: {
-        value: '',
+        value: 0,
       },
     })
     fireEvent.submit(screen.getByTestId('submitButton'))
@@ -108,6 +107,21 @@ describe('RangeField', () => {
       expect(inputRole).toHaveAttribute('aria-describedby', 'fieldTest-description')
       expect(inputRole).toHaveAttribute('aria-invalid', 'true')
     })
+  })
+
+  it('onChange', () => {
+    const spy = jest.fn()
+    render(<FieldWithHooks onChange={spy} />)
+    const inputRole = screen.getByRole('slider')
+
+    fireEvent.change(inputRole, {
+      target: {
+        value: '100',
+      },
+    })
+
+    expect(spy).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalledWith(100)
   })
 
   it('labelProps', () => {

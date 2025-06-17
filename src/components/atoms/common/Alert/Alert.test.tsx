@@ -24,7 +24,9 @@ describe('Alert', () => {
         Alert
       </Alert>,
     )
-    expect(screen.getByRole('alert')).toBeInTheDocument()
+    const alertRole = screen.getByRole('alert')
+
+    expect(alertRole).toBeInTheDocument()
   })
 
   it('title', () => {

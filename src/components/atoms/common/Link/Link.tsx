@@ -27,8 +27,8 @@ export type LinkProps = NativeAnchorProps &
     hideShadow?: boolean
   }
 
-/** Basic Anchor based on Next Link with Button styles and icon handling. Default LinkHTMLAttributes & LinkProps supported. */
-export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
+/** Basic Anchor based on Next Link with Button styles and icon handling. Native LinkHTMLAttributes & LinkProps supported. */
+export const Link = forwardRef<HTMLAnchorElement | null, LinkProps>(
   (
     {
       className,

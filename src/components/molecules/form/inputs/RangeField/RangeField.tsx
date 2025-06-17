@@ -9,9 +9,11 @@ import { FieldProps } from '@/components/types'
 import { FormStyleContext } from '../../Form/Form'
 import { RangeInput, RangeProps } from './RangeInput/RangeInput'
 
-export type RangeFieldProps = Omit<RangeProps, 'value' | 'error' | 'onChange'> & FieldProps
+export type RangeFieldProps = Omit<RangeProps, 'value' | 'error' | 'onChange'> &
+  Partial<Pick<RangeProps, 'onChange'>> &
+  FieldProps
 
-/** Form and style context wrapper for RangeInput inside Label component. Default InputHTMLAttributes and Label props supported. USE CLIENT */
+/** Form and style context wrapper for RangeInput inside Label component. Native InputHTMLAttributes and Label props supported. USE CLIENT */
 export const RangeField = ({
   className,
   name,
@@ -19,6 +21,7 @@ export const RangeField = ({
   color,
   size,
   labelProps = {},
+  onChange,
   ...rest
 }: RangeFieldProps) => {
   const {
@@ -39,12 +42,15 @@ export const RangeField = ({
             color={color || formColor}
             size={size || formSize}
             error={errorMessage}
-            aria-labelledby={`${name}-label`}
             aria-describedby={
               errorMessage || labelProps.description ? `${name}-description` : undefined
             }
             aria-invalid={!!errorMessage}
             {...field}
+            onChange={v => {
+              field.onChange(v)
+              onChange?.(v)
+            }}
             {...rest}
           />
         </Label>

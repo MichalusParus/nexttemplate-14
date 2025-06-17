@@ -33,13 +33,15 @@ export type ImageViewerProps = {
 }
 
 /** Fullscreen modal window for image detail. USE CLIENT */
-export const ImageViewer = forwardRef<HTMLDivElement, PropsWithChildren<ImageViewerProps>>(
+export const ImageViewer = forwardRef<HTMLDivElement | null, PropsWithChildren<ImageViewerProps>>(
   ({ className, name, isOpen, setIsOpen, children }, ref) => {
     const t = useTranslations('Components')
     const componentRef = useRef<HTMLDivElement>(null)
-    useImperativeHandle(ref, () => componentRef.current!)
+    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
+      ref,
+      () => componentRef.current,
+    )
     const [isInternallyOpen, setIsInternallyOpen] = useState(Boolean(isOpen))
-    const [mounted, setMounted] = useState(false)
     const openState = setIsOpen ? Boolean(isOpen) : isInternallyOpen
     // const { focusableEl } = useFocus(
     //   isOpen,
@@ -77,10 +79,6 @@ export const ImageViewer = forwardRef<HTMLDivElement, PropsWithChildren<ImageVie
     )
 
     useEffect(() => {
-      setMounted(true)
-    }, [])
-
-    useEffect(() => {
       document.body.style.overflow = openState ? 'hidden' : 'unset'
     }, [openState])
 
@@ -105,7 +103,7 @@ export const ImageViewer = forwardRef<HTMLDivElement, PropsWithChildren<ImageVie
             {children}
           </div>
         )}
-        {mounted &&
+        {typeof window !== 'undefined' &&
           openState &&
           createPortal(
             <div

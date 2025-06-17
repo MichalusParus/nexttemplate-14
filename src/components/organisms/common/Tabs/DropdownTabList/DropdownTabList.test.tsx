@@ -40,7 +40,8 @@ describe('DropdownTabList', () => {
   it('open/close', () => {
     render(<DropdownTabList selectedTab={tabs[0]} tabs={tabs} onTabChange={() => {}} />)
     const buttonRoles = screen.getAllByRole('button')
-    fireEvent.click(buttonRoles[0])
+    const buttonTestId = screen.getByTestId('DropdownTabListButton')
+    fireEvent.click(buttonTestId)
     const dropdownTestId = screen.getByTestId('Dropdown')
     const tablistQuery = screen.queryByRole('tablist')
     const tabsQuery = screen.queryAllByRole('tab')
@@ -50,7 +51,6 @@ describe('DropdownTabList', () => {
     expect(tabsQuery).toHaveLength(tabs.length)
     expect(buttonRoles[0]).toBeInTheDocument()
     expect(buttonRoles[0]).toHaveTextContent(tabs[0].label)
-    expect(buttonRoles[0]).toHaveAttribute('aria-expanded', 'true')
     expect(dropdownTestId).toBeInTheDocument()
     expect(tabsQuery[0]).toHaveTextContent(tabs[0].label)
     expect(tabsQuery[1]).toHaveTextContent(tabs[1].label)
@@ -60,8 +60,6 @@ describe('DropdownTabList', () => {
     expect(tabsQuery[0]).toHaveAttribute('aria-selected', 'true')
     tabsQuery[0].focus()
     expect(document.activeElement).toBe(tabsQuery[0])
-    fireEvent.click(buttonRoles[0])
-    expect(tablistQuery).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('hidden', () => {
@@ -122,7 +120,8 @@ describe('DropdownTabList', () => {
       />,
     )
     const buttonRoles = screen.getAllByRole('button')
-    fireEvent.click(buttonRoles[0])
+    const buttonTestId = screen.getByTestId('DropdownTabListButton')
+    fireEvent.click(buttonTestId)
     const tabRoles = screen.getAllByRole('tab')
     const dropdownTestId = screen.getByTestId('Dropdown')
 

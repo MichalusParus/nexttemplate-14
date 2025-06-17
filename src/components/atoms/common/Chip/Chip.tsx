@@ -1,15 +1,13 @@
-import { forwardRef, HTMLAttributes, ReactNode } from 'react'
+import { forwardRef, ReactNode } from 'react'
 
-import { StyleProps } from '@/components/types'
+import { NativeDivProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { Span } from '../../typography/Span'
 import { buttonIconSize } from '../Button/Button.style'
 import { chipClass, chipSize, chipVariant } from './Chip.style'
 
-type NativeChipProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color' | 'onClick'>
-
-export type ChipProps = NativeChipProps &
+export type ChipProps = NativeDivProps &
   StyleProps & {
     /** for passing custom tailwind classes */
     className?: string
@@ -21,8 +19,8 @@ export type ChipProps = NativeChipProps &
     endIcon?: ReactNode
   }
 
-/** Small styled wrapper for displaying selected options. Default HTMLAttributes props supported. */
-export const Chip = forwardRef<HTMLDivElement, ChipProps>(
+/** Small styled wrapper for displaying selected options. Native HTMLAttributes props supported. */
+export const Chip = forwardRef<HTMLDivElement | null, ChipProps>(
   (
     {
       className,

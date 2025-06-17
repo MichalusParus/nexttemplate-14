@@ -9,9 +9,11 @@ import { FieldProps } from '@/components/types'
 import { FormStyleContext } from '../../Form/Form'
 import { PasswordInput, PasswordInputProps } from './PasswordInput/PasswordInput'
 
-export type InputFieldProps = Omit<PasswordInputProps, 'value' | 'error' | 'onChange'> & FieldProps
+export type InputFieldProps = Omit<PasswordInputProps, 'value' | 'error' | 'onChange'> &
+  Partial<Pick<PasswordInputProps, 'onChange'>> &
+  FieldProps
 
-/** Form and style context wrapper for PasswordInput inside Label component. Default InputHTMLAttributes and Label props supported. USE CLIENT  */
+/** Form and style context wrapper for PasswordInput inside Label component. Native InputHTMLAttributes and Label props supported. USE CLIENT  */
 export const PasswordField = ({
   className,
   name,
@@ -20,6 +22,7 @@ export const PasswordField = ({
   color,
   size,
   labelProps = {},
+  onChange,
   ...rest
 }: InputFieldProps) => {
   const {
@@ -47,12 +50,15 @@ export const PasswordField = ({
             color={color || formColor}
             size={size || formSize}
             error={errorMessage}
-            aria-labelledby={`${name}-label`}
             aria-describedby={
               errorMessage || labelProps.description ? `${name}-description` : undefined
             }
             aria-invalid={!!errorMessage}
             {...field}
+            onChange={v => {
+              field.onChange(v)
+              onChange?.(v)
+            }}
             {...rest}
           />
         </Label>

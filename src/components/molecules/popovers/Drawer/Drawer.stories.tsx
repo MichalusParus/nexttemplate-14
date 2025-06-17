@@ -70,7 +70,7 @@ export const PrimaryDefault: Story = {
     offsetY: 'top-0 bottom-0',
     width: 'w-56',
     padding: 'p-0',
-    portalContainer: 'storyContainer',
+    portalContainerId: 'storyContainer',
     paperProps: {},
     scrollShadowProps: {},
     onClose: () => {},

@@ -3,6 +3,8 @@ import '@testing-library/jest-dom'
 import { addYears } from 'date-fns'
 import { axe, toHaveNoViolations } from 'jest-axe'
 
+import { defaultTestDate } from '@/components/molecules/form/comboboxes/DatePickerField/DatePicker/DatePicker.test'
+
 import { fireEvent, render, screen, within } from '../../../../../../.jest/customRender'
 import { YearPicker } from '.'
 
@@ -10,11 +12,11 @@ expect.extend(toHaveNoViolations)
 
 window.HTMLElement.prototype.scrollIntoView = jest.fn()
 
-const date = new Date('2023-03-04')
-
 describe('YearPicker', () => {
   it('default', () => {
-    render(<YearPicker year={date} setCalendarState={() => {}} setCurrentMonth={() => {}} />)
+    render(
+      <YearPicker year={defaultTestDate} setCalendarState={() => {}} setCurrentMonth={() => {}} />,
+    )
     const gridRole = screen.getByRole('grid')
     const rowRoles = screen.getAllByRole('row')
     const cellRoles = screen.getAllByRole('gridcell')
@@ -36,8 +38,8 @@ describe('YearPicker', () => {
   it('minMax', () => {
     render(
       <YearPicker
-        year={date}
-        minMaxDate={{ min: addYears(date, -1), max: addYears(date, 1) }}
+        year={defaultTestDate}
+        minMaxDate={{ min: addYears(defaultTestDate, -1), max: addYears(defaultTestDate, 1) }}
         setCalendarState={() => {}}
         setCurrentMonth={() => {}}
       />,
@@ -52,7 +54,7 @@ describe('YearPicker', () => {
   it('buttonProps', () => {
     render(
       <YearPicker
-        year={date}
+        year={defaultTestDate}
         setCalendarState={() => {}}
         setCurrentMonth={() => {}}
         buttonProps={{ className: 'className' }}
@@ -66,18 +68,18 @@ describe('YearPicker', () => {
 
   it('setCurrentMondth', () => {
     const spy = jest.fn()
-    render(<YearPicker year={date} setCalendarState={spy} setCurrentMonth={spy} />)
+    render(<YearPicker year={defaultTestDate} setCalendarState={spy} setCurrentMonth={spy} />)
     const currentYearText = screen.getByText('2023')
 
     fireEvent.click(currentYearText)
     expect(spy).toHaveBeenCalledTimes(2)
-    expect(spy).toHaveBeenCalledWith(date)
+    expect(spy).toHaveBeenCalledWith(defaultTestDate)
     expect(spy).toHaveBeenCalledWith('months')
   })
 
   it('axe', async () => {
     const { container } = render(
-      <YearPicker year={date} setCalendarState={() => {}} setCurrentMonth={() => {}} />,
+      <YearPicker year={defaultTestDate} setCalendarState={() => {}} setCurrentMonth={() => {}} />,
     )
     const results = await axe(container)
     expect(results).toHaveNoViolations()

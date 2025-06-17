@@ -16,8 +16,8 @@ export type MenuItemCheckboxProps = Omit<ButtonProps, 'variant' | 'color' | 'siz
     checkboxProps?: Partial<CheckboxProps>
   }
 
-/** Menuitem with RadioGroup for Menu component. Default Button and CheckboxProps supported. */
-export const MenuItemCheckbox = forwardRef<HTMLButtonElement, MenuItemCheckboxProps>(
+/** Menuitem with RadioGroup for Menu component. Native Button and CheckboxProps supported. */
+export const MenuItemCheckbox = forwardRef<HTMLButtonElement | null, MenuItemCheckboxProps>(
   (
     {
       className,

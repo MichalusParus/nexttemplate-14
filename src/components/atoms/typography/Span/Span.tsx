@@ -16,8 +16,8 @@ export type SpanProps = NativeSpanProps & {
   color?: StyleProps['color']
 }
 
-/** Basic span component with inherited font size. Default HTMLAttributes props supported. */
-export const Span = forwardRef<HTMLSpanElement, SpanProps>(
+/** Basic span component with inherited font size. Native HTMLAttributes props supported. */
+export const Span = forwardRef<HTMLSpanElement | null, SpanProps>(
   ({ className, variant = 'bold', color = 'none', children, ...rest }, ref) => {
     const Element = (() => {
       switch (variant) {

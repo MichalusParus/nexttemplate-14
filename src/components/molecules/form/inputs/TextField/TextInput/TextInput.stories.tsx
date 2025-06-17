@@ -6,7 +6,7 @@ import { SettingIcon } from '@/components/atoms/icons'
 import { TextInput, TextInputProps } from '.'
 
 const meta: Meta<typeof TextInput> = {
-  title: 'Molecules/Form/TextInput',
+  title: 'Molecules/Form/inputs/TextInput',
   component: TextInput,
   tags: ['autodocs'],
   parameters: {
@@ -25,7 +25,6 @@ type Story = StoryObj<typeof TextInput>
 export const PrimaryDefault: Story = {
   args: {
     className: 'w-96',
-    type: 'text',
     name: 'inputStory',
     value: '',
     placeholder: 'TextInput',
@@ -37,15 +36,6 @@ export const PrimaryDefault: Story = {
     error: '',
     disabled: false,
     onChange: v => console.log(v),
-  },
-  render: args => <InputWithHooks {...args} />,
-}
-
-export const Number: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    name: 'inputStory1',
-    type: 'number',
   },
   render: args => <InputWithHooks {...args} />,
 }

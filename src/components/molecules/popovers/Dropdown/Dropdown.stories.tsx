@@ -61,7 +61,7 @@ export const PrimaryDefault: Story = {
     height: 'max-h-[40vh]',
     padding: 'p-0',
     modal: false,
-    hideShadow: false,
+    portalContainerId: undefined,
     paperProps: undefined,
     scrollShadowProps: undefined,
     onClose: () => {},

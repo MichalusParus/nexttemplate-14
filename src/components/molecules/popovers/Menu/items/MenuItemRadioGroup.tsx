@@ -14,8 +14,8 @@ import { cn } from '@/utils/utils'
 
 export type MenuItemRadioGroupProps = Omit<RadioGroupProps, 'label' | 'labelProps' | 'error'>
 
-/** Menuitem with RadioGroup for Menu components. Default RadioGroupProps supported. */
-export const MenuItemRadioGroup = forwardRef<HTMLInputElement, MenuItemRadioGroupProps>(
+/** Menuitem with RadioGroup for Menu components. Native RadioGroupProps supported. */
+export const MenuItemRadioGroup = forwardRef<HTMLInputElement | null, MenuItemRadioGroupProps>(
   (
     {
       className,

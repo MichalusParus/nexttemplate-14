@@ -207,7 +207,6 @@ describe('CheckboxGroup', () => {
     const checkboxRoles = screen.getAllByRole('checkbox')
 
     expect(checkboxRoles[0]).toHaveAttribute('disabled')
-    expect(checkboxRoles[0]).toHaveAttribute('tabindex', '-1')
   })
 
   it('ref', () => {

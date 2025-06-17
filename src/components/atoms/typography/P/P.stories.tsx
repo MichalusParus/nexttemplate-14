@@ -27,7 +27,7 @@ export const Default: Story = {
     size: 'md',
     align: 'text-left',
     isLoading: false,
-    expectedLines: 1,
+    expectedLines: 4,
     children: textContent.slice(0, 420),
   },
 }
@@ -50,8 +50,8 @@ export const AllSizesAndLoading: Story = {
     <div className="flex flex-col gap-10">
       {titleSizeVariants.slice(0, 3).map(variant => (
         <div key={variant} className="flex [&>*]:basis-1/2">
-          <P {...args} align="text-right" size={variant as 'sm' | 'md' | 'lg'} />
-          <P {...args} isLoading align="text-left" size={variant as 'sm' | 'md' | 'lg'} />
+          <P {...args} size={variant} />
+          <P {...args} isLoading size={variant} />
         </div>
       ))}
     </div>

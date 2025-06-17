@@ -43,7 +43,7 @@ export type CarouselProps = {
 }
 
 /** Carousel component can display multiple panels or images controled by arrows and dotts. Children should be wrapped in CarouselItem. USE CLIENT */
-export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselProps>>(
+export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<CarouselProps>>(
   (
     {
       className,
@@ -93,7 +93,10 @@ export const Carousel = forwardRef<HTMLDivElement, PropsWithChildren<CarouselPro
     )
 
     const { componentRef } = useSwipe(handleSwipe)
-    useImperativeHandle(ref, () => componentRef.current!)
+    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
+      ref,
+      () => componentRef.current,
+    )
 
     useEffect(() => {
       let sliderInterval: ReturnType<typeof setInterval>

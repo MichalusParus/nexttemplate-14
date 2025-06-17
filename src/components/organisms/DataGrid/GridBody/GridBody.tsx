@@ -35,7 +35,7 @@ export type GridBodyProps = StyleProps & {
 }
 
 /** Body for DataGrid with ScrollShadow. USE CLIENT */
-export const GridBody = forwardRef<HTMLDivElement, GridBodyProps>(
+export const GridBody = forwardRef<HTMLDivElement | null, GridBodyProps>(
   (
     {
       columns,
@@ -126,7 +126,7 @@ export const GridBody = forwardRef<HTMLDivElement, GridBodyProps>(
                         <Checkbox
                           name={String(row.id)}
                           label=""
-                          value={selectedRows.map(row => String(row.id))}
+                          value={String(row.id)}
                           variant={variant === 'text' ? 'outlined' : variant}
                           color={color}
                           size={size}

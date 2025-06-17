@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { TextArea, TextAreaProps } from '.'
 
 const meta: Meta<typeof TextArea> = {
-  title: 'Molecules/Form/TextArea',
+  title: 'Molecules/Form/inputs/TextArea',
   component: TextArea,
   tags: ['autodocs'],
   parameters: {

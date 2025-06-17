@@ -82,7 +82,6 @@ describe('TextInput', () => {
     const inputRole = screen.getByRole('textbox')
 
     expect(inputRole).toHaveAttribute('disabled')
-    expect(inputRole).toHaveAttribute('tabindex', '-1')
   })
 
   it('ref', () => {

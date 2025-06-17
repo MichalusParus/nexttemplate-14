@@ -54,7 +54,7 @@ export type DataGridProps = StyleProps & {
 // check scrollability horozontal, header mainly, columns must have same size
 
 /** Grid "table" for displaying data in rows with filter, sort, pagination, data export, onClick and multiselection. USE CLIENT */
-export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
+export const DataGrid = forwardRef<HTMLDivElement | null, DataGridProps>(
   (
     {
       className,
@@ -82,7 +82,10 @@ export const DataGrid = forwardRef<HTMLDivElement, DataGridProps>(
     ref,
   ) => {
     const componentRef = useRef<HTMLDivElement>(null)
-    useImperativeHandle(ref, () => componentRef.current!)
+    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
+      ref,
+      () => componentRef.current,
+    )
     const [selectedRows, setSelectedRows] = useState<RowDef[]>([])
     const [selectedRowsPerPage, setSelectedRowsPerPage] = useState(rowsPerPage)
     const [isGridFocusOpen, setIsGridFocusOpen] = useState(false)

@@ -37,8 +37,8 @@ export type ImageProps = NativeImgProps &
       | 'object-right-top'
   }
 
-/** Next Image component with ratio wrap. Default ImgHTMLAttributes & ImageProps supported. */
-export const Image = forwardRef<HTMLImageElement, ImageProps>(
+/** Next Image component with ratio wrap. Native ImgHTMLAttributes & ImageProps supported. */
+export const Image = forwardRef<HTMLImageElement | null, ImageProps>(
   (
     {
       className,

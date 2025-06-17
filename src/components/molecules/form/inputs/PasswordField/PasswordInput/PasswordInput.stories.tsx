@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { PasswordInput, PasswordInputProps } from '.'
 
 const meta: Meta<typeof PasswordInput> = {
-  title: 'Molecules/Form/PasswordInput',
+  title: 'Molecules/Form/inputs/PasswordInput',
   component: PasswordInput,
   tags: ['autodocs'],
   parameters: {

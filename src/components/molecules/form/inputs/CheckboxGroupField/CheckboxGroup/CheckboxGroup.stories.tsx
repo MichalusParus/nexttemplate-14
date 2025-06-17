@@ -5,7 +5,7 @@ import { getOptions, optionsWithContent } from '../../../../../../../.storybook/
 import { CheckboxGroup, CheckboxGroupProps } from './CheckboxGroup'
 
 const meta: Meta<typeof CheckboxGroup> = {
-  title: 'Molecules/Form/CheckboxGroup',
+  title: 'Molecules/Form/inputs/CheckboxGroup',
   component: CheckboxGroup,
   tags: ['autodocs'],
   parameters: {
@@ -81,7 +81,6 @@ export const Disabled: Story = {
     ...PrimaryDefault.args,
     name: 'checkboxGroupStory5',
     options: getOptions('checkboxGroupStory5', 5),
-
     disabled: true,
   },
   render: args => <CheckboxGroupWithHooks {...args} />,

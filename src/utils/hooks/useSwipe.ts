@@ -30,14 +30,14 @@ export const useSwipe = (onSwipe: (value: { x: number; y: number }) => void) => 
 
   useEffect(() => {
     if (componentRef.current) {
+      const controller = new AbortController()
+      const { signal } = controller
       const element = componentRef.current
-      element.addEventListener('contextmenu', e => e.preventDefault())
-      element.addEventListener('touchstart', handleTouchStart)
-      element.addEventListener('touchend', handleTouchEnd)
+      element.addEventListener('contextmenu', e => e.preventDefault(), { signal })
+      element.addEventListener('touchstart', handleTouchStart, { signal })
+      element.addEventListener('touchend', handleTouchEnd, { signal })
       return () => {
-        element.removeEventListener('touchstart', handleTouchStart)
-        element.removeEventListener('touchend', handleTouchEnd)
-        element.removeEventListener('contextmenu', e => e.preventDefault())
+        controller.abort()
       }
     }
   }, [handleTouchStart, handleTouchEnd])

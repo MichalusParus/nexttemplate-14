@@ -6,7 +6,7 @@ import { Checkbox } from '.'
 import { CheckboxProps } from './Checkbox'
 
 const meta: Meta<typeof Checkbox> = {
-  title: 'Molecules/Form/Checkbox',
+  title: 'Molecules/Form/inputs/Checkbox',
   component: Checkbox,
   tags: ['autodocs'],
   parameters: {
@@ -80,7 +80,6 @@ export const Disabled: Story = {
     ...PrimaryDefault.args,
     name: 'checkboxStory5',
     disabled: true,
-    error: 'error',
   },
   render: args => <CheckboxWithHooks {...args} />,
 }

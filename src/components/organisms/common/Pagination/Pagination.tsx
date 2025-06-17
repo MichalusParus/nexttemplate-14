@@ -25,7 +25,7 @@ export type PaginationProps = MobilePaginationProps & {
 }
 
 /** Responsive pagination component. For client side pagination is recommended to use with usePagination custom hook. ButtonProps supported. USE CLIENT */
-export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(
+export const Pagination = forwardRef<HTMLDivElement | null, PaginationProps>(
   (
     {
       className,

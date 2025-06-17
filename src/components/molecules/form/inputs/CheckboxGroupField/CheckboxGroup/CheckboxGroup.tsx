@@ -23,8 +23,8 @@ export type CheckboxGroupProps = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement
     onChange: (value: string[]) => void
   }
 
-/** Basic styled CheckboxGroup. For form purposes use CheckboxGroupField. Default FieldsetHTMLAttributes and Checkbox props supported. USE CLIENT */
-export const CheckboxGroup = forwardRef<HTMLFieldSetElement, CheckboxGroupProps>(
+/** Basic styled CheckboxGroup. For form purposes use CheckboxGroupField. Native FieldsetHTMLAttributes and Checkbox props supported. USE CLIENT */
+export const CheckboxGroup = forwardRef<HTMLFieldSetElement | null, CheckboxGroupProps>(
   (
     {
       className,
@@ -69,7 +69,6 @@ export const CheckboxGroup = forwardRef<HTMLFieldSetElement, CheckboxGroupProps>
       <fieldset
         id={name}
         className={cn('CheckboxGroup', 'flex flex-wrap', column && 'flex-col', className)}
-        aria-labelledby={`${name}-label`}
         ref={ref}
         {...rest}
       >

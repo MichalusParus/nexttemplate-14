@@ -8,12 +8,12 @@ export const titleColor = {
 }
 
 export const titleSize = {
-  sm: cn('w-full text-sm font-semibold'),
-  md: cn('w-full text-base font-semibold'),
-  lg: cn('w-full text-lg font-semibold'),
-  xl: cn('w-full text-xl font-semibold'),
-  '2xl': cn('w-full text-2xl font-semibold'),
-  '3xl': cn('w-full text-3xl font-semibold'),
+  sm: cn('text-sm'),
+  md: cn('text-base'),
+  lg: cn('text-lg'),
+  xl: cn('text-xl'),
+  '2xl': cn('text-2xl'),
+  '3xl': cn('text-3xl'),
   none: '',
 }
 

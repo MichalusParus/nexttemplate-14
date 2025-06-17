@@ -84,7 +84,6 @@ describe('SearchInput', () => {
     const inputRole = screen.getByRole('searchbox')
 
     expect(inputRole).toHaveAttribute('disabled')
-    expect(inputRole).toHaveAttribute('tabindex', '-1')
   })
 
   it('ref', () => {

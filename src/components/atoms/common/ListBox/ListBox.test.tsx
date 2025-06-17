@@ -126,6 +126,23 @@ describe('ListBox', () => {
     expect(checkIconTestIds).toHaveLength(0)
   })
 
+  it('children', () => {
+    render(
+      <ListBox
+        className="className"
+        name="listboxTest"
+        value={[]}
+        options={options}
+        onClick={() => {}}
+      >
+        <div data-testid="test">test</div>
+      </ListBox>,
+    )
+    const childrenTestId = screen.getByTestId('test')
+
+    expect(childrenTestId).toBeInTheDocument()
+  })
+
   it('buttonProps/checkboxProps', () => {
     render(
       <ListBox

@@ -18,7 +18,7 @@ export type OverlayProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'classN
 }
 
 /** Overlay is used in popover components for closing popover on click outside. USE CLIENT */
-export const Overlay = forwardRef<HTMLButtonElement, OverlayProps>(
+export const Overlay = forwardRef<HTMLButtonElement | null, OverlayProps>(
   ({ className, isOpen, dark, onClose, ...rest }, ref) => {
     const t = useTranslations('Components')
 
@@ -34,9 +34,10 @@ export const Overlay = forwardRef<HTMLButtonElement, OverlayProps>(
         type="button"
         tabIndex={-1}
         aria-label={t('close')}
+        aria-hidden={!isOpen}
         ref={ref}
-        data-testid="Overlay"
         onClick={onClose}
+        data-testid="Overlay"
         {...rest}
       />
     )

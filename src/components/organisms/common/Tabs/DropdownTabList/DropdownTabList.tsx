@@ -55,6 +55,7 @@ export const DropdownTabList = ({
         aria-controls={`${name}-tablist`}
         aria-owns={`${name}-tablist`}
         onClick={() => setIsOpen(prev => !prev)}
+        data-testid="DropdownTabListButton"
         {...restButtonProps}
       >
         {selectedTab.label}

@@ -99,6 +99,17 @@ describe('RadioGroupField', () => {
     expect(alertTestId).toHaveTextContent('description')
   })
 
+  it('onChange', () => {
+    const spy = jest.fn()
+    render(<FieldWithHooks onChange={spy} />)
+    const inputRoles = screen.getAllByRole('radio')
+
+    fireEvent.click(inputRoles[1])
+
+    expect(spy).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalledWith(options[1].value)
+  })
+
   it('labelProps', () => {
     render(<FieldWithHooks labelProps={{ className: 'className' }} />)
     const labelWrapTestId = screen.getByTestId('LabelWrap')

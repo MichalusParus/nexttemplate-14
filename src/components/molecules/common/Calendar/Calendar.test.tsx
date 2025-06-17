@@ -5,17 +5,23 @@ import { axe, toHaveNoViolations } from 'jest-axe'
 import { createRef } from 'react'
 
 import { fireEvent, render, screen } from '../../../../../.jest/customRender'
+import { defaultTestDate } from '../../form/comboboxes/DatePickerField/DatePicker/DatePicker.test'
 import { Calendar } from '.'
 
 expect.extend(toHaveNoViolations)
 
 window.HTMLElement.prototype.scrollIntoView = jest.fn()
 
-const date = new Date('2023-03-04')
-
 describe('Calendar', () => {
   it('default', () => {
-    render(<Calendar className="className" name="calendarTest" date={date} onChange={() => {}} />)
+    render(
+      <Calendar
+        className="className"
+        name="calendarTest"
+        date={defaultTestDate}
+        onChange={() => {}}
+      />,
+    )
     const calendarTestId = screen.getByTestId('Calendar')
     const calendarHeaderTestId = screen.getByTestId('CalendarHeader')
     const dayPickerTestId = screen.getByTestId('DayPicker')
@@ -35,7 +41,7 @@ describe('Calendar', () => {
   })
 
   it('calendarStates', () => {
-    render(<Calendar date={date} onChange={() => {}} />)
+    render(<Calendar date={defaultTestDate} onChange={() => {}} />)
     const buttonRoles = screen.getAllByRole('button')
 
     fireEvent.click(buttonRoles[1])
@@ -50,7 +56,7 @@ describe('Calendar', () => {
   it('range', () => {
     render(
       <Calendar
-        date={date}
+        date={defaultTestDate}
         range={{ start: new Date('2023-03-03'), end: new Date('2023-03-05') }}
         onChange={() => {}}
       />,
@@ -98,7 +104,7 @@ describe('Calendar', () => {
   })
 
   it('weekStart', () => {
-    render(<Calendar date={date} onChange={() => {}} weekStart={0} />)
+    render(<Calendar date={defaultTestDate} onChange={() => {}} weekStart={0} />)
     const headerRoles = screen.getAllByRole('columnheader')
     const cellRoles = screen.getAllByRole('gridcell')
 
@@ -129,7 +135,7 @@ describe('Calendar', () => {
   it('minMax', () => {
     render(
       <Calendar
-        date={date}
+        date={defaultTestDate}
         onChange={() => {}}
         minMaxDate={{ min: new Date('2023-03-01'), max: new Date('2023-03-31') }}
       />,
@@ -147,7 +153,7 @@ describe('Calendar', () => {
   it('buttonProps/paperProps', () => {
     render(
       <Calendar
-        date={date}
+        date={defaultTestDate}
         onChange={() => {}}
         paperProps={{ className: 'paperClass' }}
         buttonProps={{ className: 'buttonClass' }}
@@ -163,16 +169,16 @@ describe('Calendar', () => {
 
   it('onChange', () => {
     const spy = jest.fn()
-    render(<Calendar date={date} onChange={spy} />)
+    render(<Calendar date={defaultTestDate} onChange={spy} />)
     const cellRoles = screen.getAllByRole('gridcell')
 
     fireEvent.click(cellRoles[5])
-    expect(spy).toHaveBeenCalledWith(startOfDay(date))
+    expect(spy).toHaveBeenCalledWith(startOfDay(defaultTestDate))
   })
 
   it('ref', () => {
     const ref = createRef<HTMLDivElement>()
-    render(<Calendar ref={ref} date={date} onChange={() => {}} />)
+    render(<Calendar ref={ref} date={defaultTestDate} onChange={() => {}} />)
 
     expect(ref.current).not.toBeNull()
     expect(ref.current?.focus).toBeDefined()
@@ -185,7 +191,7 @@ describe('Calendar', () => {
   })
 
   it('axe', async () => {
-    const { container } = render(<Calendar date={date} onChange={() => {}} />)
+    const { container } = render(<Calendar date={defaultTestDate} onChange={() => {}} />)
 
     const results = await axe(container)
     expect(results).toHaveNoViolations()

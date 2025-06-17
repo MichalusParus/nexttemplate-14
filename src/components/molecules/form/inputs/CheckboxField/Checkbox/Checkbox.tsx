@@ -1,8 +1,8 @@
 'use client'
-import { forwardRef, InputHTMLAttributes, ReactNode } from 'react'
+import { forwardRef, ReactNode } from 'react'
 
 import { CheckIcon } from '@/components/atoms/icons'
-import { FieldProps, InputProps, StyleProps } from '@/components/types'
+import { FieldProps, InputProps, NativeInputProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { inputErrorClass } from '../../TextField/TextInput/TextInput.style'
@@ -20,15 +20,12 @@ import {
   thumbClass,
 } from './Checkbox.style'
 
-type NativeCheckboxProps = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  'color' | 'size' | 'onChange' | 'type' | 'className' | 'name' | 'content' | 'width'
->
-
-export type CheckboxProps = NativeCheckboxProps &
+export type CheckboxProps = NativeInputProps &
   Pick<FieldProps, 'label'> &
   InputProps &
   Omit<StyleProps, 'variant'> & {
+    /** value of input */
+    value?: string
     /** style variant of component */
     variant?: StyleProps['variant'] | 'switch'
     /** optional element to display in label */
@@ -41,8 +38,8 @@ export type CheckboxProps = NativeCheckboxProps &
     onChange: (value: string) => void
   }
 
-/** Basic styled Checkbox. For form purposes use CheckboxField. Default InputHTMLAttributes props supported. USE CLIENT */
-export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
+/** Basic styled Checkbox. For form purposes use CheckboxField. Native InputHTMLAttributes props supported. USE CLIENT */
+export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
   (
     {
       className,
@@ -64,7 +61,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   ) => {
     const checkVisibility = isChecked || disabled ? 'opacity-100' : 'opacity-0'
     const thumbPosition = isChecked || disabled ? switchLeft[size] : 'left-0'
-    console.log(isChecked)
 
     if (variant === 'switch') {
       return (
@@ -78,8 +74,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               className={cn(
                 switchClass,
                 checkboxVariant[variant][color],
-                disabledVariant[variant],
                 error && 'error ' + inputErrorClass,
+                disabledVariant[variant],
               )}
               type="checkbox"
               name={name}
@@ -87,7 +83,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               onChange={e => onChange(e.target.value)}
               checked={isChecked}
               disabled={disabled}
-              tabIndex={disabled ? -1 : 0}
               ref={ref}
               {...rest}
             />
@@ -105,7 +100,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           <label
             id={`${name}-label`}
             htmlFor={name}
-            className={cn('Label', 'group relative flex items-center')}
+            className={cn('Label', 'relative flex items-center')}
             data-testid="Label"
           >
             {content || label}
@@ -116,7 +111,12 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 
     return (
       <div
-        className={cn('CheckboxWrap', 'flex items-start', !fake && checkboxMargin[size], className)}
+        className={cn(
+          'CheckboxWrap',
+          'group flex items-start',
+          !fake && checkboxMargin[size],
+          className,
+        )}
         data-testid="CheckboxWrap"
       >
         <div
@@ -124,11 +124,11 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             'CheckboxInputWrap',
             'relative mr-2 flex',
             inputWrapClass,
+            isChecked && 'checked',
             checkboxVariant[variant][color],
             checkboxSize[size],
-            disabled && 'disabled',
-            disabled && disabledVariant[variant],
-            error && 'error ' + inputErrorClass,
+            error && !disabled && 'error ' + inputErrorClass,
+            disabled && 'disabled ' + disabledVariant[variant],
           )}
           data-testid="CheckboxInputWrap"
         >
@@ -145,8 +145,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               onChange={e => onChange(e.target.value)}
               checked={isChecked}
               disabled={disabled}
-              tabIndex={disabled ? -1 : 0}
-              aria-labelledby={`${name}-label`}
               ref={ref}
               {...rest}
             />

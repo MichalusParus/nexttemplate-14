@@ -1,13 +1,11 @@
-import { forwardRef, HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
+import { forwardRef, PropsWithChildren, ReactNode } from 'react'
 
-import { StyleProps } from '@/components/types'
+import { NativeDivProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { paperVariant } from './Paper.style'
 
-type NativePaperProps = Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'color'>
-
-export type PaperProps = NativePaperProps &
+export type PaperProps = NativeDivProps &
   Omit<StyleProps, 'size'> & {
     /** for passing custom tailwind classes */
     className?: string
@@ -21,8 +19,8 @@ export type PaperProps = NativePaperProps &
     children?: ReactNode
   }
 
-/** Styled wrap. Default HTMLAttributes props supported. */
-export const Paper = forwardRef<HTMLDivElement, PropsWithChildren<PaperProps>>(
+/** Styled wrap. Native HTMLAttributes props supported. */
+export const Paper = forwardRef<HTMLDivElement | null, PropsWithChildren<PaperProps>>(
   (
     {
       className,

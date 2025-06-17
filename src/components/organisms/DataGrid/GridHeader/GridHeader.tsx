@@ -32,7 +32,7 @@ type GridHeaderProps = StyleProps & {
 }
 
 /** Header for DataGrid with select All and double row. USE CLIENT */
-export const GridHeader = forwardRef<HTMLDivElement, GridHeaderProps>(
+export const GridHeader = forwardRef<HTMLDivElement | null, GridHeaderProps>(
   (
     {
       className,

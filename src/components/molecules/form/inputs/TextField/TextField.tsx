@@ -9,9 +9,11 @@ import { FieldProps } from '@/components/types'
 import { FormStyleContext } from '../../Form/Form'
 import { TextInput, TextInputProps } from './TextInput/TextInput'
 
-export type InputFieldProps = Omit<TextInputProps, 'value' | 'error' | 'onChange'> & FieldProps
+export type TextFieldProps = Omit<TextInputProps, 'value' | 'error' | 'onChange'> &
+  Partial<Pick<TextInputProps, 'onChange'>> &
+  FieldProps
 
-/** Form and style context wrapper for TextInput inside Label component. Default InputHTMLAttributes and Label props supported. USE CLIENT  */
+/** Form and style context wrapper for TextInput inside Label component. Native InputHTMLAttributes and Label props supported. USE CLIENT  */
 export const TextField = ({
   className,
   name,
@@ -20,8 +22,9 @@ export const TextField = ({
   color,
   size,
   labelProps = {},
+  onChange,
   ...rest
-}: InputFieldProps) => {
+}: TextFieldProps) => {
   const {
     control,
     formState: { errors },
@@ -47,12 +50,15 @@ export const TextField = ({
             color={color || formColor}
             size={size || formSize}
             error={errorMessage}
-            aria-labelledby={`${name}-label`}
             aria-describedby={
               errorMessage || labelProps.description ? `${name}-description` : undefined
             }
             aria-invalid={!!errorMessage}
             {...field}
+            onChange={v => {
+              field.onChange(v)
+              onChange?.(v)
+            }}
             {...rest}
           />
         </Label>

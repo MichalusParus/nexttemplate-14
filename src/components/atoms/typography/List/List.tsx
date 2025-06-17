@@ -33,8 +33,8 @@ export type ListProps = NativeListProps &
     pProps?: Partial<PProps>
   }
 
-/** List component with ghost loading and optional title. Default HTMLAttributes props supported. */
-export const List = forwardRef<HTMLOListElement, ListProps>(
+/** List component with ghost loading and optional title. Native HTMLAttributes props supported. */
+export const List = forwardRef<HTMLOListElement | null, ListProps>(
   (
     {
       className,

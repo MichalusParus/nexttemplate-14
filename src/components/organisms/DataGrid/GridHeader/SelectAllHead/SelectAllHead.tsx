@@ -19,7 +19,7 @@ export type SelectAllHeadProps = StyleProps & {
 }
 
 /** SelectAllHeader component for multiselect DataGrid. USE CLIENT */
-export const SelectAllHead = forwardRef<HTMLDivElement, SelectAllHeadProps>(
+export const SelectAllHead = forwardRef<HTMLDivElement | null, SelectAllHeadProps>(
   (
     { className, name, variant = 'outlined', color = 'primary', size = 'md', isChecked, handleAll },
     ref,

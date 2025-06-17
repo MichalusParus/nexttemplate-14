@@ -53,7 +53,7 @@ export type CalendarProps = StyleProps & {
 }
 
 /** Calendar component with day, month and year picker. Paper and Button props supported. USE CLIENT */
-export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
+export const Calendar = forwardRef<HTMLDivElement | null, CalendarProps>(
   (
     {
       className,
@@ -75,7 +75,10 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
     ref,
   ) => {
     const componentRef = useRef<HTMLDivElement>(null)
-    useImperativeHandle(ref, () => componentRef.current!)
+    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
+      ref,
+      () => componentRef.current,
+    )
     const [calendarState, setCalendarState] = useState<'days' | 'months' | 'years'>('days')
     const [currentMonth, setCurrentMonth] = useState<Date>(date || new Date())
     const { className: paperClassName, ...restPaperProps } = paperProps

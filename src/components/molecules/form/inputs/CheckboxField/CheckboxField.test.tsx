@@ -43,7 +43,6 @@ describe('CheckboxField', () => {
     expect(inputRole).toHaveAttribute('name', 'fieldTest')
     expect(inputRole).toHaveAttribute('type', 'checkbox')
     expect(inputRole).toHaveAttribute('value', 'fieldTest')
-    expect(inputRole).toHaveAttribute('aria-labelledby', 'fieldTest-label')
     expect(inputRole).toHaveAttribute('aria-invalid', 'false')
     expect(inputRole).not.toHaveAttribute('aria-describedby')
     expect(labelTestId).toBeInTheDocument()
@@ -61,6 +60,17 @@ describe('CheckboxField', () => {
     fireEvent.click(inputRole)
 
     expect(inputRole).toHaveAttribute('value', '')
+  })
+
+  it('onChange', () => {
+    const spy = jest.fn()
+    render(<FieldWithHooks onChange={spy} />)
+    const inputRole = screen.getByRole('checkbox')
+
+    fireEvent.click(inputRole)
+
+    expect(spy).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalledWith('')
   })
 
   it('onSubmit', () => {

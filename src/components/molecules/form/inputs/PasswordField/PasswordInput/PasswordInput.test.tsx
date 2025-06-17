@@ -76,7 +76,6 @@ describe('PasswordInput', () => {
     const passwordtestId = screen.getByTestId('PasswordInput')
 
     expect(passwordtestId).toHaveAttribute('disabled')
-    expect(passwordtestId).toHaveAttribute('tabindex', '-1')
   })
 
   it('ref', () => {

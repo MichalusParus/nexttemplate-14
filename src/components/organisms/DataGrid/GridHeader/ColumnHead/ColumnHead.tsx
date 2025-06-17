@@ -44,7 +44,7 @@ export type ColumnHeadProps = StyleProps & {
 }
 
 /** ColumnHeader component for DataGrid with multiselect, sort and filter. USE CLIENT */
-export const ColumnHead = forwardRef<HTMLDivElement, ColumnHeadProps>(
+export const ColumnHead = forwardRef<HTMLDivElement | null, ColumnHeadProps>(
   (
     {
       className,

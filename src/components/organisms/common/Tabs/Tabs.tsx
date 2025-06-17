@@ -15,7 +15,7 @@ export type TabsProps = Omit<DropdownTabListProps, 'selectedTab' | 'onTabChange'
 }
 
 /** Tabs component for switching panels with content. Link, Button and Disclosure props supported. */
-export const Tabs = forwardRef<HTMLDivElement, PropsWithChildren<TabsProps>>(
+export const Tabs = forwardRef<HTMLDivElement | null, PropsWithChildren<TabsProps>>(
   (
     {
       className,

@@ -5,7 +5,7 @@ import { getOptions, optionsWithContent } from '../../../../../../../.storybook/
 import { RadioGroup, RadioGroupProps } from './RadioGroup'
 
 const meta: Meta<typeof RadioGroup> = {
-  title: 'Molecules/Form/RadioGroup',
+  title: 'Molecules/Form/inputs/RadioGroup',
   component: RadioGroup,
   tags: ['autodocs'],
   parameters: {

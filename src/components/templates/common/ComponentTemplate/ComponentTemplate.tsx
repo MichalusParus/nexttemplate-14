@@ -1,8 +1,9 @@
-import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react'
+import { forwardRef, PropsWithChildren } from 'react'
 
+import { NativeDivProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
-export type ComponentTemplateProps = Omit<HTMLAttributes<HTMLDivElement>, 'className'> & {
+export type ComponentTemplateProps = NativeDivProps & {
   /** for passing custom tailwind classes */
   className?: string
 }
@@ -25,7 +26,7 @@ export type ComponentTemplateProps = Omit<HTMLAttributes<HTMLDivElement>, 'class
 //   - storybook table, stories, docs
 //   - jest tests
 
-/** Serves as a template for creating new components. Default HTMLAttributes props supported. */
+/** Serves as a template for creating new components. Native HTMLAttributes props supported. */
 export const ComponentTemplate = forwardRef<
   HTMLDivElement,
   PropsWithChildren<ComponentTemplateProps>

@@ -1,29 +1,23 @@
-import { forwardRef, InputHTMLAttributes } from 'react'
+import { forwardRef } from 'react'
 
 import { Span } from '@/components/atoms/typography/Span'
-import { InputProps, StyleProps } from '@/components/types'
+import { InputProps, NativeInputProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { inputErrorClass } from '../../TextField/TextInput/TextInput.style'
 import { rangeClass, rangeColor, rangeSize, rangeWrapClass } from './RangeInput.style'
 
-type NativeRangeProps = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  'color' | 'size' | 'onChange' | 'type' | 'className' | 'name' | 'width' | 'value'
-> &
-  InputProps
-
-export type RangeProps = NativeRangeProps &
+export type RangeProps = NativeInputProps &
   InputProps &
   Omit<StyleProps, 'variant'> & {
     /** value of rangeInput */
-    value?: string
+    value?: number
     /** onChange function */
-    onChange: (value: string) => void
+    onChange: (value: number) => void
   }
 
-/** Basic styled uncontroled RangeInput. For form purposes use RangeField. Default InputHTMLAttributes props supported. */
-export const RangeInput = forwardRef<HTMLInputElement, RangeProps>(
+/** Basic styled uncontroled RangeInput. For form purposes use RangeField. Native InputHTMLAttributes props supported. */
+export const RangeInput = forwardRef<HTMLInputElement | null, RangeProps>(
   (
     { className, name, color = 'primary', size = 'md', value, error, disabled, onChange, ...rest },
     ref,
@@ -38,13 +32,16 @@ export const RangeInput = forwardRef<HTMLInputElement, RangeProps>(
         </Span>
         <input
           id={name}
-          className={cn(rangeClass, rangeColor[color], error && 'error ' + inputErrorClass)}
+          className={cn(
+            rangeClass,
+            rangeColor[color],
+            error && !disabled && 'error ' + inputErrorClass,
+          )}
           type="range"
           name={name}
           value={value}
-          onChange={e => onChange(e.target.value)}
+          onChange={e => onChange(parseFloat(e.target.value))}
           disabled={disabled}
-          tabIndex={disabled ? -1 : 0}
           ref={ref}
           {...rest}
         />

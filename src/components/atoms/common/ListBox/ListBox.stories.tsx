@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
 import { getOptions, optionsWithContent } from '../../../../../.storybook/helpers'
+import { Button } from '../Button'
 import { ListBox } from '.'
 import { ListBoxProps } from './ListBox'
 
@@ -26,7 +27,7 @@ const meta: Meta<typeof ListBox> = {
 }
 
 export default meta
-type Story = StoryObj<typeof ListBox>
+type Story = StoryObj<typeof ListBox<string>>
 
 const ListBoxWithHooks = (args: ListBoxProps) => {
   const [value, setValue] = useState<string[]>([])
@@ -73,6 +74,27 @@ export const HideCheckbox: Story = {
 }
 
 export const OptionsWithContent: Story = {
-  args: { ...PrimaryDefault.args, options: optionsWithContent },
+  args: { ...PrimaryDefault.args, name: 'listBoxStory3', options: optionsWithContent },
+  render: args => <ListBoxWithHooks {...args} />,
+}
+
+export const Children: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'listBoxStory4',
+    children: (
+      <li>
+        <Button
+          className="w-full rounded-none border-none"
+          variant={PrimaryDefault.args?.variant}
+          color={PrimaryDefault.args?.color}
+          size={PrimaryDefault.args?.size}
+          onClick={() => console.log('create new')}
+        >
+          Create new
+        </Button>
+      </li>
+    ),
+  },
   render: args => <ListBoxWithHooks {...args} />,
 }

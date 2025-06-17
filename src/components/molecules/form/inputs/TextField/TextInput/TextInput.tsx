@@ -1,8 +1,8 @@
 'use client'
-import { forwardRef, InputHTMLAttributes, ReactNode } from 'react'
+import { forwardRef, ReactNode } from 'react'
 
 import { buttonIconSize as inputIconSize } from '@/components/atoms/common/Button/Button.style'
-import { InputProps, StyleProps } from '@/components/types'
+import { InputProps, NativeInputProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import {
@@ -14,18 +14,13 @@ import {
   inputWrapClass,
 } from './TextInput.style'
 
-type NativeInputProps = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  'color' | 'size' | 'onChange' | 'name' | 'className' | 'value' | 'type' | 'placeholder' | 'width'
->
-
 export type TextInputProps = NativeInputProps &
   InputProps &
   StyleProps & {
-    /** input type text, number supported */
-    type?: string
     /** value of input */
     value?: string
+    /** optional type of input */
+    type?: 'text' | 'password' | 'search' | 'number'
     /** pass svg icon before input value */
     startIcon?: ReactNode
     /** pass svg icon after input value */
@@ -34,14 +29,14 @@ export type TextInputProps = NativeInputProps &
     onChange: (value: string) => void
   }
 
-/** Basic styled uncontroled TextInput. For form purposes use TextField. Default InputHTMLAttributes props supported. USE CLIENT */
-export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
+/** Basic styled uncontroled TextInput. For form purposes use TextField. Native InputHTMLAttributes props supported. USE CLIENT */
+export const TextInput = forwardRef<HTMLInputElement | null, TextInputProps>(
   (
     {
       className,
-      type = 'text',
       name,
       value,
+      type = 'text',
       variant = 'outlined',
       color = 'primary',
       size = 'md',
@@ -60,7 +55,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           'InputWrap',
           inputWrapClass,
           inputVariant[variant][color],
-          error && 'error ' + inputErrorClass,
+          error && !disabled && 'error ' + inputErrorClass,
           disabled && 'disabled ' + disabledVariant[variant],
           inputIconSize[size],
           className,
@@ -77,7 +72,6 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           type={type}
           value={value}
           disabled={disabled}
-          tabIndex={disabled ? -1 : 0}
           onChange={e => onChange(e.target.value)}
           ref={ref}
           {...rest}

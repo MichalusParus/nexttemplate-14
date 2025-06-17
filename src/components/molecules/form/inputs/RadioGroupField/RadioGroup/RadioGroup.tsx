@@ -1,16 +1,11 @@
 'use client'
-import { FieldsetHTMLAttributes, forwardRef, InputHTMLAttributes } from 'react'
+import { FieldsetHTMLAttributes, forwardRef } from 'react'
 
-import { InputProps, OptionType, StyleProps } from '@/components/types'
+import { InputProps, NativeInputProps, OptionType, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { inputErrorClass } from '../../TextField/TextInput/TextInput.style'
 import { afterClass, disableVariant, radioClass, radioSize, radioVariant } from './RadioGroup.style'
-
-type NativeRadioGroupProps = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  'color' | 'size' | 'onChange' | 'type' | 'name' | 'width' | 'value'
->
 
 export type RadioGroupProps = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'onChange'> &
   InputProps &
@@ -22,13 +17,13 @@ export type RadioGroupProps = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 
     /** display radio inputs in column */
     column?: boolean
     /** optional radio props */
-    radioProps?: Partial<NativeRadioGroupProps>
+    radioProps?: Partial<NativeInputProps> & Pick<InputProps, 'className'>
     /** onChange function */
     onChange: (value: string) => void
   }
 
-/** Basic styled uncontroled RadioGroup. For form purposes use RadioGroupField. Default FieldsetHTMLAttributes and Radio props supported. USE CLIENT */
-export const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(
+/** Basic styled uncontroled RadioGroup. For form purposes use RadioGroupField. Native FieldsetHTMLAttributes and Radio props supported. USE CLIENT */
+export const RadioGroup = forwardRef<HTMLFieldSetElement | null, RadioGroupProps>(
   (
     {
       className,
@@ -69,7 +64,7 @@ export const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(
                 radioVariant[variant][color],
                 disableVariant[variant],
                 afterClass,
-                error && 'error ' + inputErrorClass,
+                error && !disabled && 'error ' + inputErrorClass,
                 radioClassName,
               )}
               name={name}
@@ -78,7 +73,6 @@ export const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(
               onChange={e => onChange(e.target.value)}
               checked={Boolean(value === radioValue)}
               disabled={disabled}
-              tabIndex={disabled ? -1 : 0}
               {...restRadioProps}
             />
             <label

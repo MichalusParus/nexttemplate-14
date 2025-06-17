@@ -5,7 +5,7 @@ export const inputWrapClass = cn(
 )
 
 export const inputClass = cn(
-  'w-full appearance-none border-none bg-transparent font-semibold placeholder:text-dark-400 focus:outline-none disabled:cursor-not-allowed [&::-webkit-search-cancel-button]:hidden',
+  'w-full appearance-none border-none bg-transparent font-semibold placeholder:text-placeholder focus:outline-none disabled:cursor-not-allowed [&::-webkit-search-cancel-button]:hidden',
 )
 
 export const inputVariant = {
@@ -79,15 +79,15 @@ export const inputVariant = {
 
 export const disabledVariant = {
   text: cn(
-    '[&.disabled]:cursor-not-allowed [&.disabled]:border-transparent [&.disabled]:bg-dark-200 [&.disabled]:text-dark-500 [&.disabled]:opacity-50 [&.disabled]:shadow-none',
-    'dark:[&.disabled]:border-transparent dark:[&.disabled]:bg-dark-200 dark:[&.disabled]:text-dark-500 dark:[&.disabled]:opacity-50',
+    '[&.disabled]:border-transparent [&.disabled]:bg-dark-200 [&.disabled]:opacity-50 [&.disabled]:shadow-none',
+    'dark:[&.disabled]:border-transparent dark:[&.disabled]:bg-dark-200 dark:[&.disabled]:text-dark-500',
   ),
   outlined: cn(
-    '[&.disabled]:cursor-not-allowed [&.disabled]:border-dark-500 [&.disabled]:bg-dark-200 [&.disabled]:text-dark-500 [&.disabled]:opacity-50 [&.disabled]:shadow-none',
-    'dark:[&.disabled]:border-dark-500 dark:[&.disabled]:bg-dark-200 dark:[&.disabled]:text-dark-500 dark:[&.disabled]:opacity-50',
+    '[&.disabled]:border-dark-500 [&.disabled]:bg-dark-200 [&.disabled]:opacity-50 [&.disabled]:shadow-none',
+    'dark:[&.disabled]:border-dark-500 dark:[&.disabled]:bg-dark-200 dark:[&.disabled]:text-dark-500',
   ),
   contained: cn(
-    '[&.disabled]:cursor-not-allowed [&.disabled]:border-dark-500 [&.disabled]:bg-dark-500 [&.disabled]:text-dark-300 [&.disabled]:opacity-50 [&.disabled]:shadow-none',
+    '[&.disabled]:border-dark-500 [&.disabled]:bg-dark-500 [&.disabled]:text-dark-300 [&.disabled]:opacity-50 [&.disabled]:shadow-none',
   ),
 }
 

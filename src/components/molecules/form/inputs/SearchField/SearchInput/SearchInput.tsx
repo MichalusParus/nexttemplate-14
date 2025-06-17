@@ -1,19 +1,14 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, InputHTMLAttributes, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useImperativeHandle, useRef } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
 import { SearchIcon, XIcon } from '@/components/atoms/icons'
-import { InputProps, StyleProps } from '@/components/types'
+import { InputProps, NativeInputProps, StyleProps } from '@/components/types'
 import { cn } from '@/utils/utils'
 
 import { TextInput } from '../../TextField/TextInput'
-
-type NativeInputProps = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  'color' | 'size' | 'onChange' | 'name' | 'className' | 'value' | 'type' | 'placeholder' | 'width'
->
 
 export type SearchInputProps = NativeInputProps &
   InputProps &
@@ -24,8 +19,8 @@ export type SearchInputProps = NativeInputProps &
     onChange: (value: string) => void
   }
 
-/** Basic styled uncontroled SearchInput. For form purposes use SearchField. Default InputHTMLAttributes props supported. USE CLIENT */
-export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
+/** Basic styled uncontroled SearchInput. For form purposes use SearchField. Native InputHTMLAttributes props supported. USE CLIENT */
+export const SearchInput = forwardRef<HTMLInputElement | null, SearchInputProps>(
   (
     {
       name,
@@ -42,7 +37,10 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
   ) => {
     const t = useTranslations('Components')
     const inputRef = useRef<HTMLInputElement | null>(null)
-    useImperativeHandle(ref, () => inputRef.current!)
+    useImperativeHandle<HTMLInputElement | null, HTMLInputElement | null>(
+      ref,
+      () => inputRef.current,
+    )
 
     return (
       <TextInput

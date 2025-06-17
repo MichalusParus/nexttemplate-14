@@ -30,8 +30,8 @@ export type LabelProps = NativeLabelProps &
     hideError?: boolean
   }
 
-/** Label wrapper for form components with inherited font color. Default LabelHTMLAttributes props supported. */
-export const Label = forwardRef<HTMLLabelElement, LabelProps>(
+/** Label wrapper for form components with inherited font color. Native LabelHTMLAttributes props supported. */
+export const Label = forwardRef<HTMLLabelElement | null, LabelProps>(
   (
     {
       className,
