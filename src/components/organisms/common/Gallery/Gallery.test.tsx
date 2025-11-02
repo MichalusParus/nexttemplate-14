@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 
-import { toHaveNoViolations } from 'jest-axe'
+import { axe, toHaveNoViolations } from 'jest-axe'
 import { createRef } from 'react'
 
 import { fireEvent, render, screen, waitFor } from '../../../../../.jest/customRender'
@@ -48,26 +48,28 @@ describe('Gallery', () => {
     expect(buttonTestIds[items.length - 1]).toHaveClass('selected')
   })
 
-  // it('swipe', () => {
-  //   render(<Gallery items={items} ratio="aspect-video" />)
-  //   const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
-  //   const buttonTestIds = screen.getAllByTestId('GalleryControlButton')
+  it('swipe', async () => {
+    render(<Gallery items={items} ratio="aspect-video" />)
+    const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
+    const buttonTestIds = screen.getAllByTestId('GalleryControlButton')
 
-  //   expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 0);')
-  //   expect(buttonTestIds[0]).toHaveClass('selected')
+    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 0);')
+    expect(buttonTestIds[0]).toHaveClass('selected')
 
-  //   fireEvent.touchStart(carouselInnerWrapTestId, { touches: [{ clientX: 100 }] })
-  //   fireEvent.touchEnd(carouselInnerWrapTestId, { changedTouches: [{ clientX: 50 }] })
+    fireEvent.touchStart(carouselInnerWrapTestId, { touches: [{ clientX: 100 }] })
+    fireEvent.touchEnd(carouselInnerWrapTestId, { changedTouches: [{ clientX: 50 }] })
 
-  //   expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 1);')
-  //   expect(buttonTestIds[1]).toHaveClass('selected')
+    await waitFor(() => {
+      expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 1);')
+    })
 
-  //   fireEvent.touchStart(carouselInnerWrapTestId, { touches: [{ clientX: 50 }] })
-  //   fireEvent.touchEnd(carouselInnerWrapTestId, { changedTouches: [{ clientX: 100 }] })
+    fireEvent.touchStart(carouselInnerWrapTestId, { touches: [{ clientX: 50 }] })
+    fireEvent.touchEnd(carouselInnerWrapTestId, { changedTouches: [{ clientX: 100 }] })
 
-  //   expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 0);')
-  //   expect(buttonTestIds[0]).toHaveClass('selected')
-  // })
+    await waitFor(() => {
+      expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 0);')
+    })
+  })
 
   it('open', () => {
     render(<Gallery items={items} ratio="aspect-video" />)
@@ -153,6 +155,16 @@ describe('Gallery', () => {
     expect(playIconQuery3).toBeInTheDocument()
   })
 
+  it('empty state with noItemsLabel', () => {
+    render(<Gallery items={[]} ratio="aspect-video" noItemsLabel="No images available" />)
+    const emptyMessage = screen.getByText('No images available')
+    const carouselItemTestId = screen.getByTestId('CarouselItem')
+
+    expect(emptyMessage).toBeInTheDocument()
+    expect(carouselItemTestId).toHaveAttribute('aria-label', 'No images available')
+    expect(carouselItemTestId).toHaveAttribute('aria-current', 'true')
+  })
+
   it('paperProps/imageViewerProps/carouselProps', () => {
     render(
       <Gallery
@@ -188,10 +200,10 @@ describe('Gallery', () => {
     focusMock.mockRestore()
   })
 
-  // it('axe', async () => {
-  //   const { container } = render(<Gallery items={items} ratio="aspect-video" />)
+  it('axe', async () => {
+    const { container } = render(<Gallery items={items} ratio="aspect-video" />)
 
-  //   const results = await axe(container)
-  //   expect(results).toHaveNoViolations()
-  // })
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
 })

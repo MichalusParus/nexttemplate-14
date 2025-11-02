@@ -17,6 +17,7 @@ import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
 import { useNonModalDropdown } from '@/components/utils/hooks/useNonModalDropdown'
+import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 // import { useFocus } from '@/utils/hooks/useFocus'
 import { cn } from '@/utils/utils'
@@ -84,6 +85,7 @@ export const Drawer = forwardRef<HTMLDivElement | null, PropsWithChildren<Drawer
     const componentRef = useRef<HTMLDivElement | null>(null)
     useNonModalDropdown(isOpen, anchorRef, componentRef.current, modal, onClose)
     const [isVisible, setIsVisible] = useState(false)
+    const container = usePortalContainer(portalContainerId)
     useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
       ref,
       () => componentRef.current,
@@ -109,10 +111,6 @@ export const Drawer = forwardRef<HTMLDivElement | null, PropsWithChildren<Drawer
     }, [isOpen, modal])
 
     if (!isOpen && !isVisible) return null
-
-    const container = portalContainerId
-      ? document.getElementById(portalContainerId) || document.body
-      : document.body
 
     return createPortal(
       <>

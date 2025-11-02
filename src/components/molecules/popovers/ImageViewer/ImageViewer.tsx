@@ -1,11 +1,12 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, PropsWithChildren, useEffect, useState } from 'react'
+import { forwardRef, PropsWithChildren, useEffect, useId, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { XIcon } from '@/components/atoms/icons'
 import { useInternalOpenState } from '@/components/utils/hooks/useInternalOpenState'
+import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { cn } from '@/utils/utils'
 
 import { controlClass } from '../../common/Carousel/CarouselControls/CarouselControls.style'
@@ -19,12 +20,14 @@ import {
 export type ImageViewerProps = ButtonProps & {
   /** for passing custom tailwind classes */
   className?: string
-  /** name of component for unique identification */
-  name: string
+  /** Unique name for id when external control is used, otherwise id is generated */
+  name?: string
   /** label for modal */
   label?: string
   /** optional boolean for controlled open state */
   isOpen?: boolean
+  /** optional id for portal container */
+  portalContainerId?: string
   /** optional setOpen function for controlled open state */
   setIsOpen?: (value: boolean) => void
 }
@@ -33,9 +36,12 @@ export type ImageViewerProps = ButtonProps & {
 export const ImageViewer = forwardRef<
   HTMLButtonElement | null,
   PropsWithChildren<ImageViewerProps>
->(({ className, name, label, isOpen, setIsOpen, children, ...rest }, ref) => {
+>(({ className, name, label, isOpen, portalContainerId, setIsOpen, children, ...rest }, ref) => {
   const t = useTranslations('Components')
+  const id = useId().replace(/:/g, '')
+  const nameId = name || id
   const [isVisible, setIsVisible] = useState(false)
+  const container = usePortalContainer(portalContainerId)
   const { openState, handleOpen } = useInternalOpenState(isOpen, setIsOpen)
 
   useEffect(() => {
@@ -59,25 +65,26 @@ export const ImageViewer = forwardRef<
         className={cn('ImageViewer', viewerButtonClass, className)}
         color="none"
         size="none"
+        hideShadow
         aria-label={label || t('imageViewer')}
         aria-haspopup="dialog"
         aria-expanded={openState}
-        aria-controls={name}
-        aria-owns={name}
+        aria-controls={nameId}
         onClick={() => handleOpen(!openState)}
         ref={ref}
         data-testid="ImageViewer"
         {...rest}
       >
-        {children}
+        {!openState && children}
       </Button>
       {!openState && !isVisible
         ? null
         : createPortal(
             <div
-              id={name}
+              id={nameId}
               className={cn(
                 'ImageViewerDialog',
+                'group',
                 viewerDialogClass,
                 isVisible && openState && 'scale-100 opacity-100',
               )}
@@ -97,7 +104,7 @@ export const ImageViewer = forwardRef<
                 data-testid="ImageViewerCloseButton"
               />
             </div>,
-            document.body,
+            container,
           )}
     </>
   )

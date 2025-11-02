@@ -11,6 +11,10 @@ export type CarouselItemProps = {
   selectedPage?: number
   /** pages amount for sr-only */
   pages?: number
+  /** optional aria-label for the slide */
+  'aria-label'?: string
+  /** optional aria-current for the active slide */
+  'aria-current'?: 'true' | 'false' | boolean
 }
 
 /** CarouselItem for wrapping Carousel children. USE CLIENT */
@@ -19,6 +23,8 @@ export const CarouselItem = ({
   selectedPage,
   pages,
   children,
+  'aria-label': ariaLabel,
+  'aria-current': ariaCurrent,
 }: PropsWithChildren<CarouselItemProps>) => {
   const t = useTranslations('Components')
 
@@ -27,12 +33,16 @@ export const CarouselItem = ({
       className={cn('CarouselItem', 'max-h-full w-full', className)}
       role="group"
       aria-roledescription="slide"
+      aria-label={ariaLabel}
+      aria-current={ariaCurrent}
       data-testid="CarouselItem"
     >
       {children}
-      <div aria-live="polite" className="sr-only" data-testid="CarouselItemSrOnly">
-        {t('slideLabel', { count: selectedPage, total: pages })}
-      </div>
+      {selectedPage && pages && (
+        <div aria-live="polite" className="sr-only" data-testid="CarouselItemSrOnly">
+          {t('slideLabel', { count: selectedPage, total: pages })}
+        </div>
+      )}
     </div>
   )
 }

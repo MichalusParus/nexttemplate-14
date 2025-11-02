@@ -14,6 +14,7 @@ import { createPortal } from 'react-dom'
 import { v4 as uuidv4 } from 'uuid'
 
 import { Alert } from '@/components/atoms/common/Alert'
+import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { cn } from '@/utils/utils'
 
 import { ClearButton } from '../../form/comboboxes/SelectField/Select/ClearButton'
@@ -27,11 +28,17 @@ export function useToast() {
   return useContext(ToastContext)
 }
 
+export type ToastProviderProps = PropsWithChildren & {
+  /** optional id for portal container */
+  portalContainerId?: string
+}
+
 /** Toast component for displaying informations. Component ToastProvider should wrap content in layout. Creating new toast is possible with useToast hook. USE CLIENT */
-export const ToastProvider = forwardRef<HTMLDivElement | null, PropsWithChildren>(
-  ({ children }, ref) => {
+export const ToastProvider = forwardRef<HTMLDivElement | null, ToastProviderProps>(
+  ({ children, portalContainerId }, ref) => {
     const timeoutIds = useRef<NodeJS.Timeout[]>([])
     const [toasts, setToasts] = useState<ToastType[]>([])
+    const container = usePortalContainer(portalContainerId)
 
     const handleRemove = useCallback((id: string) => {
       setToasts(prev =>
@@ -132,7 +139,7 @@ export const ToastProvider = forwardRef<HTMLDivElement | null, PropsWithChildren
                 )
               })}
             </div>,
-            document.body,
+            container,
           )}
       </ToastContext.Provider>
     )

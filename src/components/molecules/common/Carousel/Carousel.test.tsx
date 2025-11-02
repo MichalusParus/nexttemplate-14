@@ -104,7 +104,7 @@ describe('Carousel', () => {
 
   it('autoplay', () => {
     render(
-      <Carousel pages={3} autoplay>
+      <Carousel pages={3} autoplay="on">
         <div className="h-full w-full" data-testid="panel" />
         <div className="h-full w-full" data-testid="panel" />
         <div className="h-full w-full" data-testid="panel" />

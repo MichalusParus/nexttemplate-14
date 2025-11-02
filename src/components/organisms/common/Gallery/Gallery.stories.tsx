@@ -27,6 +27,7 @@ export const Default: Story = {
     color: 'primary',
     width: 'w-full',
     ratio: 'aspect-video',
+    noItemsLabel: '',
     paperProps: {},
     imageViewerProps: {},
     carouselProps: {},

@@ -9,7 +9,7 @@ export const viewerInnerWrapClass = cn(
 )
 
 export const viewerButtonClass = cn(
-  'w-full cursor-zoom-in overflow-hidden rounded-md border-none focus-visible:outline-1 focus-visible:outline-dark-950',
+  'w-full shrink-0 cursor-zoom-in overflow-hidden rounded-md border-none focus-visible:outline-1 focus-visible:outline-dark-950',
 )
 
 export const closeButtonClass = cn(

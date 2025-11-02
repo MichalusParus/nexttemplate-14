@@ -13,7 +13,7 @@ describe('CarouselControls', () => {
       <CarouselControls
         selectedPage={1}
         pages={3}
-        autoplay={false}
+        autoplay={'off'}
         isPaused={false}
         setIsPaused={() => {}}
         onPageChange={() => {}}
@@ -36,7 +36,7 @@ describe('CarouselControls', () => {
       <CarouselControls
         selectedPage={1}
         pages={3}
-        autoplay
+        autoplay={'on'}
         isPaused={false}
         setIsPaused={spy}
         onPageChange={() => {}}
@@ -69,7 +69,7 @@ describe('CarouselControls', () => {
       <CarouselControls
         selectedPage={1}
         pages={3}
-        autoplay
+        autoplay={'on'}
         isPaused
         setIsPaused={spy}
         onPageChange={() => {}}
@@ -89,7 +89,7 @@ describe('CarouselControls', () => {
       <CarouselControls
         selectedPage={1}
         pages={3}
-        autoplay={false}
+        autoplay={'off'}
         isPaused={false}
         hideArrows
         hideControlDotts
@@ -114,7 +114,7 @@ describe('CarouselControls', () => {
       <CarouselControls
         selectedPage={2}
         pages={3}
-        autoplay={false}
+        autoplay={'off'}
         isPaused={false}
         setIsPaused={() => {}}
         onPageChange={spy}
@@ -142,7 +142,7 @@ describe('CarouselControls', () => {
       <CarouselControls
         selectedPage={1}
         pages={3}
-        autoplay={false}
+        autoplay={'off'}
         isPaused={false}
         setIsPaused={() => {}}
         onPageChange={() => {}}

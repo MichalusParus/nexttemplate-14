@@ -66,6 +66,7 @@ export const PrimaryDefault: Story = {
     dialogActions: <Button onClick={() => console.log('action')}>Action</Button>,
     closeButton: false,
     hideXButton: false,
+    portalContainerId: undefined,
     paperProps: undefined,
     titleProps: undefined,
     setIsOpen: undefined,

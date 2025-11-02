@@ -19,7 +19,7 @@ const meta: Meta<typeof ImageViewer> = {
   },
   decorators: [
     Story => (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <Story />
       </div>
     ),
@@ -43,6 +43,7 @@ export const Default: Story = {
     className: '',
     name: 'Example img',
     label: 'Example img',
+    portalContainerId: undefined,
     isOpen: undefined,
     setIsOpen: undefined,
     children: (

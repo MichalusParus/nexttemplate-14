@@ -16,6 +16,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 
+import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { NativeDivProps } from '@/components/utils/types'
 import { usePopper } from '@/utils/hooks/usePopper'
 import { useTouch } from '@/utils/hooks/useTouch'
@@ -70,6 +71,7 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
     const timeoutRef = useRef<NodeJS.Timeout>()
     const [isOpen, setIsOpen] = useState(false)
     const [isVisible, setIsVisible] = useState(false)
+    const container = usePortalContainer(portalContainerId)
     const { componentRef, isTouchDevice } = useTouch({
       onTouch: () => setIsOpen(true),
       onTouchOutside: () => setIsOpen(false),
@@ -142,10 +144,6 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
         return () => clearTimeout(timer)
       }
     }, [isOpen])
-
-    const container = portalContainerId
-      ? document.getElementById(portalContainerId) || document.body
-      : document.body
 
     return (
       <div

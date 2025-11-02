@@ -1,9 +1,10 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, useId, useRef, useState } from 'react'
+import { forwardRef, useId, useState } from 'react'
 
 import { Image } from '@/components/atoms/common/Image'
 import { Paper, PaperProps } from '@/components/atoms/containers/Paper'
+import { Span } from '@/components/atoms/typography/Span'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -11,8 +12,6 @@ import { Carousel, CarouselProps } from '../../../molecules/common/Carousel'
 import { CarouselItem } from '../../../molecules/common/Carousel/CarouselItem'
 import { ImageViewer, ImageViewerProps } from '../../../molecules/popovers/ImageViewer'
 import { GalleryControls } from './GalleryControls'
-
-// issue with nesting buttons inside carousel, axe
 
 export type GalleryItem = {
   src: string
@@ -30,6 +29,8 @@ export type GalleryProps = Omit<StyleProps, 'size'> & {
   width?: string
   /** aspect ratio for Carousel in closed state as tailwind class  */
   ratio: string
+  /** optional custom message for empty state */
+  noItemsLabel?: string
   /** for passing aditional props to paper */
   paperProps?: Partial<PaperProps>
   /** for passing aditional props to imageViewer */
@@ -49,14 +50,17 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
       color = 'primary',
       width = 'w-full',
       ratio = 'aspect-video',
+      noItemsLabel,
       paperProps = {},
       imageViewerProps = {},
       carouselProps = {},
     },
     ref,
   ) => {
-    const id = useId()
     const t = useTranslations('Components')
+    const id = useId().replace(/:/g, '')
+    const controlsPortalId = `${id}-galleryControlWrap`
+    const imageViewerId = `${id}-imageViewer`
     const [isOpen, setIsOpen] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const { className: paperClassName, ...restPaperProps } = paperProps
@@ -73,44 +77,67 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
         ref={ref}
         {...restPaperProps}
       >
-        <ImageViewer
-          className="rounded-none"
-          name={'Gallery-' + id}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          {...imageViewerProps}
-        >
-          <Carousel
-            className={cn(
-              'GalleryCarousel',
-              'h-full w-full',
-              isOpen && '[&>.CarouselRatioWrap]:max-h-galleryInnerHeight',
-              carouselClassName,
-            )}
-            pages={items.length}
-            currentPage={currentPage}
-            width={width}
-            ratio={isOpen ? 'aspect-video' : ratio}
-            autoplay
-            autoplayStopped
-            hideControlDotts
-            setCurrentPage={setCurrentPage}
-            {...restCarouselProps}
-          >
-            {items.map(item => (
-              <CarouselItem key={item.alt} className="flex items-center justify-center">
-                <Image className="bg-transparent" src={item.src} alt={item.alt} />
-              </CarouselItem>
-            ))}
-          </Carousel>
-          <GalleryControls
-            items={items}
+        <div className="group relative" id={controlsPortalId}>
+          <ImageViewer
+            className="rounded-none"
+            name={imageViewerId}
             isOpen={isOpen}
-            currentPage={currentPage}
-            variant={variant}
-            setCurrentPage={setCurrentPage}
-          />
-        </ImageViewer>
+            setIsOpen={setIsOpen}
+            {...imageViewerProps}
+          >
+            <Carousel
+              className={cn(
+                'GalleryCarousel',
+                'h-full w-full',
+                isOpen && '[&>.CarouselRatioWrap]:max-h-galleryInnerHeight',
+                carouselClassName,
+              )}
+              pages={items.length || 1}
+              currentPage={currentPage}
+              width={width}
+              ratio={isOpen ? 'aspect-video' : ratio}
+              autoplay="paused"
+              hideControlDotts
+              setCurrentPage={setCurrentPage}
+              customControls={
+                <GalleryControls
+                  items={items}
+                  isOpen={isOpen}
+                  currentPage={currentPage}
+                  variant={variant}
+                  setCurrentPage={setCurrentPage}
+                />
+              }
+              portalTargetId={isOpen ? imageViewerId : controlsPortalId}
+              {...restCarouselProps}
+            >
+              {items && items.length ? (
+                items.map((item, index) => (
+                  <CarouselItem
+                    key={`${item.src}-${index}`}
+                    className="flex items-center justify-center"
+                    selectedPage={currentPage}
+                    pages={items.length}
+                    aria-label={`${index + 1} / ${items.length}: ${item.alt}`}
+                    aria-current={currentPage === index + 1 ? 'true' : undefined}
+                  >
+                    <Image className="bg-transparent" src={item.src} alt={item.alt} />
+                  </CarouselItem>
+                ))
+              ) : (
+                <CarouselItem
+                  className="flex items-center justify-center"
+                  aria-label={noItemsLabel || t('noOptions')}
+                  aria-current={'true'}
+                >
+                  <Span variant="none" color="none">
+                    {noItemsLabel || t('noOptions')}
+                  </Span>
+                </CarouselItem>
+              )}
+            </Carousel>
+          </ImageViewer>
+        </div>
       </Paper>
     )
   },

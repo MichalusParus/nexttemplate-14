@@ -20,6 +20,7 @@ import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { XIcon } from '@/components/atoms/icons'
 import { Title } from '@/components/atoms/typography/Title'
 import { TitleProps } from '@/components/atoms/typography/Title/Title'
+import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 // import { useFocus } from '@/utils/hooks/useFocus'
 import { cn } from '@/utils/utils'
@@ -48,6 +49,8 @@ export type DialogProps = NativeDivProps &
     closeButton?: boolean
     /** boolean for hiding closing XIcon button */
     hideXButton?: boolean
+    /** optional id for portal container */
+    portalContainerId?: string
     /** for passing aditional props to paper */
     paperProps?: Partial<PaperProps>
     /** for passing aditional props to title */
@@ -72,6 +75,7 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
       dialogActions,
       closeButton,
       hideXButton,
+      portalContainerId,
       paperProps = {},
       titleProps = {},
       setIsOpen,
@@ -87,7 +91,9 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
       () => componentRef.current,
     )
     const [isVisible, setIsVisible] = useState(false)
+    const container = usePortalContainer(portalContainerId)
     const { className: paperClassName, ...restPaperProps } = paperProps
+
     // const { focusableEl } = useFocus(
     //   isOpen,
     //   componentRef,
@@ -190,7 +196,7 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
         </div>
         <Overlay isOpen={isOpen} onClose={handleClose} dark />
       </>,
-      document.body,
+      container,
     )
   },
 )

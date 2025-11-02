@@ -91,5 +91,8 @@ export default meta
 type Story = StoryObj<typeof ToastProvider>
 
 export const Default: Story = {
+  args: {
+    portalContainerId: undefined,
+  },
   render: () => <ToastProviderWithHooks />,
 }

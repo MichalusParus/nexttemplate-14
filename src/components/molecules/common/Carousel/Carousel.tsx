@@ -13,13 +13,14 @@ import { useTouch } from '@/utils/hooks/useTouch'
 import { cn } from '@/utils/utils'
 
 import { innerWrapClass } from './Carousel.style'
-import { CarouselControls } from './CarouselControls/CarouselControls'
+import { CarouselControls, CarouselControlsProps } from './CarouselControls/CarouselControls'
 
-export type CarouselProps = {
+export type CarouselProps = Omit<
+  CarouselControlsProps,
+  'selectedPage' | 'isPaused' | 'setIsPaused' | 'onPageChange'
+> & {
   /** for passing custom tailwind classes */
   className?: string
-  /** children length */
-  pages: number
   /** optional label of component */
   label?: string
   /** for setting width as tailwind class */
@@ -28,16 +29,8 @@ export type CarouselProps = {
   ratio?: string
   /** optional current page for external control. */
   currentPage?: number
-  /** optional boolean for autoplay */
-  autoplay?: boolean
   /** optional interval if autoplay is enabled */
   autoplayInterval?: number
-  /** optional boolean for autoplay stopped state */
-  autoplayStopped?: boolean
-  /** optional boolean for hiding carousel arrows. */
-  hideArrows?: boolean
-  /** optional boolean for hiding carousel control dotts. */
-  hideControlDotts?: boolean
   /** optional set current page fn for external control. */
   setCurrentPage?: (page: number) => void
 }
@@ -52,19 +45,20 @@ export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<Caro
       width = 'w-full',
       ratio = 'aspect-video',
       currentPage = 1,
-      autoplay,
+      autoplay = 'off',
       autoplayInterval = 3000,
-      autoplayStopped,
       hideArrows,
       hideControlDotts,
       children,
       setCurrentPage,
+      customControls,
+      portalTargetId,
     },
     ref,
   ) => {
     const t = useTranslations('Components')
     const [internalCurrentPage, setInternalCurrentPage] = useState(currentPage)
-    const [isPaused, setIsPaused] = useState(autoplayStopped)
+    const [isPaused, setIsPaused] = useState(autoplay === 'paused')
     const selectedPage = currentPage && setCurrentPage ? currentPage : internalCurrentPage
 
     const handlePageChange = useCallback(
@@ -74,7 +68,7 @@ export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<Caro
         } else {
           setInternalCurrentPage(page)
         }
-        if (autoplay && !isPaused && shouldPause) {
+        if (autoplay !== 'off' && !isPaused && shouldPause) {
           setIsPaused(true)
         }
       },
@@ -100,7 +94,7 @@ export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<Caro
 
     useEffect(() => {
       let sliderInterval: ReturnType<typeof setInterval>
-      if (autoplay && !isPaused) {
+      if (autoplay !== 'off' && !isPaused) {
         sliderInterval = setInterval(() => {
           handlePageChange(selectedPage === pages ? 1 : selectedPage + 1)
         }, autoplayInterval)
@@ -143,6 +137,8 @@ export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<Caro
           hideControlDotts={hideControlDotts}
           setIsPaused={setIsPaused}
           onPageChange={handlePageChange}
+          customControls={customControls}
+          portalTargetId={portalTargetId}
         />
       </div>
     )

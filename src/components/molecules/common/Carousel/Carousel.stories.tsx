@@ -46,7 +46,6 @@ export const Default: Story = {
     currentPage: undefined,
     autoplay: undefined,
     autoplayInterval: undefined,
-    autoplayStopped: undefined,
     hideArrows: false,
     hideControlDotts: false,
     setCurrentPage: undefined,
@@ -70,7 +69,7 @@ export const Controled: Story = {
 export const Autoplay: Story = {
   args: {
     ...Default.args,
-    autoplay: true,
+    autoplay: 'on',
     autoplayInterval: 3000,
   },
   render: args => (
@@ -92,7 +91,7 @@ export const Autoplay: Story = {
 }
 
 export const HideControls: Story = {
-  args: { ...Default.args, autoplay: true, hideControlDotts: true, hideArrows: true },
+  args: { ...Default.args, autoplay: 'on', hideControlDotts: true, hideArrows: true },
   render: args => <ControlledCarousel {...args} />,
 }
 

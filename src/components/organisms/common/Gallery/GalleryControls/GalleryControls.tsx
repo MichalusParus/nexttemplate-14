@@ -44,7 +44,11 @@ export const GalleryControls = ({
 
   return (
     <div
-      className={cn('GalleryControlsControlItemsWrap', 'w-full shrink-0')}
+      className={cn(
+        'GalleryControlsControlItemsWrap',
+        'w-full shrink-0',
+        isOpen && 'absolute bottom-0 left-0 z-modal',
+      )}
       data-testid="GalleryControls"
     >
       <ScrollShadow>
@@ -54,7 +58,7 @@ export const GalleryControls = ({
         >
           {items.map((item, index) => (
             <Button
-              key={`GalleryControlItem${index}`}
+              key={`${item.src}-${index}`}
               className={cn(
                 'GalleryControlButton',
                 currentPage === index + 1 && 'selected',

@@ -17,6 +17,7 @@ import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
 import { useNonModalDropdown } from '@/components/utils/hooks/useNonModalDropdown'
+import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { usePopper } from '@/utils/hooks/usePopper'
 import { cn } from '@/utils/utils'
@@ -88,6 +89,7 @@ export const Dropdown = forwardRef<HTMLDivElement | null, PropsWithChildren<Drop
     const { popoverEl, setPopoverEl } = usePopper(anchorRef, placement, offset)
     useNonModalDropdown(isOpen, anchorRef, popoverEl, modal, onClose, submenuRefs)
     const [isVisible, setIsVisible] = useState(false)
+    const container = usePortalContainer(portalContainerId)
     useImperativeHandle<HTMLElement | null, HTMLElement | null>(ref, () => popoverEl)
     const { className: paperClassName, ...restPaperProps } = paperProps
 
@@ -100,10 +102,6 @@ export const Dropdown = forwardRef<HTMLDivElement | null, PropsWithChildren<Drop
     }, [isOpen])
 
     if (!isVisible && !isOpen) return null
-
-    const container = portalContainerId
-      ? document.getElementById(portalContainerId) || document.body
-      : document.body
 
     const renderDropdown = () => {
       return (

@@ -24,7 +24,6 @@ describe('ImageViewer', () => {
     expect(imageViewerTestId).toHaveAttribute('aria-expanded', 'false')
     expect(imageViewerTestId).toHaveAttribute('aria-haspopup', 'dialog')
     expect(imageViewerTestId).toHaveAttribute('aria-controls', 'viewerTest')
-    expect(imageViewerTestId).toHaveAttribute('aria-owns', 'viewerTest')
     expect(imageViewerTestId).toHaveAttribute('aria-label', 'Image')
     expect(dialogQuery).toBeNull()
     imageViewerTestId.focus()
