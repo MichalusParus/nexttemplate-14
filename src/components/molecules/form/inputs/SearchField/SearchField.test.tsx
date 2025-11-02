@@ -2,11 +2,12 @@ import '@testing-library/jest-dom'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { act } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 
 import { fireEvent, render, screen, waitFor } from '../../../../../../.jest/customRender'
-import { Form } from '../../Form'
+import { Form } from '../../forms/Form'
 import { SearchField } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -64,16 +65,18 @@ describe('SearchField', () => {
     expect(alertQuery).toBeNull()
   })
 
-  it('value', () => {
+  it('value', async () => {
     render(<FieldWithHooks />)
     const inputRole = screen.getByRole('searchbox')
 
     expect(inputRole).toHaveAttribute('value', 'value')
 
-    fireEvent.change(inputRole, {
-      target: {
-        value: 'newValue',
-      },
+    await act(async () => {
+      fireEvent.change(inputRole, {
+        target: {
+          value: 'newValue',
+        },
+      })
     })
 
     expect(inputRole).toHaveAttribute('value', 'newValue')
@@ -93,12 +96,18 @@ describe('SearchField', () => {
     render(<FieldWithHooks />)
     const inputRole = screen.getByRole('searchbox')
     const alertRole = screen.getByTestId('Alert')
-    fireEvent.change(inputRole, {
-      target: {
-        value: '',
-      },
+
+    await act(async () => {
+      fireEvent.change(inputRole, {
+        target: {
+          value: '',
+        },
+      })
     })
-    fireEvent.submit(screen.getByTestId('submitButton'))
+
+    await act(async () => {
+      fireEvent.submit(screen.getByTestId('submitButton'))
+    })
 
     await waitFor(() => {
       expect(alertRole).toBeInTheDocument()
@@ -116,11 +125,14 @@ describe('SearchField', () => {
     expect(labelWrapTestId).toHaveClass('className')
   })
 
-  it('onSubmit', () => {
+  it('onSubmit', async () => {
     const spy = jest.fn()
     render(<FieldWithHooks />)
     screen.getByTestId('Form').onsubmit = spy
-    fireEvent.click(screen.getByTestId('submitButton'))
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('submitButton'))
+    })
     // TODO beenCalledWith, spy return native event and not values
     expect(spy).toHaveBeenCalled()
   })

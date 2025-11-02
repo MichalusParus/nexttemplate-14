@@ -1,6 +1,6 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { Ghost } from '../../loaders/Ghost'

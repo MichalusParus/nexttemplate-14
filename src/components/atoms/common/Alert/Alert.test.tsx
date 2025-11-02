@@ -38,9 +38,20 @@ describe('Alert', () => {
     expect(infoText).toBeInTheDocument()
   })
 
-  it('icon', () => {
+  it('startIcon', () => {
     render(
-      <Alert status="none" title="Alert title" icon={<svg role="img" />}>
+      <Alert status="none" title="Alert title" startIcon={<svg role="img" />}>
+        Alert
+      </Alert>,
+    )
+    const imgRole = screen.getByRole('img')
+
+    expect(imgRole).toBeInTheDocument()
+  })
+
+  it('endIcon', () => {
+    render(
+      <Alert status="none" title="Alert title" endIcon={<svg role="img" />}>
         Alert
       </Alert>,
     )

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
 import { axe, toHaveNoViolations } from 'jest-axe'
-import { createRef } from 'react'
+import { act, createRef } from 'react'
 
 import { fireEvent, render, screen } from '../../../../../.jest/customRender'
 import { tabs } from '../../../../../.storybook/helpers'
@@ -17,12 +17,12 @@ jest.mock('next/navigation', () => ({
 }))
 
 describe('Tabs', () => {
-  it('default', () => {
+  it('default', async () => {
     render(<Tabs className="className" name="tabsTest" selectedValue={tabs[0].value} tabs={tabs} />)
     const tabsTestId = screen.getByTestId('Tabs')
     const tablistRole = screen.getByRole('tablist')
     const tabRoles = screen.getAllByRole('tab')
-    const tabPanelRole = screen.getByRole('tabpanel')
+    const tabPanelRoles = screen.getAllByRole('tabpanel')
 
     expect(tabsTestId).toBeInTheDocument()
     expect(tabsTestId).toHaveClass('className')
@@ -31,13 +31,15 @@ describe('Tabs', () => {
     expect(tabRoles[0]).toHaveTextContent(tabs[0].label)
     expect(tabRoles[1]).toHaveTextContent(tabs[1].label)
     expect(tabRoles[2]).toHaveTextContent(tabs[2].label)
-    expect(tabRoles[0]).toHaveAttribute('aria-controls', tabPanelRole.getAttribute('id'))
+    expect(tabRoles[0]).toHaveAttribute('aria-controls', tabPanelRoles[0].getAttribute('id'))
     expect(tabRoles[0]).toHaveClass('selected')
     expect(tabRoles[0]).toHaveAttribute('aria-selected', 'true')
-    expect(tabPanelRole).toBeInTheDocument()
-    expect(tabPanelRole).toHaveAttribute('id', tabRoles[0].getAttribute('aria-controls'))
-    expect(tabPanelRole).toHaveAttribute('aria-labelledby', tabRoles[0].getAttribute('id'))
-    tabRoles[0].focus()
+    expect(tabPanelRoles).toHaveLength(1)
+    expect(tabPanelRoles[0]).toHaveAttribute('id', tabRoles[0].getAttribute('aria-controls'))
+    expect(tabPanelRoles[0]).toHaveAttribute('aria-labelledby', tabRoles[0].getAttribute('id'))
+    await act(async () => {
+      tabRoles[0].focus()
+    })
     expect(document.activeElement).toBe(tabRoles[0])
   })
 
@@ -60,34 +62,35 @@ describe('Tabs', () => {
     expect(tabRoles[0]).toHaveClass('w-full')
   })
 
-  it('tabButtonProps/buttonProps/dropdownProps', () => {
+  it('tabButtonProps/selectProps', async () => {
     render(
       <Tabs
         name="tabsTest"
         selectedValue={tabs[0].value}
         tabs={tabs}
         tabButtonProps={{ className: 'tabButtonClass' }}
-        buttonProps={{ className: 'buttonClass' }}
-        dropdownProps={{ className: 'dropdownClass' }}
+        selectProps={{ className: 'selectProps' }}
       />,
     )
-    const buttonTestId = screen.getByTestId('DropdownTabListButton')
-    fireEvent.click(buttonTestId)
+    const comboboxRole = screen.getByRole('combobox')
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
     const tabRoles = screen.getAllByRole('tab')
-    const buttonRoles = screen.getAllByRole('button')
-    const dropdownTestId = screen.getByTestId('Dropdown')
+    const selectTestId = screen.getByTestId('TabListSelect')
 
     expect(tabRoles[0]).toHaveClass('tabButtonClass')
-    expect(buttonRoles[0]).toHaveClass('buttonClass')
-    expect(dropdownTestId).toHaveClass('dropdownClass')
+    expect(selectTestId).toHaveClass('selectProps')
   })
 
-  it('onTabChange', () => {
+  it('onTabChange', async () => {
     const spy = jest.fn()
     render(<Tabs name="tabsTest" selectedValue={tabs[0].value} tabs={tabs} onTabChange={spy} />)
     const tabRoles = screen.getAllByRole('tab')
 
-    fireEvent.click(tabRoles[0])
+    await act(async () => {
+      fireEvent.click(tabRoles[0])
+    })
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith(tabs[0].value)
   })
@@ -107,7 +110,9 @@ describe('Tabs', () => {
   })
 
   it('axe', async () => {
-    const { container } = render(<Tabs name="tabsTest" selectedValue="label1" tabs={tabs} />)
+    const { container } = render(
+      <Tabs name="tabsTest" selectedValue="label1" tabs={tabs} selectProps={{ title: 'title' }} />,
+    )
 
     const results = await axe(container)
     expect(results).toHaveNoViolations()

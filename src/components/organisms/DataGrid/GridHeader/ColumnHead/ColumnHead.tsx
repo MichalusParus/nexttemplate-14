@@ -8,7 +8,7 @@ import { Span } from '@/components/atoms/typography/Span'
 import { SearchInput } from '@/components/molecules/form/inputs/SearchField/SearchInput'
 import { Menu } from '@/components/molecules/popovers/Menu'
 import { Tooltip } from '@/components/molecules/popovers/Tooltip'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { FilterDef, SortingDef } from '@/utils/hooks/useFilterData'
 import { cn } from '@/utils/utils'
 

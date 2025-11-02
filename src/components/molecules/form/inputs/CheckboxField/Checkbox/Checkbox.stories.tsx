@@ -47,15 +47,6 @@ export const PrimaryDefault: Story = {
   render: args => <CheckboxWithHooks {...args} />,
 }
 
-export const Switch: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    name: 'checkboxStory2',
-    variant: 'switch',
-  },
-  render: args => <CheckboxWithHooks {...args} />,
-}
-
 export const OptionsWithContent: Story = {
   args: {
     ...PrimaryDefault.args,

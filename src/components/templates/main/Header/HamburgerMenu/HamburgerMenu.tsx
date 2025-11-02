@@ -17,6 +17,7 @@ export type HamburgerMenuProps = {
 /** Hamburger Main Menu component, build with drawer. USE CLIENT */
 export const HamburgerMenu = ({ className, navLinks }: HamburgerMenuProps) => {
   const navRef = useRef<HTMLDivElement | null>(null)
+  const anchorRef = useRef<HTMLButtonElement | null>(null)
   const [isOpen, setIsOpen] = useState(false)
 
   const handleClick = useCallback(() => {
@@ -47,6 +48,7 @@ export const HamburgerMenu = ({ className, navLinks }: HamburgerMenuProps) => {
         aria-haspopup="menu"
         aria-controls="hamburgerMainMenu"
         aria-owns="hamburgerMainMenu"
+        ref={anchorRef}
         onClick={() => setIsOpen(prev => !prev)}
       >
         <HamburgerIcon className="h-9 w-9" isOpen={isOpen} />
@@ -55,6 +57,7 @@ export const HamburgerMenu = ({ className, navLinks }: HamburgerMenuProps) => {
         className="fixed md:hidden"
         name="hamburgerMainMenu"
         isOpen={isOpen}
+        anchorRef={anchorRef}
         offsetY="top-smHeaderHeight bottom-0"
         width="w-2/3"
         paperProps={{ className: 'dark:border-primary-950 rounded-none' }}

@@ -3,10 +3,10 @@ import { forwardRef } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { Checkbox, CheckboxProps } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-export type MenuItemCheckboxProps = Omit<ButtonProps, 'variant' | 'color' | 'size'> &
+export type MenuItemCheckboxProps = Omit<ButtonProps, 'variant' | 'color' | 'size' | 'type'> &
   StyleProps & {
     /** for passing custom tailwind classes */
     className?: string
@@ -25,6 +25,7 @@ export const MenuItemCheckbox = forwardRef<HTMLButtonElement | null, MenuItemChe
       variant = 'outlined',
       color = 'primary',
       size = 'md',
+      disabled,
       checkboxProps = {},
       onClick,
       children,
@@ -38,51 +39,40 @@ export const MenuItemCheckbox = forwardRef<HTMLButtonElement | null, MenuItemChe
       <li role="presentation">
         <Button
           className={cn(
-            'w-full rounded-none border-transparent dark:border-transparent',
-            isChecked && 'selected',
+            'w-full justify-start gap-0 rounded-none border-transparent dark:border-transparent',
             className,
           )}
           variant={variant}
           color={color}
           size={size}
+          startIcon={
+            <Checkbox
+              className={checkboxClassName}
+              name=""
+              label=""
+              variant={variant}
+              color={color}
+              size={size}
+              isChecked={isChecked}
+              fake
+              disabled={disabled}
+              onChange={() => {}}
+              aria-hidden
+              {...restCheckboxProps}
+            />
+          }
           hideShadow
-          aria-selected={isChecked}
+          disabled={disabled}
           ref={ref}
           onClick={onClick}
+          role="menuitemcheckbox"
+          aria-checked={isChecked}
+          tabIndex={-1}
           {...rest}
         >
-          <Checkbox
-            className={cn('mr-4', checkboxClassName)}
-            name=""
-            label=""
-            variant={variant}
-            color={color}
-            size={size}
-            isChecked={isChecked}
-            fake
-            onChange={() => {}}
-            {...restCheckboxProps}
-          />
           {children}
         </Button>
       </li>
-      // <li
-      //   className={buttonVariant[variant === 'switch' ? 'text' : variant][color]}
-      //   role="presentation"
-      // >
-      //   <Checkbox
-      //     className={cn(
-      //       'MenuItemCheckboxWrap',
-      //       'm-0 font-semibold',
-      //       buttonSize[rest.size || 'md'],
-      //       className,
-      //     )}
-      //     variant={variant}
-      //     role="menuitemcheckbox"
-      //     ref={ref}
-      //     {...rest}
-      //   />
-      // </li>
     )
   },
 )

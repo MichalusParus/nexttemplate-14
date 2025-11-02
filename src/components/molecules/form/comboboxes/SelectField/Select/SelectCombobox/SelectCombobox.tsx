@@ -6,7 +6,7 @@ import { ChipProps } from '@/components/atoms/common/Chip'
 import { ChevronIcon } from '@/components/atoms/icons'
 import { Ellipsis } from '@/components/atoms/typography/Ellipsis'
 import { ClearButton } from '@/components/molecules/form/comboboxes/SelectField/Select/ClearButton'
-import { InputProps, OptionType, StyleProps } from '@/components/types'
+import { InputProps, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { ValueChips } from '../ValueChips'

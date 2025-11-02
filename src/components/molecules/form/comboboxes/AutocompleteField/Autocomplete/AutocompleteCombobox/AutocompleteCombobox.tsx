@@ -13,7 +13,7 @@ import { ChevronIcon } from '@/components/atoms/icons'
 import { Ellipsis } from '@/components/atoms/typography/Ellipsis'
 import { ClearButton } from '@/components/molecules/form/comboboxes/SelectField/Select/ClearButton'
 import { TextInput, TextInputProps } from '@/components/molecules/form/inputs/TextField/TextInput'
-import { InputProps, NativeDivProps, OptionType, StyleProps } from '@/components/types'
+import { InputProps, NativeDivProps, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { ValueChips } from '../../../SelectField/Select/ValueChips'
@@ -60,7 +60,7 @@ function AutocompleteComboboxComponent<T = string>(
     multiValue,
     selectedOptions,
     inputValue,
-    displayChips,
+    displayChips = false,
     variant = 'outlined',
     color = 'primary',
     size = 'md',
@@ -145,7 +145,7 @@ function AutocompleteComboboxComponent<T = string>(
         <TextInput
           id={name}
           className={cn(
-            'AutocompleteCombobox',
+            'AutocompleteInput',
             'w-auto min-w-[30%] shrink border-none',
             inputClassName,
           )}

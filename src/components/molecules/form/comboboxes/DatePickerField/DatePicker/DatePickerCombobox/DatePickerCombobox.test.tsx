@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
 import { axe, toHaveNoViolations } from 'jest-axe'
-import { createRef } from 'react'
+import { act, createRef } from 'react'
 
 import { fireEvent, render, screen } from '../../../../../../../../.jest/customRender'
 import { defaultTestDate } from '../DatePicker.test'
@@ -70,7 +70,7 @@ describe('DatePickerCombobox', () => {
     expect(comboboxRole).toHaveTextContent('4.3.2023')
   })
 
-  it('displayChips', () => {
+  it('displayChips', async () => {
     const spy = jest.fn()
     render(
       <DatePickerCombobox
@@ -90,7 +90,10 @@ describe('DatePickerCombobox', () => {
     expect(chipTestIds[1]).toHaveTextContent('5.3.2023')
     expect(clearTestIds).toHaveLength(2)
 
-    fireEvent.click(clearTestIds[0])
+    await act(async () => {
+      fireEvent.click(clearTestIds[0])
+    })
+
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith(defaultTestDate)
   })
@@ -127,7 +130,7 @@ describe('DatePickerCombobox', () => {
     expect(chipTestIds[0]).toHaveClass('chipClass')
   })
 
-  it('onClear', () => {
+  it('onClear', async () => {
     const spy = jest.fn()
     render(
       <DatePickerCombobox
@@ -142,11 +145,15 @@ describe('DatePickerCombobox', () => {
     const clearTestId = screen.getByTestId('ClearButton')
 
     expect(clearTestId).toBeInTheDocument()
-    fireEvent.click(clearTestId)
+
+    await act(async () => {
+      fireEvent.click(clearTestId)
+    })
+
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it('handleOpen', () => {
+  it('handleOpen', async () => {
     const spy = jest.fn()
     render(
       <DatePickerCombobox
@@ -158,7 +165,10 @@ describe('DatePickerCombobox', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     expect(spy).toHaveBeenCalledTimes(1)
   })
 

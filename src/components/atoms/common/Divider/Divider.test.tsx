@@ -46,6 +46,14 @@ describe('Divider', () => {
     expect(dividerTestID).toHaveLength(2)
   })
 
+  it('spanProps', () => {
+    render(<Divider label="label" spanProps={{ className: 'spanClass' }} />)
+    const labelTestId = screen.getByTestId('DividerSpan')
+
+    expect(labelTestId).toBeInTheDocument()
+    expect(labelTestId).toHaveClass('spanClass')
+  })
+
   it('ref', () => {
     const ref = createRef<HTMLDivElement>()
     render(<Divider ref={ref} className="className" />)

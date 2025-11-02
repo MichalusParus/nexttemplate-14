@@ -3,7 +3,7 @@ import { get } from 'lodash'
 import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
-import { FormStyleContext } from '../../Form/Form'
+import { FormStyleContext } from '../../forms/Form/Form'
 import { Checkbox, CheckboxProps } from './Checkbox/Checkbox'
 
 export type CheckboxFieldProps = Omit<CheckboxProps, 'value' | 'error' | 'isChecked' | 'onChange'> &

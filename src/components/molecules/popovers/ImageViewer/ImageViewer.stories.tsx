@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
 
 import { Image } from '@/components/atoms/common/Image'
 
-import { ImageViewer } from '.'
+import { ImageViewer, ImageViewerProps } from '.'
 
 const meta: Meta<typeof ImageViewer> = {
   title: 'Molecules/Popovers/ImageViewer',
@@ -25,6 +26,15 @@ const meta: Meta<typeof ImageViewer> = {
   ],
 }
 
+const ImageViewerWithHooks = (args: ImageViewerProps) => {
+  const [isOpen, setIsOpen] = useState(false)
+  return (
+    <ImageViewer {...args} isOpen={isOpen} setIsOpen={setIsOpen}>
+      {args.children}
+    </ImageViewer>
+  )
+}
+
 export default meta
 type Story = StoryObj<typeof ImageViewer>
 
@@ -32,6 +42,9 @@ export const Default: Story = {
   args: {
     className: '',
     name: 'Example img',
+    label: 'Example img',
+    isOpen: undefined,
+    setIsOpen: undefined,
     children: (
       <Image
         src="https://picsum.photos/2000/1250"
@@ -41,4 +54,12 @@ export const Default: Story = {
       />
     ),
   },
+}
+
+export const Controlled: Story = {
+  args: {
+    ...Default.args,
+    isOpen: false,
+  },
+  render: args => <ImageViewerWithHooks {...args} />,
 }

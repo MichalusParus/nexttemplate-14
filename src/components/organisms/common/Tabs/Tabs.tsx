@@ -1,87 +1,98 @@
 'use client'
 import { usePathname, useRouter } from 'next/navigation'
-import { forwardRef, PropsWithChildren, useCallback } from 'react'
+import { ForwardedRef, forwardRef, PropsWithChildren, useCallback } from 'react'
 
 import { cn } from '@/utils/utils'
 
-import { DropdownTabList, DropdownTabListProps } from './DropdownTabList'
 import { TabList } from './TabList'
+import { TabListSelect, TabListSelectProps } from './TabListSelect'
 
-export type TabsProps = Omit<DropdownTabListProps, 'selectedTab' | 'onTabChange'> & {
+export type TabsProps<T = string> = Omit<TabListSelectProps<T>, 'selectedTab' | 'onTabChange'> & {
   /** current selected tab value */
-  selectedValue: string
-  /** optional for passing onTabChange function */
-  onTabChange?: DropdownTabListProps['onTabChange']
+  selectedValue: T
+  /** optional for passing onTabChange function for non url query navigation */
+  onTabChange?: TabListSelectProps<T>['onTabChange']
 }
 
 /** Tabs component for switching panels with content. Link, Button and Disclosure props supported. */
-export const Tabs = forwardRef<HTMLDivElement | null, PropsWithChildren<TabsProps>>(
-  (
-    {
-      className,
-      name = 'tab',
-      tabs,
-      selectedValue,
-      variant = 'text',
-      color = 'primary',
-      size = 'inline',
-      fullWidth,
-      buttonProps,
-      tabButtonProps,
-      dropdownProps,
-      onTabChange,
-      children,
+function TabsComponent<T = string>(
+  {
+    className,
+    name = 'tab',
+    tabs,
+    selectedValue,
+    variant = 'text',
+    color = 'primary',
+    size = 'md',
+    fullWidth,
+    tabButtonProps = {},
+    selectProps = {},
+    onTabChange,
+    children,
+  }: PropsWithChildren<TabsProps<T>>,
+  ref: ForwardedRef<HTMLDivElement>,
+) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const selectedTab = tabs.find(tab => tab.value === selectedValue) || tabs[0]
+  const visibleTabs = tabs.filter(tab => !tab.isHidden)
+
+  const handleTabChange = useCallback(
+    (tabValue: T) => {
+      if (onTabChange) onTabChange(tabValue)
+      else {
+        const tabParam = new URLSearchParams({ [name]: String(tabValue) }).toString()
+        router.push(`${pathname}?${tabParam}`)
+      }
     },
-    ref,
-  ) => {
-    const router = useRouter()
-    const pathname = usePathname()
-    const selectedTab = tabs.find(tab => tab.value === selectedValue) || tabs[0]
-    const visibleTabs = tabs.filter(tab => !tab.isHidden)
+    [router, name, pathname, onTabChange],
+  )
 
-    const handleTabChange = useCallback(
-      (tabValue: string) => {
-        if (onTabChange) onTabChange(tabValue)
-        else {
-          const tabParam = new URLSearchParams({ [name]: tabValue }).toString()
-          router.push(`${pathname}?${tabParam}`)
-        }
-      },
-      [router, name, pathname, onTabChange],
-    )
+  const tablistProps = {
+    name,
+    selectedTab,
+    tabs: visibleTabs,
+    variant,
+    color,
+    size,
+    tabButtonProps,
+    onTabChange: handleTabChange,
+    children,
+  }
 
-    const tablistProps = {
-      name,
-      selectedTab,
-      tabs: visibleTabs,
-      variant,
-      color,
-      size,
-      tabButtonProps,
-      onTabChange: handleTabChange,
-      children,
-    }
-
-    return (
-      <div className={cn('TabsWrap', 'relative', className)} ref={ref} data-testid="Tabs">
-        <TabList className={cn('hidden md:block')} fullWidth={fullWidth} {...tablistProps} />
-        <DropdownTabList
-          className={'md:hidden'}
-          buttonProps={buttonProps}
-          dropdownProps={dropdownProps}
-          {...tablistProps}
-        />
+  return (
+    <div
+      className={cn('TabsWrap', 'relative flex flex-col items-start gap-4', className)}
+      ref={ref}
+      data-testid="Tabs"
+    >
+      <TabList<T> className={cn('hidden md:block')} fullWidth={fullWidth} {...tablistProps} />
+      <TabListSelect<T> className={'md:hidden'} selectProps={selectProps} {...tablistProps} />
+      {tabs.map(tab => (
         <div
-          id={`${name}-tabpanel`}
+          id={`${tab.value}-tabpanel`}
+          key={`${tab.value}-tabpanel`}
           className={cn('TabPanel', 'w-full')}
           role="tabpanel"
-          aria-labelledby={`${name}-${selectedTab.value}-tab`}
+          aria-labelledby={`${name}-${tab.value}-tab`}
+          hidden={tab.value !== selectedTab.value}
         >
-          {selectedTab.component}
+          {tab.component}
         </div>
-      </div>
-    )
-  },
-)
+      ))}
+    </div>
+  )
+}
+
+type TabsComponentType = {
+  <T = string>(
+    props: PropsWithChildren<TabsProps<T>> & {
+      ref?: ForwardedRef<HTMLDivElement>
+    },
+  ): React.ReactElement | null
+  displayName?: string
+}
+
+export const Tabs = forwardRef(TabsComponent) as TabsComponentType
 
 Tabs.displayName = 'Tabs'

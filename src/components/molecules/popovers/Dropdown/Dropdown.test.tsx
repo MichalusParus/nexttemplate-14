@@ -8,16 +8,15 @@ import { Dropdown } from '.'
 
 expect.extend(toHaveNoViolations)
 
-// modal,
-
 describe('Dropdown', () => {
+  const anchorRef = createRef<HTMLDivElement>()
+
   it('default', () => {
-    const ref = createRef<HTMLDivElement>()
     render(
       <Dropdown
         className="className"
         isOpen
-        parentRef={ref}
+        anchorRef={anchorRef}
         width={500}
         height="max-h-[40vh]"
         padding="p-8"
@@ -36,16 +35,14 @@ describe('Dropdown', () => {
     expect(dropdownTestId).toHaveStyle('width: 500px')
     expect(contentWrapTestId).toHaveClass('max-h-[40vh]')
     expect(dropdownTestId).toHaveTextContent('Children')
-    expect(dropdownTestId).toHaveAttribute('aria-hidden', 'false')
     expect(paperTestId).toBeInTheDocument()
     expect(paperTestId).toHaveClass('p-8')
     expect(scrollShadowTestId).toBeInTheDocument()
   })
 
   it('closed', () => {
-    const ref = createRef<HTMLDivElement>()
     render(
-      <Dropdown isOpen={false} parentRef={ref} onClose={() => {}}>
+      <Dropdown isOpen={false} anchorRef={anchorRef} onClose={() => {}}>
         Children
       </Dropdown>,
     )
@@ -54,13 +51,30 @@ describe('Dropdown', () => {
     expect(dropdownQuery).toBeNull()
   })
 
+  it('modal', () => {
+    const spy = jest.fn()
+    render(
+      <Dropdown isOpen anchorRef={anchorRef} modal onClose={spy}>
+        Children
+      </Dropdown>,
+    )
+    const dialogRole = screen.getByRole('dialog')
+    const overlayTestId = screen.getByTestId('Overlay')
+
+    expect(dialogRole).toBeInTheDocument()
+    expect(dialogRole).toHaveAttribute('aria-modal', 'true')
+    expect(overlayTestId).toBeInTheDocument()
+
+    fireEvent.click(overlayTestId)
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
   it('portalContainerId', () => {
-    const ref = createRef<HTMLDivElement>()
     const portalContainer = document.createElement('div')
     portalContainer.setAttribute('id', 'portalContainer')
     document.body.appendChild(portalContainer)
     render(
-      <Dropdown isOpen parentRef={ref} portalContainerId="portalContainer" onClose={() => {}}>
+      <Dropdown isOpen anchorRef={anchorRef} portalContainerId="portalContainer" onClose={() => {}}>
         Children
       </Dropdown>,
     )
@@ -71,24 +85,27 @@ describe('Dropdown', () => {
 
   it('onClose', () => {
     const spy = jest.fn()
-    const ref = createRef<HTMLDivElement>()
     render(
-      <Dropdown isOpen modal parentRef={ref} onClose={spy}>
-        Children
-      </Dropdown>,
+      <>
+        <Dropdown isOpen anchorRef={anchorRef} onClose={spy}>
+          <button data-testid="option" />
+        </Dropdown>
+        <button data-testid="next-button" />
+      </>,
     )
-    const overlayTestId = screen.getByTestId('Overlay')
+    const optionTestId = screen.getByTestId('option')
+    const nextButtonTestId = screen.getByTestId('next-button')
 
-    fireEvent.click(overlayTestId)
+    optionTestId.focus()
+    nextButtonTestId.focus()
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
   it('paperProps/scrollShadowProps', () => {
-    const ref = createRef<HTMLDivElement>()
     render(
       <Dropdown
         isOpen
-        parentRef={ref}
+        anchorRef={anchorRef}
         paperProps={{ className: 'paperClass' }}
         scrollShadowProps={{ className: 'scrollShadowClass' }}
         onClose={() => {}}
@@ -106,7 +123,7 @@ describe('Dropdown', () => {
   it('ref', () => {
     const ref = createRef<HTMLDivElement>()
     render(
-      <Dropdown isOpen parentRef={ref} onClose={() => {}} ref={ref}>
+      <Dropdown isOpen anchorRef={anchorRef} onClose={() => {}} ref={ref}>
         Children
       </Dropdown>,
     )
@@ -122,9 +139,8 @@ describe('Dropdown', () => {
   })
 
   it('axe', async () => {
-    const ref = createRef<HTMLDivElement>()
     const { container } = render(
-      <Dropdown isOpen parentRef={ref} onClose={() => {}}>
+      <Dropdown isOpen anchorRef={anchorRef} onClose={() => {}}>
         Children
       </Dropdown>,
     )

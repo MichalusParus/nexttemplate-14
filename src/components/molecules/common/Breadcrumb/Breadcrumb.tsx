@@ -2,7 +2,7 @@ import { forwardRef, Fragment } from 'react'
 
 import { Link } from '@/components/atoms/common/Link'
 import { Span } from '@/components/atoms/typography/Span'
-import { NativeDivProps, StyleProps } from '@/components/types'
+import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 export type BreadcrumbProps = NativeDivProps &

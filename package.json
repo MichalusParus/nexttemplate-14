@@ -9,7 +9,7 @@
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
     "lint": "next lint",
     "lint:fix": "eslint --fix --ext .ts,.tsx .",
-    "test": "jest",
+    "test": "jest --watch",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -28,6 +28,7 @@
     "storybook": "^8.2.5",
     "tailwind-merge": "^2.3.0",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "uuid": "^11.1.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -68,6 +69,7 @@
     "postcss": "^8",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.6",
+    "resize-observer-polyfill": "^1.5.1",
     "tailwindcss": "^3.3.0",
     "ts-jest": "^29.1.2",
     "typescript": "^5",

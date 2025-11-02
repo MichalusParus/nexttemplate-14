@@ -20,7 +20,8 @@ import { ListBox } from '@/components/atoms/common/ListBox'
 import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
-import { InputProps, OptionType, StyleProps } from '@/components/types'
+import { useGroupedOptions } from '@/components/utils/hooks/useGroupedOptions'
+import { InputProps, OptionGroupType, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { AutocompleteCombobox, AutocompleteComboboxProps } from './AutocompleteCombobox'
@@ -34,7 +35,7 @@ export type AutocompleteProps<T = string> = Omit<
     /** position of dropdown */
     placement?: Placement
     /** options for select to choose from */
-    options: OptionType<T>[]
+    options: OptionType<T>[] | OptionGroupType<T>[]
     /** loading state for options fetching, loading is delayed for 1 second to prevent flickering */
     isLoading?: boolean
     /** for passing aditional props to dropdown */
@@ -82,32 +83,33 @@ function AutocompleteComponent<T = string>(
   const componentRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => componentRef.current)
+  const { isGrouped, flatOptions } = useGroupedOptions<OptionType<T>>(options)
   const [isOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState<string>('')
-  const sortedOptions = placement === 'top' ? options.reverse() : options
-  const selectedLabel = options.find(option => isEqual(option.value, value))?.label || ''
+  const selectedLabel = flatOptions.find(option => isEqual(option.value, value))?.label || ''
 
   const handleClose = useCallback(() => {
-    const selectedLabel = options.find(option => isEqual(option.value, value))?.label
+    const selectedLabel = flatOptions.find(option => isEqual(option.value, value))?.label
     if (isOpen && inputValue !== '' && inputValue !== selectedLabel && !multiValue) {
       setInputValue(selectedLabel || '')
       onInputChange(selectedLabel || '')
     }
     setIsOpen(prev => !prev)
-  }, [isOpen, options, value, inputValue, multiValue, onInputChange, setIsOpen])
+  }, [isOpen, flatOptions, value, inputValue, multiValue, onInputChange, setIsOpen])
 
   const handleOnChange = useCallback(
     (target: T, e?: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => {
       e?.stopPropagation()
-      const selectedOption = options.find(({ value }) => isEqual(value, target)) || options[0]
-      onChange(selectedOption.value)
+      onChange(target)
       if (!multiValue) {
+        const selectedOption =
+          flatOptions.find(({ value }) => isEqual(value, target)) || flatOptions[0]
         setInputValue(selectedOption.label)
         onInputChange(selectedOption.label)
         setIsOpen(false)
       }
     },
-    [options, multiValue, onChange, setIsOpen, setInputValue, onInputChange],
+    [flatOptions, multiValue, onChange, setIsOpen, setInputValue, onInputChange],
   )
 
   const handleInputChange = useCallback(
@@ -172,11 +174,10 @@ function AutocompleteComponent<T = string>(
       />
       <Dropdown
         isOpen={isOpen}
-        parentRef={componentRef}
+        anchorRef={componentRef}
         placement={placement}
         variant={variant}
         color={color}
-        modal
         onClose={handleClose}
         scrollShadowProps={{ disableHorizontal: true }}
         ref={dropdownRef}
@@ -185,7 +186,8 @@ function AutocompleteComponent<T = string>(
         <ListBox<T>
           name={`${name}-listbox`}
           value={multiValue ? multiValue : [value]}
-          options={sortedOptions}
+          options={options}
+          isGrouped={isGrouped}
           variant={variant}
           color={color}
           size={size}

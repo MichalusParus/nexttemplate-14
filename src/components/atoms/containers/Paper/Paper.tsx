@@ -1,6 +1,6 @@
 import { forwardRef, PropsWithChildren, ReactNode } from 'react'
 
-import { NativeDivProps, StyleProps } from '@/components/types'
+import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { paperVariant } from './Paper.style'

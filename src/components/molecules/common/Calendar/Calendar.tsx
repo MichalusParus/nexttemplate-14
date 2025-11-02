@@ -18,7 +18,7 @@ import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import { Paper } from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { calendarSize } from './Calendar.styles'

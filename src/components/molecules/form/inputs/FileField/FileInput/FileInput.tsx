@@ -7,7 +7,7 @@ import { buttonIconSize as inputIconSize } from '@/components/atoms/common/Butto
 import { SignOutIcon } from '@/components/atoms/icons'
 import { Span } from '@/components/atoms/typography/Span'
 import { useToast } from '@/components/molecules/popovers/ToastProvider'
-import { InputProps, NativeInputProps } from '@/components/types'
+import { InputProps, NativeInputProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import {

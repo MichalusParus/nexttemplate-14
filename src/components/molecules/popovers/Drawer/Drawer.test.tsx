@@ -9,6 +9,7 @@ import { Drawer } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('Drawer', () => {
+  const anchorRef = createRef<HTMLButtonElement>()
   it('default', () => {
     render(
       <Drawer
@@ -19,26 +20,26 @@ describe('Drawer', () => {
         padding="p-8"
         offsetY="top-0 bottom-0"
         isOpen={true}
+        anchorRef={anchorRef}
         onClose={() => {}}
       >
         Children
       </Drawer>,
     )
-    const drawerRole = screen.getByRole('dialog')
+    const drawerTestId = screen.getByTestId('Drawer')
     const paperTestId = screen.getByTestId('Paper')
     const scrollShadowTestId = screen.getByTestId('ScrollShadow')
 
-    expect(drawerRole).toBeInTheDocument()
-    expect(drawerRole).toHaveClass('className')
-    expect(drawerRole).toHaveClass('w-1/3')
-    expect(drawerRole).toHaveClass('top-0 bottom-0')
-    expect(drawerRole).toHaveClass('left-0 opacity-100')
-    expect(drawerRole).toHaveTextContent('Children')
-    expect(drawerRole.tagName).toBe('ASIDE')
-    expect(drawerRole).toHaveAttribute('id', 'drawerTest')
-    expect(drawerRole).toHaveAttribute('aria-label', 'drawerTest')
-    expect(drawerRole).toHaveAttribute('aria-modal', 'true')
-    expect(drawerRole).toHaveAttribute('aria-hidden', 'false')
+    expect(drawerTestId).toBeInTheDocument()
+    expect(drawerTestId).toHaveClass('className')
+    expect(drawerTestId).toHaveClass('w-1/3')
+    expect(drawerTestId).toHaveClass('top-0 bottom-0')
+    expect(drawerTestId).toHaveClass('left-0 opacity-100')
+    expect(drawerTestId).toHaveTextContent('Children')
+    expect(drawerTestId.tagName).toBe('ASIDE')
+    expect(drawerTestId).toHaveAttribute('id', 'drawerTest')
+    expect(drawerTestId).toHaveAttribute('aria-label', 'drawerTest')
+    expect(drawerTestId).toHaveAttribute('aria-modal', 'false')
     expect(paperTestId).toBeInTheDocument()
     expect(paperTestId).toHaveClass('p-8')
     expect(scrollShadowTestId).toBeInTheDocument()
@@ -46,24 +47,55 @@ describe('Drawer', () => {
 
   it('closed', () => {
     render(
-      <Drawer name="drawerTest" isOpen={false} onClose={() => {}}>
+      <Drawer name="drawerTest" isOpen={false} anchorRef={anchorRef} onClose={() => {}}>
         Children
       </Drawer>,
     )
-    const drawerQuery = screen.queryByRole('dialog')
+    const drawerQuery = screen.queryByTestId('Drawer')
 
     expect(drawerQuery).toBeNull()
   })
 
-  it('right', () => {
+  it('modal', () => {
+    const spy = jest.fn()
     render(
-      <Drawer name="drawerTest" isOpen={true} placement="right" onClose={() => {}}>
+      <Drawer
+        name="drawerTest"
+        isOpen={true}
+        anchorRef={anchorRef}
+        modal
+        placement="right"
+        onClose={spy}
+      >
         Children
       </Drawer>,
     )
-    const drawerRole = screen.getByRole('dialog')
+    const dialogRole = screen.getByRole('dialog')
+    const overlayTestId = screen.getByTestId('Overlay')
 
-    expect(drawerRole).toHaveClass('right-0')
+    expect(dialogRole).toBeInTheDocument()
+    expect(dialogRole).toHaveAttribute('aria-modal', 'true')
+    expect(overlayTestId).toBeInTheDocument()
+
+    fireEvent.click(overlayTestId)
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('right', () => {
+    render(
+      <Drawer
+        name="drawerTest"
+        isOpen={true}
+        anchorRef={anchorRef}
+        placement="right"
+        onClose={() => {}}
+      >
+        Children
+      </Drawer>,
+    )
+    const drawerTestId = screen.getByTestId('Drawer')
+
+    expect(drawerTestId).toHaveClass('right-0')
   })
 
   it('portalContainerId', () => {
@@ -74,27 +106,33 @@ describe('Drawer', () => {
       <Drawer
         name="drawerTest"
         isOpen={true}
+        anchorRef={anchorRef}
         portalContainerId="portalContainer"
         onClose={() => {}}
       >
         Children
       </Drawer>,
     )
-    const drawerRole = screen.getByRole('dialog')
+    const drawerTestId = screen.getByTestId('Drawer')
 
-    expect(drawerRole.parentElement).toBe(portalContainer)
+    expect(drawerTestId.parentElement).toBe(portalContainer)
   })
 
   it('onClose', () => {
     const spy = jest.fn()
     render(
-      <Drawer name="drawerTest" isOpen={true} onClose={spy}>
-        Children
-      </Drawer>,
+      <>
+        <Drawer name="drawerTest" isOpen={true} anchorRef={anchorRef} onClose={spy}>
+          <button data-testid="option" />
+        </Drawer>
+        <button data-testid="next-button" />
+      </>,
     )
-    const overlayTestId = screen.getByTestId('Overlay')
+    const optionTestId = screen.getByTestId('option')
+    const nextButtonTestId = screen.getByTestId('next-button')
 
-    fireEvent.click(overlayTestId)
+    optionTestId.focus()
+    nextButtonTestId.focus()
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
@@ -103,6 +141,7 @@ describe('Drawer', () => {
       <Drawer
         name="drawerTest"
         isOpen={true}
+        anchorRef={anchorRef}
         paperProps={{ className: 'paperClass' }}
         scrollShadowProps={{ className: 'scrollShadowClass' }}
         onClose={() => {}}
@@ -120,7 +159,14 @@ describe('Drawer', () => {
   it('ref', () => {
     const ref = createRef<HTMLDivElement>()
     render(
-      <Drawer name="drawerTest" label="drawerTest" isOpen={true} ref={ref} onClose={() => {}}>
+      <Drawer
+        name="drawerTest"
+        label="drawerTest"
+        isOpen={true}
+        anchorRef={anchorRef}
+        ref={ref}
+        onClose={() => {}}
+      >
         Children
       </Drawer>,
     )
@@ -137,7 +183,7 @@ describe('Drawer', () => {
 
   it('axe', async () => {
     const { container } = render(
-      <Drawer name="drawerTest" isOpen={true} onClose={() => {}}>
+      <Drawer name="drawerTest" isOpen={true} anchorRef={anchorRef} onClose={() => {}}>
         Children
       </Drawer>,
     )

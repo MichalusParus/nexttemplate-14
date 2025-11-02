@@ -2,11 +2,12 @@ import '@testing-library/jest-dom'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { act } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 
 import { fireEvent, render, screen, waitFor } from '../../../../../../.jest/customRender'
-import { Form } from '../../Form'
+import { Form } from '../../forms/Form'
 import { RangeField } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -64,16 +65,18 @@ describe('RangeField', () => {
     expect(alertQuery).toBeNull()
   })
 
-  it('value', () => {
+  it('value', async () => {
     render(<FieldWithHooks />)
     const inputRole = screen.getByRole('slider')
 
     expect(inputRole).toHaveAttribute('value', '50')
 
-    fireEvent.change(inputRole, {
-      target: {
-        value: '100',
-      },
+    await act(async () => {
+      fireEvent.change(inputRole, {
+        target: {
+          value: '100',
+        },
+      })
     })
 
     expect(inputRole).toHaveAttribute('value', '100')
@@ -93,12 +96,18 @@ describe('RangeField', () => {
     render(<FieldWithHooks />)
     const inputRole = screen.getByRole('slider')
     const alertRole = screen.getByTestId('Alert')
-    fireEvent.change(inputRole, {
-      target: {
-        value: 0,
-      },
+
+    await act(async () => {
+      fireEvent.change(inputRole, {
+        target: {
+          value: 0,
+        },
+      })
     })
-    fireEvent.submit(screen.getByTestId('submitButton'))
+
+    await act(async () => {
+      fireEvent.submit(screen.getByTestId('submitButton'))
+    })
 
     await waitFor(() => {
       expect(alertRole).toBeInTheDocument()
@@ -109,15 +118,17 @@ describe('RangeField', () => {
     })
   })
 
-  it('onChange', () => {
+  it('onChange', async () => {
     const spy = jest.fn()
     render(<FieldWithHooks onChange={spy} />)
     const inputRole = screen.getByRole('slider')
 
-    fireEvent.change(inputRole, {
-      target: {
-        value: '100',
-      },
+    await act(async () => {
+      fireEvent.change(inputRole, {
+        target: {
+          value: '100',
+        },
+      })
     })
 
     expect(spy).toHaveBeenCalled()
@@ -131,11 +142,14 @@ describe('RangeField', () => {
     expect(labelWrapTestId).toHaveClass('className')
   })
 
-  it('onSubmit', () => {
+  it('onSubmit', async () => {
     const spy = jest.fn()
     render(<FieldWithHooks />)
     screen.getByTestId('Form').onsubmit = spy
-    fireEvent.click(screen.getByTestId('submitButton'))
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('submitButton'))
+    })
     // TODO beenCalledWith, spy return native event and not values
     expect(spy).toHaveBeenCalled()
   })

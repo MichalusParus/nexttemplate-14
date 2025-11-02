@@ -2,10 +2,15 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { PropsWithChildren, useState, useTransition } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
-import { useFilterData } from '@/utils/hooks/useFilterData'
+import { useGroupedOptions } from '@/components/utils/hooks/useGroupedOptions'
+import { OptionGroupType, OptionType } from '@/components/utils/types'
 import { debounce } from '@/utils/utils'
 
-import { getOptions, optionsWithContent } from '../../../../../../../.storybook/helpers'
+import {
+  getGroupedOptions,
+  getOptions,
+  optionsWithContent,
+} from '../../../../../../../.storybook/helpers'
 import { Autocomplete, AutocompleteProps } from './Autocomplete'
 
 const meta: Meta<typeof Autocomplete> = {
@@ -72,16 +77,28 @@ const AutocompleteWithFetch = (args: PropsWithChildren<AutocompleteProps>) => {
 }
 
 const ClientAutocomplete = (args: PropsWithChildren<AutocompleteProps>) => {
+  const { isGrouped } = useGroupedOptions(args.options)
   const [value, setValue] = useState<string>('')
-  const { filteredData, setFilter } = useFilterData(args.options)
+  const [options, setOptions] = useState<OptionType[] | OptionGroupType[]>(args.options)
 
   return (
     <div className={'flex h-80 items-center justify-center'}>
       <Autocomplete
         {...args}
-        options={filteredData}
+        options={options}
         value={value}
-        onInputChange={(value: string) => setFilter({ label: value })}
+        onInputChange={(value: string) =>
+          setOptions(() => {
+            if (isGrouped) {
+              return (args.options as OptionGroupType[]).map(group => ({
+                ...group,
+                options: group.groupedOptions.filter(option => option.label.startsWith(value)),
+              }))
+            } else {
+              return (args.options as OptionType[]).filter(option => option.label.startsWith(value))
+            }
+          })
+        }
         onChange={setValue}
       />
     </div>
@@ -157,10 +174,20 @@ export const OptionsWithContent: Story = {
   render: args => <ClientAutocomplete {...args} />,
 }
 
-export const OnClear: Story = {
+export const GroupedOptions: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'autocompleteStory5',
+    options: getGroupedOptions('autocompleteStory5'),
+    displayChips: true,
+  },
+  render: args => <ClientAutocomplete {...args} />,
+}
+
+export const OnClear: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'autocompleteStory6',
     onClear: () => console.log('clear'),
   },
   render: args => <AutocompleteWithFetch {...args} />,
@@ -170,7 +197,7 @@ export const IsLoading: Story = {
   args: {
     ...PrimaryDefault.args,
     isLoading: true,
-    name: 'autocompleteStory6',
+    name: 'autocompleteStory7',
   },
   render: args => <AutocompleteWithFetch {...args} />,
 }
@@ -178,7 +205,7 @@ export const IsLoading: Story = {
 export const CreateNew: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'autocompleteStory7',
+    name: 'autocompleteStory8',
     children: (
       <li>
         <Button
@@ -200,7 +227,7 @@ export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
     error: 'error',
-    name: 'autocompleteStory8',
+    name: 'autocompleteStory9',
   },
   render: args => <AutocompleteWithFetch {...args} />,
 }

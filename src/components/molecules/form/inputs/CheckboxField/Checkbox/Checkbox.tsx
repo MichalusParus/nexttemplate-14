@@ -2,7 +2,7 @@
 import { forwardRef, ReactNode } from 'react'
 
 import { CheckIcon } from '@/components/atoms/icons'
-import { FieldProps, InputProps, NativeInputProps, StyleProps } from '@/components/types'
+import { FieldProps, InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { inputErrorClass } from '../../TextField/TextInput/TextInput.style'
@@ -14,20 +14,14 @@ import {
   checkVariant,
   disabledVariant,
   inputWrapClass,
-  switchClass,
-  switchLeft,
-  switchSize,
-  thumbClass,
 } from './Checkbox.style'
 
 export type CheckboxProps = NativeInputProps &
   Pick<FieldProps, 'label'> &
   InputProps &
-  Omit<StyleProps, 'variant'> & {
+  StyleProps & {
     /** value of input */
     value?: string
-    /** style variant of component */
-    variant?: StyleProps['variant'] | 'switch'
     /** optional element to display in label */
     content?: ReactNode
     /** optional checked status for Group use */
@@ -60,54 +54,6 @@ export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
     ref,
   ) => {
     const checkVisibility = isChecked || disabled ? 'opacity-100' : 'opacity-0'
-    const thumbPosition = isChecked || disabled ? switchLeft[size] : 'left-0'
-
-    if (variant === 'switch') {
-      return (
-        <div
-          className={cn('SwitchWrap', 'flex items-start', checkboxMargin[size], className)}
-          data-testid="SwitchWrap"
-        >
-          <div className={cn('relative mr-2 flex', switchSize[size])}>
-            <input
-              id={name}
-              className={cn(
-                switchClass,
-                checkboxVariant[variant][color],
-                error && 'error ' + inputErrorClass,
-                disabledVariant[variant],
-              )}
-              type="checkbox"
-              name={name}
-              value={value}
-              onChange={e => onChange(e.target.value)}
-              checked={isChecked}
-              disabled={disabled}
-              ref={ref}
-              {...rest}
-            />
-            <div
-              className={cn(
-                'SwitchThumb',
-                disabled && 'disabled',
-                thumbClass,
-                checkVariant[variant][color],
-                thumbPosition,
-              )}
-              data-testid="SwitchThumb"
-            />
-          </div>
-          <label
-            id={`${name}-label`}
-            htmlFor={name}
-            className={cn('Label', 'relative flex items-center')}
-            data-testid="Label"
-          >
-            {content || label}
-          </label>
-        </div>
-      )
-    }
 
     return (
       <div

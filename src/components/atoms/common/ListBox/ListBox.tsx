@@ -1,14 +1,13 @@
 'use client'
-import { useTranslations } from 'next-intl'
-import { forwardRef, OlHTMLAttributes, PropsWithChildren, useCallback } from 'react'
+import { isEqual } from 'lodash'
+import { forwardRef, OlHTMLAttributes, PropsWithChildren } from 'react'
 
-import { Checkbox } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
-import { CheckboxProps } from '@/components/molecules/form/inputs/CheckboxField/Checkbox/Checkbox'
-import { OptionType, StyleProps } from '@/components/types'
+import { OptionGroupType, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { Ghost } from '../../loaders/Ghost'
-import { Button, ButtonProps } from '../Button'
+import { spanColor } from '../../typography/Span/Span.style'
+import { buttonSize } from '../Button/Button.style'
+import { OptionItem, OptionItemProps } from './OptionItem'
 
 type NativeListBoxProps = Omit<
   OlHTMLAttributes<HTMLUListElement>,
@@ -16,27 +15,20 @@ type NativeListBoxProps = Omit<
 >
 
 export type ListBoxProps<T = string> = NativeListBoxProps &
+  Omit<OptionItemProps<T>, 'label' | 'value' | 'isSelected'> &
   StyleProps & {
     /** for passing custom tailwind classes */
     className?: string
     /** name of the listbox for aria-controls */
     name: string
-    /** current values of selected options */
-    value?: T[]
+    /** value of selected options */
+    value: T[]
     /** options for display */
-    options: OptionType<T>[]
-    /** loading state for options fetching, loading is delayed for 1 second to prevent flickering */
-    isLoading?: boolean
+    options: OptionType<T>[] | OptionGroupType<T>[]
+    /** bolean for if options are grouped */
+    isGrouped?: boolean
     /** label for no option */
     noOptionLabel?: string
-    /** hide option checkbox */
-    hideCheckbox?: boolean
-    /** optional props for option button */
-    buttonProps?: Partial<ButtonProps>
-    /** optional props for checkbox */
-    checkboxProps?: Partial<CheckboxProps>
-    /** on Option click function */
-    onClick: (value: T) => void
   }
 
 /** Listbox Ul with selectable options. USE CLIENT */
@@ -46,6 +38,7 @@ function ListBoxComponent<T = string>(
     name,
     value = [],
     options,
+    isGrouped,
     variant = 'outlined',
     color = 'primary',
     size = 'md',
@@ -60,80 +53,70 @@ function ListBoxComponent<T = string>(
   }: PropsWithChildren<ListBoxProps<T>>,
   ref: React.ForwardedRef<HTMLUListElement>,
 ) {
-  const t = useTranslations('Components')
-  const ghostOptions =
-    isLoading && !options.length ? [{ value: 'ghost' as T, label: 'ghost', content: '' }] : []
-  const completeOptions = [...options, ...ghostOptions]
-  const { className: buttonClassName, ...restButtonProps } = buttonProps
-  const { className: checkboxClassName, ...restCheckboxProps } = checkboxProps
+  const renderOptions = (options: OptionType<T>[]) => {
+    if (!options.length && !isLoading && noOptionLabel)
+      return (
+        <li className={cn('NoOptionLabel', 'text-center', buttonSize[size], spanColor[color])}>
+          {noOptionLabel}
+        </li>
+      )
 
-  const getSelectedClass = useCallback(
-    (optionValue: T) => {
-      return value.includes(optionValue) ? 'selected' : ''
-    },
-    [value],
-  )
+    const ghostOptions =
+      isLoading && !options.length
+        ? [{ value: 'ghost' as T, label: 'ghost', content: '', buttonProps: {} }]
+        : []
+
+    return [...options, ...ghostOptions].map(
+      ({ value: optionValue, label, content, buttonProps: optionButtonProps }) => {
+        return (
+          <OptionItem
+            key={`${name}-${label}-option`}
+            label={label}
+            value={optionValue}
+            isSelected={!!value.find(v => isEqual(v, optionValue))}
+            variant={variant}
+            color={color}
+            size={size}
+            isLoading={isLoading}
+            hideCheckbox={hideCheckbox}
+            buttonProps={{ ...buttonProps, ...optionButtonProps }}
+            checkboxProps={checkboxProps}
+            onClick={onClick}
+          >
+            {content || label}
+          </OptionItem>
+        )
+      },
+    )
+  }
 
   return (
     <ul
       id={name}
-      className={cn('ListBox', className)}
+      className={cn('ListBox', isGrouped && 'space-y-3', className)}
       aria-labelledby={`${name}-label`}
       role="listbox"
       ref={ref}
       data-testid="ListBox"
       {...rest}
     >
-      {options.length || isLoading ? (
-        completeOptions.map(({ value: optionValue, label, content }) => (
-          <li key={`${name}-${optionValue}-option`} role="presentation">
-            <Button
-              className={cn(
-                'Option',
-                'flex w-full items-center justify-start rounded-none border border-transparent focus:outline-none dark:border-transparent',
-                getSelectedClass(optionValue),
-                isLoading ? 'cursor-not-allowed' : 'cursor-pointer',
-                buttonClassName,
-              )}
-              variant={variant}
-              color={color}
-              size={size}
-              startIcon={
-                !hideCheckbox && (
-                  <Checkbox
-                    className={checkboxClassName}
-                    name={String(optionValue)}
-                    label=""
-                    value={String(optionValue)}
-                    variant={variant}
-                    color={color}
-                    size={size}
-                    isChecked={value.includes(optionValue)}
-                    disabled={isLoading}
-                    fake
-                    aria-hidden="true"
-                    onChange={() => {}}
-                    {...restCheckboxProps}
-                  />
-                )
-              }
-              role="option"
-              tabIndex={-1}
-              aria-selected={value.includes(optionValue)}
-              aria-disabled={isLoading}
-              onClick={() => (!isLoading ? onClick(optionValue) : undefined)}
-              {...restButtonProps}
-            >
-              <>
-                {isLoading ? <Ghost className="ml-0 mr-16 w-full" size={size} /> : content || label}
-              </>
-            </Button>
-          </li>
-        ))
-      ) : (
-        <li className="py-2 text-center">{noOptionLabel || t('noOptions')}</li>
-      )}
-      {children}
+      {isGrouped
+        ? (options as OptionGroupType<T>[]).map(group => (
+            <li key={group.label} role="presentation">
+              <ul role="group" aria-label={group.label}>
+                <li
+                  className={cn('GroupLabel', 'text-center text-inherit', buttonSize[size])}
+                  role="presentation"
+                  data-testid="GroupLabel"
+                >
+                  {group.content || group.label}
+                </li>
+                {renderOptions(group.groupedOptions)}
+              </ul>
+            </li>
+          ))
+        : renderOptions(options as OptionType<T>[])}
+      {children !== undefined && children}
     </ul>
   )
 }

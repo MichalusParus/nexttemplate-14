@@ -2,7 +2,7 @@
 import { forwardRef, ReactNode } from 'react'
 
 import { buttonIconSize as inputIconSize } from '@/components/atoms/common/Button/Button.style'
-import { InputProps, NativeInputProps, StyleProps } from '@/components/types'
+import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import {

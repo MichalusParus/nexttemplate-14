@@ -1,12 +1,13 @@
 'use client'
-import { forwardRef, PropsWithChildren, ReactNode, useId, useState } from 'react'
+import { forwardRef, PropsWithChildren, ReactNode, useId } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { Paper } from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import { ScrollShadow, ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow'
 import { ChevronIcon } from '@/components/atoms/icons'
-import { StyleProps } from '@/components/types'
+import { useInternalOpenState } from '@/components/utils/hooks/useInternalOpenState'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 export type DisclosureProps = Omit<StyleProps, 'size'> & {
@@ -49,8 +50,7 @@ export const Disclosure = forwardRef<HTMLDivElement | null, PropsWithChildren<Di
     },
     ref,
   ) => {
-    const [isInternallyOpen, setIsInternallyOpen] = useState(Boolean(expanded))
-    const openState = setIsOpen ? expanded : isInternallyOpen
+    const { openState, handleOpen } = useInternalOpenState(expanded, setIsOpen)
     const { className: buttonClassName, ...restButtonProps } = buttonProps
     const { className: paperClassName, ...restPaperProps } = paperProps
     const id = useId()
@@ -58,14 +58,6 @@ export const Disclosure = forwardRef<HTMLDivElement | null, PropsWithChildren<Di
     const buttonId = `disclosureButton-${id}`
     const startIconOpenState = !openState ? '-rotate-90' : ''
     const endIconOpenState = openState ? 'rotate-180' : ''
-
-    const handleChange = () => {
-      if (setIsOpen) {
-        setIsOpen(!expanded)
-      } else {
-        setIsInternallyOpen(!isInternallyOpen)
-      }
-    }
 
     return (
       <div
@@ -81,7 +73,7 @@ export const Disclosure = forwardRef<HTMLDivElement | null, PropsWithChildren<Di
           hideShadow
           aria-expanded={openState}
           aria-controls={dropdownId}
-          onClick={handleChange}
+          onClick={() => handleOpen(!openState)}
           {...restButtonProps}
         >
           <div className={cn('ButtonInnerWrap', 'flex w-full justify-between')}>

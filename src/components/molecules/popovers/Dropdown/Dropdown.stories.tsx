@@ -22,11 +22,12 @@ const meta: Meta<typeof Dropdown> = {
 
 const DropdownWithHooks = (args: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
-  const parentRef = useRef<HTMLDivElement | null>(null)
+  const anchorRef = useRef<HTMLDivElement | null>(null)
   return (
     <div className="flex h-[50vh] w-full items-center justify-center">
-      <div className="relative" ref={parentRef}>
+      <div className="relative w-64" ref={anchorRef}>
         <Button
+          className="w-full"
           variant="text"
           aria-haspopup="true"
           aria-expanded={isOpen}
@@ -36,7 +37,12 @@ const DropdownWithHooks = (args: DropdownProps) => {
         >
           Button for Dropdown
         </Button>
-        <Dropdown {...args} isOpen={isOpen} onClose={() => setIsOpen(false)} parentRef={parentRef}>
+        <Dropdown
+          {...args}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          anchorRef={anchorRef}
+        >
           <div id="storybookDrawer" aria-hidden={!isOpen}>
             {textContent.slice(0, 300)}
           </div>
@@ -53,18 +59,54 @@ export const PrimaryDefault: Story = {
   args: {
     className: '',
     isOpen: false,
+    anchorRef: undefined,
     placement: 'bottom-start',
     offset: undefined,
     variant: 'text',
     color: 'primary',
-    width: 'w-full',
+    width: undefined,
     height: 'max-h-[40vh]',
-    padding: 'p-0',
+    padding: undefined,
     modal: false,
     portalContainerId: undefined,
+    disablePortal: false,
     paperProps: undefined,
     scrollShadowProps: undefined,
     onClose: () => {},
+  },
+  render: args => <DropdownWithHooks {...args} />,
+}
+
+export const Dialog: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    modal: true,
+  },
+  render: args => <DropdownWithHooks {...args} />,
+}
+
+export const Offset: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    offset: [0, 30],
+  },
+  render: args => <DropdownWithHooks {...args} />,
+}
+
+export const WidthHeight: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    width: 650,
+    height: 'max-h-[15vh]',
+    placement: 'bottom',
+  },
+  render: args => <DropdownWithHooks {...args} />,
+}
+
+export const Scroll: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    height: 'max-h-[15vh]',
   },
   render: args => <DropdownWithHooks {...args} />,
 }

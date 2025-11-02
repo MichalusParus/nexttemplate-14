@@ -15,7 +15,7 @@ export const useFocus = (
 ) => {
   const focusIndexRef = useRef<number>(0)
   const [focusableEl, setFocusableEl] = useState<HTMLElement[]>([])
-  const selectableClassesRef = useRef<string[]>(selectableClasses)
+  // const selectableClassesRef = useRef<string[]>(selectableClasses)
 
   // Focusable array actualization with index update and initial focus
   useEffect(() => {
@@ -55,7 +55,7 @@ export const useFocus = (
         completeSelectableList[0].focus()
       }
     }
-  }, [isActive, componentRef, options?.portalRef, options?.value])
+  }, [isActive, componentRef, options?.portalRef, options?.value, focusableEl, selectableClasses])
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {

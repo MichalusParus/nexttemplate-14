@@ -24,7 +24,7 @@ describe('TabList', () => {
     expect(tabRoles[0]).toHaveTextContent(tabs[0].label)
     expect(tabRoles[1]).toHaveTextContent(tabs[1].label)
     expect(tabRoles[2]).toHaveTextContent(tabs[2].label)
-    expect(tabRoles[0]).toHaveAttribute('aria-controls', 'tab-tabpanel')
+    expect(tabRoles[0]).toHaveAttribute('aria-controls', `${tabs[0].value}-tabpanel`)
     expect(tabRoles[0]).toHaveClass('selected')
     expect(tabRoles[0]).toHaveAttribute('aria-selected', 'true')
     tabRoles[0].focus()
@@ -98,7 +98,7 @@ describe('TabList', () => {
     const { container } = render(
       <>
         <TabList selectedTab={tabs[0]} tabs={tabs} onTabChange={() => {}} />,
-        <div id="tab-tabpanel">TabPanel</div>
+        <div id={`${tabs[0].value}-tabpanel`}>TabPanel</div>
       </>,
     )
 

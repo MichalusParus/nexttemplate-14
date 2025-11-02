@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 
 import { axe, toHaveNoViolations } from 'jest-axe'
-import { createRef } from 'react'
+import { act, createRef } from 'react'
 
-import { getOptions } from '../../../../../../../.storybook/helpers'
-import { fireEvent, render, screen } from '.././../../../../../../.jest/customRender'
+import { getGroupedOptions, getOptions } from '../../../../../../../.storybook/helpers'
+import { fireEvent, render, screen, waitFor } from '.././../../../../../../.jest/customRender'
 import { Autocomplete } from './Autocomplete'
 
 expect.extend(toHaveNoViolations)
@@ -12,7 +12,7 @@ expect.extend(toHaveNoViolations)
 const options = getOptions('autocompleteTest', 5)
 
 describe('Autocomplete', () => {
-  it('default', () => {
+  it('default', async () => {
     render(
       <Autocomplete
         className="className"
@@ -39,7 +39,10 @@ describe('Autocomplete', () => {
     expect(textboxRole).toHaveAttribute('placeholder', 'placeholder')
     expect(textboxRole).toHaveAttribute('name', 'autocompleteTest')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const dropdownTestId = screen.getByTestId('Dropdown')
     const listboxTestId = screen.getByTestId('ListBox')
     const optionRoles = screen.getAllByRole('option')
@@ -57,7 +60,7 @@ describe('Autocomplete', () => {
     expect(document.activeElement).toBe(comboboxRole)
   })
 
-  it('value', () => {
+  it('value', async () => {
     render(
       <Autocomplete
         name="autocompleteTest"
@@ -72,7 +75,10 @@ describe('Autocomplete', () => {
 
     expect(textboxRole).toHaveValue(options[0].label)
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const optionRoles = screen.getAllByRole('option')
 
     expect(optionRoles[0]).toHaveClass('selected')
@@ -98,6 +104,33 @@ describe('Autocomplete', () => {
     expect(chipTestIds[0]).toHaveTextContent(options[0].label)
   })
 
+  it('groupedOptions', async () => {
+    const groupedOptions = getGroupedOptions('selectTest')
+    render(
+      <Autocomplete
+        name="autocompleteTest"
+        value="value"
+        multiValue={options.map(v => v.value)}
+        selectedOptions={[]}
+        options={groupedOptions}
+        displayChips
+        onInputChange={() => {}}
+        onChange={() => {}}
+      />,
+    )
+    const comboboxRole = screen.getByRole('combobox')
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
+    const groupLabelTestIds = screen.getAllByTestId('GroupLabel')
+    const optionRoles = screen.getAllByRole('option')
+
+    expect(groupLabelTestIds).toHaveLength(groupedOptions.length)
+    expect(optionRoles).toHaveLength(groupedOptions.flatMap(group => group.groupedOptions).length)
+  })
+
   it('error', () => {
     render(
       <Autocomplete
@@ -114,7 +147,7 @@ describe('Autocomplete', () => {
     expect(comboboxRole).toHaveClass('error')
   })
 
-  it('dropdownProps/listboxProps/chipProps/inputProps', () => {
+  it('dropdownProps/listboxProps/chipProps/inputProps', async () => {
     render(
       <Autocomplete
         name="autocompleteTest"
@@ -133,7 +166,10 @@ describe('Autocomplete', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const dropdownTestId = screen.getByTestId('Dropdown')
     const listboxTestId = screen.getByTestId('ListBox')
     const chipTestIds = screen.getAllByTestId('Chip')
@@ -145,7 +181,7 @@ describe('Autocomplete', () => {
     expect(inputTestId).toHaveClass('inputClass')
   })
 
-  it('onOpen/onClose', () => {
+  it('onOpen/onClose', async () => {
     const spyOpen = jest.fn()
     const spyClose = jest.fn()
 
@@ -162,19 +198,24 @@ describe('Autocomplete', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
 
     expect(spyOpen).toHaveBeenCalledTimes(1)
     expect(spyClose).toHaveBeenCalledTimes(0)
 
     spyOpen.mockClear()
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     expect(spyClose).toHaveBeenCalledTimes(1)
     expect(spyOpen).toHaveBeenCalledTimes(0)
   })
 
-  it('onInputChange', () => {
+  it('onInputChange', async () => {
     const spy = jest.fn()
     render(
       <Autocomplete
@@ -188,16 +229,19 @@ describe('Autocomplete', () => {
     )
     const textboxRole = screen.getByRole('textbox')
 
-    fireEvent.change(textboxRole, {
-      target: {
-        value: 'newvalue',
-      },
+    await act(async () => {
+      fireEvent.change(textboxRole, {
+        target: {
+          value: 'newvalue',
+        },
+      })
     })
+
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith('newvalue')
   })
 
-  it('onChange', () => {
+  it('onChange', async () => {
     const spy = jest.fn()
     render(
       <Autocomplete
@@ -210,16 +254,60 @@ describe('Autocomplete', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const optionRoles = screen.getAllByRole('option')
 
-    fireEvent.click(optionRoles[4])
+    await act(async () => {
+      fireEvent.click(optionRoles[4])
+    })
 
     expect(spy).toHaveBeenCalled()
     expect(spy).toHaveBeenCalledWith(options[4].value)
   })
 
-  it('children', () => {
+  it('objValueonChange', async () => {
+    const spy = jest.fn()
+    const objValueOptions = options.map(o => ({ ...o, value: { key1: o.label, key2: o.value } }))
+    render(
+      <Autocomplete<{ key1: string; key2: string }>
+        name="selectTest"
+        value={objValueOptions[1].value}
+        options={objValueOptions}
+        onInputChange={() => {}}
+        onChange={spy}
+      />,
+    )
+    const comboboxRole = screen.getByRole('combobox')
+    const textboxRole = screen.getByRole('textbox')
+
+    expect(textboxRole).toHaveValue(objValueOptions[1].label)
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
+    const optionRoles = screen.getAllByRole('option')
+
+    expect(optionRoles[1]).toHaveClass('selected')
+    expect(optionRoles[2]).not.toHaveClass('selected')
+
+    await act(async () => {
+      fireEvent.click(optionRoles[2])
+    })
+
+    expect(spy).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalledWith(objValueOptions[2].value)
+
+    waitFor(() => {
+      expect(optionRoles[2]).toHaveClass('selected')
+      expect(optionRoles[3]).not.toHaveClass('selected')
+    })
+  })
+
+  it('children', async () => {
     render(
       <Autocomplete
         name="autocompleteTest"
@@ -233,7 +321,10 @@ describe('Autocomplete', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const testId = screen.getByTestId('test')
 
     expect(testId).toBeInTheDocument()

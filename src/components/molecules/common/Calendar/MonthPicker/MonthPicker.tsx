@@ -15,7 +15,7 @@ import { useTranslations } from 'next-intl'
 import { useCallback, useMemo } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 export type MonthPickerProps = StyleProps & {

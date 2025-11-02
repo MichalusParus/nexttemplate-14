@@ -1,7 +1,7 @@
 'use client'
 import { forwardRef, useEffect, useRef, useState } from 'react'
 
-import { NativeDivProps } from '@/components/types'
+import { NativeDivProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { shadowClass, shadowPosition } from './ScrollShadow.style'

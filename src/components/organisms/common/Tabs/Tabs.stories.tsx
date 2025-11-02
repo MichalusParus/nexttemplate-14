@@ -21,18 +21,24 @@ const meta: Meta<typeof Tabs> = {
   argTypes: {
     tabs: { control: false },
     tabButtonProps: { control: false },
-    dropdownProps: { control: false },
+    selectProps: { control: false },
   },
 }
 
 export default meta
 type Story = StoryObj<typeof Tabs>
 
-const TabsWithHooks = (args: TabsProps) => {
-  const [param, setParam] = useState('label1')
+const TabsWithHooks = (args: TabsProps<unknown>) => {
+  const [param, setParam] = useState<unknown>('label1')
   return (
     <div>
-      <Tabs {...args} name="tabs" selectedValue={param} tabs={args.tabs} onTabChange={setParam} />
+      <Tabs<unknown>
+        {...args}
+        name="tabs"
+        selectedValue={param}
+        tabs={args.tabs}
+        onTabChange={setParam}
+      />
       {args.tabs.length === 4 && (
         <button onClick={() => setParam('hidden')}>Click to show hidden tab</button>
       )}
@@ -50,9 +56,8 @@ export const PrimaryDefault: Story = {
     color: 'primary',
     size: 'md',
     fullWidth: false,
-    buttonProps: {},
+    selectProps: {},
     tabButtonProps: {},
-    dropdownProps: {},
     children: undefined,
   },
   render: args => <TabsWithHooks {...args} />,

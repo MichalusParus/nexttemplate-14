@@ -35,4 +35,4 @@ export const tooltipPointer = {
   'auto-end': '',
 }
 
-export const tooltipVisibility = cn('invisible opacity-0')
+export const tooltipVisibility = cn('opacity-0')

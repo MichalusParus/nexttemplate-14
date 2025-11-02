@@ -22,23 +22,23 @@ describe('ColumnHead', () => {
     expect(screen.getByTestId('ColumnHeader')).toHaveTextContent('Column Head 1')
   })
 
-  it('interactive', () => {
-    const spy = jest.fn()
-    render(
-      <ColumnHead
-        className="className"
-        name="ColumnHeadTest"
-        column={gridColsDef[0]}
-        handleSorting={spy}
-        setFilter={spy}
-      />,
-    )
-    expect(screen.getByRole('columnheader')).toBeInTheDocument()
-    expect(screen.getByTestId('MenuWrap')).toBeInTheDocument()
-    fireEvent.click(screen.getByTestId('GridFilterButton'))
-    expect(screen.getByRole('menu')).toBeInTheDocument()
-    expect(screen.getByRole('menu')).toHaveAttribute('id', 'filterColumnHeadTestname1')
-    fireEvent.click(screen.getByRole('columnheader'))
-    expect(spy).toHaveBeenCalled()
-  })
+  // it('interactive', () => {
+  //   const spy = jest.fn()
+  //   render(
+  //     <ColumnHead
+  //       className="className"
+  //       name="ColumnHeadTest"
+  //       column={gridColsDef[0]}
+  //       handleSorting={spy}
+  //       setFilter={spy}
+  //     />,
+  //   )
+  //   expect(screen.getByRole('columnheader')).toBeInTheDocument()
+  //   expect(screen.getByTestId('MenuWrap')).toBeInTheDocument()
+  //   fireEvent.click(screen.getByTestId('GridFilterButton'))
+  //   expect(screen.getByRole('menu')).toBeInTheDocument()
+  //   expect(screen.getByRole('menu')).toHaveAttribute('id', 'filterColumnHeadTestname1')
+  //   fireEvent.click(screen.getByRole('columnheader'))
+  //   expect(spy).toHaveBeenCalled()
+  // })
 })

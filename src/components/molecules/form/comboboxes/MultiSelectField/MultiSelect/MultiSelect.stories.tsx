@@ -3,7 +3,11 @@ import { useState } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 
-import { getOptions, optionsWithContent } from '../../../../../../../.storybook/helpers'
+import {
+  getGroupedOptions,
+  getOptions,
+  optionsWithContent,
+} from '../../../../../../../.storybook/helpers'
 import { MultiSelect, MultiSelectProps } from './MultiSelect'
 
 const meta: Meta<typeof MultiSelect> = {
@@ -95,10 +99,20 @@ export const OptionsWithContent: Story = {
   render: args => <MultiSelectWithHooks {...args} />,
 }
 
+export const GroupedOptions: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'multiSelectStory6',
+    options: getGroupedOptions('multiSelectStory6'),
+    displayChips: true,
+  },
+  render: args => <MultiSelectWithHooks {...args} />,
+}
+
 export const CreateNew: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'autocompleteStory6',
+    name: 'autocompleteStory7',
     children: (
       <li>
         <Button
@@ -120,8 +134,8 @@ export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
     error: 'error',
-    name: 'multiSelectStory7',
-    options: getOptions('multiSelectStory6', 5),
+    name: 'multiSelectStory8',
+    options: getOptions('multiSelectStory8', 5),
   },
   render: args => <MultiSelectWithHooks {...args} />,
 }
@@ -129,8 +143,8 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'multiSelectStory8',
-    options: getOptions('multiSelectStory7', 5),
+    name: 'multiSelectStory9',
+    options: getOptions('multiSelectStory9', 5),
     disabled: true,
   },
   render: args => <MultiSelectWithHooks {...args} />,

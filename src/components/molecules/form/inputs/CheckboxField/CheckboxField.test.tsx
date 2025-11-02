@@ -2,11 +2,12 @@ import '@testing-library/jest-dom'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { act } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 
 import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
-import { Form } from '../../Form'
+import { Form } from '../../forms/Form'
 import { CheckboxField } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -51,33 +52,40 @@ describe('CheckboxField', () => {
     expect(labelTestId).toHaveAttribute('id', 'fieldTest-label')
   })
 
-  it('value', () => {
+  it('value', async () => {
     render(<FieldWithHooks />)
     const inputRole = screen.getByRole('checkbox')
 
     expect(inputRole).toHaveAttribute('value', 'fieldTest')
 
-    fireEvent.click(inputRole)
+    await act(async () => {
+      fireEvent.click(inputRole)
+    })
 
     expect(inputRole).toHaveAttribute('value', '')
   })
 
-  it('onChange', () => {
+  it('onChange', async () => {
     const spy = jest.fn()
     render(<FieldWithHooks onChange={spy} />)
     const inputRole = screen.getByRole('checkbox')
 
-    fireEvent.click(inputRole)
+    await act(async () => {
+      fireEvent.click(inputRole)
+    })
 
     expect(spy).toHaveBeenCalled()
     expect(spy).toHaveBeenCalledWith('')
   })
 
-  it('onSubmit', () => {
+  it('onSubmit', async () => {
     const spy = jest.fn()
     render(<FieldWithHooks />)
     screen.getByTestId('Form').onsubmit = spy
-    fireEvent.click(screen.getByTestId('submitButton'))
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('submitButton'))
+    })
     // TODO beenCalledWith, spy return native event and not values
     expect(spy).toHaveBeenCalled()
   })

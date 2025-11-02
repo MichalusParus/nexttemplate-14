@@ -1,7 +1,7 @@
 'use client'
 import { forwardRef } from 'react'
 
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { FilterDef, SortingDef } from '@/utils/hooks/useFilterData'
 import { cn } from '@/utils/utils'
 

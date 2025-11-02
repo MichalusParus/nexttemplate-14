@@ -96,7 +96,7 @@ describe('RadioGroup', () => {
     render(
       <RadioGroup
         name="radioGroupTest"
-        value={'value1'}
+        value={options[0].value}
         options={options}
         error="error"
         onChange={() => {}}
@@ -133,7 +133,7 @@ describe('RadioGroup', () => {
     render(
       <RadioGroup
         name="radioGroupTest"
-        value={'value1'}
+        value={options[0].value}
         options={options}
         error="error"
         onChange={spy}
@@ -150,7 +150,7 @@ describe('RadioGroup', () => {
     render(
       <RadioGroup
         name="radioGroupTest"
-        value={'value1'}
+        value={options[0].value}
         options={options}
         error="error"
         onChange={() => {}}

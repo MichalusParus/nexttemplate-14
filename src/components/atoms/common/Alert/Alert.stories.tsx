@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
+import { ProfileIcon, XIcon } from '../../icons'
 import { Alert } from '.'
 
 const meta: Meta<typeof Alert> = {
@@ -21,7 +22,8 @@ export const SuccessDefault: Story = {
     status: 'success',
     size: 'md',
     title: '',
-    icon: undefined,
+    startIcon: undefined,
+    endIcon: undefined,
     children: 'Success alert',
   },
 }
@@ -65,5 +67,16 @@ export const TitleLongText: Story = {
     title: 'Alert Title',
     children:
       'Very long alert information about important thing that just happend. Alert will grow with text, so it is usefull to set max-width via className for smaller alerts.',
+  },
+}
+
+export const CustomStartEndIcon: Story = {
+  args: {
+    ...SuccessDefault.args,
+    className: 'max-w-96 text-purple-800 items-center',
+    status: 'none',
+    title: 'Alert Title',
+    startIcon: <ProfileIcon />,
+    endIcon: <XIcon />,
   },
 }

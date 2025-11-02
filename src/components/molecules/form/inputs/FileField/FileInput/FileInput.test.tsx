@@ -182,13 +182,15 @@ describe('FileInput', () => {
     expect(spy).toHaveBeenCalledWith(file)
   })
 
-  it('onDelete', () => {
+  it('onDelete', async () => {
     const spy = jest.fn()
     const file = createMockFile()
     render(<FileInput name="inputTest" value={[file]} onDrop={asyncMockFn} onDelete={spy} />)
     const fileDeleteButtonTestId = screen.getByTestId('DeleteButton')
 
-    fireEvent.click(fileDeleteButtonTestId)
+    await act(async () => {
+      fireEvent.click(fileDeleteButtonTestId)
+    })
 
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith(file)

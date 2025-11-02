@@ -26,7 +26,6 @@ type Story = StoryObj<typeof ScreenPagination>
 export const PrimaryDefault: Story = {
   args: {
     className: '',
-    name: 'screenPaginationStory',
     count: 5,
     selectedPage: 1,
     pageSpread: 13,

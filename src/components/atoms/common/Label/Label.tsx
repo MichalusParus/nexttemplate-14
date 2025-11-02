@@ -1,7 +1,7 @@
 import { forwardRef, LabelHTMLAttributes } from 'react'
 
 import { Alert } from '@/components/atoms/common/Alert'
-import { FieldProps, InputProps, StyleProps } from '@/components/types'
+import { FieldProps, InputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { labelClass, textSize } from './Label.style'

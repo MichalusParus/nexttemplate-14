@@ -5,7 +5,7 @@ import { Button } from '@/components/atoms/common/Button'
 import { SignInIcon } from '@/components/atoms/icons'
 import { Select } from '@/components/molecules/form/comboboxes/SelectField/Select'
 import { Tooltip } from '@/components/molecules/popovers/Tooltip'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { MobilePagination } from '../../common/Pagination/MobilePagination'
@@ -107,6 +107,7 @@ export const GridFooter = forwardRef<HTMLDivElement | null, GridFooterProps>(
                   color={color}
                   size={size}
                   startIcon={<SignInIcon className="rotate-90" />}
+                  aria-label="Export"
                   hideShadow
                   tabIndex={-1}
                   onClick={handleExport}

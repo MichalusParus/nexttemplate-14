@@ -5,7 +5,7 @@ import { forwardRef } from 'react'
 import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import { ChevronIcon } from '@/components/atoms/icons'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { arrowClass, chevronPosition } from './MobilePagination.style'

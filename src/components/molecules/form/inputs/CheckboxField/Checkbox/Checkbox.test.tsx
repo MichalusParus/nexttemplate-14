@@ -40,27 +40,6 @@ describe('Checkbox', () => {
     expect(document.activeElement).toBe(checkboxRole)
   })
 
-  it('switch', () => {
-    render(
-      <Checkbox
-        name="checkboxTest"
-        label="label"
-        variant="switch"
-        error="error"
-        isChecked={false}
-        onChange={() => {}}
-      />,
-    )
-    const switchThumbTestId = screen.getByTestId('SwitchThumb')
-    const checkboxRole = screen.getByRole('checkbox')
-
-    expect(switchThumbTestId).toBeInTheDocument()
-    expect(checkboxRole).toHaveAttribute('id', 'checkboxTest')
-    expect(checkboxRole).toHaveAttribute('name', 'checkboxTest')
-    expect(checkboxRole).toHaveAttribute('type', 'checkbox')
-    expect(checkboxRole).not.toHaveAttribute('checked')
-  })
-
   it('error', () => {
     render(
       <Checkbox

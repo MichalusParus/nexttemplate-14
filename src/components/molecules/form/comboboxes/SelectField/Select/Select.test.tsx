@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 
 import { axe, toHaveNoViolations } from 'jest-axe'
-import { createRef } from 'react'
+import { act, createRef } from 'react'
 
-import { getOptions } from '../../../../../../../.storybook/helpers'
-import { fireEvent, render, screen } from '.././../../../../../../.jest/customRender'
+import { getGroupedOptions, getOptions } from '../../../../../../../.storybook/helpers'
+import { fireEvent, render, screen, waitFor } from '.././../../../../../../.jest/customRender'
 import { Select } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -12,7 +12,7 @@ expect.extend(toHaveNoViolations)
 const options = getOptions('selectTest', 5)
 
 describe('Select', () => {
-  it('default', () => {
+  it('default', async () => {
     render(
       <Select
         className="className"
@@ -37,7 +37,10 @@ describe('Select', () => {
     expect(comboboxRole).toHaveAttribute('aria-expanded', 'false')
     expect(comboboxRole).toHaveAttribute('aria-haspopup', 'listbox')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const dropdownTestId = screen.getByTestId('Dropdown')
     const listboxTestId = screen.getByTestId('ListBox')
     const optionRoles = screen.getAllByRole('option')
@@ -55,14 +58,18 @@ describe('Select', () => {
     expect(document.activeElement).toBe(comboboxRole)
   })
 
-  it('value', () => {
+  it('value', async () => {
     render(
       <Select name="selectTest" value={options[0].value} options={options} onChange={() => {}} />,
     )
     const comboboxRole = screen.getByRole('combobox')
 
     expect(comboboxRole).toHaveTextContent(options[0].label)
-    fireEvent.click(comboboxRole)
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const optionRoles = screen.getAllByRole('option')
     expect(optionRoles[0]).toHaveClass('selected')
     expect(optionRoles[1]).not.toHaveClass('selected')
@@ -84,6 +91,30 @@ describe('Select', () => {
     expect(chipTestIds[0]).toHaveTextContent(options[0].label)
   })
 
+  it('groupedOptions', async () => {
+    const groupedOptions = getGroupedOptions('selectTest')
+    render(
+      <Select
+        name="selectTest"
+        value={''}
+        options={groupedOptions}
+        displayChips
+        onChange={() => {}}
+      />,
+    )
+    const comboboxRole = screen.getByRole('combobox')
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
+    const groupLabelTestIds = screen.getAllByTestId('GroupLabel')
+    const optionRoles = screen.getAllByRole('option')
+
+    expect(groupLabelTestIds).toHaveLength(groupedOptions.length)
+    expect(optionRoles).toHaveLength(groupedOptions.flatMap(group => group.groupedOptions).length)
+  })
+
   it('error', () => {
     render(
       <Select name="selectTest" value="" options={options} error="error" onChange={() => {}} />,
@@ -93,7 +124,7 @@ describe('Select', () => {
     expect(comboboxRole).toHaveClass('error')
   })
 
-  it('dropdownProps/listboxProps/chipProps', () => {
+  it('dropdownProps/listboxProps/chipProps', async () => {
     render(
       <Select
         name="selectTest"
@@ -107,7 +138,11 @@ describe('Select', () => {
       />,
     )
     const comboboxRole = screen.getByRole('combobox')
-    fireEvent.click(comboboxRole)
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const dropdownTestId = screen.getByTestId('Dropdown')
     const listboxTestId = screen.getByTestId('ListBox')
     const chipTestIds = screen.getAllByTestId('Chip')
@@ -117,7 +152,7 @@ describe('Select', () => {
     expect(chipTestIds[0]).toHaveClass('chipClass')
   })
 
-  it('onOpen/onClose', () => {
+  it('onOpen/onClose', async () => {
     const spyOpen = jest.fn()
     const spyClose = jest.fn()
 
@@ -133,32 +168,82 @@ describe('Select', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
 
     expect(spyOpen).toHaveBeenCalledTimes(1)
     expect(spyClose).toHaveBeenCalledTimes(0)
 
     spyOpen.mockClear()
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     expect(spyClose).toHaveBeenCalledTimes(1)
     expect(spyOpen).toHaveBeenCalledTimes(0)
   })
 
-  it('onChange', () => {
+  it('onChange', async () => {
     const spy = jest.fn()
     render(<Select name="selectTest" value={options[0].value} options={options} onChange={spy} />)
     const comboboxRole = screen.getByRole('combobox')
 
     expect(comboboxRole).toHaveTextContent(options[0].label)
-    fireEvent.click(comboboxRole)
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const optionRoles = screen.getAllByRole('option')
-    fireEvent.click(optionRoles[4])
+
+    await act(async () => {
+      fireEvent.click(optionRoles[4])
+    })
+
     expect(spy).toHaveBeenCalled()
     expect(spy).toHaveBeenCalledWith(options[4].value)
   })
 
-  it('children', () => {
+  it('objValueonChange', async () => {
+    const spy = jest.fn()
+    const objValueOptions = options.map(o => ({ ...o, value: { key1: o.label, key2: o.value } }))
+    render(
+      <Select<{ key1: string; key2: string }>
+        name="selectTest"
+        value={objValueOptions[1].value}
+        options={objValueOptions}
+        onChange={spy}
+      />,
+    )
+    const comboboxRole = screen.getByRole('combobox')
+
+    expect(comboboxRole).toHaveTextContent(objValueOptions[1].label)
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
+    const optionRoles = screen.getAllByRole('option')
+
+    expect(optionRoles[1]).toHaveClass('selected')
+    expect(optionRoles[2]).not.toHaveClass('selected')
+
+    await act(async () => {
+      fireEvent.click(optionRoles[2])
+    })
+
+    expect(spy).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalledWith(objValueOptions[2].value)
+
+    waitFor(() => {
+      expect(optionRoles[2]).toHaveClass('selected')
+      expect(optionRoles[3]).not.toHaveClass('selected')
+    })
+  })
+
+  it('children', async () => {
     render(
       <Select name="selectTest" value="" options={options} onChange={() => {}}>
         <div data-testid="test">test</div>
@@ -166,7 +251,10 @@ describe('Select', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const testId = screen.getByTestId('test')
 
     expect(testId).toBeInTheDocument()

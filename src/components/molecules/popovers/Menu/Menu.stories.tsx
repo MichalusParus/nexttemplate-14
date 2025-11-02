@@ -2,10 +2,15 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { PropsWithChildren, useRef, useState } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
-import { ChevronIcon, SettingIcon } from '@/components/atoms/icons'
+import { SettingIcon } from '@/components/atoms/icons'
 
-import { MenuLinks } from '../../../../../.storybook/helpers'
+import {
+  getMenuOptions,
+  menuButtonOptions,
+  MenuValuesType,
+} from '../../../../../.storybook/helpers'
 import { Menu } from '.'
+import { MenuItemButton } from './items'
 import { MenuProps } from './Menu'
 
 const meta: Meta<typeof Menu> = {
@@ -30,147 +35,114 @@ export default meta
 type Story = StoryObj<typeof Menu>
 
 const UnControlledMenu = (args: PropsWithChildren<MenuProps> & { index?: number }) => {
-  return (
-    <Menu {...args}>
-      <MenuLinks
-        length={args.className?.split(' ').includes('scroll') ? 20 : undefined}
-        variant={args.variant}
-        color={args.color}
-        index={args.index}
-      />
-    </Menu>
-  )
+  const [menuValues, setMenuValues] = useState<MenuValuesType>({
+    checkbox1: null,
+    checkbox2: null,
+    checkbox3: null,
+    switch1: null,
+    switch2: null,
+    switch3: null,
+    radio: 'radio1',
+  })
+
+  const options = getMenuOptions(menuValues, {
+    checkbox1: () =>
+      setMenuValues(prev => ({ ...prev, checkbox1: prev.checkbox1 ? '' : 'checkbox1' })),
+    checkbox2: () =>
+      setMenuValues(prev => ({ ...prev, checkbox2: prev.checkbox2 ? '' : 'checkbox2' })),
+    checkbox3: () =>
+      setMenuValues(prev => ({ ...prev, checkbox3: prev.checkbox3 ? '' : 'checkbox3' })),
+    switch1: () => setMenuValues(prev => ({ ...prev, switch1: prev.switch1 ? '' : 'switch1' })),
+    switch2: () => setMenuValues(prev => ({ ...prev, switch2: prev.switch2 ? '' : 'switch2' })),
+    switch3: () => setMenuValues(prev => ({ ...prev, switch3: prev.switch3 ? '' : 'switch3' })),
+    radio: (v: string) => setMenuValues(prev => ({ ...prev, radio: v })),
+  })
+  return <Menu {...args} options={options} />
 }
 
 const ControlledMenu = (args: PropsWithChildren<MenuProps>) => {
   const [isOpen, setIsOpen] = useState(false)
-  const parentRef = useRef<HTMLDivElement | null>(null)
+  const anchorRef = useRef<HTMLDivElement | null>(null)
+  const [menuValues, setMenuValues] = useState<MenuValuesType>({
+    checkbox1: null,
+    checkbox2: null,
+    checkbox3: null,
+    switch1: null,
+    switch2: null,
+    switch3: null,
+    radio: 'radio1',
+  })
+
+  const options = getMenuOptions(menuValues, {
+    checkbox1: () =>
+      setMenuValues(prev => ({ ...prev, checkbox1: prev.checkbox1 ? '' : 'checkbox1' })),
+    checkbox2: () =>
+      setMenuValues(prev => ({ ...prev, checkbox2: prev.checkbox2 ? '' : 'checkbox2' })),
+    checkbox3: () =>
+      setMenuValues(prev => ({ ...prev, checkbox3: prev.checkbox3 ? '' : 'checkbox3' })),
+    switch1: () => setMenuValues(prev => ({ ...prev, switch1: prev.switch1 ? '' : 'switch1' })),
+    switch2: () => setMenuValues(prev => ({ ...prev, switch2: prev.switch2 ? '' : 'switch2' })),
+    switch3: () => setMenuValues(prev => ({ ...prev, switch3: prev.switch3 ? '' : 'switch3' })),
+    radio: (v: string) => setMenuValues(prev => ({ ...prev, radio: v })),
+  })
   return (
-    <div className="relative" ref={parentRef}>
+    <div className="relative" ref={anchorRef}>
       <Button
+        id={`${args.name}-menu-button`}
         aria-haspopup="menu"
         aria-expanded={isOpen}
-        aria-controls={args.name}
-        aria-owns={args.name}
+        aria-controls={`${args.name}-menu`}
+        aria-owns={`${args.name}-menu`}
         onClick={() => setIsOpen(prev => !prev)}
       >
         Controled Button
       </Button>
-      <Menu {...args} isOpen={isOpen} parentRef={parentRef} setIsOpen={setIsOpen}>
-        <MenuLinks variant={args.variant} color={args.color} />
-      </Menu>
+      <Menu
+        {...args}
+        isOpen={isOpen}
+        options={options}
+        anchorRef={anchorRef}
+        setIsOpen={setIsOpen}
+      />
     </div>
-  )
-}
-
-const NestedMenu = (args: PropsWithChildren<MenuProps>) => {
-  return (
-    <Menu {...args} dropdownProps={{ modal: true }}>
-      <UnControlledMenu
-        index={1}
-        name="menuStory1"
-        placement="right-start"
-        variant={args.variant}
-        color={args.color}
-        width="min-w-max"
-        buttonProps={{
-          className: 'border-none w-full justify-between',
-          endIcon: <ChevronIcon className="-rotate-90" />,
-          role: 'menuitem',
-          children: 'Submenu',
-        }}
-      />
-      <UnControlledMenu
-        index={2}
-        name="menuStory2"
-        placement="right-start"
-        variant={args.variant}
-        color={args.color}
-        width="min-w-max"
-        buttonProps={{
-          className: 'border-none w-full justify-between',
-          endIcon: <ChevronIcon className="-rotate-90" />,
-          role: 'menuitem',
-          children: 'Submenu',
-        }}
-      />
-      <UnControlledMenu
-        index={3}
-        name="menuStory3"
-        placement="right-start"
-        variant={args.variant}
-        color={args.color}
-        width="min-w-max"
-        buttonProps={{
-          className: 'border-none w-full justify-between',
-          endIcon: <ChevronIcon className="-rotate-90" />,
-          role: 'menuitem',
-          children: 'Submenu',
-        }}
-      />
-      <UnControlledMenu
-        index={4}
-        name="menuStory4"
-        placement="right-start"
-        variant={args.variant}
-        color={args.color}
-        width="min-w-max"
-        buttonProps={{
-          className: 'border-none w-full justify-between',
-          endIcon: <ChevronIcon className="-rotate-90" />,
-          role: 'menuitem',
-          children: 'Submenu',
-        }}
-      />
-    </Menu>
   )
 }
 
 export const PrimaryDefault: Story = {
   args: {
     className: '',
-    name: 'menuStory',
+    name: '',
+    title: 'menuStory1',
+    options: menuButtonOptions,
     isOpen: undefined,
     placement: 'bottom',
     variant: 'outlined',
     color: 'primary',
     width: 'w-40',
-    parentRef: undefined,
+    isModal: true,
+    onHoverOpen: false,
+    anchorRef: undefined,
     buttonProps: undefined,
     dropdownProps: undefined,
     setIsOpen: undefined,
   },
-  render: args => <UnControlledMenu {...args} />,
+  render: args => <Menu {...args} />,
 }
 
-export const IconLeft: Story = {
+export const StartIcon: Story = {
   args: {
     ...PrimaryDefault.args,
-    className: '',
-    name: 'menuStory2',
+    title: 'menuStory2',
     buttonProps: { startIcon: <SettingIcon /> },
   },
   render: args => <UnControlledMenu {...args} />,
 }
 
-export const Right: Story = {
+export const Placement: Story = {
   args: {
     ...PrimaryDefault.args,
-    className: '',
-    name: 'menuStory4',
-    buttonProps: { startIcon: <SettingIcon /> },
-    placement: 'bottom-end',
-  },
-  render: args => <UnControlledMenu {...args} />,
-}
-
-export const Top: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    className: '',
-    name: 'menuStory5',
-    buttonProps: { startIcon: <SettingIcon /> },
-    placement: 'top',
+    title: 'menuStory3',
+    placement: 'left-start',
   },
   render: args => <UnControlledMenu {...args} />,
 }
@@ -178,28 +150,54 @@ export const Top: Story = {
 export const Controled: Story = {
   args: {
     ...PrimaryDefault.args,
-    className: '',
-    name: 'menuStory6',
+    name: 'menuStory4',
+    title: 'menuStory4',
     buttonProps: { startIcon: <SettingIcon /> },
   },
   render: args => <ControlledMenu {...args} />,
 }
 
-export const Scroll: Story = {
+export const Children: Story = {
   args: {
     ...PrimaryDefault.args,
-    className: 'scroll',
-    name: 'menuStory7',
+    name: 'menuStory5',
+    title: 'menuStory5',
+    options: [],
   },
-  render: args => <UnControlledMenu {...args} />,
-}
-
-export const Nested: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    className: 'scroll',
-    name: 'menuStory7',
-    dropdownProps: { width: 'min-w-96' },
-  },
-  render: args => <NestedMenu {...args} />,
+  render: args => (
+    <Menu {...args}>
+      <MenuItemButton
+        className="rounded-none"
+        variant={args.variant}
+        color={args.color}
+        size={args.size}
+      >
+        MenuItemButton
+      </MenuItemButton>
+      <MenuItemButton
+        className="rounded-none"
+        variant={args.variant}
+        color={args.color}
+        size={args.size}
+      >
+        MenuItemButton
+      </MenuItemButton>
+      <MenuItemButton
+        className="rounded-none"
+        variant={args.variant}
+        color={args.color}
+        size={args.size}
+      >
+        MenuItemButton
+      </MenuItemButton>
+      <MenuItemButton
+        className="rounded-none"
+        variant={args.variant}
+        color={args.color}
+        size={args.size}
+      >
+        MenuItemButton
+      </MenuItemButton>
+    </Menu>
+  ),
 }

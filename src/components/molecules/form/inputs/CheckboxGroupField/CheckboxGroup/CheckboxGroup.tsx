@@ -1,22 +1,23 @@
 'use client'
 import { FieldsetHTMLAttributes, forwardRef, useCallback } from 'react'
 
-import { InputProps, OptionType, StyleProps } from '@/components/types'
+import { InputProps, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { Checkbox, CheckboxProps } from '../../CheckboxField/Checkbox/Checkbox'
+import { Switch } from '../../SwitchField/Switch'
 
 export type CheckboxGroupProps = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'onChange'> &
   InputProps &
-  Omit<StyleProps, 'variant'> & {
+  StyleProps & {
     /** checkboxGroup value */
     value: string[]
     /** group options for individual radio inputs */
     options: OptionType[]
     /** display radio inputs in column */
     column?: boolean
-    /** style variant of component */
-    variant?: StyleProps['variant'] | 'switch'
+    /** optional boolean for switch version */
+    switchType?: boolean
     /** optional checkbox props */
     checkboxProps?: Partial<CheckboxProps>
     /** onChange function */
@@ -32,6 +33,7 @@ export const CheckboxGroup = forwardRef<HTMLFieldSetElement | null, CheckboxGrou
       value,
       options,
       column,
+      switchType = false,
       variant = 'outlined',
       color = 'primary',
       size = 'md',
@@ -72,23 +74,41 @@ export const CheckboxGroup = forwardRef<HTMLFieldSetElement | null, CheckboxGrou
         ref={ref}
         {...rest}
       >
-        {options.map(({ value: checkboxValue, label: checkboxLabel, content }) => (
-          <Checkbox
-            key={checkboxValue}
-            name={checkboxValue}
-            label={checkboxLabel}
-            value={checkboxValue}
-            content={content}
-            variant={variant}
-            color={color}
-            size={size}
-            isChecked={isChecked(checkboxValue)}
-            disabled={disabled}
-            error={error}
-            onChange={handleOnChange}
-            {...checkboxProps}
-          />
-        ))}
+        {options.map(({ value: checkboxValue, label: checkboxLabel, content }) =>
+          switchType ? (
+            <Switch
+              key={checkboxValue}
+              name={checkboxValue}
+              label={checkboxLabel}
+              value={checkboxValue}
+              content={content}
+              variant={variant}
+              color={color}
+              size={size}
+              isChecked={isChecked(checkboxValue)}
+              disabled={disabled}
+              error={error}
+              onChange={handleOnChange}
+              {...checkboxProps}
+            />
+          ) : (
+            <Checkbox
+              key={checkboxValue}
+              name={checkboxValue}
+              label={checkboxLabel}
+              value={checkboxValue}
+              content={content}
+              variant={variant}
+              color={color}
+              size={size}
+              isChecked={isChecked(checkboxValue)}
+              disabled={disabled}
+              error={error}
+              onChange={handleOnChange}
+              {...checkboxProps}
+            />
+          ),
+        )}
       </fieldset>
     )
   },

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { startOfDay } from 'date-fns'
 import { axe, toHaveNoViolations } from 'jest-axe'
-import { createRef } from 'react'
+import { act, createRef } from 'react'
 
 import { defaultTestDate } from '../../DatePickerField/DatePicker/DatePicker.test'
 import { fireEvent, render, screen } from '.././../../../../../../.jest/customRender'
@@ -11,7 +11,7 @@ import { MultiDatePicker } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('MultiDatePicker', () => {
-  it('default', () => {
+  it('default', async () => {
     render(
       <MultiDatePicker
         className="className"
@@ -35,7 +35,10 @@ describe('MultiDatePicker', () => {
     expect(comboboxRole).toHaveAttribute('aria-expanded', 'false')
     expect(comboboxRole).toHaveAttribute('aria-haspopup', 'true')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const dropdownTestId = screen.getByTestId('Dropdown')
     const calendarTestId = screen.getByTestId('Calendar')
 
@@ -64,7 +67,7 @@ describe('MultiDatePicker', () => {
     expect(comboboxRole).toHaveTextContent('4.3.2023, 6.3.2023')
   })
 
-  it('displayChips', () => {
+  it('displayChips', async () => {
     const spy = jest.fn()
     render(
       <MultiDatePicker
@@ -82,7 +85,10 @@ describe('MultiDatePicker', () => {
     expect(chipTestIds[1]).toHaveTextContent('6.3.2023')
     expect(clearTestIds).toHaveLength(3)
 
-    fireEvent.click(clearTestIds[0])
+    await act(async () => {
+      fireEvent.click(clearTestIds[0])
+    })
+
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith([new Date('2023-03-06')])
   })
@@ -94,7 +100,7 @@ describe('MultiDatePicker', () => {
     expect(comboboxRole).toHaveClass('error')
   })
 
-  it('dropdownProps/calendarProps/chipProps', () => {
+  it('dropdownProps/calendarProps/chipProps', async () => {
     render(
       <MultiDatePicker
         name="datePickerTest"
@@ -107,7 +113,11 @@ describe('MultiDatePicker', () => {
       />,
     )
     const comboboxRole = screen.getByRole('combobox')
-    fireEvent.click(comboboxRole)
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const dropdownTestId = screen.getByTestId('Dropdown')
     const calendarTestId = screen.getByTestId('Calendar')
     const chipTestIds = screen.getAllByTestId('Chip')
@@ -117,7 +127,7 @@ describe('MultiDatePicker', () => {
     expect(chipTestIds[0]).toHaveClass('chipClass')
   })
 
-  it('onClear', () => {
+  it('onClear', async () => {
     const spy = jest.fn()
     render(
       <MultiDatePicker
@@ -129,12 +139,16 @@ describe('MultiDatePicker', () => {
     const clearButtonTestId = screen.getByTestId('ClearButton')
 
     expect(clearButtonTestId).toBeInTheDocument()
-    fireEvent.click(clearButtonTestId)
+
+    await act(async () => {
+      fireEvent.click(clearButtonTestId)
+    })
+
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith([])
   })
 
-  it('onOpen/onClose', () => {
+  it('onOpen/onClose', async () => {
     const spyOpen = jest.fn()
     const spyClose = jest.fn()
 
@@ -149,19 +163,24 @@ describe('MultiDatePicker', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
 
     expect(spyOpen).toHaveBeenCalledTimes(1)
     expect(spyClose).toHaveBeenCalledTimes(0)
 
     spyOpen.mockClear()
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     expect(spyClose).toHaveBeenCalledTimes(1)
     expect(spyOpen).toHaveBeenCalledTimes(0)
   })
 
-  it('onChange', () => {
+  it('onChange', async () => {
     const spy = jest.fn()
     render(
       <MultiDatePicker
@@ -173,8 +192,15 @@ describe('MultiDatePicker', () => {
     const comboboxRole = screen.getByRole('combobox')
 
     expect(comboboxRole).toHaveTextContent('4.3.2023')
-    fireEvent.click(comboboxRole)
-    fireEvent.click(screen.getAllByRole('gridcell')[8])
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
+    await act(async () => {
+      fireEvent.click(screen.getAllByRole('gridcell')[8])
+    })
+
     expect(spy).toHaveBeenCalled()
     expect(spy).toHaveBeenCalledWith([
       startOfDay(defaultTestDate),

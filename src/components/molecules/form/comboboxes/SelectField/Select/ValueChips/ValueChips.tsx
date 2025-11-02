@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl'
 
 import { Chip, ChipProps } from '@/components/atoms/common/Chip'
 import { ClearButton } from '@/components/molecules/form/comboboxes/SelectField/Select/ClearButton'
-import { OptionType, StyleProps } from '@/components/types'
+import { OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 export type ValueChipsProps<T = string> = StyleProps & {

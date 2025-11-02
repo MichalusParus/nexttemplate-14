@@ -1,9 +1,26 @@
+'use client'
 import { Avatar } from '@/components/atoms/common/Avatar'
+import { Button } from '@/components/atoms/common/Button'
+import { Dialog } from '@/components/molecules/popovers/Dialog'
+import { useNavigationBlocker } from '@/utils/hooks/useNavigationBlocker'
 
 export default function Home() {
+  const { isOpen, proceedNavigation, cancelNavigation } = useNavigationBlocker()
+
   return (
     <div>
       <Avatar username="wichal korybut wikora" />
+      <Dialog
+        name="navBlocker"
+        isOpen={isOpen}
+        title="Really?"
+        setIsOpen={cancelNavigation}
+        dialogActions={
+          <>
+            <Button onClick={proceedNavigation}>Allow</Button>
+          </>
+        }
+      ></Dialog>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus reiciendis voluptates
       sint. Voluptatum molestiae aperiam porro cumque, beatae ducimus. Laborum pariatur ad
       consequatur vel dolor at culpa, dolores eius eaque adipisci voluptas perspiciatis quia

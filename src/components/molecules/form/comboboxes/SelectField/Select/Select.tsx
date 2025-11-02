@@ -15,8 +15,8 @@ import { ListBox } from '@/components/atoms/common/ListBox'
 import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
-import { OptionType } from '@/components/types'
-import { useFocus } from '@/utils/hooks/useFocus'
+import { useGroupedOptions } from '@/components/utils/hooks/useGroupedOptions'
+import { OptionGroupType, OptionType } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { SelectCombobox, SelectComboboxProps } from './SelectCombobox'
@@ -32,7 +32,7 @@ export type SelectProps<T = string> = Omit<
   /** optional multiValue for displaing multiselect values */
   multiValue?: T[]
   /** options for select to choose from */
-  options: OptionType<T>[]
+  options: OptionType<T>[] | OptionGroupType<T>[]
   /** for passing aditional props to dropdown */
   dropdownProps?: Partial<DropdownProps>
   /** for passing aditional props to listbox */
@@ -73,31 +73,26 @@ function SelectComponent<T = string>(
     () => componentRef.current,
   )
   const [isOpen, setIsOpen] = useState(false)
-  const sortedOptions = placement === 'top' ? options.reverse() : options
-  const selectedOptions = options.filter(option =>
-    multiValue ? multiValue.some(v => isEqual(v, option.value)) : value === option.value,
-  )
-  const { focusableEl } = useFocus(
-    isOpen,
-    componentRef,
-    ['.SelectCombobox', '.Option'],
-    () => setIsOpen(false),
-    {
-      portalRef: dropdownRef,
-    },
+  const { isGrouped, flatOptions } = useGroupedOptions<OptionType<T>>(options)
+  const selectedOptions = flatOptions.filter(option =>
+    multiValue ? multiValue.some(v => isEqual(v, option.value)) : isEqual(value, option.value),
   )
 
+  const handleClose = useCallback(() => {
+    setIsOpen(false)
+    onClose?.()
+  }, [setIsOpen, onClose])
+
   const handleOpen = useCallback(() => {
-    if (focusableEl[0]) {
-      focusableEl[0].focus()
-    }
-    if (isOpen) {
-      onClose?.()
-    } else {
+    // if (focusableEl[0]) {
+    //   focusableEl[0].focus()
+    // }
+    if (isOpen) handleClose()
+    else {
       onOpen?.()
+      setIsOpen(true)
     }
-    setIsOpen(prev => !prev)
-  }, [focusableEl, isOpen, onOpen, onClose])
+  }, [isOpen, setIsOpen, onOpen, handleClose])
 
   const handleOnChange = useCallback(
     (value: T) => {
@@ -126,12 +121,11 @@ function SelectComponent<T = string>(
       />
       <Dropdown
         isOpen={isOpen}
-        parentRef={componentRef}
+        anchorRef={componentRef}
         placement={placement}
         variant={variant}
         color={color}
-        modal
-        onClose={handleOpen}
+        onClose={handleClose}
         scrollShadowProps={{ disableHorizontal: true }}
         ref={dropdownRef}
         {...dropdownProps}
@@ -139,7 +133,8 @@ function SelectComponent<T = string>(
         <ListBox<T>
           name={`${name}-listbox`}
           value={multiValue ? multiValue : [value]}
-          options={sortedOptions}
+          options={options}
+          isGrouped={isGrouped}
           variant={variant}
           color={color}
           size={size}

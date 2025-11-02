@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { startOfDay } from 'date-fns'
 import { axe, toHaveNoViolations } from 'jest-axe'
-import { createRef } from 'react'
+import { act, createRef } from 'react'
 
 import { defaultTestDate } from '../../DatePickerField/DatePicker/DatePicker.test'
 import { fireEvent, render, screen } from '.././../../../../../../.jest/customRender'
@@ -11,7 +11,7 @@ import { RangeDatePicker } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('RangeDatePicker', () => {
-  it('default', () => {
+  it('default', async () => {
     render(
       <RangeDatePicker
         className="className"
@@ -35,7 +35,10 @@ describe('RangeDatePicker', () => {
     expect(comboboxRole).toHaveAttribute('aria-expanded', 'false')
     expect(comboboxRole).toHaveAttribute('aria-haspopup', 'true')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const dropdownTestId = screen.getByTestId('Dropdown')
     const calendarTestId = screen.getByTestId('Calendar')
 
@@ -71,7 +74,7 @@ describe('RangeDatePicker', () => {
     expect(comboboxRole).toHaveClass('error')
   })
 
-  it('onOpen/onClose', () => {
+  it('onOpen/onClose', async () => {
     const spyOpen = jest.fn()
     const spyClose = jest.fn()
 
@@ -86,19 +89,24 @@ describe('RangeDatePicker', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
 
     expect(spyOpen).toHaveBeenCalledTimes(1)
     expect(spyClose).toHaveBeenCalledTimes(0)
 
     spyOpen.mockClear()
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     expect(spyClose).toHaveBeenCalledTimes(1)
     expect(spyOpen).toHaveBeenCalledTimes(0)
   })
 
-  it('dropdownProps/calendarProps', () => {
+  it('dropdownProps/calendarProps', async () => {
     render(
       <RangeDatePicker
         name="datePickerTest"
@@ -109,7 +117,11 @@ describe('RangeDatePicker', () => {
       />,
     )
     const comboboxRole = screen.getByRole('combobox')
-    fireEvent.click(comboboxRole)
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const dropdownTestId = screen.getByTestId('Dropdown')
     const calendarTestId = screen.getByTestId('Calendar')
 
@@ -117,7 +129,7 @@ describe('RangeDatePicker', () => {
     expect(calendarTestId).toHaveClass('calendarClass')
   })
 
-  it('uncompleteSelection', () => {
+  it('uncompleteSelection', async () => {
     const spy = jest.fn()
     render(
       <RangeDatePicker
@@ -129,14 +141,19 @@ describe('RangeDatePicker', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
 
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith({})
   })
 
-  it('onChange', () => {
+  it('onChange', async () => {
     const spy = jest.fn()
     render(
       <RangeDatePicker
@@ -148,8 +165,14 @@ describe('RangeDatePicker', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
-    fireEvent.click(screen.getAllByRole('gridcell')[8])
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
+    await act(async () => {
+      fireEvent.click(screen.getAllByRole('gridcell')[8])
+    })
+
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith({
       start: defaultTestDate,

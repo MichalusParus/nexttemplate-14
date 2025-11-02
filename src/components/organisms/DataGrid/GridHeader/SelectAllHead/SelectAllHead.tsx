@@ -4,7 +4,7 @@ import { forwardRef } from 'react'
 
 import { buttonVariant, iconOnlySize } from '@/components/atoms/common/Button/Button.style'
 import { Checkbox } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 export type SelectAllHeadProps = StyleProps & {

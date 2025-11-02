@@ -13,7 +13,7 @@ import {
   screen,
   waitFor,
 } from '../../../../../../.jest/customRender'
-import { Form } from '../../Form'
+import { Form } from '../../forms/Form'
 import { FileField } from '.'
 import { createMockFile } from './FileInput/FileInput.test'
 
@@ -22,7 +22,8 @@ expect.extend(toHaveNoViolations)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const FieldWithHooks = (props: any) => {
   const file = createMockFile()
-  const defaultvalue = props?.noDefault ? [] : [file]
+  const { noDefault, ...rest } = props
+  const defaultvalue = noDefault ? [] : [file]
   const formSchema = z.object({
     fieldTest: z.array(z.instanceof(File)).min(1, 'min 1 file'),
   })
@@ -32,7 +33,7 @@ const FieldWithHooks = (props: any) => {
   })
   return (
     <Form name="testForm" form={form} onSubmit={() => {}}>
-      <FileField className="className" name="fieldTest" label="Label" {...props} />
+      <FileField className="className" name="fieldTest" label="Label" {...rest} />
       <button form="testForm" type="submit" data-testid="submitButton">
         Submit
       </button>
@@ -68,16 +69,19 @@ describe('FileField', () => {
     expect(alertQuery).toBeNull()
   })
 
-  it('value', () => {
+  it('value', async () => {
     render(<FieldWithHooks />)
     const inputTestId = screen.getByTestId('FileInput')
     const file = createMockFile()
 
-    fireEvent.change(inputTestId, {
-      target: {
-        files: [file],
-      },
+    await act(async () => {
+      fireEvent.change(inputTestId, {
+        target: {
+          files: [file],
+        },
+      })
     })
+
     const fileDetailTestId = screen.queryAllByTestId('FileDetail')
 
     waitFor(() => {
@@ -99,7 +103,10 @@ describe('FileField', () => {
     render(<FieldWithHooks noDefault />)
     const inputTestId = screen.getByTestId('FileInput')
 
-    fireEvent.submit(screen.getByTestId('submitButton'))
+    await act(async () => {
+      fireEvent.submit(screen.getByTestId('submitButton'))
+    })
+
     const alertRole = screen.getByTestId('Alert')
 
     await waitFor(() => {
@@ -118,6 +125,17 @@ describe('FileField', () => {
     const file = createMockFile('test.pdf', 'application/pdf')
 
     await act(async () => {
+      Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+        configurable: true,
+        value: 100,
+      })
+      Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
+        configurable: true,
+        value: 200,
+      })
+    })
+
+    await act(async () => {
       const event = createEvent.drop(inputWrapTestId)
       Object.defineProperty(event, 'dataTransfer', {
         value: {
@@ -132,13 +150,23 @@ describe('FileField', () => {
     expect(spy).toHaveBeenCalledWith(file)
   })
 
-  it('onDelete', () => {
+  it('onDelete', async () => {
     const spy = jest.fn()
     const file = createMockFile()
     render(<FieldWithHooks onDelete={spy} />)
     const fileDeleteButtonTestId = screen.getByTestId('DeleteButton')
 
-    fireEvent.click(fileDeleteButtonTestId)
+    await act(async () => {
+      Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+        configurable: true,
+        value: 100,
+      })
+      Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
+        configurable: true,
+        value: 200,
+      })
+      fireEvent.click(fileDeleteButtonTestId)
+    })
 
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith(file)
@@ -151,11 +179,22 @@ describe('FileField', () => {
     expect(labelWrapTestId).toHaveClass('className')
   })
 
-  it('onSubmit', () => {
+  it('onSubmit', async () => {
     const spy = jest.fn()
     render(<FieldWithHooks />)
     screen.getByTestId('Form').onsubmit = spy
-    fireEvent.click(screen.getByTestId('submitButton'))
+
+    await act(async () => {
+      Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+        configurable: true,
+        value: 100,
+      })
+      Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
+        configurable: true,
+        value: 200,
+      })
+      fireEvent.click(screen.getByTestId('submitButton'))
+    })
     // TODO beenCalledWith, spy return native event and not values
     expect(spy).toHaveBeenCalled()
   })

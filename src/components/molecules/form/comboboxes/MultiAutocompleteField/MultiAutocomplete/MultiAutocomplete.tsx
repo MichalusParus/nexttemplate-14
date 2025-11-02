@@ -2,7 +2,8 @@
 import { isEqual } from 'lodash'
 import { ForwardedRef, forwardRef, useCallback, useEffect, useRef, useState } from 'react'
 
-import { OptionType } from '@/components/types'
+import { useGroupedOptions } from '@/components/utils/hooks/useGroupedOptions'
+import { OptionType } from '@/components/utils/types'
 
 import { Autocomplete, AutocompleteProps } from '../../AutocompleteField/Autocomplete/Autocomplete'
 
@@ -21,23 +22,23 @@ function MultiAutocompleteComponent<T = string>(
   { value, options, onInputChange, onChange, ...rest }: MultiAutocompleteProps<T>,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
+  const { flatOptions } = useGroupedOptions<OptionType<T>>(options)
   const [selectedOptions, setSelectedOptions] = useState<OptionType<T>[]>([])
   const selectedOptionsRef = useRef<number>(0)
 
   const handleOnChange = useCallback(
     (v: T) => {
-      const newValues = value.some(val => isEqual(val, v))
-        ? value.filter(val => !isEqual(val, v))
-        : [...value, v]
+      const alreadySelected = value.some(val => isEqual(val, v))
+      const newValues = alreadySelected ? value.filter(val => !isEqual(val, v)) : [...value, v]
       onChange(newValues)
       setSelectedOptions(prev =>
         prev.find(option => isEqual(option.value, v))
           ? prev.filter(option => !isEqual(option.value, v))
-          : [...prev, ...options.filter(option => isEqual(option.value, v))],
+          : [...prev, ...flatOptions.filter(option => isEqual(option.value, v))],
       )
       selectedOptionsRef.current = newValues.length
     },
-    [value, options, setSelectedOptions, onChange],
+    [value, flatOptions, setSelectedOptions, onChange],
   )
 
   const handleClear = useCallback(() => {
@@ -48,10 +49,12 @@ function MultiAutocompleteComponent<T = string>(
 
   useEffect(() => {
     if (value.length !== selectedOptionsRef.current) {
-      const newSelectedOptions = options.filter(option => value.some(v => isEqual(v, option.value)))
+      const newSelectedOptions = flatOptions.filter(option =>
+        value.some(v => isEqual(v, option.value)),
+      )
       setSelectedOptions(newSelectedOptions)
     }
-  }, [value, options])
+  }, [value, flatOptions])
 
   return (
     <Autocomplete

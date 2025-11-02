@@ -23,17 +23,66 @@ const meta: Meta<typeof ToastProvider> = {
 const ToastProviderWithHooks = () => {
   const { addToast } = useToast()
   return (
-    <div className="flex h-screen items-center justify-center gap-4">
-      <Button onClick={() => addToast('success', 'success message', 'Success title')}>
-        success
-      </Button>
-      <Button onClick={() => addToast('info', 'info message', 'Info title')}>info</Button>
-      <Button onClick={() => addToast('warning', 'warning message', 'Warning title')}>
-        Warning
-      </Button>
-      <Button color="error" onClick={() => addToast('error', 'error message', 'Error title')}>
-        error
-      </Button>
+    <div className="flex h-screen flex-col items-center justify-center gap-4">
+      <div className="flex items-center justify-center gap-4">
+        <Button
+          className="bg-success-800 text-success-50"
+          color="none"
+          onClick={() => addToast('success', 'success message', 'Success title')}
+        >
+          Success Toast
+        </Button>
+        <Button
+          className="bg-info-800 text-info-50"
+          color="none"
+          onClick={() => addToast('info', 'info message', 'Info title')}
+        >
+          Info Toast
+        </Button>
+        <Button
+          className="bg-warning-800 text-warning-50"
+          color="none"
+          onClick={() => addToast('warning', 'warning message', 'Warning title')}
+        >
+          Warning Toast
+        </Button>
+        <Button color="error" onClick={() => addToast('error', 'error message', 'Error title')}>
+          Error Toast
+        </Button>
+      </div>
+      <div className="flex items-center justify-center gap-4">
+        <Button
+          className="bg-success-800 text-success-50"
+          color="none"
+          onClick={() =>
+            addToast('success', 'success message', 'Success title', { isPersistent: true })
+          }
+        >
+          Persistent Success
+        </Button>
+        <Button
+          className="bg-info-800 text-info-50"
+          color="none"
+          onClick={() => addToast('info', 'info message', 'Info title', { isPersistent: true })}
+        >
+          Persistent Info
+        </Button>
+        <Button
+          className="bg-warning-800 text-warning-50"
+          color="none"
+          onClick={() =>
+            addToast('warning', 'warning message', 'Warning title', { isPersistent: true })
+          }
+        >
+          Persistent Warning
+        </Button>
+        <Button
+          color="error"
+          onClick={() => addToast('error', 'error message', 'Error title', { isPersistent: true })}
+        >
+          Persistent Error
+        </Button>
+      </div>
     </div>
   )
 }

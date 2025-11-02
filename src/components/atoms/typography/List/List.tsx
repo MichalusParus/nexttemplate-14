@@ -1,6 +1,6 @@
 import { forwardRef, OlHTMLAttributes, ReactNode } from 'react'
 
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { P, PProps } from '../P'

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
 import { axe, toHaveNoViolations } from 'jest-axe'
-import { createRef } from 'react'
+import { act, createRef } from 'react'
 
 import { render, screen } from '../../../../../.jest/customRender'
 import { Link } from '.'
@@ -90,9 +90,15 @@ describe('Link', () => {
   })
 
   it('axe', async () => {
-    const { container } = render(<Link href="#">title</Link>)
+    let container
+    await act(async () => {
+      const result = render(<Link href="#">title</Link>)
+      container = result.container
+    })
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+    await act(async () => {
+      const results = await axe(container!)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

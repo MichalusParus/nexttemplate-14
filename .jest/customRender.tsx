@@ -4,7 +4,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
-import { Form } from '../src/components/molecules/form/Form'
+import { Form } from '../src/components/molecules/form/forms/Form'
 
 const JestMockProvider = ({ children }: PropsWithChildren) => {
   const messages = require(`../messages/en.json`)

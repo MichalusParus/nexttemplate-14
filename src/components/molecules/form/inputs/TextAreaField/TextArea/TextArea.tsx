@@ -1,7 +1,7 @@
 'use client'
 import { forwardRef, TextareaHTMLAttributes } from 'react'
 
-import { InputProps, StyleProps } from '@/components/types'
+import { InputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import {

@@ -2,10 +2,15 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { useState, useTransition } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
-import { useFilterData } from '@/utils/hooks/useFilterData'
+import { useGroupedOptions } from '@/components/utils/hooks/useGroupedOptions'
+import { OptionGroupType, OptionType } from '@/components/utils/types'
 import { debounce } from '@/utils/utils'
 
-import { getOptions, optionsWithContent } from '../../../../../../../.storybook/helpers'
+import {
+  getGroupedOptions,
+  getOptions,
+  optionsWithContent,
+} from '../../../../../../../.storybook/helpers'
 import { MultiAutocomplete, MultiAutocompleteProps } from './MultiAutocomplete'
 
 const meta: Meta<typeof MultiAutocomplete> = {
@@ -71,16 +76,28 @@ const MultiAutocompleteWithFetch = (args: MultiAutocompleteProps) => {
 }
 
 const ClientMultiAutocomplete = (args: MultiAutocompleteProps) => {
+  const { isGrouped } = useGroupedOptions(args.options)
   const [value, setValue] = useState<string[]>([])
-  const { filteredData, setFilter } = useFilterData(args.options)
+  const [options, setOptions] = useState<OptionType[] | OptionGroupType[]>(args.options)
 
   return (
     <div className={'flex h-96 items-center justify-center'}>
       <MultiAutocomplete
         {...args}
-        options={filteredData}
+        options={options}
         value={value}
-        onInputChange={(value: string) => setFilter({ label: value })}
+        onInputChange={(value: string) =>
+          setOptions(() => {
+            if (isGrouped) {
+              return (args.options as OptionGroupType[]).map(group => ({
+                ...group,
+                options: group.groupedOptions.filter(option => option.label.startsWith(value)),
+              }))
+            } else {
+              return (args.options as OptionType[]).filter(option => option.label.startsWith(value))
+            }
+          })
+        }
         onChange={setValue}
       />
     </div>
@@ -97,6 +114,7 @@ export const PrimaryDefault: Story = {
     value: [],
     placeholder: 'placeholder',
     options: [],
+    displayChips: false,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
@@ -106,6 +124,7 @@ export const PrimaryDefault: Story = {
     inputProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
+    chipProps: undefined,
     onOpen: undefined,
     onClose: undefined,
     onInputChange: () => {},
@@ -117,8 +136,8 @@ export const PrimaryDefault: Story = {
 export const ClientFilter: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'clientMultiAutocompleteStory',
-    options: getOptions('clientMultiAutocompleteStory', 5),
+    name: 'ClientMultiAutocompleteStory',
+    options: getOptions('ClientMultiAutocompleteStory', 5),
   },
   render: args => <ClientMultiAutocomplete {...args} />,
 }
@@ -128,8 +147,9 @@ export const Top: Story = {
     ...PrimaryDefault.args,
     placement: 'top',
     name: 'MultiAutocompleteStory2',
+    options: getOptions('MultiAutocompleteStory2', 5),
   },
-  render: args => <MultiAutocompleteWithFetch {...args} />,
+  render: args => <ClientMultiAutocomplete {...args} />,
 }
 
 export const Scroll: Story = {
@@ -151,11 +171,21 @@ export const OptionsWithContent: Story = {
   render: args => <ClientMultiAutocomplete {...args} />,
 }
 
+export const GroupedOptions: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'MultiAutocompleteStory5',
+    options: getGroupedOptions('MultiAutocompleteStory5'),
+    displayChips: true,
+  },
+  render: args => <ClientMultiAutocomplete {...args} />,
+}
+
 export const IsLoading: Story = {
   args: {
     ...PrimaryDefault.args,
     isLoading: true,
-    name: 'MultiAutocompleteStory5',
+    name: 'MultiAutocompleteStory6',
   },
   render: args => <MultiAutocompleteWithFetch {...args} />,
 }
@@ -163,17 +193,19 @@ export const IsLoading: Story = {
 export const CreateNew: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'MultiAutocompleteStory6',
+    name: 'MultiAutocompleteStory7',
     children: (
-      <Button
-        className="w-full rounded-none border-none"
-        variant={PrimaryDefault.args?.variant}
-        color={PrimaryDefault.args?.color}
-        size={PrimaryDefault.args?.size}
-        onClick={() => console.log('create new')}
-      >
-        Create new
-      </Button>
+      <li>
+        <Button
+          className="w-full rounded-none border-none"
+          variant={PrimaryDefault.args?.variant}
+          color={PrimaryDefault.args?.color}
+          size={PrimaryDefault.args?.size}
+          onClick={() => console.log('create new')}
+        >
+          Create new
+        </Button>
+      </li>
     ),
   },
   render: args => <MultiAutocompleteWithFetch {...args} />,
@@ -183,7 +215,7 @@ export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
     error: 'error',
-    name: 'MultiAutocompleteStory7',
+    name: 'MultiAutocompleteStory8',
   },
   render: args => <MultiAutocompleteWithFetch {...args} />,
 }
@@ -191,7 +223,7 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'MultiAutocompleteStory8',
+    name: 'MultiAutocompleteStory9',
     disabled: true,
   },
   render: args => <MultiAutocompleteWithFetch {...args} />,

@@ -3,7 +3,11 @@ import { useState } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 
-import { getOptions, optionsWithContent } from '../../../../../../../.storybook/helpers'
+import {
+  getGroupedOptions,
+  getOptions,
+  optionsWithContent,
+} from '../../../../../../../.storybook/helpers'
 import { Select, SelectProps } from './Select'
 
 const meta: Meta<typeof Select> = {
@@ -29,7 +33,7 @@ const SelectWithHooks = (args: SelectProps<string>) => {
       <Select<string>
         {...args}
         value={value}
-        onClear={() => (args.onClear ? setValue('') : undefined)}
+        onClear={args.onClear ? () => setValue('') : undefined}
         onChange={setValue}
       />
     </div>
@@ -94,10 +98,20 @@ export const OptionsWithContent: Story = {
   render: args => <SelectWithHooks {...args} />,
 }
 
-export const OnClear: Story = {
+export const GroupedOptions: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'selectStory5',
+    options: getGroupedOptions('selectStory5'),
+    displayChips: true,
+  },
+  render: args => <SelectWithHooks {...args} />,
+}
+
+export const OnClear: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'selectStory6',
     onClear: () => console.log('clear'),
   },
   render: args => <SelectWithHooks {...args} />,
@@ -106,7 +120,7 @@ export const OnClear: Story = {
 export const CreateNew: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'selectStory6',
+    name: 'selectStory7',
     children: (
       <li>
         <Button
@@ -128,7 +142,7 @@ export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
     error: 'error',
-    name: 'selectStory7',
+    name: 'selectStory8',
   },
   render: args => <SelectWithHooks {...args} />,
 }
@@ -136,7 +150,7 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'selectStory8',
+    name: 'selectStory9',
     options: getOptions('selectStory6', 5),
     disabled: true,
   },

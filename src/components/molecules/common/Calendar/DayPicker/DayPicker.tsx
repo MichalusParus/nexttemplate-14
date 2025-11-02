@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { P } from '@/components/atoms/typography/P'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 export type DateButtonType = {

@@ -1,10 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 
-import { getOptions, optionsWithContent } from '../../../../../.storybook/helpers'
+import {
+  getGroupedOptions,
+  getOptions,
+  optionsWithContent,
+} from '../../../../../.storybook/helpers'
 import { Button } from '../Button'
 import { ListBox } from '.'
 import { ListBoxProps } from './ListBox'
+import { OptionItem } from './OptionItem'
 
 const meta: Meta<typeof ListBox> = {
   title: 'Atoms/Common/ListBox',
@@ -29,17 +34,24 @@ const meta: Meta<typeof ListBox> = {
 export default meta
 type Story = StoryObj<typeof ListBox<string>>
 
-const ListBoxWithHooks = (args: ListBoxProps) => {
+const ListBoxWithHooks = (args: ListBoxProps & { grouped?: boolean }) => {
   const [value, setValue] = useState<string[]>([])
+  const { grouped, ...restArgs } = args
 
   const handleClick = (val: string) => {
     const isNew = !value.includes(val)
     setValue(prev => (isNew ? [...prev, val] : prev.filter(v => v !== val)))
   }
+  const options = getGroupedOptions('listBoxStory4', args?.color)
 
   return (
-    <div className={`w-64 ${args.variant === 'contained' ? 'bg-primary-800' : ''}`}>
-      <ListBox {...args} value={value} onClick={handleClick} />
+    <div className={'w-64'}>
+      <ListBox
+        {...restArgs}
+        options={grouped ? options : args.options}
+        value={value}
+        onClick={handleClick}
+      />
     </div>
   )
 }
@@ -50,6 +62,7 @@ export const PrimaryDefault: Story = {
     name: 'listBoxStory',
     value: [],
     options: getOptions('listBoxStory', 10),
+    isGrouped: false,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
@@ -78,12 +91,32 @@ export const OptionsWithContent: Story = {
   render: args => <ListBoxWithHooks {...args} />,
 }
 
-export const Children: Story = {
+export const GroupedOptions: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'listBoxStory4',
+    isGrouped: true,
+  },
+  render: args => <ListBoxWithHooks {...args} grouped />,
+}
+
+export const Children: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'listBoxStory5',
+    options: [],
+    noOptionLabel: '',
     children: (
-      <li>
+      <>
+        {getOptions('listBoxStory', 4).map(option => (
+          <OptionItem
+            key={option.label}
+            label={option.label}
+            value={option.value}
+            isSelected={false}
+            onClick={console.log}
+          />
+        ))}
         <Button
           className="w-full rounded-none border-none"
           variant={PrimaryDefault.args?.variant}
@@ -93,7 +126,7 @@ export const Children: Story = {
         >
           Create new
         </Button>
-      </li>
+      </>
     ),
   },
   render: args => <ListBoxWithHooks {...args} />,

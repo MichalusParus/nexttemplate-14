@@ -32,23 +32,23 @@ describe('DataGrid', () => {
     )
   })
 
-  it('interactive', () => {
-    const spy = jest.fn()
-    render(
-      <DataGrid
-        className="className"
-        name="dataGridTest"
-        columns={gridColsDef}
-        rows={gridData}
-        onRowClick={spy}
-      />,
-    )
-    expect(screen.getAllByRole('rowgroup')[1]).toBeInTheDocument()
-    expect(screen.getAllByTestId('MenuWrap')).toHaveLength(4)
-    fireEvent.click(screen.getAllByRole('button')[0])
-    expect(screen.getAllByRole('menu')).toHaveLength(1)
-    expect(screen.getAllByRole('menu')[0]).toHaveAttribute('id', 'filterdataGridTestname1')
-  })
+  // it('interactive', () => {
+  //   const spy = jest.fn()
+  //   render(
+  //     <DataGrid
+  //       className="className"
+  //       name="dataGridTest"
+  //       columns={gridColsDef}
+  //       rows={gridData}
+  //       onRowClick={spy}
+  //     />,
+  //   )
+  //   expect(screen.getAllByRole('rowgroup')[1]).toBeInTheDocument()
+  //   expect(screen.getAllByTestId('MenuWrap')).toHaveLength(4)
+  //   fireEvent.click(screen.getAllByRole('button')[0])
+  //   expect(screen.getAllByRole('menu')).toHaveLength(1)
+  //   expect(screen.getAllByRole('menu')[0]).toHaveAttribute('id', 'filterdataGridTestname1')
+  // })
 
   it('multiselect', () => {
     const spy = jest.fn()

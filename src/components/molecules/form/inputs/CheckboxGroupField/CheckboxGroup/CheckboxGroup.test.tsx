@@ -76,44 +76,6 @@ describe('CheckboxGroup', () => {
     expect(labelTestIds[3]).toHaveTextContent(`very long label4${textContent.slice(0, 21)}`)
   })
 
-  it('switch', () => {
-    render(
-      <CheckboxGroup
-        name="checkboxGroupTest"
-        value={[options[0].value]}
-        options={options}
-        variant="switch"
-        onChange={() => {}}
-      />,
-    )
-    const switchThumbTestIds = screen.getAllByTestId('SwitchThumb')
-    const checkboxRoles = screen.getAllByRole('checkbox')
-    const labelTestIds = screen.getAllByTestId('Label')
-
-    expect(switchThumbTestIds).toHaveLength(options.length)
-    expect(checkboxRoles[0]).toHaveAttribute('id', options[0].value)
-    expect(checkboxRoles[0]).toHaveAttribute('name', options[0].value)
-    expect(checkboxRoles[0]).toHaveAttribute('type', 'checkbox')
-    expect(checkboxRoles[0]).toHaveAttribute('value', options[0].value)
-    expect(checkboxRoles[0]).toHaveAttribute('checked')
-    expect(labelTestIds[0]).toBeInTheDocument()
-    expect(labelTestIds[0]).toHaveAttribute('id', `${options[0].value}-label`)
-    expect(labelTestIds[0]).toHaveTextContent(options[0].label)
-    expect(labelTestIds[0]).toHaveAttribute('for', options[0].value)
-    expect(checkboxRoles[3]).toHaveAttribute('id', options[3].value)
-    expect(checkboxRoles[3]).toHaveAttribute('name', options[3].value)
-    expect(checkboxRoles[3]).toHaveAttribute('type', 'checkbox')
-    expect(checkboxRoles[3]).toHaveAttribute('value', options[3].value)
-    expect(labelTestIds[3]).toHaveTextContent(options[3].label)
-    expect(checkboxRoles[3]).not.toHaveAttribute('checked')
-    expect(labelTestIds[3]).toBeInTheDocument()
-    expect(labelTestIds[3]).toHaveAttribute('id', `${options[3].value}-label`)
-    expect(labelTestIds[3]).toHaveTextContent(options[3].label)
-    expect(labelTestIds[3]).toHaveAttribute('for', options[3].value)
-    checkboxRoles[0].focus()
-    expect(document.activeElement).toBe(checkboxRoles[0])
-  })
-
   it('value', () => {
     render(
       <CheckboxGroup

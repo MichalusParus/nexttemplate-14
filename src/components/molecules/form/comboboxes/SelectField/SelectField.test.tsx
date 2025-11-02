@@ -2,12 +2,13 @@ import '@testing-library/jest-dom'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { act } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 
 import { fireEvent, render, screen, waitFor } from '../../../../../../.jest/customRender'
 import { getOptions } from '../../../../../../.storybook/helpers'
-import { Form } from '../../Form'
+import { Form } from '../../forms/Form'
 import { SelectField } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -89,12 +90,18 @@ describe('SelectField', () => {
     render(<FieldWithHooks />)
     const comboboxRole = screen.getByRole('combobox')
     const alertRole = screen.getByTestId('Alert')
-    fireEvent.change(comboboxRole, {
-      target: {
-        value: '',
-      },
+
+    await act(async () => {
+      fireEvent.change(comboboxRole, {
+        target: {
+          value: '',
+        },
+      })
     })
-    fireEvent.submit(screen.getByTestId('submitButton'))
+
+    await act(async () => {
+      fireEvent.submit(screen.getByTestId('submitButton'))
+    })
 
     await waitFor(() => {
       expect(alertRole).toBeInTheDocument()
@@ -105,15 +112,20 @@ describe('SelectField', () => {
     })
   })
 
-  it('onChange', () => {
+  it('onChange', async () => {
     const spy = jest.fn()
     render(<FieldWithHooks onChange={spy} />)
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const optionRoles = screen.getAllByRole('option')
 
-    fireEvent.click(optionRoles[1])
+    await act(async () => {
+      fireEvent.click(optionRoles[1])
+    })
 
     expect(spy).toHaveBeenCalled()
     expect(spy).toHaveBeenCalledWith(options[1].value)
@@ -126,11 +138,15 @@ describe('SelectField', () => {
     expect(labelWrapTestId).toHaveClass('className')
   })
 
-  it('onSubmit', () => {
+  it('onSubmit', async () => {
     const spy = jest.fn()
     render(<FieldWithHooks />)
     screen.getByTestId('Form').onsubmit = spy
-    fireEvent.click(screen.getByTestId('submitButton'))
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('submitButton'))
+    })
+
     // TODO beenCalledWith, spy return native event and not values
     expect(spy).toHaveBeenCalled()
   })

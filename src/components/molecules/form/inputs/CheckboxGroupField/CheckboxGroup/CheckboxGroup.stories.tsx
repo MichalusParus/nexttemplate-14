@@ -33,6 +33,7 @@ export const PrimaryDefault: Story = {
     value: [],
     options: getOptions('checkboxGroupStory', 5),
     column: false,
+    switchType: false,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
@@ -49,8 +50,18 @@ export const Column: Story = {
     ...PrimaryDefault.args,
     name: 'checkboxGroupStory2',
     options: getOptions('checkboxGroupStory2', 5),
-
     column: true,
+  },
+  render: args => <CheckboxGroupWithHooks {...args} />,
+}
+
+export const SwitchType: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'checkboxGroupStory3',
+    options: getOptions('checkboxGroupStory3', 5),
+    column: true,
+    switchType: true,
   },
   render: args => <CheckboxGroupWithHooks {...args} />,
 }
@@ -58,7 +69,7 @@ export const Column: Story = {
 export const OptionsWithContent: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'checkboxGroupStory3',
+    name: 'checkboxGroupStory4',
     options: optionsWithContent.slice(0, 5),
     column: true,
   },
@@ -68,7 +79,7 @@ export const OptionsWithContent: Story = {
 export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'checkboxGroupStory4',
+    name: 'checkboxGroupStory5',
     options: getOptions('checkboxGroupStory4', 5),
 
     error: 'error',
@@ -79,7 +90,7 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'checkboxGroupStory5',
+    name: 'checkboxGroupStory6',
     options: getOptions('checkboxGroupStory5', 5),
     disabled: true,
   },

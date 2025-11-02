@@ -87,14 +87,13 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
         />
         <Dropdown
           isOpen={isOpen}
-          parentRef={componentRef}
+          anchorRef={componentRef}
           placement={placement}
           variant={variant}
           color={color}
           padding="p-0"
           width={'w-auto'}
           height="max-h-full"
-          modal
           scrollShadowProps={{
             className: '[&_.ContentWrap]:px-0',
             ...scrollShadowProps,

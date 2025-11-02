@@ -2,11 +2,12 @@ import '@testing-library/jest-dom'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { act } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 
 import { fireEvent, render, screen, waitFor } from '../../../../../../.jest/customRender'
-import { Form } from '../../Form'
+import { Form } from '../../forms/Form'
 import { TextAreaField } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -63,16 +64,18 @@ describe('TextAreaField', () => {
     expect(alertQuery).toBeNull()
   })
 
-  it('value', () => {
+  it('value', async () => {
     render(<FieldWithHooks />)
     const inputRole = screen.getByRole('textbox')
 
     expect(inputRole).toHaveValue('value')
 
-    fireEvent.change(inputRole, {
-      target: {
-        value: 'newValue',
-      },
+    await act(async () => {
+      fireEvent.change(inputRole, {
+        target: {
+          value: 'newValue',
+        },
+      })
     })
 
     expect(inputRole).toHaveValue('newValue')
@@ -92,12 +95,18 @@ describe('TextAreaField', () => {
     render(<FieldWithHooks />)
     const inputRole = screen.getByRole('textbox')
     const alertRole = screen.getByTestId('Alert')
-    fireEvent.change(inputRole, {
-      target: {
-        value: '',
-      },
+
+    await act(async () => {
+      fireEvent.change(inputRole, {
+        target: {
+          value: '',
+        },
+      })
     })
-    fireEvent.submit(screen.getByTestId('submitButton'))
+
+    await act(async () => {
+      fireEvent.submit(screen.getByTestId('submitButton'))
+    })
 
     await waitFor(() => {
       expect(alertRole).toBeInTheDocument()
@@ -108,15 +117,17 @@ describe('TextAreaField', () => {
     })
   })
 
-  it('onChange', () => {
+  it('onChange', async () => {
     const spy = jest.fn()
     render(<FieldWithHooks onChange={spy} />)
     const inputRole = screen.getByRole('textbox')
 
-    fireEvent.change(inputRole, {
-      target: {
-        value: 'newValue',
-      },
+    await act(async () => {
+      fireEvent.change(inputRole, {
+        target: {
+          value: 'newValue',
+        },
+      })
     })
 
     expect(spy).toHaveBeenCalled()
@@ -130,11 +141,15 @@ describe('TextAreaField', () => {
     expect(labelWrapTestId).toHaveClass('className')
   })
 
-  it('onSubmit', () => {
+  it('onSubmit', async () => {
     const spy = jest.fn()
     render(<FieldWithHooks />)
     screen.getByTestId('Form').onsubmit = spy
-    fireEvent.click(screen.getByTestId('submitButton'))
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('submitButton'))
+    })
+
     // TODO beenCalledWith, spy return native event and not values
     expect(spy).toHaveBeenCalled()
   })

@@ -57,7 +57,7 @@ export const SideBar = ({ className }: HeaderProps) => {
           <div className="flex flex-col gap-6 pt-4">
             <Logo
               className="mx-auto px-2 [&>.LogoTitle]:hidden md:[&>.LogoTitle]:block"
-              url={ADMINROUTES.dashboard}
+              href={ADMINROUTES.dashboard}
             />
             <Nav navLinks={navLinks} menu linkProps={{ variant: 'contained' }} />
           </div>

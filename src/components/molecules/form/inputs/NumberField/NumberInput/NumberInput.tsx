@@ -1,7 +1,7 @@
 'use client'
 import { forwardRef, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 
-import { InputProps, NativeInputProps, StyleProps } from '@/components/types'
+import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 
 import { TextInput } from '../../TextField/TextInput'
 import { cleanValue, formatValue, getSeparators, validateValue } from './utils'

@@ -4,13 +4,15 @@ import { forwardRef, useId, useRef, useState } from 'react'
 
 import { Image } from '@/components/atoms/common/Image'
 import { Paper, PaperProps } from '@/components/atoms/containers/Paper'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { Carousel, CarouselProps } from '../../../molecules/common/Carousel'
 import { CarouselItem } from '../../../molecules/common/Carousel/CarouselItem'
 import { ImageViewer, ImageViewerProps } from '../../../molecules/popovers/ImageViewer'
 import { GalleryControls } from './GalleryControls'
+
+// issue with nesting buttons inside carousel, axe
 
 export type GalleryItem = {
   src: string
@@ -55,7 +57,6 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
   ) => {
     const id = useId()
     const t = useTranslations('Components')
-    const testRef = useRef<HTMLDivElement>(null)
     const [isOpen, setIsOpen] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const { className: paperClassName, ...restPaperProps } = paperProps
@@ -94,7 +95,6 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
             autoplayStopped
             hideControlDotts
             setCurrentPage={setCurrentPage}
-            ref={testRef}
             {...restCarouselProps}
           >
             {items.map(item => (

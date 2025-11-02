@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 
 import { Span } from '@/components/atoms/typography/Span'
-import { InputProps, NativeInputProps, StyleProps } from '@/components/types'
+import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { inputErrorClass } from '../../TextField/TextInput/TextInput.style'

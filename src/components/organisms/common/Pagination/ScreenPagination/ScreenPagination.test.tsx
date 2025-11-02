@@ -7,7 +7,6 @@ describe('ScreenPagination', () => {
   it('default', () => {
     render(
       <ScreenPagination
-        name="paginationTest"
         count={5}
         selectedPage={1}
         setSelectedPage={() => {}}

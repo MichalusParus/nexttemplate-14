@@ -9,7 +9,7 @@ import { Ellipsis } from '@/components/atoms/typography/Ellipsis'
 import { CalendarProps } from '@/components/molecules/common/Calendar/Calendar'
 import { ClearButton } from '@/components/molecules/form/comboboxes/SelectField/Select/ClearButton'
 import { ValueChips } from '@/components/molecules/form/comboboxes/SelectField/Select/ValueChips'
-import { InputProps, StyleProps } from '@/components/types'
+import { InputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 type PartialButtonProps = Omit<

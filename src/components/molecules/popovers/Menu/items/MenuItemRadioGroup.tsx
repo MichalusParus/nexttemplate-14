@@ -41,7 +41,7 @@ export const MenuItemRadioGroup = forwardRef<HTMLInputElement | null, MenuItemRa
             column && 'flex-col',
             className,
           )}
-          role="radiogroup"
+          aria-label={name}
           {...rest}
         >
           {options.map(({ value: radioValue, label: radioLabel, content }) => (
@@ -54,6 +54,7 @@ export const MenuItemRadioGroup = forwardRef<HTMLInputElement | null, MenuItemRa
                 buttonVariant[variant][color],
                 buttonSize[size],
               )}
+              role="presentation"
             >
               <input
                 id={radioValue}
@@ -66,12 +67,12 @@ export const MenuItemRadioGroup = forwardRef<HTMLInputElement | null, MenuItemRa
                 name={name}
                 type="radio"
                 value={radioValue}
-                checked={Boolean(value === radioValue)}
-                aria-checked={Boolean(value === radioValue)}
-                aria-describedby={`${name}-description`}
+                checked={value === radioValue}
                 disabled={disabled}
-                ref={ref}
                 role="menuitemradio"
+                tabIndex={-1}
+                aria-checked={value === radioValue}
+                ref={ref}
                 onChange={e => onChange(e.target.value)}
               />
               <label htmlFor={radioValue} className={cn('Label', 'w-full font-semibold')}>

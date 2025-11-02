@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { startOfDay } from 'date-fns'
 import { axe, toHaveNoViolations } from 'jest-axe'
-import { createRef } from 'react'
+import { act, createRef } from 'react'
 
 import { fireEvent, render, screen } from '.././../../../../../../.jest/customRender'
 import { DatePicker } from '.'
@@ -12,7 +12,7 @@ expect.extend(toHaveNoViolations)
 export const defaultTestDate = new Date('2023-03-04')
 
 describe('DatePicker', () => {
-  it('default', () => {
+  it('default', async () => {
     render(
       <DatePicker
         className="className"
@@ -36,7 +36,10 @@ describe('DatePicker', () => {
     expect(comboboxRole).toHaveAttribute('aria-expanded', 'false')
     expect(comboboxRole).toHaveAttribute('aria-haspopup', 'true')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const dropdownTestId = screen.getByTestId('Dropdown')
     const calendarTestId = screen.getByTestId('Calendar')
 
@@ -66,7 +69,7 @@ describe('DatePicker', () => {
     expect(comboboxRole).toHaveClass('error')
   })
 
-  it('dropdownProps/calendarProps', () => {
+  it('dropdownProps/calendarProps', async () => {
     render(
       <DatePicker
         name="datePickerTest"
@@ -77,7 +80,11 @@ describe('DatePicker', () => {
       />,
     )
     const comboboxRole = screen.getByRole('combobox')
-    fireEvent.click(comboboxRole)
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const dropdownTestId = screen.getByTestId('Dropdown')
     const calendarTestId = screen.getByTestId('Calendar')
 
@@ -85,7 +92,7 @@ describe('DatePicker', () => {
     expect(calendarTestId).toHaveClass('calendarClass')
   })
 
-  it('onClose', () => {
+  it('onClose', async () => {
     const spy = jest.fn()
     render(
       <DatePicker
@@ -97,12 +104,18 @@ describe('DatePicker', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it('onOpen/onClose', () => {
+  it('onOpen/onClose', async () => {
     const spyOpen = jest.fn()
     const spyClose = jest.fn()
 
@@ -117,27 +130,40 @@ describe('DatePicker', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
 
     expect(spyOpen).toHaveBeenCalledTimes(1)
     expect(spyClose).toHaveBeenCalledTimes(0)
 
     spyOpen.mockClear()
 
-    fireEvent.click(comboboxRole)
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     expect(spyClose).toHaveBeenCalledTimes(1)
     expect(spyOpen).toHaveBeenCalledTimes(0)
   })
 
-  it('onChange', () => {
+  it('onChange', async () => {
     const spy = jest.fn()
     render(<DatePicker name="datePickerTest" value={defaultTestDate} onChange={spy} />)
     const comboboxRole = screen.getByRole('combobox')
 
     expect(comboboxRole).toHaveTextContent('4.3.2023')
-    fireEvent.click(comboboxRole)
+
+    await act(async () => {
+      fireEvent.click(comboboxRole)
+    })
+
     const cellTestId = screen.getAllByRole('gridcell')
-    fireEvent.click(cellTestId[8])
+
+    await act(async () => {
+      fireEvent.click(cellTestId[8])
+    })
+
     expect(spy).toHaveBeenCalled()
     expect(spy).toHaveBeenCalledWith(startOfDay(new Date('2023-03-07')))
     expect(comboboxRole).toHaveTextContent('4.3.2023')

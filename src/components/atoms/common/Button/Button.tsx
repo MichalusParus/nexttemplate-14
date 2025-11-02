@@ -1,7 +1,7 @@
 'use client'
 import { ButtonHTMLAttributes, Children, forwardRef, ReactNode } from 'react'
 
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { InlineLoader } from '../../loaders/InlineLoader'

@@ -2,11 +2,12 @@ import '@testing-library/jest-dom'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { act } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 
 import { fireEvent, render, screen, waitFor } from '../../../../../../.jest/customRender'
-import { Form } from '../../Form'
+import { Form } from '../../forms/Form'
 import { PasswordField } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -64,16 +65,18 @@ describe('PasswordField', () => {
     expect(alertQuery).toBeNull()
   })
 
-  it('value', () => {
+  it('value', async () => {
     render(<FieldWithHooks />)
     const inputTestId = screen.getByTestId('PasswordInput')
 
     expect(inputTestId).toHaveAttribute('value', 'value')
 
-    fireEvent.change(inputTestId, {
-      target: {
-        value: 'newValue',
-      },
+    await act(async () => {
+      fireEvent.change(inputTestId, {
+        target: {
+          value: 'newValue',
+        },
+      })
     })
 
     expect(inputTestId).toHaveAttribute('value', 'newValue')
@@ -93,12 +96,18 @@ describe('PasswordField', () => {
     render(<FieldWithHooks />)
     const inputTestId = screen.getByTestId('PasswordInput')
     const alertRole = screen.getByTestId('Alert')
-    fireEvent.change(inputTestId, {
-      target: {
-        value: '',
-      },
+
+    await act(async () => {
+      fireEvent.change(inputTestId, {
+        target: {
+          value: '',
+        },
+      })
     })
-    fireEvent.submit(screen.getByTestId('submitButton'))
+
+    await act(async () => {
+      fireEvent.submit(screen.getByTestId('submitButton'))
+    })
 
     await waitFor(() => {
       expect(alertRole).toBeInTheDocument()
@@ -109,15 +118,17 @@ describe('PasswordField', () => {
     })
   })
 
-  it('onChange', () => {
+  it('onChange', async () => {
     const spy = jest.fn()
     render(<FieldWithHooks onChange={spy} />)
     const inputTestId = screen.getByTestId('PasswordInput')
 
-    fireEvent.change(inputTestId, {
-      target: {
-        value: 'newValue',
-      },
+    await act(async () => {
+      fireEvent.change(inputTestId, {
+        target: {
+          value: 'newValue',
+        },
+      })
     })
 
     expect(spy).toHaveBeenCalled()
@@ -131,11 +142,15 @@ describe('PasswordField', () => {
     expect(labelWrapTestId).toHaveClass('className')
   })
 
-  it('onSubmit', () => {
+  it('onSubmit', async () => {
     const spy = jest.fn()
     render(<FieldWithHooks />)
     screen.getByTestId('Form').onsubmit = spy
-    fireEvent.click(screen.getByTestId('submitButton'))
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('submitButton'))
+    })
+
     // TODO beenCalledWith, spy return native event and not values
     expect(spy).toHaveBeenCalled()
   })

@@ -16,7 +16,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { scrollHeight } from '../Calendar.styles'

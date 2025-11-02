@@ -4,7 +4,7 @@ import { forwardRef } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { MobilePagination } from './MobilePagination'
@@ -29,7 +29,6 @@ export const Pagination = forwardRef<HTMLDivElement | null, PaginationProps>(
   (
     {
       className,
-      name,
       count,
       selectedPage,
       variant = 'outlined',
@@ -90,7 +89,6 @@ export const Pagination = forwardRef<HTMLDivElement | null, PaginationProps>(
         </div>
         <div className={cn('PaginationInnerWrap', 'hidden xs:flex sm:hidden')}>
           <ScreenPagination
-            name={name}
             count={count}
             selectedPage={selectedPage}
             pageSpread={getPageSpread(7)}
@@ -105,7 +103,6 @@ export const Pagination = forwardRef<HTMLDivElement | null, PaginationProps>(
         </div>
         <div className={cn('PaginationInnerWrap', 'hidden sm:flex md:hidden')}>
           <ScreenPagination
-            name={name}
             count={count}
             selectedPage={selectedPage}
             pageSpread={getPageSpread(9)}
@@ -120,7 +117,6 @@ export const Pagination = forwardRef<HTMLDivElement | null, PaginationProps>(
         </div>
         <div className={cn('PaginationInnerWrap', 'hidden md:flex lg:hidden')}>
           <ScreenPagination
-            name={name}
             count={count}
             selectedPage={selectedPage}
             pageSpread={getPageSpread(11)}
@@ -135,7 +131,6 @@ export const Pagination = forwardRef<HTMLDivElement | null, PaginationProps>(
         </div>
         <div className={cn('PaginationInnerWrap', 'hidden lg:flex xl:hidden')}>
           <ScreenPagination
-            name={name}
             count={count}
             selectedPage={selectedPage}
             pageSpread={getPageSpread(13)}
@@ -150,7 +145,6 @@ export const Pagination = forwardRef<HTMLDivElement | null, PaginationProps>(
         </div>
         <div className={cn('PaginationInnerWrap', 'hidden xl:flex 2xl:hidden')}>
           <ScreenPagination
-            name={name}
             count={count}
             selectedPage={selectedPage}
             pageSpread={getPageSpread(15)}
@@ -165,7 +159,6 @@ export const Pagination = forwardRef<HTMLDivElement | null, PaginationProps>(
         </div>
         <div className={cn('PaginationInnerWrap', 'hidden 2xl:flex')}>
           <ScreenPagination
-            name={name}
             count={count}
             selectedPage={selectedPage}
             pageSpread={getPageSpread(17)}

@@ -1,12 +1,35 @@
 import { Divider } from '@/components/atoms/common/Divider'
-import { PlusIcon } from '@/components/atoms/icons'
+import { Label } from '@/components/atoms/common/Label'
+import { PlusIcon, ProfileIcon } from '@/components/atoms/icons'
 import { DateButtonType } from '@/components/molecules/common/Calendar/DayPicker'
-import { Form } from '@/components/molecules/form/Form'
+import { AutocompleteField } from '@/components/molecules/form/comboboxes/AutocompleteField'
+import { DatePickerField } from '@/components/molecules/form/comboboxes/DatePickerField'
+import { MultiAutocompleteField } from '@/components/molecules/form/comboboxes/MultiAutocompleteField'
+import { MultiDatePickerField } from '@/components/molecules/form/comboboxes/MultiDatePickerField'
+import { MultiSelectField } from '@/components/molecules/form/comboboxes/MultiSelectField'
+import { RangeDatePickerField } from '@/components/molecules/form/comboboxes/RangeDatePickerField'
+import { SelectField } from '@/components/molecules/form/comboboxes/SelectField'
+import { Form } from '@/components/molecules/form/forms/Form'
+import { CheckboxField } from '@/components/molecules/form/inputs/CheckboxField'
+import { CheckboxGroupField } from '@/components/molecules/form/inputs/CheckboxGroupField'
+import { FileField } from '@/components/molecules/form/inputs/FileField'
+import { MultiToggleGroupField } from '@/components/molecules/form/inputs/MultiToggleGroupField'
+import { NumberField } from '@/components/molecules/form/inputs/NumberField'
+import { PasswordField } from '@/components/molecules/form/inputs/PasswordField'
+import { RadioGroupField } from '@/components/molecules/form/inputs/RadioGroupField'
+import { RangeField } from '@/components/molecules/form/inputs/RangeField'
+import { SearchField } from '@/components/molecules/form/inputs/SearchField'
+import { TextAreaField } from '@/components/molecules/form/inputs/TextAreaField'
+import { TextField } from '@/components/molecules/form/inputs/TextField'
+import { ToggleGroupField } from '@/components/molecules/form/inputs/ToggleGroupField'
 import {
   MenuItemButton,
   MenuItemCheckbox,
   MenuItemRadioGroup,
 } from '@/components/molecules/popovers/Menu/items'
+import { MenuOptionGroupType, MenuOptionType } from '@/components/molecules/popovers/Menu/types'
+import { TabOption } from '@/components/organisms/common/Tabs/TabList'
+import { OptionGroupType, OptionType, StyleProps } from '@/components/utils/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   eachDayOfInterval,
@@ -51,6 +74,26 @@ export const getOptions = (name?: string, length?: number) =>
     value: 'value' + (i + 1) + (name ? name : ''),
   }))
 
+export const getGroupedOptions = (
+  name?: string,
+  color?: StyleProps['color'],
+): OptionGroupType[] => {
+  return [
+    {
+      label: 'Group 1',
+      groupedOptions: getOptions(`${name} Group 1`, 3),
+    },
+    {
+      label: 'Group 2',
+      groupedOptions: getOptions(`${name} Group 2`, 3),
+    },
+    {
+      label: 'Group 3',
+      groupedOptions: getOptions(`${name} Group 3`, 3),
+    },
+  ]
+}
+
 export const optionsWithContent = Array.from({ length: 20 }, (_, i) => ({
   label: i % 3 === 0 ? 'very long label' + (i + 1) : 'label' + (i + 1),
   value: 'value' + (i + 1),
@@ -69,6 +112,296 @@ export const tileData = Array.from({ length: 200 }, (_, i) => ({
   id: i,
   title: `Title ${i}`,
 }))
+
+export type MenuValuesType = {
+  checkbox1?: string | null
+  checkbox2?: string | null
+  checkbox3?: string | null
+  switch1?: string | null
+  switch2?: string | null
+  switch3?: string | null
+  radio?: string
+}
+
+export type ControlType = {
+  checkbox1?: () => void
+  checkbox2?: () => void
+  checkbox3?: () => void
+  switch1?: () => void
+  switch2?: () => void
+  switch3?: () => void
+  radio?: (value: string) => void
+}
+
+export const menuButtonOptions: MenuOptionType[] = [
+  {
+    type: 'button',
+    label: 'MenuButton1',
+    onClick: () => console.log('MenuButton1'),
+  },
+  {
+    type: 'button',
+    label: 'MenuButton2',
+    onClick: () => console.log('MenuButton2'),
+  },
+  {
+    type: 'button',
+    label: 'MenuButton3',
+    onClick: () => console.log('MenuButton3'),
+  },
+]
+
+export const getMenuOptions = (
+  values?: MenuValuesType,
+  control?: ControlType,
+): MenuOptionGroupType[] => {
+  return [
+    {
+      label: 'Buttons',
+      content: <Divider color="none" label="Buttons" />,
+      groupedOptions: [
+        {
+          type: 'button',
+          label: 'MenuButton1',
+          onClick: () => console.log('MenuButton1'),
+          menuItemProps: {
+            className: 'justify-start',
+            startIcon: <ProfileIcon />,
+          },
+        },
+        {
+          type: 'button',
+          label: 'MenuButton2',
+          onClick: () => console.log('MenuButton2'),
+          menuItemProps: {
+            className: 'justify-start',
+            startIcon: <ProfileIcon />,
+          },
+        },
+        {
+          type: 'button',
+          label: 'MenuButton3',
+          onClick: () => console.log('MenuButton3'),
+          menuItemProps: {
+            className: 'justify-start',
+            startIcon: <ProfileIcon />,
+          },
+        },
+      ],
+    },
+    {
+      label: 'Links',
+      content: <Divider color="none" label="Links" />,
+      groupedOptions: [
+        {
+          type: 'link',
+          label: 'MenuLink1',
+          href: '/',
+          menuItemProps: {
+            className: 'justify-start',
+            startIcon: <ProfileIcon />,
+          },
+        },
+        {
+          type: 'link',
+          label: 'MenuLink2',
+          href: '/',
+          menuItemProps: {
+            className: 'justify-start',
+            startIcon: <ProfileIcon />,
+          },
+        },
+        {
+          type: 'link',
+          label: 'MenuLink3',
+          href: '/',
+          menuItemProps: {
+            className: 'justify-start',
+            startIcon: <ProfileIcon />,
+          },
+        },
+      ],
+    },
+    {
+      label: 'Checkbox',
+      content: <Divider color="none" label="Checkbox" />,
+      groupedOptions: [
+        {
+          type: 'checkbox',
+          label: 'MenuCheckbox1',
+          isChecked: values?.checkbox1 === 'checkbox1',
+          onClick: control?.checkbox1,
+          menuItemProps: {
+            className: 'justify-start',
+          },
+        },
+        {
+          type: 'checkbox',
+          label: 'MenuCheckbox2',
+          isChecked: values?.checkbox2 === 'checkbox2',
+          onClick: control?.checkbox2,
+          menuItemProps: {
+            className: 'justify-start',
+          },
+        },
+        {
+          type: 'checkbox',
+          label: 'MenuCheckbox3',
+          isChecked: values?.checkbox3 === 'checkbox3',
+          onClick: control?.checkbox3,
+          menuItemProps: {
+            className: 'justify-start',
+          },
+        },
+      ],
+    },
+    {
+      label: 'Switch',
+      content: <Divider color="none" label="Switch" />,
+      groupedOptions: [
+        {
+          type: 'switch',
+          label: 'MenuSwitch1',
+          isChecked: values?.switch1 === 'switch1',
+          onClick: control?.switch1,
+          menuItemProps: {
+            className: 'justify-start',
+          },
+        },
+        {
+          type: 'switch',
+          label: 'MenuSwitch2',
+          isChecked: values?.switch2 === 'switch2',
+          onClick: control?.switch2,
+          menuItemProps: {
+            className: 'justify-start',
+          },
+        },
+        {
+          type: 'switch',
+          label: 'MenuSwitch3',
+          isChecked: values?.switch3 === 'switch3',
+          onClick: control?.switch3,
+          menuItemProps: {
+            className: 'justify-start',
+          },
+        },
+      ],
+    },
+    {
+      label: 'Radio',
+      content: <Divider color="none" label="Radio" />,
+      groupedOptions: [
+        {
+          type: 'radio',
+          label: 'MenuRadioGroup',
+          value: values?.radio || 'radio1',
+          options: [
+            { label: 'MenuRadio1', value: 'radio1' },
+            { label: 'MenuRadio2', value: 'radio2' },
+            { label: 'MenuRadio3', value: 'radio3' },
+          ],
+          onChange: control?.radio || console.log,
+        },
+      ],
+    },
+    {
+      label: 'Submenu',
+      content: <Divider color="none" label="Submenu" />,
+      groupedOptions: [
+        {
+          type: 'submenu',
+          label: 'MenuSubmenu1',
+          options: [
+            {
+              type: 'button',
+              label: 'SubmenuButton1',
+              onClick: () => console.log('SubmenuButton1'),
+              menuItemProps: {
+                startIcon: <ProfileIcon />,
+              },
+            },
+            {
+              type: 'button',
+              label: 'SubmenuButton2',
+              onClick: () => console.log('SubmenuButton2'),
+              menuItemProps: {
+                startIcon: <ProfileIcon />,
+              },
+            },
+            {
+              type: 'button',
+              label: 'SubmenuButton3',
+              onClick: () => console.log('SubmenuButton3'),
+              menuItemProps: {
+                startIcon: <ProfileIcon />,
+              },
+            },
+          ],
+        },
+        {
+          type: 'submenu',
+          label: 'HoverSubmenu2',
+          menuItemProps: {
+            onHoverOpen: true,
+          },
+          options: [
+            {
+              type: 'submenu',
+              label: 'NestedHoverSubmenu1',
+              menuItemProps: {
+                onHoverOpen: true,
+              },
+              options: [
+                {
+                  type: 'button',
+                  label: 'NestedCloseOnClick1',
+                  onClick: () => console.log('NestedButton1'),
+                  menuItemProps: {
+                    startIcon: <ProfileIcon />,
+                  },
+                  closeOnClick: true,
+                },
+                {
+                  type: 'button',
+                  label: 'NestedButton2',
+                  onClick: () => console.log('NestedButton2'),
+                  menuItemProps: {
+                    startIcon: <ProfileIcon />,
+                  },
+                },
+                {
+                  type: 'button',
+                  label: 'NestedButton3',
+                  onClick: () => console.log('NestedButton3'),
+                  menuItemProps: {
+                    startIcon: <ProfileIcon />,
+                  },
+                },
+              ],
+            },
+            {
+              type: 'button',
+              label: 'SubmenuButton4',
+              onClick: () => console.log('SubmenuButton4'),
+              menuItemProps: {
+                startIcon: <ProfileIcon />,
+              },
+            },
+            {
+              type: 'button',
+              label: 'SubmenuButton5',
+              onClick: () => console.log('SubmenuButton5'),
+              menuItemProps: {
+                startIcon: <ProfileIcon />,
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ]
+}
 
 export const MenuLinks = ({
   length = 5,
@@ -305,48 +638,196 @@ export const titleSizeVariants: ('none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3
   '3xl',
 ]
 
-export const formSchema = z.object({
-  inputStory: z.string().min(1),
-  numberStory: z.number().min(1),
-  searchStory: z.string().min(1),
-  passwordStory: z.string().min(1),
-  fileStory: z.array(z.instanceof(File)).min(1),
-  dateStory: z.date(),
-  dateRangeStory: z.object({ start: z.date(), end: z.date() }),
-  dateMultiStory: z.array(z.date()).min(1),
-  textareaStory: z.string().min(1),
-  rangeStory: z.number().min(20),
-  checkboxStory: z.string().min(1),
-  checkboxGroupStory: z.array(z.string()).min(1),
-  switchGroupStory: z.array(z.string()).min(1),
-  radioGroupStory: z.string().min(1),
-  selectStory: z.string().min(1),
-  multiSelectStory: z.array(z.string()).min(1),
-  autocompleteStory: z.string().min(1),
-  multiAutocompleteStory: z.array(z.string()).min(1),
-})
+export const InputFields = ({
+  handleMockUpload,
+}: {
+  handleMockUpload: (file: File) => Promise<File>
+}) => {
+  return (
+    <>
+      <TextField name="inputStory" label="TextInput:" placeholder="input" />
+      <NumberField name="numberStory" label="NumberInput:" placeholder="number" />
+      <PasswordField name="passwordStory" label="PasswordInput:" placeholder="password" />
+      <SearchField
+        name="searchStory"
+        label="SearchInput:"
+        placeholder="search"
+        labelProps={{ description: 'Some description' }}
+      />
+      <TextAreaField name="textareaStory" label="Textarea:" placeholder="textarea" />
+      <FileField
+        name="fileStory"
+        label="FileInput:"
+        onDrop={handleMockUpload}
+        onDelete={async file => console.log('delete', file)}
+      />
+      <RangeField
+        name="rangeStory"
+        label="Range:"
+        min={100}
+        max={200}
+        onChange={v => console.log(v)}
+      />
+    </>
+  )
+}
 
-export const initialValues = {
+export const RadioFields = () => {
+  return (
+    <>
+      <Label name="checkboxStory" label="Fake label:" fakeLabel>
+        <CheckboxField name="checkboxStory" label="checkbox" />
+      </Label>
+      <CheckboxGroupField
+        name="checkboxGroupStory"
+        label="Checkbox Group:"
+        options={getOptions('checkboxGroupStory', 6)}
+      />
+      <CheckboxGroupField
+        name="switchGroupStory"
+        label="Switch Group:"
+        switchType
+        options={getOptions('switchGroupStory', 6)}
+      />
+      <RadioGroupField
+        name="radioGroupStory"
+        label="Radio Group:"
+        options={getOptions('radioGroupStory', 6)}
+      />
+      <ToggleGroupField
+        className="w-full"
+        name="toggleGroupStory"
+        label="ToggleGroup:"
+        options={getOptions('toggleGroupStory', 3)}
+      />
+      <MultiToggleGroupField
+        className="w-full"
+        name="multiToggleGroupStory"
+        label="MultiToggleGroup:"
+        options={getOptions('toggleGroupStory', 3)}
+      />
+    </>
+  )
+}
+
+export const ComboboxFields = ({
+  autocompleteOptions,
+  multiAutocompleteOptions,
+  setAutocompleteFilter,
+  setMultiAutocompleteFilter,
+}: {
+  autocompleteOptions: OptionType<string>[]
+  multiAutocompleteOptions: OptionType<string>[]
+  setAutocompleteFilter: (value: any) => void
+  setMultiAutocompleteFilter: (value: any) => void
+}) => {
+  return (
+    <>
+      <DatePickerField name="dateStory" label="DatePicker:" placeholder="date" />
+      <RangeDatePickerField name="dateRangeStory" label="RangeDatePicker:" placeholder="range" />
+      <MultiDatePickerField
+        name="dateMultiStory"
+        label="MultiDatePicker:"
+        placeholder="multi"
+        onChange={v => console.log(v)}
+      />
+      <SelectField
+        name="selectStory"
+        label="Select:"
+        placeholder="select"
+        options={getOptions('selectStory', 20)}
+      />
+      <MultiSelectField
+        name="multiSelectStory"
+        label="MultiSelect:"
+        placeholder="multiSelect"
+        options={getOptions('multiSelectStory', 20)}
+      />
+      <AutocompleteField
+        name="autocompleteStory"
+        label="Autocomplete:"
+        placeholder="autocomplete"
+        options={autocompleteOptions}
+        onInputChange={(value: string) => setAutocompleteFilter({ label: value })}
+      />
+      <MultiAutocompleteField
+        name="multiAutocompleteStory"
+        label="MultiAutocomplete:"
+        placeholder="multiAutocomplete"
+        options={multiAutocompleteOptions}
+        onInputChange={(value: string) => setMultiAutocompleteFilter({ label: value })}
+      />
+    </>
+  )
+}
+
+export const inputFormDefaultValues = {
   inputStory: '',
   numberStory: undefined,
   searchStory: '',
+  passwordStory: '',
   fileStory: [],
-  dateStory: undefined,
-  dateRangeStory: { start: undefined, end: undefined },
-  dateMultiStory: [],
   textareaStory: '',
   rangeStory: 0,
+}
+
+export const radioFormDefaultValues = {
   checkboxStory: '',
   checkboxGroupStory: [],
   switchGroupStory: [],
   radioGroupStory: '',
+  toggleGroupStory: '',
+  multiToggleGroupStory: [],
+}
+
+export const comboboxFormDefaultValues = {
+  dateStory: undefined,
+  dateRangeStory: { start: undefined, end: undefined },
+  dateMultiStory: [],
   selectStory: '',
   multiSelectStory: [],
   autocompleteStory: '',
   multiAutocompleteStory: [],
 }
 
-export const tabs = [
+export const initialValues = {
+  ...inputFormDefaultValues,
+  ...radioFormDefaultValues,
+  ...comboboxFormDefaultValues,
+}
+
+export const inputSchema = z.object({
+  inputStory: z.string().min(1),
+  numberStory: z.number().min(1),
+  searchStory: z.string().min(1),
+  passwordStory: z.string().min(1),
+  fileStory: z.array(z.instanceof(File)).min(1),
+  textareaStory: z.string().min(1),
+  rangeStory: z.number().min(20),
+})
+
+export const radioSchema = z.object({
+  checkboxStory: z.string().min(1),
+  checkboxGroupStory: z.array(z.string()).min(1),
+  switchGroupStory: z.array(z.string()).min(1),
+  radioGroupStory: z.string().min(1),
+  toggleGroupStory: z.string().min(1),
+  multiToggleGroupStory: z.array(z.string()).min(1),
+})
+
+export const comboboxSchema = z.object({
+  dateStory: z.date(),
+  dateRangeStory: z.object({ start: z.date(), end: z.date() }),
+  dateMultiStory: z.array(z.date()).min(1),
+  selectStory: z.string().min(1),
+  multiSelectStory: z.array(z.string()).min(1),
+  autocompleteStory: z.string().min(1),
+  multiAutocompleteStory: z.array(z.string()).min(1),
+})
+
+export const formSchema = inputSchema.merge(radioSchema).merge(comboboxSchema)
+
+export const tabs: TabOption<string>[] = [
   {
     label: 'Label 1',
     value: 'label1',

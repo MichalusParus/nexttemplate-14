@@ -8,7 +8,7 @@ import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { Ghost } from '@/components/atoms/loaders/Ghost'
 import { P } from '@/components/atoms/typography/P'
 import { Checkbox } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { cellOverflow, cellSize } from '../GridHeader/ColumnHead/ColumnHead.style'
@@ -73,7 +73,7 @@ export const GridBody = forwardRef<HTMLDivElement | null, GridBodyProps>(
           <ScrollShadow height={maxHeight} gutter disableHorizontal>
             {Array.from({ length: rowsPerPage || 10 }, (_, i) => (
               <div
-                key={`gridGhost${isRowInteractive}`}
+                key={`gridGhost${i}`}
                 className={cn('GhostRow', 'border border-transparent', checkboxSize[size])}
                 role="row"
                 aria-rowindex={i + (haveSubColumns ? 3 : 2)}

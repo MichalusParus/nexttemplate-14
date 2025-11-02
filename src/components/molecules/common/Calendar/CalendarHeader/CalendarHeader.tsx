@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/atoms/common/Button'
 import { ChevronIcon } from '@/components/atoms/icons'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 export type CalendarHeaderProps = StyleProps & {

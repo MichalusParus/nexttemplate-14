@@ -11,8 +11,6 @@ import { chevronPosition } from '../MobilePagination/MobilePagination.style'
 import { dottColor, pageButtonSize } from './ScreenPagination.style'
 
 export type ScreenPaginationProps = MobilePaginationProps & {
-  /** name of the pagination component */
-  name: string
   /** number of visible pages */
   pageSpread: number
 }
@@ -22,7 +20,6 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
   (
     {
       className,
-      name,
       count,
       selectedPage,
       pageSpread,
@@ -72,7 +69,6 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
           count <= 1 && 'invisible',
           className,
         )}
-        id={name}
         ref={componentRef}
         data-testid="ScreenPagination"
       >

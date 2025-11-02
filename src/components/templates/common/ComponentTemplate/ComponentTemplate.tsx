@@ -1,6 +1,6 @@
 import { forwardRef, PropsWithChildren } from 'react'
 
-import { NativeDivProps } from '@/components/types'
+import { NativeDivProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 export type ComponentTemplateProps = NativeDivProps & {

@@ -5,7 +5,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 
 import { Label } from '@/components/atoms/common/Label'
 
-import { FormStyleContext } from '../../Form/Form'
+import { FormStyleContext } from '../../forms/Form/Form'
 import { DatePickerFieldProps } from '../DatePickerField'
 import { MultiDatePicker, MultiDatePickerProps } from './MultiDatePicker/MultiDatePicker'
 

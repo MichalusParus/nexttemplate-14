@@ -2,7 +2,7 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef } from 'react'
 
-import { NativeDivProps, StyleProps } from '@/components/types'
+import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { spinnerClass, spinnerColor, spinnerSize } from './CircularLoader.style'

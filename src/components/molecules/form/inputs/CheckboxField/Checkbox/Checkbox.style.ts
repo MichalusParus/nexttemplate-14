@@ -5,89 +5,46 @@ export const inputWrapClass = cn(
   'disabled:cursor-not-allowed disabled:opacity-50 [&.disabled]:cursor-not-allowed [&.disabled]:opacity-50',
 )
 
-export const switchClass = cn(
-  'cursor-pointer appearance-none rounded-3xl transition-activity focus:outline-none',
-  'disabled:cursor-not-allowed disabled:opacity-50 [&.disabled]:cursor-not-allowed [&.disabled]:opacity-50',
-)
-
-export const thumbClass = cn('absolute rounded-full transition-position')
-
 export const checkboxVariant = {
   text: {
     primary: cn(
-      'border border-transparent',
-      'focus-within:bg-primary-100 hover:bg-primary-100 group-focus-within:bg-primary-100 group-hover:bg-primary-100',
-      'dark:focus-within:bg-primary-900 dark:hover:bg-primary-900 dark:group-focus-within:bg-primary-900 dark:group-hover:bg-primary-900',
-      'active:bg-primary-50 [&.checked]:bg-primary-50 [&.selected]:bg-primary-50 ',
-      'dark:active:bg-primary-700 dark:[&.checked]:bg-primary-700 dark:[&.selected]:bg-primary-700',
+      'border border-transparent bg-primary-100 focus-within:bg-primary-200 group-hover:bg-primary-200 [&.checked]:bg-primary-200',
+      'dark:bg-primary-900/50 dark:focus-within:bg-primary-900 dark:group-hover:bg-primary-900 dark:[&.checked]:bg-primary-900',
     ),
     secondary: cn(
-      'border border-transparent',
-      'focus-within:bg-secondary-100 hover:bg-secondary-100 group-focus-within:bg-secondary-100 group-hover:bg-secondary-100',
-      'dark:focus-within:bg-secondary-900 dark:hover:bg-secondary-900 dark:group-focus-within:bg-secondary-900 dark:group-hover:bg-secondary-900',
-      'active:bg-secondary-50 [&.checked]:bg-secondary-50 [&.selected]:bg-secondary-50',
-      'dark:active:bg-secondary-700 dark:[&.checked]:bg-secondary-700 dark:[&.selected]:bg-secondary-700',
+      'border border-transparent bg-secondary-100 focus-within:bg-secondary-200 group-hover:bg-secondary-200 [&.checked]:bg-secondary-200',
+      'dark:bg-secondary-900/50 dark:focus-within:bg-secondary-900 dark:group-hover:bg-secondary-900 dark:[&.checked]:bg-secondary-900',
     ),
     terciary: cn(
-      'border border-transparent',
-      'focus-within:bg-terciary-100 hover:bg-terciary-100 group-focus-within:bg-terciary-100 group-hover:bg-terciary-100',
-      'dark:focus-within:bg-terciary-900 dark:hover:bg-terciary-900 dark:group-focus-within:bg-terciary-900 dark:group-hover:bg-terciary-900',
-      'active:bg-terciary-50 [&.checked]:bg-terciary-50 [&.selected]:bg-terciary-50 ',
-      'dark:active:bg-terciary-700 dark:[&.checked]:bg-terciary-700 dark:[&.selected]:bg-terciary-700',
+      'border border-transparent bg-terciary-100 focus-within:bg-terciary-200 group-hover:bg-terciary-200 [&.checked]:bg-terciary-200',
+      'dark:bg-terciary-900/50 dark:focus-within:bg-terciary-900 dark:group-hover:bg-terciary-900 dark:[&.checked]:bg-terciary-900',
     ),
     none: '',
   },
   outlined: {
     primary: cn(
-      'border border-primary-800 dark:border-primary-100',
-      'focus-within:bg-primary-100 hover:bg-primary-100 group-focus-within:bg-primary-100 group-hover:bg-primary-100',
-      'dark:focus-within:bg-primary-900 dark:hover:bg-primary-900 dark:group-focus-within:bg-primary-900 dark:group-hover:bg-primary-900',
-      'active:bg-primary-50 [&.checked]:bg-primary-50 [&.selected]:bg-primary-50',
-      'dark:active:bg-primary-700 dark:[&.checked]:bg-primary-700 dark:[&.selected]:bg-primary-700',
+      'border border-primary-800 bg-primary-100 focus-within:bg-primary-200 group-hover:bg-primary-200 [&.checked]:bg-primary-200',
+      'dark:border-primary-100 dark:bg-primary-900/50 dark:focus-within:bg-primary-900 dark:group-hover:bg-primary-900 dark:[&.checked]:bg-primary-900',
     ),
     secondary: cn(
-      'border border-secondary-800 dark:border-secondary-100',
-      'focus-within:bg-secondary-100 hover:bg-secondary-100 group-focus-within:bg-secondary-100 group-hover:bg-secondary-100',
-      'dark:focus-within:bg-secondary-900 dark:hover:bg-secondary-900 dark:group-focus-within:bg-secondary-900 dark:group-hover:bg-secondary-900',
-      'active:bg-secondary-50 [&.checked]:bg-secondary-50 [&.selected]:bg-secondary-50',
-      'dark:active:bg-secondary-700 dark:[&.checked]:bg-secondary-700 dark:[&.selected]:bg-secondary-700',
+      'border border-secondary-800 bg-secondary-100 focus-within:bg-secondary-200 group-hover:bg-secondary-200 [&.checked]:bg-secondary-200',
+      'dark:border-secondary-100 dark:bg-secondary-900/50 dark:focus-within:bg-secondary-900 dark:group-hover:bg-secondary-900 dark:[&.checked]:bg-secondary-900',
     ),
     terciary: cn(
-      'border border-terciary-800 dark:border-terciary-100',
-      'focus-within:bg-terciary-100 hover:bg-terciary-100 group-focus-within:bg-terciary-100 group-hover:bg-terciary-100',
-      'dark:focus-within:bg-terciary-900 dark:hover:bg-terciary-900 dark:group-focus-within:bg-terciary-900 dark:group-hover:bg-terciary-900',
-      'active:bg-terciary-100 [&.checked]:bg-terciary-100 [&.selected]:bg-terciary-100',
-      'dark:active:bg-terciary-700 dark:[&.checked]:bg-terciary-700 dark:[&.selected]:bg-terciary-700',
+      'border border-terciary-800 bg-terciary-100 focus-within:bg-terciary-200 group-hover:bg-terciary-200 [&.checked]:bg-terciary-200',
+      'dark:border-terciary-100 dark:bg-terciary-900/50 dark:focus-within:bg-terciary-900 dark:group-hover:bg-terciary-900 dark:[&.checked]:bg-terciary-900',
     ),
     none: '',
   },
   contained: {
     primary: cn(
-      'border border-primary-100 bg-primary-800',
-      'focus-within:bg-primary-900 hover:bg-primary-900 group-focus-within:bg-primary-900 group-hover:bg-primary-900',
-      'active:bg-primary-700 [&.checked]:bg-primary-700 [&.selected]:bg-primary-700',
+      'border border-primary-900 bg-primary-600 focus-within:bg-primary-700 group-hover:bg-primary-700 [&.checked]:bg-primary-700',
     ),
     secondary: cn(
-      'border border-secondary-100 bg-secondary-800',
-      'focus-within:bg-secondary-900 hover:bg-secondary-900 group-focus-within:bg-secondary-900 group-hover:bg-secondary-900',
-      'active:bg-secondary-700 [&.checked]:bg-secondary-700 [&.selected]:bg-secondary-700',
+      'border border-secondary-900 bg-secondary-600 focus-within:bg-secondary-700 group-hover:bg-secondary-700 [&.checked]:bg-secondary-700',
     ),
     terciary: cn(
-      'border border-terciary-100 bg-terciary-800',
-      'focus-within:bg-terciary-900 hover:bg-terciary-900 group-focus-within:bg-terciary-900 group-hover:bg-terciary-900',
-      'active:bg-terciary-700 [&.checked]:bg-terciary-700 [&.selected]:bg-terciary-700',
-    ),
-    none: '',
-  },
-  switch: {
-    primary: cn(
-      'border border-primary-900 bg-primary-400 checked:bg-primary-700 active:bg-primary-700',
-    ),
-    secondary: cn(
-      'border border-secondary-900 bg-secondary-400 checked:bg-secondary-700 active:bg-secondary-700',
-    ),
-    terciary: cn(
-      'border border-terciary-900 bg-terciary-400 checked:bg-terciary-700 active:bg-terciary-700',
+      'border border-terciary-900 bg-terciary-600 focus-within:bg-terciary-700 group-hover:bg-terciary-700 [&.checked]:bg-terciary-700',
     ),
     none: '',
   },
@@ -124,21 +81,6 @@ export const checkVariant = {
     terciary: cn('text-terciary-100 [&.disabled]:cursor-not-allowed [&.disabled]:text-dark-200'),
     none: '',
   },
-  switch: {
-    primary: cn(
-      'border border-primary-900 bg-primary-800 group-focus-within:bg-primary-900 group-hover:bg-primary-900',
-      '[&.disabled]:cursor-not-allowed [&.disabled]:border-dark-400 [&.disabled]:bg-dark-400 [&.disabled]:opacity-50 [&.disabled]:group-hover:bg-dark-400',
-    ),
-    secondary: cn(
-      'border border-secondary-900 bg-secondary-800 group-focus-within:bg-secondary-900 group-hover:bg-secondary-900',
-      '[&.disabled]:cursor-not-allowed [&.disabled]:border-dark-400 [&.disabled]:bg-dark-400 [&.disabled]:opacity-50 [&.disabled]:group-hover:bg-dark-400',
-    ),
-    terciary: cn(
-      'border border-terciary-900 bg-terciary-800 group-focus-within:bg-terciary-900 group-hover:bg-terciary-900',
-      '[&.disabled]:cursor-not-allowed [&.disabled]:border-dark-400 [&.disabled]:bg-dark-400 [&.disabled]:opacity-50 [&.disabled]:group-hover:bg-dark-400',
-    ),
-    none: '',
-  },
 }
 
 export const checkboxSize = {
@@ -155,30 +97,10 @@ export const checkLabelSize = {
   none: '',
 }
 
-export const switchSize = {
-  sm: cn(
-    'text-sm [&>.SwitchThumb]:h-smIcon [&>.SwitchThumb]:w-smIcon [&>input]:h-smIcon [&>input]:w-8 ',
-  ),
-  md: cn(
-    'text-base [&>.SwitchThumb]:h-mdIcon [&>.SwitchThumb]:w-mdIcon [&>input]:h-mdIcon [&>input]:w-10 ',
-  ),
-  lg: cn(
-    'text-lg [&>.SwitchThumb]:h-lgIcon [&>.SwitchThumb]:w-lgIcon [&>input]:h-lgIcon [&>input]:w-12 ',
-  ),
-  none: '',
-}
-
 export const checkboxMargin = {
   sm: cn('mb-1 mr-3'),
   md: cn('mb-2 mr-4'),
   lg: cn('mb-3 mr-5'),
-  none: '',
-}
-
-export const switchLeft = {
-  sm: cn('left-3'),
-  md: cn('left-4'),
-  lg: cn('left-5'),
   none: '',
 }
 
@@ -194,8 +116,5 @@ export const disabledVariant = {
   contained: cn(
     '[&.disabled]:border-dark-400 [&.disabled]:bg-dark-400 [&.disabled]:shadow-none group-hover:[&.disabled]:bg-dark-400',
     'dark:[&.disabled]:border-dark-500 dark:[&.disabled]:bg-dark-500 dark:[&.disabled]:text-dark-500',
-  ),
-  switch: cn(
-    'disabled:border-dark-500 disabled:bg-dark-200 disabled:shadow-none [&.disabled]:border-dark-400 [&.disabled]:bg-dark-300',
   ),
 }

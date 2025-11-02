@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react'
 
-import { useSwipe } from '@/utils/hooks/useSwipe'
+import { useTouch } from '@/utils/hooks/useTouch'
 import { cn } from '@/utils/utils'
 
 import { innerWrapClass } from './Carousel.style'
@@ -92,7 +92,7 @@ export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<Caro
       [pages, selectedPage, handlePageChange],
     )
 
-    const { componentRef } = useSwipe(handleSwipe)
+    const { componentRef } = useTouch({ onSwipe: handleSwipe })
     useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
       ref,
       () => componentRef.current,

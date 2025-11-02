@@ -6,7 +6,7 @@ import { Paper } from '@/components/atoms/containers/Paper'
 import { DeleteIcon } from '@/components/atoms/icons'
 import { Ellipsis } from '@/components/atoms/typography/Ellipsis'
 import { P } from '@/components/atoms/typography/P'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { inputSize } from '../../../TextField/TextInput/TextInput.style'

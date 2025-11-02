@@ -2,7 +2,7 @@ import { PropsWithChildren, ReactNode } from 'react'
 
 import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
 import { Ghost } from '@/components/atoms/loaders/Ghost'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { liIconClass, listColor, listSize } from './Li.style'

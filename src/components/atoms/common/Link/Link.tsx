@@ -2,7 +2,7 @@ import { LinkProps as NextLinkProps } from 'next/link'
 import NextLink from 'next/link'
 import { Children, forwardRef, LinkHTMLAttributes, ReactNode } from 'react'
 
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { buttonIconSize, buttonSize, buttonVariant, iconOnlySize } from '../Button/Button.style'

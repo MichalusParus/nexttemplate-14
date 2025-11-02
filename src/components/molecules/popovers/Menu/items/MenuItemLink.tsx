@@ -15,10 +15,12 @@ export const MenuItemLink = forwardRef<
       <Link
         className={cn(
           'MenuItemLink',
-          'w-full rounded-none border-transparent dark:border-transparent',
+          'w-full justify-start rounded-none border-transparent dark:border-transparent',
           className,
         )}
         role="menuitem"
+        hideShadow
+        tabIndex={-1}
         ref={ref}
         {...rest}
       >

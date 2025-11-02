@@ -1,128 +1,91 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import {
-  forwardRef,
-  KeyboardEvent,
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react'
+import { forwardRef, PropsWithChildren, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 
-import { Button } from '@/components/atoms/common/Button'
+import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { XIcon } from '@/components/atoms/icons'
+import { useInternalOpenState } from '@/components/utils/hooks/useInternalOpenState'
 import { cn } from '@/utils/utils'
 
 import { controlClass } from '../../common/Carousel/CarouselControls/CarouselControls.style'
-import { closeButtonClass, openClass } from './ImageViewer.style'
+import {
+  closeButtonClass,
+  viewerButtonClass,
+  viewerDialogClass,
+  viewerInnerWrapClass,
+} from './ImageViewer.style'
 
-// should be role combobox, but with button axe error for gallery
-
-export type ImageViewerProps = {
+export type ImageViewerProps = ButtonProps & {
   /** for passing custom tailwind classes */
   className?: string
-  /** name of component for aria purposes */
+  /** name of component for unique identification */
   name: string
-  /** optional boolean default open or with setIsOpen for constrolled open state */
+  /** label for modal */
+  label?: string
+  /** optional boolean for controlled open state */
   isOpen?: boolean
-  /** optional setOpen function for constrolled open state */
+  /** optional setOpen function for controlled open state */
   setIsOpen?: (value: boolean) => void
 }
 
 /** Fullscreen modal window for image detail. USE CLIENT */
-export const ImageViewer = forwardRef<HTMLDivElement | null, PropsWithChildren<ImageViewerProps>>(
-  ({ className, name, isOpen, setIsOpen, children }, ref) => {
-    const t = useTranslations('Components')
-    const componentRef = useRef<HTMLDivElement>(null)
-    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
-      ref,
-      () => componentRef.current,
-    )
-    const [isInternallyOpen, setIsInternallyOpen] = useState(Boolean(isOpen))
-    const openState = setIsOpen ? Boolean(isOpen) : isInternallyOpen
-    // const { focusableEl } = useFocus(
-    //   isOpen,
-    //   componentRef,
-    //   ['[tabindex]:not([tabindex="-1"])', '.Link'],
-    //   () => setIsOpen(prev => !prev),
-    //   { trap: true },
-    // )
+export const ImageViewer = forwardRef<
+  HTMLButtonElement | null,
+  PropsWithChildren<ImageViewerProps>
+>(({ className, name, label, isOpen, setIsOpen, children, ...rest }, ref) => {
+  const t = useTranslations('Components')
+  const [isVisible, setIsVisible] = useState(false)
+  const { openState, handleOpen } = useInternalOpenState(isOpen, setIsOpen)
 
-    const handleClose = useCallback(
-      (value: boolean) => {
-        // if (focusableEl.length) {
-        //   focusableEl[0].click()
-        // }
-        if (setIsOpen) {
-          setIsOpen(value)
-        } else {
-          setIsInternallyOpen(value)
-        }
-      },
-      [
-        // focusableEl,
-        setIsOpen,
-      ],
-    )
+  useEffect(() => {
+    let timerId: NodeJS.Timeout
+    if (openState) {
+      setIsVisible(true)
+      document.body.style.overflow = 'hidden'
+    } else {
+      timerId = setTimeout(() => setIsVisible(false), 150)
+      document.body.style.overflow = ''
+    }
+    return () => {
+      if (timerId) clearTimeout(timerId)
+      document.body.style.overflow = ''
+    }
+  }, [openState])
 
-    const handleKeyDown = useCallback(
-      (e: KeyboardEvent<HTMLDivElement>) => {
-        // e.preventDefault()
-        if (e.code === 'Space' || e.code === 'Enter') {
-          handleClose(false)
-        }
-      },
-      [handleClose],
-    )
-
-    useEffect(() => {
-      document.body.style.overflow = openState ? 'hidden' : 'unset'
-    }, [openState])
-
-    return (
-      <div
-        className={cn('ImageViewer flex w-full overflow-hidden rounded-xl', className)}
+  return (
+    <>
+      <Button
+        className={cn('ImageViewer', viewerButtonClass, className)}
+        color="none"
+        size="none"
+        aria-label={label || t('imageViewer')}
+        aria-haspopup="dialog"
+        aria-expanded={openState}
+        aria-controls={name}
+        aria-owns={name}
+        onClick={() => handleOpen(!openState)}
+        ref={ref}
         data-testid="ImageViewer"
+        {...rest}
       >
-        {!openState && (
-          <div
-            className="h-full w-full cursor-zoom-in items-start justify-start"
-            role="combobox"
-            aria-haspopup="true"
-            aria-controls={name}
-            aria-owns={name}
-            aria-expanded={openState}
-            aria-label={name}
-            tabIndex={0}
-            onClick={() => handleClose(true)}
-            onKeyDown={handleKeyDown}
-          >
-            {children}
-          </div>
-        )}
-        {typeof window !== 'undefined' &&
-          openState &&
-          createPortal(
+        {children}
+      </Button>
+      {!openState && !isVisible
+        ? null
+        : createPortal(
             <div
               id={name}
-              className={cn('ImageViewerModal hidden w-full', openState && openClass)}
+              className={cn(
+                'ImageViewerDialog',
+                viewerDialogClass,
+                isVisible && openState && 'scale-100 opacity-100',
+              )}
               role="dialog"
               aria-modal="true"
-              aria-label={name}
-              ref={componentRef}
-              data-testid="ImageViewerModal"
+              aria-label={label || t('imageViewer')}
             >
-              <div
-                className={cn(
-                  'ViewerModalInnerWrap',
-                  'flex h-full min-w-full flex-col items-center justify-center bg-dark-800 from-dark-800',
-                )}
-              >
-                {children}
-              </div>
+              <div className={cn('ViewerInnerWrap', viewerInnerWrapClass)}>{children}</div>
               <Button
                 className={cn('CloseButton', closeButtonClass, controlClass)}
                 variant="text"
@@ -130,15 +93,14 @@ export const ImageViewer = forwardRef<HTMLDivElement | null, PropsWithChildren<I
                 size="none"
                 startIcon={<XIcon className="h-8 w-8" />}
                 aria-label={t('close')}
-                onClick={() => handleClose(false)}
+                onClick={() => handleOpen(false)}
                 data-testid="ImageViewerCloseButton"
               />
             </div>,
             document.body,
           )}
-      </div>
-    )
-  },
-)
+    </>
+  )
+})
 
 ImageViewer.displayName = 'ImageViewer'

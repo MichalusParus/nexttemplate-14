@@ -10,7 +10,7 @@ import {
 } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button/Button'
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { useFilterData } from '@/utils/hooks/useFilterData'
 // import { useFocus } from '@/utils/hooks/useFocus'
 import { usePagination } from '@/utils/hooks/usePagination'
@@ -171,9 +171,9 @@ export const DataGrid = forwardRef<HTMLDivElement | null, DataGridProps>(
 
     useEffect(() => {
       if (typeof window !== 'undefined') {
-        window.addEventListener('click', handleClick)
+        document.addEventListener('click', handleClick)
         return () => {
-          window.removeEventListener('click', handleClick)
+          document.removeEventListener('click', handleClick)
         }
       }
     }, [handleClick])

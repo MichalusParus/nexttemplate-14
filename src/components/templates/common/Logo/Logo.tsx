@@ -8,17 +8,17 @@ export type LogoProps = {
   /** for passing custom tailwind classes */
   className?: string
   /** optional url for logo */
-  url?: string
+  href?: string
 }
 
 /** Main Logo component */
-export const Logo = ({ className, url }: LogoProps) => {
+export const Logo = ({ className, href }: LogoProps) => {
   return (
     <Link
       className={cn('Logo', 'flex w-max items-center gap-2 border-none', className)}
       color="none"
       size="none"
-      href={url || '/'}
+      href={href || '/'}
       data-testid="Logo"
     >
       <div

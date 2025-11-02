@@ -24,7 +24,7 @@ const meta: Meta<typeof Disclosure> = {
 }
 
 const DisclosureWithHooks = ({ children, ...props }: PropsWithChildren<DisclosureProps>) => {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <Disclosure {...props} expanded={isOpen} setIsOpen={setIsOpen}>

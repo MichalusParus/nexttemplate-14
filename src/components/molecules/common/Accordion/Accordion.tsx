@@ -1,7 +1,7 @@
 'use client'
 import { forwardRef, ReactNode, useEffect, useState } from 'react'
 
-import { StyleProps } from '@/components/types'
+import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { Disclosure, DisclosureProps } from '../Disclosure/Disclosure'

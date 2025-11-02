@@ -4,9 +4,9 @@ import { useContext } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 
 import { Label } from '@/components/atoms/common/Label'
-import { FieldProps } from '@/components/types'
+import { FieldProps } from '@/components/utils/types'
 
-import { FormStyleContext } from '../../Form/Form'
+import { FormStyleContext } from '../../forms/Form/Form'
 import { DatePicker, DatePickerProps } from './DatePicker/DatePicker'
 
 export type DatePickerFieldProps = Omit<DatePickerProps, 'value' | 'error' | 'onChange'> &

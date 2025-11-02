@@ -1,12 +1,26 @@
 import '@testing-library/jest-dom'
 
 import { axe, toHaveNoViolations } from 'jest-axe'
-import { createRef } from 'react'
+import { createRef, forwardRef } from 'react'
 
 import { render, screen } from '../../../../../.jest/customRender'
 import { Avatar } from '.'
 
 expect.extend(toHaveNoViolations)
+
+jest.mock('next/image', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  const ImageMock = forwardRef(({ src, alt, className, fill, ...props }: any, ref) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} className={className} ref={ref} {...props} />
+  ))
+  ImageMock.displayName = 'Image'
+
+  return {
+    __esModule: true,
+    default: ImageMock,
+  }
+})
 
 describe('Avatar', () => {
   it('default', () => {

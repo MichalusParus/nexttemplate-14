@@ -1,5 +1,6 @@
 'use client'
 import { Placement } from '@popperjs/core'
+import { useTranslations } from 'next-intl'
 import {
   forwardRef,
   MutableRefObject,
@@ -15,13 +16,10 @@ import { Paper } from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
-import { NativeDivProps, StyleProps } from '@/components/types'
+import { useNonModalDropdown } from '@/components/utils/hooks/useNonModalDropdown'
+import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { usePopper } from '@/utils/hooks/usePopper'
 import { cn } from '@/utils/utils'
-
-import { dropdownClass } from './Dropdown.style'
-
-// close dropdown on blur, but dont if focus is in dropdown, maybe solve in dropdown
 
 export type DropdownProps = NativeDivProps &
   Omit<StyleProps, 'size'> & {
@@ -29,8 +27,10 @@ export type DropdownProps = NativeDivProps &
     className?: string
     /** boolean for open state */
     isOpen: boolean
-    /** Parent ref for portal position */
-    parentRef: MutableRefObject<HTMLDivElement | HTMLButtonElement | null>
+    /** Anchor ref for portal position */
+    anchorRef: MutableRefObject<HTMLDivElement | HTMLButtonElement | null>
+    /** optional label for dropdown */
+    label?: string
     /** position of dropdown */
     placement?: Placement
     /** offset of dropdown */
@@ -45,6 +45,10 @@ export type DropdownProps = NativeDivProps &
     modal?: boolean
     /** optional id for portal container */
     portalContainerId?: string
+    /** optional boolean for disabling portal */
+    disablePortal?: boolean
+    /** optional function returning array of submenu refs for useNonModalDropdown hook */
+    submenuRefs?: () => (HTMLElement | null)[]
     /** for passing aditional props to Paper */
     paperProps?: Partial<PaperProps>
     /** for passing aditional props to Scrollshadow */
@@ -59,7 +63,8 @@ export const Dropdown = forwardRef<HTMLDivElement | null, PropsWithChildren<Drop
     {
       className,
       isOpen,
-      parentRef,
+      anchorRef,
+      label,
       placement = 'bottom',
       offset = [0, 5],
       variant = 'text',
@@ -67,8 +72,10 @@ export const Dropdown = forwardRef<HTMLDivElement | null, PropsWithChildren<Drop
       width,
       height = 'max-h-[40vh]',
       padding = 'p-0',
-      modal,
+      modal = false,
       portalContainerId,
+      disablePortal,
+      submenuRefs,
       paperProps = {},
       scrollShadowProps = {},
       onClose,
@@ -77,71 +84,67 @@ export const Dropdown = forwardRef<HTMLDivElement | null, PropsWithChildren<Drop
     },
     ref,
   ) => {
-    const { anchorRef, popoverEl, setPopoverEl } = usePopper(placement, offset)
-    const [isMounted, setIsMounted] = useState(false)
-    useImperativeHandle<HTMLElement | null, HTMLElement | null>(anchorRef, () => parentRef.current)
-    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => popoverEl)
+    const t = useTranslations('Components')
+    const { popoverEl, setPopoverEl } = usePopper(anchorRef, placement, offset)
+    useNonModalDropdown(isOpen, anchorRef, popoverEl, modal, onClose, submenuRefs)
+    const [isVisible, setIsVisible] = useState(false)
+    useImperativeHandle<HTMLElement | null, HTMLElement | null>(ref, () => popoverEl)
     const { className: paperClassName, ...restPaperProps } = paperProps
 
-    useEffect(() => setIsMounted(true), [])
-
     useEffect(() => {
-      if (isOpen && !modal) {
-        const controller = new AbortController()
-        const signal = controller.signal
-        const handleClickOutside = (e: MouseEvent | TouchEvent) => {
-          const target = e.target as HTMLElement
-          if (popoverEl && !popoverEl.contains(target) && !anchorRef.current?.contains(target)) {
-            onClose()
-          }
-        }
-
-        document.addEventListener('mousedown', handleClickOutside, { signal })
-        document.addEventListener('touchstart', handleClickOutside, { signal })
-        parentRef.current?.addEventListener('focusout', onClose, { signal })
-        popoverEl?.addEventListener('focusout', onClose, { signal })
-        return () => {
-          controller.abort()
-        }
+      if (isOpen) setIsVisible(true)
+      else {
+        const timer = setTimeout(() => setIsVisible(false), 150)
+        return () => clearTimeout(timer)
       }
-    }, [popoverEl, modal, isOpen, anchorRef, parentRef, onClose])
+    }, [isOpen])
 
-    if (!isMounted || !isOpen) return null
+    if (!isVisible && !isOpen) return null
 
     const container = portalContainerId
       ? document.getElementById(portalContainerId) || document.body
       : document.body
 
-    return createPortal(
-      <>
-        {modal && <Overlay isOpen={isOpen} onClose={onClose} />}
-        <div
-          className={cn('Dropdown', dropdownClass, isOpen ? 'opacity-100' : 'opacity-0', className)}
-          style={{
-            width: width ? width : parentRef.current?.clientWidth,
-          }}
-          ref={setPopoverEl}
-          role={modal ? 'dialog' : undefined}
-          aria-modal={modal}
-          aria-hidden={!isOpen}
-          data-testid="Dropdown"
-          {...rest}
-        >
-          <Paper
-            className={cn('overflow-hidden', paperClassName)}
-            variant={variant}
-            color={color}
-            padding={padding}
-            {...restPaperProps}
+    const renderDropdown = () => {
+      return (
+        <>
+          {modal && <Overlay isOpen={isOpen} onClose={onClose} />}
+          <div
+            className={cn(
+              'Dropdown',
+              'easy-in-out absolute z-modal opacity-0 transition-opacity duration-150',
+              isVisible && isOpen && 'opacity-100',
+              className,
+            )}
+            style={{
+              width: width ? width : anchorRef.current?.clientWidth,
+            }}
+            ref={setPopoverEl}
+            role={modal ? 'dialog' : undefined}
+            aria-label={label || t('dropdown')}
+            aria-modal={modal}
+            data-testid="Dropdown"
+            {...rest}
           >
-            <ScrollShadow height={height} {...scrollShadowProps}>
-              {children}
-            </ScrollShadow>
-          </Paper>
-        </div>
-      </>,
-      container,
-    )
+            <Paper
+              className={cn('overflow-hidden', paperClassName)}
+              variant={variant}
+              color={color}
+              padding={padding}
+              {...restPaperProps}
+            >
+              <ScrollShadow height={height} {...scrollShadowProps}>
+                {children}
+              </ScrollShadow>
+            </Paper>
+          </div>
+        </>
+      )
+    }
+
+    if (disablePortal) return renderDropdown()
+
+    return createPortal(renderDropdown(), container)
   },
 )
 

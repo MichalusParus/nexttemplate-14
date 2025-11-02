@@ -5,7 +5,7 @@ import { forwardRef, useImperativeHandle, useRef } from 'react'
 import { Button } from '@/components/atoms/common/Button'
 import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
 import { SearchIcon, XIcon } from '@/components/atoms/icons'
-import { InputProps, NativeInputProps, StyleProps } from '@/components/types'
+import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { TextInput } from '../../TextField/TextInput'

@@ -4,7 +4,7 @@ import { axe, toHaveNoViolations } from 'jest-axe'
 import { createRef } from 'react'
 
 import { fireEvent, render, screen } from '../../../../../.jest/customRender'
-import { getOptions } from '../../../../../.storybook/helpers'
+import { getGroupedOptions, getOptions } from '../../../../../.storybook/helpers'
 import { ListBox } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -34,6 +34,24 @@ describe('ListBox', () => {
     expect(checkIconTestIds).toHaveLength(options.length)
   })
 
+  it('groupedOptions', () => {
+    const groupedOptions = getGroupedOptions('listboxTest')
+    render(
+      <ListBox
+        name="listboxTest"
+        value={[]}
+        options={groupedOptions}
+        onClick={() => {}}
+        isGrouped
+      />,
+    )
+    const optionsQuery = screen.queryAllByRole('option')
+    const groupLabelTestIds = screen.getAllByTestId('GroupLabel')
+
+    expect(groupLabelTestIds).toHaveLength(groupedOptions.length)
+    expect(optionsQuery).toHaveLength(groupedOptions.flatMap(group => group.groupedOptions).length)
+  })
+
   it('noOptions', () => {
     render(
       <ListBox
@@ -56,7 +74,7 @@ describe('ListBox', () => {
       <ListBox
         className="className"
         name="listboxTest"
-        value={['value1listboxTest']}
+        value={[options[0].value]}
         options={options}
         onClick={() => {}}
       />,
@@ -86,7 +104,26 @@ describe('ListBox', () => {
 
     fireEvent.click(optionRoles[0])
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('value1listboxTest')
+    expect(spy).toHaveBeenCalledWith(options[0].value)
+  })
+
+  it('objectValueonClick', () => {
+    const spy = jest.fn()
+    const objValueOptions = options.map(o => ({ ...o, value: { key1: o.label, key2: o.value } }))
+    render(
+      <ListBox<{ key1: string; key2: string }>
+        className="className"
+        name="listboxTest"
+        value={[]}
+        options={objValueOptions}
+        onClick={spy}
+      />,
+    )
+    const optionRoles = screen.getAllByRole('option')
+
+    fireEvent.click(optionRoles[0])
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith(objValueOptions[0].value)
   })
 
   it('isLoading', () => {

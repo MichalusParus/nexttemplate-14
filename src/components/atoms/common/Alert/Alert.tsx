@@ -1,6 +1,6 @@
 import { forwardRef, ReactNode } from 'react'
 
-import { NativeDivProps, StyleProps } from '@/components/types'
+import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from '../../icons'
@@ -13,12 +13,14 @@ export type AlertProps = NativeDivProps &
   Omit<StyleProps, 'color'> & {
     /** for passing custom tailwind classes */
     className?: string
-    /** status color and icon of component, none disable styles for custom styling via className */
+    /** status color of component, none disable styles for custom styling via className */
     status?: AlertStatusType
     /** Optional alert heading */
     title?: string
-    /** choose status or pass custom svg icon  */
-    icon?: ReactNode
+    /** choose status or pass custom svg icon on start  */
+    startIcon?: ReactNode
+    /** optional end icon  */
+    endIcon?: ReactNode
   }
 
 /** Alert component for diplaying success feedbacks, informations, warnings and errors. Native HTMLAttributes props supported. */
@@ -30,7 +32,8 @@ export const Alert = forwardRef<HTMLDivElement | null, AlertProps>(
       status = 'success',
       size = 'md',
       title,
-      icon,
+      startIcon,
+      endIcon,
       children,
       ...rest
     },
@@ -55,11 +58,12 @@ export const Alert = forwardRef<HTMLDivElement | null, AlertProps>(
         {status === 'info' && <InfoIcon aria-hidden="true" />}
         {status === 'warning' && <WarningIcon aria-hidden="true" />}
         {status === 'error' && <ErrorIcon aria-hidden="true" />}
-        {icon && status === 'none' && icon}
+        {startIcon && status === 'none' && startIcon}
         <div className={cn('AlertInnerWrap', 'flex flex-col px-1.5')}>
           {title && <Span variant="bold">{title}</Span>}
-          <Span variant="none">{children}</Span>
+          {children}
         </div>
+        {endIcon}
       </div>
     )
   },

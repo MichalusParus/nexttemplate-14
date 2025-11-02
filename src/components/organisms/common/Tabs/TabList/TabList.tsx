@@ -3,35 +3,34 @@ import { PropsWithChildren, ReactNode } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { Paper } from '@/components/atoms/containers/Paper'
-import { OptionType, StyleProps } from '@/components/types'
+import { OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-export type TabOption = OptionType & {
+export type TabOption<T = string> = OptionType<T> & {
   component: ReactNode
   isHidden?: boolean
+  isDisabled?: boolean
 }
 
-export type TabListProps = Omit<StyleProps, 'size'> & {
+export type TabListProps<T = string> = StyleProps & {
   /** for passing custom tailwind classes */
   className?: string
   /** name of component, serves as key for searchparam, default is tab */
   name?: string
   /** current selected tab */
-  selectedTab: TabOption
+  selectedTab: TabOption<T>
   /** tabs object list: tab label, searchparam value, rendered component and hidden for hiding tab list */
-  tabs: TabOption[]
-  /** size of component, none disable sizes for custom styling via className */
-  size?: StyleProps['size'] | 'inline'
+  tabs: TabOption<T>[]
   /** optional full width style for tabs */
   fullWidth?: boolean
-  /** for passing aditional props to Link */
+  /** for passing aditional props to button with role tab */
   tabButtonProps?: Partial<ButtonProps>
   /** for passing onTabChange function */
-  onTabChange: (tabValue: string) => void
+  onTabChange: (tabValue: T) => void
 }
 
 /** Tablist for screen tabs. tabButtonProps supported. USE CLIENT */
-export const TabList = ({
+export const TabList = <T,>({
   className,
   name = 'tab',
   selectedTab,
@@ -43,12 +42,12 @@ export const TabList = ({
   tabButtonProps = {},
   onTabChange,
   children,
-}: PropsWithChildren<TabListProps>) => {
+}: PropsWithChildren<TabListProps<T>>) => {
   const { className: buttonClassName, ...restButtonProps } = tabButtonProps
 
   return (
     <Paper
-      className={cn('TabListPaper', className)}
+      className={cn('TabListPaper', fullWidth && 'w-full', className)}
       variant={variant}
       color={color}
       padding=""
@@ -63,9 +62,9 @@ export const TabList = ({
       >
         {tabs.map(tab => (
           <li
-            key={tab.value}
-            role="presentation"
+            key={tab.label}
             className={cn(fullWidth && 'w-full')}
+            role="presentation"
             data-testid="tabLi"
           >
             <Button
@@ -82,7 +81,9 @@ export const TabList = ({
               size={size}
               hideShadow
               role="tab"
-              aria-controls={`${name}-tabpanel`}
+              tabIndex={-1}
+              disabled={tab.isDisabled}
+              aria-controls={`${tab.value}-tabpanel`}
               aria-selected={tab.value === selectedTab.value}
               onClick={() => onTabChange(tab.value)}
               {...restButtonProps}
