@@ -1,7 +1,9 @@
 import { Divider } from '@/components/atoms/common/Divider'
+import { Image } from '@/components/atoms/common/Image'
 import { Label } from '@/components/atoms/common/Label'
 import { PlusIcon, ProfileIcon } from '@/components/atoms/icons'
 import { DateButtonType } from '@/components/molecules/common/Calendar/DayPicker'
+import { CarouselItemType } from '@/components/molecules/common/Carousel'
 import { AutocompleteField } from '@/components/molecules/form/comboboxes/AutocompleteField'
 import { DatePickerField } from '@/components/molecules/form/comboboxes/DatePickerField'
 import { MultiAutocompleteField } from '@/components/molecules/form/comboboxes/MultiAutocompleteField'
@@ -511,6 +513,13 @@ export const accordionOptions = [
   },
 ]
 
+export const getCarouselItems = (count: number): CarouselItemType[] => {
+  return getGalleryItems(count).map(img => ({
+    label: img.label,
+    content: <Image src={img.src} alt={img.label} width="w-full" />,
+  }))
+}
+
 export const getGalleryItems = (length: number) => {
   const srcs = [
     'https://picsum.photos/1600/900',
@@ -520,7 +529,7 @@ export const getGalleryItems = (length: number) => {
   ]
   return Array.from({ length: length }, (_, i) => ({
     src: srcs[i % 4],
-    alt: 'img' + (i + 1),
+    label: 'img' + (i + 1),
   }))
 }
 

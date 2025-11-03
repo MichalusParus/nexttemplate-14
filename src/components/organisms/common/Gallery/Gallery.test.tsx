@@ -23,7 +23,7 @@ describe('Gallery', () => {
     expect(galleryTestId).toHaveClass('className')
     expect(buttonTestIds).toHaveLength(18)
     expect(buttonTestIds[0]).toHaveClass('selected')
-    expect(imgRoles[0]).toHaveAttribute('alt', items[0].alt)
+    expect(imgRoles[0]).toHaveAttribute('alt', items[0].label)
   })
 
   it('nextPage', () => {
@@ -108,7 +108,7 @@ describe('Gallery', () => {
     expect(controlsTestId).toBeInTheDocument()
     expect(buttonTestIds).toHaveLength(18)
     expect(imgRatioTestIds[0]).toHaveClass('aspect-video')
-    expect(imgRoles[0]).toHaveAttribute('alt', items[0].alt)
+    expect(imgRoles[0]).toHaveAttribute('alt', items[0].label)
 
     fireEvent.click(buttonTestIds[2])
     expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 2);')
@@ -153,16 +153,6 @@ describe('Gallery', () => {
     expect(autoplayTestId).toHaveAttribute('aria-label', 'Play')
     expect(pauseIconQuery3).toBeNull()
     expect(playIconQuery3).toBeInTheDocument()
-  })
-
-  it('empty state with noItemsLabel', () => {
-    render(<Gallery items={[]} ratio="aspect-video" noItemsLabel="No images available" />)
-    const emptyMessage = screen.getByText('No images available')
-    const carouselItemTestId = screen.getByTestId('CarouselItem')
-
-    expect(emptyMessage).toBeInTheDocument()
-    expect(carouselItemTestId).toHaveAttribute('aria-label', 'No images available')
-    expect(carouselItemTestId).toHaveAttribute('aria-current', 'true')
   })
 
   it('paperProps/imageViewerProps/carouselProps', () => {

@@ -4,19 +4,22 @@ import { axe, toHaveNoViolations } from 'jest-axe'
 import { createRef, useState } from 'react'
 
 import { fireEvent, render, screen } from '../../../../../.jest/customRender'
-import { Carousel } from '.'
+import { getCarouselItems } from '../../../../../.storybook/helpers'
+import { Carousel, CarouselItemType } from '.'
+import { CarouselItem } from './CarouselItem'
 
 expect.extend(toHaveNoViolations)
 
+const getTestItems = (count: number): CarouselItemType[] => {
+  return getCarouselItems(count).map((_, i) => ({
+    label: `Item ${i + 1}`,
+    content: <div className="h-full w-full" data-testid="panel" />,
+  }))
+}
+
 describe('Carousel', () => {
   it('default', () => {
-    render(
-      <Carousel pages={3} className="className" ratio="aspect-video">
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-      </Carousel>,
-    )
+    render(<Carousel items={getTestItems(3)} className="className" ratio="aspect-video" />)
     const carouselTestId = screen.getByTestId('Carousel')
     const panelTestIds = screen.getAllByTestId('panel')
     const carouselRatioWrapTestId = screen.getByTestId('CarouselRatioWrap')
@@ -36,13 +39,7 @@ describe('Carousel', () => {
   })
 
   it('nextPage', () => {
-    render(
-      <Carousel pages={3}>
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-      </Carousel>,
-    )
+    render(<Carousel items={getTestItems(3)} />)
     const nextButtonTestId = screen.getByTestId('NextButton')
     const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
 
@@ -51,13 +48,7 @@ describe('Carousel', () => {
   })
 
   it('previousPage', () => {
-    render(
-      <Carousel pages={3}>
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-      </Carousel>,
-    )
+    render(<Carousel items={getTestItems(3)} />)
     const previousButtonTestId = screen.getByTestId('PreviousButton')
     const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
 
@@ -66,13 +57,7 @@ describe('Carousel', () => {
   })
 
   it('swipe', () => {
-    render(
-      <Carousel pages={3}>
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-      </Carousel>,
-    )
+    render(<Carousel items={getTestItems(3)} />)
 
     const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
 
@@ -90,26 +75,14 @@ describe('Carousel', () => {
   })
 
   it('label', () => {
-    render(
-      <Carousel pages={3} label="New Carousel">
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-      </Carousel>,
-    )
+    render(<Carousel items={getTestItems(3)} label="New Carousel" />)
     const carouselTestId = screen.getByTestId('Carousel')
 
     expect(carouselTestId).toHaveAttribute('aria-label', 'New Carousel')
   })
 
   it('autoplay', () => {
-    render(
-      <Carousel pages={3} autoplay="on">
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-      </Carousel>,
-    )
+    render(<Carousel items={getTestItems(3)} autoplay="on" />)
     const previousTestId = screen.queryByTestId('PreviousButton')
     const nextTestId = screen.getByTestId('NextButton')
     const autoplayTestId = screen.getByTestId('AutoplayButton')
@@ -149,13 +122,7 @@ describe('Carousel', () => {
   })
 
   it('hide', () => {
-    render(
-      <Carousel pages={3} hideArrows hideControlDotts>
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-      </Carousel>,
-    )
+    render(<Carousel items={getTestItems(3)} hideArrows hideControlDotts />)
     const previousTestId = screen.queryByTestId('PreviousButton')
     const nextTestId = screen.queryByTestId('NextButton')
     const autoplayTestId = screen.queryByTestId('AutoplayButton')
@@ -171,11 +138,11 @@ describe('Carousel', () => {
     const ControlledCarousel = () => {
       const [currentPage, setCurrentPage] = useState(1)
       return (
-        <Carousel pages={3} currentPage={currentPage} setCurrentPage={setCurrentPage}>
-          <div className="h-full w-full" data-testid="panel" />
-          <div className="h-full w-full" data-testid="panel" />
-          <div className="h-full w-full" data-testid="panel" />
-        </Carousel>
+        <Carousel
+          items={getTestItems(3)}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
       )
     }
     render(<ControlledCarousel />)
@@ -191,15 +158,20 @@ describe('Carousel', () => {
     expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 0);')
   })
 
+  it('noItemsLabel', () => {
+    const label = 'No content available'
+    render(<Carousel noItemsLabel={label} />)
+    const emptyMessage = screen.getByText(label)
+    const carouselItemTestId = screen.getByTestId('CarouselItem')
+
+    expect(emptyMessage).toBeInTheDocument()
+    expect(carouselItemTestId).toHaveAttribute('aria-label', label)
+    expect(carouselItemTestId).toHaveAttribute('aria-current', 'true')
+  })
+
   it('ref', () => {
     const ref = createRef<HTMLDivElement>()
-    render(
-      <Carousel ref={ref} pages={3}>
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-      </Carousel>,
-    )
+    render(<Carousel ref={ref} items={getTestItems(3)} />)
 
     expect(ref.current).not.toBeNull()
     expect(ref.current?.focus).toBeDefined()
@@ -211,14 +183,32 @@ describe('Carousel', () => {
     focusMock.mockRestore()
   })
 
-  it('axe', async () => {
-    const { container } = render(
-      <Carousel pages={3}>
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
+  it('withChildren', () => {
+    render(
+      <Carousel pagesCount={3} className="className" ratio="aspect-video">
+        <CarouselItem>
+          <div className="h-full w-full" data-testid="panel-child" />
+        </CarouselItem>
+        <CarouselItem>
+          <div className="h-full w-full" data-testid="panel-child" />
+        </CarouselItem>
+        <CarouselItem>
+          <div className="h-full w-full" data-testid="panel-child" />
+        </CarouselItem>
       </Carousel>,
     )
+    const carouselTestId = screen.getByTestId('Carousel')
+    const panelTestIds = screen.getAllByTestId('panel-child')
+    const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
+
+    expect(carouselTestId).toBeInTheDocument()
+    expect(carouselTestId).toHaveClass('className')
+    expect(carouselInnerWrapTestId).toHaveStyle('width: calc(100% * 3);')
+    expect(panelTestIds).toHaveLength(3)
+  })
+
+  it('axe', async () => {
+    const { container } = render(<Carousel items={getTestItems(3)} />)
 
     const results = await axe(container)
     expect(results).toHaveNoViolations()

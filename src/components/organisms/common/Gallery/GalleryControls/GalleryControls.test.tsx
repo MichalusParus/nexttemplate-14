@@ -21,7 +21,7 @@ describe('GalleryControls', () => {
     expect(controlsTestId).toBeInTheDocument()
     expect(buttonTestIds).toHaveLength(18)
     expect(imgRoles).toHaveLength(18)
-    expect(imgRoles[0]).toHaveAttribute('alt', items[0].alt)
+    expect(imgRoles[0]).toHaveAttribute('alt', items[0].label)
   })
 
   it('setCurrentPage', () => {

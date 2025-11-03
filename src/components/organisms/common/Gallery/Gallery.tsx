@@ -4,39 +4,30 @@ import { forwardRef, useId, useState } from 'react'
 
 import { Image } from '@/components/atoms/common/Image'
 import { Paper, PaperProps } from '@/components/atoms/containers/Paper'
-import { Span } from '@/components/atoms/typography/Span'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { Carousel, CarouselProps } from '../../../molecules/common/Carousel'
-import { CarouselItem } from '../../../molecules/common/Carousel/CarouselItem'
+import { Carousel, CarouselItemType, CarouselProps } from '../../../molecules/common/Carousel'
 import { ImageViewer, ImageViewerProps } from '../../../molecules/popovers/ImageViewer'
-import { GalleryControls } from './GalleryControls'
-
-export type GalleryItem = {
-  src: string
-  alt: string
-}
+import { GalleryControls, GalleryItemType } from './GalleryControls'
 
 export type GalleryProps = Omit<StyleProps, 'size'> & {
   /** for passing custom tailwind classes */
   className?: string
   /** list of images data for displaying. */
-  items: GalleryItem[]
+  items: GalleryItemType[]
   /** optional label of component */
   label?: string
   /** for setting width as tailwind class */
   width?: string
   /** aspect ratio for Carousel in closed state as tailwind class  */
   ratio: string
-  /** optional custom message for empty state */
-  noItemsLabel?: string
   /** for passing aditional props to paper */
   paperProps?: Partial<PaperProps>
   /** for passing aditional props to imageViewer */
   imageViewerProps?: Partial<ImageViewerProps>
   /** for passing aditional props to carousel */
-  carouselProps?: Partial<CarouselProps>
+  carouselProps?: Omit<Partial<CarouselProps>, 'items' | 'children' | 'pagesCount'>
 }
 
 /** Gallery component can display multiple images with autoplay and image controll. RatioWrapProps supported. USE CLIENT */
@@ -50,7 +41,6 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
       color = 'primary',
       width = 'w-full',
       ratio = 'aspect-video',
-      noItemsLabel,
       paperProps = {},
       imageViewerProps = {},
       carouselProps = {},
@@ -65,6 +55,14 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
     const [currentPage, setCurrentPage] = useState(1)
     const { className: paperClassName, ...restPaperProps } = paperProps
     const { className: carouselClassName, ...restCarouselProps } = carouselProps
+    const carouselItems: CarouselItemType[] = items.map(item => ({
+      label: item.label,
+      content: <Image className="bg-transparent" src={item.src} alt={item.label} />,
+      carouselItemProps: {
+        className: 'flex items-center justify-center',
+        ...item.carouselItemProps,
+      },
+    }))
 
     return (
       <Paper
@@ -92,7 +90,7 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
                 isOpen && '[&>.CarouselRatioWrap]:max-h-galleryInnerHeight',
                 carouselClassName,
               )}
-              pages={items.length || 1}
+              items={carouselItems}
               currentPage={currentPage}
               width={width}
               ratio={isOpen ? 'aspect-video' : ratio}
@@ -110,32 +108,7 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
               }
               portalTargetId={isOpen ? imageViewerId : controlsPortalId}
               {...restCarouselProps}
-            >
-              {items && items.length ? (
-                items.map((item, index) => (
-                  <CarouselItem
-                    key={`${item.src}-${index}`}
-                    className="flex items-center justify-center"
-                    selectedPage={currentPage}
-                    pages={items.length}
-                    aria-label={`${index + 1} / ${items.length}: ${item.alt}`}
-                    aria-current={currentPage === index + 1 ? 'true' : undefined}
-                  >
-                    <Image className="bg-transparent" src={item.src} alt={item.alt} />
-                  </CarouselItem>
-                ))
-              ) : (
-                <CarouselItem
-                  className="flex items-center justify-center"
-                  aria-label={noItemsLabel || t('noOptions')}
-                  aria-current={'true'}
-                >
-                  <Span variant="none" color="none">
-                    {noItemsLabel || t('noOptions')}
-                  </Span>
-                </CarouselItem>
-              )}
-            </Carousel>
+            />
           </ImageViewer>
         </div>
       </Paper>

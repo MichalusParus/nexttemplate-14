@@ -5,19 +5,19 @@ import { useEffect, useRef } from 'react'
 import { Button } from '@/components/atoms/common/Button'
 import { Image } from '@/components/atoms/common/Image'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
+import { CarouselItemType } from '@/components/molecules/common/Carousel'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { controlButtonClass, controlButtonVariant } from './GalleryControls.style'
 
-export type GalleryControlsItem = {
+export type GalleryItemType = Omit<CarouselItemType, 'content'> & {
   src: string
-  alt: string
 }
 
 export type GalleryControlsProps = Pick<StyleProps, 'variant'> & {
   /** list of images data for displaying. */
-  items: GalleryControlsItem[]
+  items: GalleryItemType[]
   /** boolean for Open Gallery */
   isOpen?: boolean
   /** for setting width as tailwind class */
@@ -76,7 +76,7 @@ export const GalleryControls = ({
               }}
               data-testid="GalleryControlButton"
             >
-              <Image src={item.src} alt={item.alt} ratio="aspect-video" />
+              <Image src={item.src} alt={item.label} ratio="aspect-video" />
             </Button>
           ))}
         </div>
