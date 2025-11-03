@@ -20,6 +20,7 @@ describe('TabList', () => {
     expect(paperWrapTestId).toBeInTheDocument()
     expect(paperWrapTestId).toHaveClass('className')
     expect(tablistRole).toBeInTheDocument()
+    expect(tablistRole).toHaveAttribute('aria-orientation', 'horizontal')
     expect(tabRoles).toHaveLength(tabs.length)
     expect(tabRoles[0]).toHaveTextContent(tabs[0].label)
     expect(tabRoles[1]).toHaveTextContent(tabs[1].label)

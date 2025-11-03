@@ -14,6 +14,10 @@ jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: () => {},
   }),
+  useSearchParams: () => ({
+    get: () => null,
+    toString: () => '',
+  }),
 }))
 
 describe('Tabs', () => {
@@ -37,6 +41,7 @@ describe('Tabs', () => {
     expect(tabPanelRoles).toHaveLength(1)
     expect(tabPanelRoles[0]).toHaveAttribute('id', tabRoles[0].getAttribute('aria-controls'))
     expect(tabPanelRoles[0]).toHaveAttribute('aria-labelledby', tabRoles[0].getAttribute('id'))
+    expect(tabPanelRoles[0]).toHaveAttribute('tabIndex', '0')
     await act(async () => {
       tabRoles[0].focus()
     })

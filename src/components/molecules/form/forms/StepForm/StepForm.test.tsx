@@ -14,6 +14,10 @@ jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: () => {},
   }),
+  useSearchParams: () => ({
+    get: () => null,
+    toString: () => '',
+  }),
 }))
 
 const steps = tabs.map((tab, i) => ({ ...tab, value: i }))

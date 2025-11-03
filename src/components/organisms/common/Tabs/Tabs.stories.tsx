@@ -26,13 +26,13 @@ const meta: Meta<typeof Tabs> = {
 }
 
 export default meta
-type Story = StoryObj<typeof Tabs>
+type Story = StoryObj<typeof Tabs<string>>
 
-const TabsWithHooks = (args: TabsProps<unknown>) => {
-  const [param, setParam] = useState<unknown>('label1')
+const TabsWithHooks = (args: TabsProps<string>) => {
+  const [param, setParam] = useState<string>('label1')
   return (
     <div>
-      <Tabs<unknown>
+      <Tabs<string>
         {...args}
         name="tabs"
         selectedValue={param}

@@ -59,6 +59,7 @@ export const TabList = <T,>({
           'flex overflow-hidden rounded-md focus:outline-offset-8 focus:outline-text',
         )}
         role="tablist"
+        aria-orientation="horizontal"
       >
         {tabs.map(tab => (
           <li
