@@ -1,23 +1,43 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useEffect, useState, useTransition } from 'react'
 
+import { Ghost } from '@/components/atoms/loaders/Ghost'
 import { usePagination } from '@/utils/hooks/usePagination'
 
 import { tileData } from '../../../../../.storybook/helpers'
+import { MobilePagination } from './MobilePagination'
 import { Pagination, PaginationProps } from './Pagination'
+import { ScreenPagination } from './ScreenPagination'
 
 const meta: Meta<typeof Pagination> = {
   title: 'Organisms/Common/Pagination',
   component: Pagination,
   tags: ['autodocs'],
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
   },
-  argTypes: {
-    loadMoreButtonProps: {
-      control: false,
-    },
-  },
+}
+
+const MockedPageContent = ({
+  data,
+  isLoading,
+}: {
+  data: { id?: number; name: string; url?: string }[]
+  isLoading: boolean
+}) => {
+  return (
+    <div className="grid min-h-40 grid-cols-5 gap-2 pb-6">
+      {isLoading || !data.length
+        ? Array.from({ length: 10 }, (_, i) => i + 1).map(item => (
+            <Ghost key={item} className="h-12 w-full" />
+          ))
+        : data.map(item => (
+            <div key={item.id} className="flex h-12 w-full flex-col gap-2 border p-2">
+              {item.name}
+            </div>
+          ))}
+    </div>
+  )
 }
 
 const PaginationWithFetch = (args: PaginationProps) => {
@@ -38,46 +58,75 @@ const PaginationWithFetch = (args: PaginationProps) => {
   }, [limit, offset])
 
   return (
-    <div>
-      <div className="grid min-h-40 grid-cols-5 gap-2 pb-6">
-        {pending
-          ? 'loading'
-          : res?.results.map(item => (
-              <div key={item.name} className="h-20 w-full gap-2 border p-2">
-                <div className="text-md">{item.name}</div>
-              </div>
-            ))}
-      </div>
+    <div className="flex flex-col items-center gap-4">
+      <MockedPageContent data={res?.results || []} isLoading={pending} />
       <Pagination
         {...args}
         count={Math.ceil((res?.count || 20) / limit)}
-        selectedPage={offset / limit + 1}
-        setSelectedPage={page => setOffset(page * limit - limit)}
+        page={offset / limit + 1}
+        onChange={page => setOffset(page * limit - limit)}
       />
     </div>
   )
 }
 
 const PaginationWithHooks = (args: PaginationProps) => {
-  const { pagedData, pages, selectedPage, onLoadMore, setSelectedPage, loadMoreCount } =
-    usePagination(tileData, 10)
+  const { pagedData, pages, page, onLoadMore, onChange, loadMoreCount } = usePagination(
+    tileData,
+    10,
+  )
 
   return (
-    <div>
-      <div className="grid grid-cols-5 gap-2 pb-6">
-        {pagedData.map(item => (
-          <div key={item.id} className="flex h-12 w-full flex-col gap-2 border p-2">
-            <div className="text-xl">{item.title}</div>
-          </div>
-        ))}
-      </div>
+    <div className="flex flex-col items-center gap-4">
+      <MockedPageContent data={pagedData} isLoading={false} />
       <Pagination
         {...args}
         count={pages.length}
-        selectedPage={selectedPage}
+        page={page}
         loadMoreCount={loadMoreCount}
-        setSelectedPage={setSelectedPage}
+        onChange={onChange}
         onLoadMore={args.onLoadMore && onLoadMore}
+      />
+    </div>
+  )
+}
+
+const MobilePaginationWithHooks = (args: PaginationProps) => {
+  const { pagedData, pages, page, onChange, loadMoreCount } = usePagination(tileData, 10)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { maxSpread, loadMoreButtonProps, onLoadMore, ...mobileArgs } = args
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <MockedPageContent data={pagedData} isLoading={false} />
+      <MobilePagination
+        {...mobileArgs}
+        count={pages.length}
+        page={page}
+        loadMoreCount={loadMoreCount}
+        onChange={onChange}
+      />
+    </div>
+  )
+}
+
+const ScreenPaginationWithHooks = (args: PaginationProps) => {
+  const { pagedData, pages, page, onChange, loadMoreCount, onLoadMore } = usePagination(tileData, 10)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { maxSpread, ...screenArgs } = args
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <MockedPageContent data={pagedData} isLoading={false} />
+      <ScreenPagination
+        {...screenArgs}
+        count={pages.length}
+        page={page}
+        pageSpread={7}
+        loadMoreCount={loadMoreCount}
+        onChange={onChange}
+        onLoadMore={args.onLoadMore && onLoadMore}
+        loadMoreButtonProps={args.loadMoreButtonProps}
       />
     </div>
   )
@@ -89,17 +138,18 @@ type Story = StoryObj<typeof Pagination>
 export const PrimaryDefault: Story = {
   args: {
     className: '',
-    name: 'paginationStory',
     count: 5,
-    selectedPage: 1,
+    page: 1,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
+    isLoading: false,
+    hideNav: false,
     maxSpread: 17,
     loadMoreCount: 0,
     buttonProps: {},
     loadMoreButtonProps: {},
-    setSelectedPage: () => {},
+    onChange: () => {},
     onLoadMore: undefined,
   },
   render: args => <PaginationWithFetch {...args} />,
@@ -109,7 +159,6 @@ export const ClientPagination: Story = {
   args: {
     ...PrimaryDefault.args,
     count: 30,
-    onLoadMore: () => console.log('Load More'),
   },
   render: args => <PaginationWithHooks {...args} />,
 }
@@ -121,4 +170,37 @@ export const LoadMore: Story = {
     onLoadMore: () => console.log('Load More'),
   },
   render: args => <PaginationWithHooks {...args} />,
+}
+
+export const MobileVariant: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'Mobile version of pagination. Separate component MobilePagination.',
+      },
+    },
+  },
+  args: {
+    ...PrimaryDefault.args,
+    count: 10,
+    page: 5,
+  },
+  render: args => <MobilePaginationWithHooks {...args} />,
+}
+
+export const ScreenVariant: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Static version of pagination with fixed page spread. Separate component ScreenPagination.',
+      },
+    },
+  },
+  args: {
+    ...PrimaryDefault.args,
+    count: 20,
+    page: 10,
+  },
+  render: args => <ScreenPaginationWithHooks {...args} />,
 }

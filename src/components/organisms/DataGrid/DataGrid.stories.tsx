@@ -10,7 +10,7 @@ import {
 import { DataGrid } from '.'
 
 const meta: Meta<typeof DataGrid> = {
-  title: 'Organisms/DataGrid',
+  title: 'Organisms/Common/DataGrid',
   component: DataGrid,
   tags: ['autodocs'],
   parameters: {

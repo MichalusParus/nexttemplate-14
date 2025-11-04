@@ -1,18 +1,24 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useCallback, useMemo } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
+import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import { ChevronIcon } from '@/components/atoms/icons'
 import { cn } from '@/utils/utils'
 
 import { MobilePaginationProps } from '../MobilePagination/MobilePagination'
 import { chevronPosition } from '../MobilePagination/MobilePagination.style'
+import { PageSpread } from '../useResponsivePageSpread'
 import { dottColor, pageButtonSize } from './ScreenPagination.style'
 
 export type ScreenPaginationProps = MobilePaginationProps & {
   /** number of visible pages */
-  pageSpread: number
+  pageSpread: PageSpread
+  /** optional props for load more button */
+  loadMoreButtonProps?: Partial<ButtonProps>
+  /** on Load More button fn */
+  onLoadMore?: () => void
 }
 
 /** Static pagination component with fixed page spread. ButtonProps supported. USE CLIENT */
@@ -21,160 +27,200 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
     {
       className,
       count,
-      selectedPage,
+      page,
       pageSpread,
       variant = 'outlined',
       color = 'primary',
       size = 'md',
+      isLoading,
+      hideNav,
       loadMoreCount = 0,
       buttonProps = {},
-      setSelectedPage,
+      loadMoreButtonProps = {},
+      onChange,
+      onLoadMore,
     },
     ref,
   ) => {
     const t = useTranslations('Components')
-    const componentRef = useRef<HTMLDivElement | null>(null)
-    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
-      ref,
-      () => componentRef.current,
-    )
     const { className: buttonClassName, ...restButtonProps } = buttonProps
-    const pages = Array.from({ length: count }, (_, i) => i + 1)
+    const { className: loadMoreButtonClassName, ...restLoadMoreButtonProps } = loadMoreButtonProps
+    const Element = hideNav ? 'div' : 'nav'
+    const pages = useMemo(() => Array.from({ length: count }, (_, i) => i + 1), [count])
+    const showEllipsis = count > ((pageSpread - 5) / 2) * 2 + 6
     const sidePagesCount = (pageSpread - 5) / 2
-
-    const aroundPages = useCallback(() => {
-      if (selectedPage < sidePagesCount + 4) {
+    const displayablePages = useMemo(() => {
+      const minPagesForEllipsis = sidePagesCount * 2 + 6
+      // too short fot ellipsis
+      if (count <= minPagesForEllipsis) return pages
+      // ellipsis start
+      if (page < sidePagesCount + 4) {
         return pages.slice(0, sidePagesCount * 2 + 3)
-      } else if (selectedPage > count - (sidePagesCount + 3)) {
+      }
+      // ellipsis end
+      if (page > count - (sidePagesCount + 3)) {
         return pages.slice(count - (sidePagesCount * 2 + 3), count)
       }
-      return pages.filter(
-        page => page >= selectedPage - sidePagesCount && page <= selectedPage + sidePagesCount,
-      )
-    }, [pages, count, selectedPage, sidePagesCount])
-
-    const displayablePages = count > sidePagesCount * 2 + 6 ? aroundPages() : pages
+      // both ellipsis
+      return pages.filter(p => p >= page - sidePagesCount && p <= page + sidePagesCount)
+    }, [pages, count, page, sidePagesCount])
 
     const getSelectedClass = useCallback(
-      (page: number) => page >= selectedPage && page <= selectedPage + loadMoreCount && 'selected',
-      [selectedPage, loadMoreCount],
+      (pageNum: number) => pageNum >= page && pageNum <= page + loadMoreCount && 'selected',
+      [page, loadMoreCount],
     )
 
     return (
       <div
-        className={cn(
-          'ScreenPagination',
-          'group relative flex focus:outline-none',
-          chevronPosition[size],
-          count <= 1 && 'invisible',
-          className,
-        )}
-        ref={componentRef}
-        data-testid="ScreenPagination"
+        className={cn('ScreenPaginationWrap', 'relative flex flex-col items-center', className)}
+        data-testid="ScreenPaginationWrap"
+        ref={ref}
       >
-        {selectedPage !== 1 && (
+        {onLoadMore && page + loadMoreCount < count && (
           <Button
-            className={cn(
-              'LeftChevronButton',
-              'absolute top-1/2 translate-y-[-50%] [&_svg]:rotate-90',
-              buttonClassName,
-            )}
+            className={cn('LoadMoreButton', 'mb-6', loadMoreButtonClassName)}
             variant={variant}
             color={color}
             size={size}
-            startIcon={<ChevronIcon />}
-            onClick={() => setSelectedPage(selectedPage - 1)}
-            aria-label={t('previousPage', { page: selectedPage - 1 })}
-            {...restButtonProps}
-          />
+            onClick={onLoadMore}
+            data-testid="LoadMoreButton"
+            {...restLoadMoreButtonProps}
+          >
+            {loadMoreButtonProps.children || t('loadMore')}
+          </Button>
         )}
-        {count > sidePagesCount * 2 + 6 && selectedPage > sidePagesCount + 3 && (
-          <Button
-            className={cn(
-              'PageButton',
-              pageButtonSize[size],
-              getSelectedClass(pages[0]),
-              buttonClassName,
-            )}
-            variant={variant}
-            color={color}
-            size={size}
-            startIcon={String(pages[0])}
-            onClick={() => setSelectedPage(pages[0])}
-            tabIndex={-1}
-            aria-label={t('page', { page: pages[0] })}
-            {...restButtonProps}
-          />
-        )}
-        {count > sidePagesCount * 2 + 6 && selectedPage > sidePagesCount + 3 && (
-          <div className={cn('DottWrap', 'flex items-center justify-around', pageButtonSize[size])}>
-            <div className={dottColor[color]} />
-            <div className={dottColor[color]} />
-            <div className={dottColor[color]} />
-          </div>
-        )}
-        {displayablePages.map(page => (
-          <Button
-            key={page}
-            className={cn(
-              'PageButton',
-              pageButtonSize[size],
-              getSelectedClass(page),
-              buttonClassName,
-            )}
-            variant={variant}
-            color={color}
-            size={size}
-            startIcon={String(page)}
-            onClick={() => setSelectedPage(page)}
-            tabIndex={-1}
-            aria-label={t('page', { page: page })}
-            {...restButtonProps}
-          />
-        ))}
-        {count > sidePagesCount * 2 + 6 && selectedPage < count - (sidePagesCount + 2) && (
-          <div className={cn('DottWrap', 'flex items-center justify-around', pageButtonSize[size])}>
-            <div className={dottColor[color]} />
-            <div className={dottColor[color]} />
-            <div className={dottColor[color]} />
-          </div>
-        )}
-        {count > sidePagesCount * 2 + 6 && selectedPage < count - (sidePagesCount + 2) && (
-          <Button
-            className={cn(
-              'PageButton',
-              pageButtonSize[size],
-              getSelectedClass(pages[count - 1]),
-              buttonClassName,
-            )}
-            variant={variant}
-            color={color}
-            size={size}
-            startIcon={String(pages[count - 1])}
-            onClick={() => setSelectedPage(pages[count - 1])}
-            tabIndex={-1}
-            aria-label={t('page', { page: pages[count - 1] })}
-            {...restButtonProps}
-          />
-        )}
-        {selectedPage + loadMoreCount < count && (
-          <Button
-            className={cn(
-              'RightChevronButton',
-              'absolute top-1/2 translate-y-[-50%] [&_svg]:-rotate-90',
-              buttonClassName,
-            )}
-            variant={variant}
-            color={color}
-            size={size}
-            startIcon={<ChevronIcon />}
-            onClick={() => setSelectedPage(selectedPage + loadMoreCount + 1)}
-            aria-label={t('nextPage', {
-              page: selectedPage + 1,
-            })}
-            {...restButtonProps}
-          />
-        )}
+        <Element
+          className={cn(
+            'ScreenPagination',
+            'relative flex w-max',
+            chevronPosition[size],
+            count <= 1 && 'invisible',
+          )}
+          {...(Element === 'nav' && { 'aria-label': t('pagination') })}
+          data-testid="ScreenPagination"
+        >
+          {(page !== 1 || isLoading) && (
+            <Button
+              className={cn(
+                'LeftChevronButton',
+                'absolute top-1/2 translate-y-[-50%] [&_svg]:rotate-90',
+                buttonClassName,
+              )}
+              variant={variant}
+              color={color}
+              size={size}
+              startIcon={<ChevronIcon />}
+              disabled={isLoading}
+              onClick={() => onChange(page - 1)}
+              aria-label={t('previousPage', { page: page - 1 })}
+              {...restButtonProps}
+            />
+          )}
+          {showEllipsis && page > sidePagesCount + 3 && (
+            <Button
+              className={cn(
+                'PageButton',
+                pageButtonSize[size],
+                getSelectedClass(pages[0]),
+                buttonClassName,
+              )}
+              variant={variant}
+              color={color}
+              size={size}
+              startIcon={String(pages[0])}
+              disabled={isLoading}
+              onClick={() => onChange(pages[0])}
+              tabIndex={-1}
+              aria-label={t('page', { page: pages[0] })}
+              aria-current={pages[0] === page ? 'page' : undefined}
+              {...restButtonProps}
+            />
+          )}
+          {showEllipsis && page > sidePagesCount + 3 && (
+            <div
+              className={cn('DottWrap', 'flex items-center justify-around', pageButtonSize[size])}
+              role="presentation"
+              aria-hidden="true"
+              data-testid="DottWrap"
+            >
+              <div className={dottColor[color]} />
+              <div className={dottColor[color]} />
+              <div className={dottColor[color]} />
+            </div>
+          )}
+          {displayablePages.map(pageNum => (
+            <Button
+              key={pageNum}
+              className={cn(
+                'PageButton',
+                pageButtonSize[size],
+                getSelectedClass(pageNum),
+                buttonClassName,
+              )}
+              variant={variant}
+              color={color}
+              size={size}
+              startIcon={String(pageNum)}
+              disabled={isLoading}
+              onClick={() => onChange(pageNum)}
+              tabIndex={-1}
+              aria-label={t('page', { page: pageNum })}
+              aria-current={pageNum === page ? 'page' : undefined}
+              {...restButtonProps}
+            />
+          ))}
+          {showEllipsis && page < count - (sidePagesCount + 2) && (
+            <div
+              className={cn('DottWrap', 'flex items-center justify-around', pageButtonSize[size])}
+              role="presentation"
+              aria-hidden="true"
+              data-testid="DottWrap"
+            >
+              <div className={dottColor[color]} />
+              <div className={dottColor[color]} />
+              <div className={dottColor[color]} />
+            </div>
+          )}
+          {showEllipsis && page < count - (sidePagesCount + 2) && (
+            <Button
+              className={cn(
+                'PageButton',
+                pageButtonSize[size],
+                getSelectedClass(pages[count - 1]),
+                buttonClassName,
+              )}
+              variant={variant}
+              color={color}
+              size={size}
+              startIcon={String(pages[count - 1])}
+              disabled={isLoading}
+              onClick={() => onChange(pages[count - 1])}
+              tabIndex={-1}
+              aria-label={t('page', { page: pages[count - 1] })}
+              aria-current={pages[count - 1] === page ? 'page' : undefined}
+              {...restButtonProps}
+            />
+          )}
+          {(page + loadMoreCount < count || isLoading) && (
+            <Button
+              className={cn(
+                'RightChevronButton',
+                'absolute top-1/2 translate-y-[-50%] [&_svg]:-rotate-90',
+                buttonClassName,
+              )}
+              variant={variant}
+              color={color}
+              size={size}
+              startIcon={<ChevronIcon />}
+              disabled={isLoading}
+              onClick={() => onChange(page + loadMoreCount + 1)}
+              aria-label={t('nextPage', {
+                page: page + loadMoreCount + 1,
+              })}
+              {...restButtonProps}
+            />
+          )}
+        </Element>
       </div>
     )
   },

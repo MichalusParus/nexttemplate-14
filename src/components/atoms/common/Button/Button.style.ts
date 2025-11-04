@@ -120,13 +120,18 @@ export const buttonDisabledVariant = {
   text: cn(
     'disabled:cursor-not-allowed disabled:bg-dark-200 disabled:text-dark-500 disabled:opacity-50',
     'dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:opacity-50',
+    '[&.selected]:disabled:bg-dark-200 [&.selected]:disabled:hover:bg-dark-200 [&.selected]:disabled:focus-visible:bg-dark-200',
+    'dark:[&.selected]:disabled:bg-dark-200 dark:[&.selected]:disabled:hover:bg-dark-200 dark:[&.selected]:disabled:focus-visible:bg-dark-200',
   ),
   outlined: cn(
     'disabled:cursor-not-allowed disabled:border-dark-500 disabled:bg-dark-200 disabled:text-dark-500 disabled:opacity-50',
     'dark:disabled:border-dark-500 dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:opacity-50',
+    '[&.selected]:disabled:bg-dark-200 [&.selected]:disabled:hover:bg-dark-200 [&.selected]:disabled:focus-visible:bg-dark-200',
+    'dark:[&.selected]:disabled:bg-dark-200 dark:[&.selected]:disabled:hover:bg-dark-200 dark:[&.selected]:disabled:focus-visible:bg-dark-200',
   ),
   contained: cn(
     'disabled:cursor-not-allowed disabled:border-dark-500 disabled:bg-dark-500 disabled:text-dark-300 disabled:opacity-50 disabled:shadow-none',
+    '[&.selected]:disabled:bg-dark-500 [&.selected]:disabled:hover:bg-dark-500 [&.selected]:disabled:focus-visible:bg-dark-500',
   ),
 }
 

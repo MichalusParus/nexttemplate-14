@@ -118,12 +118,12 @@ export const GridFooter = forwardRef<HTMLDivElement | null, GridFooterProps>(
           <MobilePagination
             className={paginationMarginClass[size]}
             count={pages.length}
-            selectedPage={selectedPage}
+            page={selectedPage}
             variant={variant}
             color={color}
             size={size}
             buttonProps={{ className: 'border-transparent dark:border-transparent', tabIndex: -1 }}
-            setSelectedPage={setSelectedPage}
+            onChange={setSelectedPage}
           />
         </div>
       </div>

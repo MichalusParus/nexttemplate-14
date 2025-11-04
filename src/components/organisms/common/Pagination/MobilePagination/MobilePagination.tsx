@@ -5,6 +5,7 @@ import { forwardRef } from 'react'
 import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import { ChevronIcon } from '@/components/atoms/icons'
+import { P } from '@/components/atoms/typography/P'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -15,14 +16,18 @@ export type MobilePaginationProps = StyleProps & {
   className?: string
   /** total number of pages */
   count: number
-  /** current selected page */
-  selectedPage: number
+  /** current page (1-based) */
+  page: number
+  /** boolean for loading state of component, when count is unknown */
+  isLoading?: boolean
+  /** boolean for hidding nav semantic, use when nav isnt proper role for pagination */
+  hideNav?: boolean
   /** count of load more button clicks */
   loadMoreCount?: number
   /** optional props for button component */
   buttonProps?: Partial<ButtonProps>
-  /** function for selecting page */
-  setSelectedPage: (page: number) => void
+  /** on page change fn */
+  onChange: (page: number) => void
 }
 
 /** Minimalistic mobile screen pagination. ButtonProps supported. USE CLIENT */
@@ -31,66 +36,79 @@ export const MobilePagination = forwardRef<HTMLDivElement | null, MobilePaginati
     {
       className,
       count,
-      selectedPage,
+      page,
       variant = 'outlined',
       color = 'primary',
       size = 'md',
+      isLoading,
+      hideNav,
       loadMoreCount = 0,
       buttonProps = {},
-      setSelectedPage,
+      onChange,
     },
     ref,
   ) => {
     const t = useTranslations('Components')
     const { className: buttonClassName, ...restButtonProps } = buttonProps
+    const Element = hideNav ? 'div' : 'nav'
 
     return (
-      <div
+      <Element
         className={cn(
           'MobilePagination',
-          'relative',
+          'relative w-max',
           chevronPosition[size],
           count > 1 ? 'visible' : 'invisible',
           className,
         )}
+        {...(Element === 'nav' && { 'aria-label': t('pagination') })}
         ref={ref}
         data-testid="MobilePagination"
       >
-        {selectedPage !== 1 && (
+        {page !== 1 && (
           <Button
             className={cn('LeftChevronButton', 'rotate-90', arrowClass, buttonClassName)}
             variant={variant}
             color={color}
             size={size}
+            disabled={isLoading}
             startIcon={<ChevronIcon />}
-            onClick={() => setSelectedPage(selectedPage - 1)}
-            aria-label={t('previousPage', { page: selectedPage - 1 })}
+            onClick={() => onChange(page - 1)}
+            aria-label={t('previousPage', { page: page - 1 })}
             hideShadow
             {...restButtonProps}
           />
         )}
-        <div
-          className={cn('SelectedOutOff', 'cursor-default font-semibold')}
+        <P
+          className={cn(
+            'SelectedOutOff',
+            'min-h-4 min-w-16 cursor-default text-center font-semibold',
+          )}
+          color="none"
+          size={size}
+          align="text-center"
+          isLoading={isLoading}
           data-testid="SelectedOutOff"
         >
-          {`${selectedPage}${loadMoreCount ? `-${selectedPage + loadMoreCount}` : ''}`} / {count}
-        </div>
-        {selectedPage + loadMoreCount < count && (
+          {`${page}${loadMoreCount ? `-${page + loadMoreCount}` : ''} / ${count}`}
+        </P>
+        {page + loadMoreCount < count && (
           <Button
             className={cn('RightChevronButton', '-rotate-90', arrowClass, buttonClassName)}
             variant={variant}
             color={color}
             size={size}
             startIcon={<ChevronIcon />}
-            onClick={() => setSelectedPage(selectedPage + loadMoreCount + 1)}
+            disabled={isLoading}
+            onClick={() => onChange(page + loadMoreCount + 1)}
             aria-label={t('nextPage', {
-              page: selectedPage + 1,
+              page: page + loadMoreCount + 1,
             })}
             hideShadow
             {...restButtonProps}
           />
         )}
-      </div>
+      </Element>
     )
   },
 )

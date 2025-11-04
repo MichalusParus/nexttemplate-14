@@ -1,51 +1,60 @@
 import { useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 /** usePagination hook is used for slicing data on client side. */
 export const usePagination = <T>(data: T[], itemsPerPage: number) => {
   const searchParams = useSearchParams()
   const loadMoreCountRef = useRef(0)
-  const [pagedData, setPagedData] = useState(data.slice(0, itemsPerPage))
-  const [selectedPage, setSelectedPage] = useState(1)
-  const pages = []
-  const maxPageIndex =
-    data.length % itemsPerPage === 0 ? data.length / itemsPerPage - 1 : data.length / itemsPerPage
-  for (let i = 0; i <= maxPageIndex; i++) {
-    pages.push(i + 1)
-  }
+  const [pagedData, setPagedData] = useState<T[]>(() =>
+    data.length > 0 ? data.slice(0, itemsPerPage) : [],
+  )
+  const [page, setPage] = useState(1)
 
-  if (pages.length && selectedPage > pages.length) {
-    setSelectedPage(1)
-  }
+  const pages = useMemo(() => {
+    const maxPageIndex =
+      data.length % itemsPerPage === 0 ? data.length / itemsPerPage - 1 : data.length / itemsPerPage
+    const pagesArray = []
+    for (let i = 0; i <= maxPageIndex; i++) {
+      pagesArray.push(i + 1)
+    }
+    return pagesArray
+  }, [data.length, itemsPerPage])
+
+  useEffect(() => {
+    if (pages.length && page > pages.length) {
+      setPage(1)
+    }
+  }, [pages.length, page])
 
   useEffect(() => {
     loadMoreCountRef.current = 0
-    setPagedData(
-      data.slice(
-        (selectedPage - 1) * itemsPerPage,
-        (selectedPage - 1) * itemsPerPage + itemsPerPage,
-      ),
-    )
-  }, [data, selectedPage, itemsPerPage, setPagedData])
+    setPagedData(data.slice((page - 1) * itemsPerPage, (page - 1) * itemsPerPage + itemsPerPage))
+  }, [data, page, itemsPerPage])
 
   useEffect(() => {
-    setSelectedPage(1)
-  }, [searchParams, setSelectedPage])
+    setPage(1)
+  }, [searchParams])
 
   const onLoadMore = useCallback(() => {
     loadMoreCountRef.current++
     const nextPageData = data.slice(
-      (selectedPage + loadMoreCountRef.current) * itemsPerPage,
-      (selectedPage + loadMoreCountRef.current) * itemsPerPage + itemsPerPage,
+      (page + loadMoreCountRef.current) * itemsPerPage,
+      (page + loadMoreCountRef.current) * itemsPerPage + itemsPerPage,
     )
     setPagedData(prev => [...prev, ...nextPageData])
-  }, [data, selectedPage, itemsPerPage, setPagedData])
+  }, [data, page, itemsPerPage])
+
+  const onChange = useCallback((newPage: number) => {
+    loadMoreCountRef.current = 0
+    setPage(newPage)
+  }, [])
+
   return {
-    pagedData: pagedData,
-    pages: pages,
-    selectedPage: selectedPage,
+    pagedData,
+    pages,
+    page,
     loadMoreCount: loadMoreCountRef.current,
-    setSelectedPage: setSelectedPage,
-    onLoadMore: onLoadMore,
+    onChange,
+    onLoadMore,
   }
 }

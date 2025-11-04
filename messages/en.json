@@ -50,6 +50,7 @@
       "imageViewer": "Image Viewer",
       "gallery": "Gallery",
       "dialog": "Dialog",
+      "pagination": "Pagination",
       "slideLabel": "Slide {count} of {total}",
       "pause": "Pause",
       "play": "Play",

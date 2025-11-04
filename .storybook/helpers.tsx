@@ -112,7 +112,7 @@ export const optionsWithContent = Array.from({ length: 20 }, (_, i) => ({
 
 export const tileData = Array.from({ length: 200 }, (_, i) => ({
   id: i,
-  title: `Title ${i}`,
+  name: `Title ${i}`,
 }))
 
 export type MenuValuesType = {

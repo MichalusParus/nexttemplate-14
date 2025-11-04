@@ -90,7 +90,7 @@ export const DataGrid = forwardRef<HTMLDivElement | null, DataGridProps>(
     const [selectedRowsPerPage, setSelectedRowsPerPage] = useState(rowsPerPage)
     const [isGridFocusOpen, setIsGridFocusOpen] = useState(false)
     const { filteredData, sorting, filter, setFilter, handleSorting } = useFilterData(rows)
-    const { pagedData, pages, selectedPage, setSelectedPage } = usePagination(
+    const { pagedData, pages, page: selectedPage, onChange: setSelectedPage } = usePagination(
       filteredData,
       selectedRowsPerPage,
     )

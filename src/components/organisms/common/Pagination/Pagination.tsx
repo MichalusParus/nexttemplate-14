@@ -1,23 +1,19 @@
 'use client'
-import { useTranslations } from 'next-intl'
 import { forwardRef } from 'react'
 
-import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
-import { StyleProps } from '@/components/utils/types'
-import { cn } from '@/utils/utils'
+import {
+  PageSpread,
+  useResponsivePageSpread,
+} from '@/components/organisms/common/Pagination/useResponsivePageSpread'
 
 import { MobilePagination } from './MobilePagination'
 import { MobilePaginationProps } from './MobilePagination/MobilePagination'
 import { ScreenPagination } from './ScreenPagination'
 
 export type PaginationProps = MobilePaginationProps & {
-  /** name of the pagination component */
-  name: string
   /** maximal page spread, affect component width */
-  maxSpread?: 7 | 9 | 11 | 13 | 15 | 17
-  /** style variant of component */
-  variant?: StyleProps['variant']
+  maxSpread?: PageSpread
   /** optional props for load more button */
   loadMoreButtonProps?: Partial<ButtonProps>
   /** on Load More button fn */
@@ -30,148 +26,56 @@ export const Pagination = forwardRef<HTMLDivElement | null, PaginationProps>(
     {
       className,
       count,
-      selectedPage,
+      page,
       variant = 'outlined',
       color = 'primary',
       size = 'md',
+      isLoading = false,
+      hideNav,
       maxSpread,
-      buttonProps,
       loadMoreCount = 0,
+      buttonProps = {},
       loadMoreButtonProps = {},
-      setSelectedPage,
+      onChange,
       onLoadMore,
     },
     ref,
   ) => {
-    const t = useTranslations('Components')
-    const { className: buttonClassName, ...restButtonProps } = loadMoreButtonProps
+    const pageSpread = useResponsivePageSpread(maxSpread)
 
-    const getPageSpread = (value: number) => {
-      if (maxSpread) {
-        if (maxSpread < value) {
-          return maxSpread
-        } else {
-          return value
-        }
-      } else {
-        return value
-      }
-    }
-
-    return (
-      <div
-        className={cn('PaginationWrap', 'relative flex flex-col items-center', className)}
-        data-testid="Pagination"
-      >
-        {onLoadMore && selectedPage + loadMoreCount < count && (
-          <Button
-            className={cn('LoadMoreButton', 'mb-6', buttonClassName)}
-            variant={variant}
-            color={color}
-            size={size}
-            onClick={onLoadMore}
-            {...restButtonProps}
-          >
-            {loadMoreButtonProps.children || t('loadMore')}
-          </Button>
-        )}
-        <div className={cn('PaginationInnerWrap', 'flex xs:hidden')}>
-          <MobilePagination
-            count={count}
-            selectedPage={selectedPage}
-            color={color}
-            size={size}
-            loadMoreCount={loadMoreCount}
-            buttonProps={buttonProps}
-            setSelectedPage={setSelectedPage}
-            ref={ref}
-          />
-        </div>
-        <div className={cn('PaginationInnerWrap', 'hidden xs:flex sm:hidden')}>
-          <ScreenPagination
-            count={count}
-            selectedPage={selectedPage}
-            pageSpread={getPageSpread(7)}
-            variant={variant}
-            color={color}
-            size={size}
-            loadMoreCount={loadMoreCount}
-            buttonProps={buttonProps}
-            setSelectedPage={setSelectedPage}
-            ref={ref}
-          />
-        </div>
-        <div className={cn('PaginationInnerWrap', 'hidden sm:flex md:hidden')}>
-          <ScreenPagination
-            count={count}
-            selectedPage={selectedPage}
-            pageSpread={getPageSpread(9)}
-            variant={variant}
-            color={color}
-            size={size}
-            loadMoreCount={loadMoreCount}
-            buttonProps={buttonProps}
-            setSelectedPage={setSelectedPage}
-            ref={ref}
-          />
-        </div>
-        <div className={cn('PaginationInnerWrap', 'hidden md:flex lg:hidden')}>
-          <ScreenPagination
-            count={count}
-            selectedPage={selectedPage}
-            pageSpread={getPageSpread(11)}
-            variant={variant}
-            color={color}
-            size={size}
-            loadMoreCount={loadMoreCount}
-            buttonProps={buttonProps}
-            setSelectedPage={setSelectedPage}
-            ref={ref}
-          />
-        </div>
-        <div className={cn('PaginationInnerWrap', 'hidden lg:flex xl:hidden')}>
-          <ScreenPagination
-            count={count}
-            selectedPage={selectedPage}
-            pageSpread={getPageSpread(13)}
-            variant={variant}
-            color={color}
-            size={size}
-            loadMoreCount={loadMoreCount}
-            buttonProps={buttonProps}
-            setSelectedPage={setSelectedPage}
-            ref={ref}
-          />
-        </div>
-        <div className={cn('PaginationInnerWrap', 'hidden xl:flex 2xl:hidden')}>
-          <ScreenPagination
-            count={count}
-            selectedPage={selectedPage}
-            pageSpread={getPageSpread(15)}
-            variant={variant}
-            color={color}
-            size={size}
-            loadMoreCount={loadMoreCount}
-            buttonProps={buttonProps}
-            setSelectedPage={setSelectedPage}
-            ref={ref}
-          />
-        </div>
-        <div className={cn('PaginationInnerWrap', 'hidden 2xl:flex')}>
-          <ScreenPagination
-            count={count}
-            selectedPage={selectedPage}
-            pageSpread={getPageSpread(17)}
-            variant={variant}
-            color={color}
-            size={size}
-            loadMoreCount={loadMoreCount}
-            buttonProps={buttonProps}
-            setSelectedPage={setSelectedPage}
-            ref={ref}
-          />
-        </div>
-      </div>
+    return pageSpread === 0 ? (
+      <MobilePagination
+        className={className}
+        count={count}
+        page={page}
+        variant={variant}
+        color={color}
+        size={size}
+        isLoading={isLoading}
+        hideNav={hideNav}
+        loadMoreCount={loadMoreCount}
+        buttonProps={buttonProps}
+        onChange={onChange}
+        ref={ref}
+      />
+    ) : (
+      <ScreenPagination
+        className={className}
+        count={count}
+        page={page}
+        pageSpread={pageSpread}
+        variant={variant}
+        color={color}
+        size={size}
+        isLoading={isLoading}
+        hideNav={hideNav}
+        loadMoreCount={loadMoreCount}
+        buttonProps={buttonProps}
+        loadMoreButtonProps={loadMoreButtonProps}
+        onChange={onChange}
+        onLoadMore={onLoadMore}
+        ref={ref}
+      />
     )
   },
 )
