@@ -24,8 +24,12 @@ export type ToggleGroupProps = Omit<FieldsetHTMLAttributes<HTMLDivElement>, 'val
     options: ToggleOption[]
     /** display radio inputs in column */
     column?: boolean
+    /** allow deselecting by clicking selected toggle, default true */
+    allowEmpty?: boolean
     /** optional radio props */
     buttonProps?: Partial<ButtonProps>
+    /** optional callback for clearing selection */
+    onClear?: () => void
     /** onChange function */
     onChange: (value: string) => void
   }
@@ -40,18 +44,35 @@ export const ToggleGroup = forwardRef<HTMLDivElement | null, ToggleGroupProps>(
       options,
       multiValue,
       column,
+      allowEmpty = true,
       variant = 'outlined',
       color = 'primary',
       size = 'md',
       disabled,
       error,
       buttonProps = {},
+      onClear,
       onChange,
       ...rest
     },
     ref,
   ) => {
     const { className: buttonClassName, ...restButtonProps } = buttonProps
+
+    const handleToggleClick = (toggleValue: string) => {
+      if (multiValue) {
+        onChange(toggleValue)
+        return
+      }
+      const isSelected = value === toggleValue
+      if (isSelected) {
+        if (allowEmpty) {
+          onClear ? onClear() : onChange('')
+        }
+        return
+      }
+      onChange(toggleValue)
+    }
 
     return (
       <Paper
@@ -72,21 +93,22 @@ export const ToggleGroup = forwardRef<HTMLDivElement | null, ToggleGroupProps>(
         ref={ref}
         {...rest}
       >
-        {options.map(({ value: radioValue, label: radioLabel, content, isDisabled }) => (
+        {options.map(({ value: toggleValue, label: radioLabel, content, isDisabled }) => (
           <Button
-            key={radioValue}
+            key={toggleValue}
             className={cn(
               'ToggleButton',
               'flex-1 rounded-none',
-              (multiValue ? multiValue?.includes(radioValue) : value === radioValue) && 'selected',
+              (multiValue ? multiValue?.includes(toggleValue) : value === toggleValue) &&
+                'selected',
               buttonClassName,
             )}
             variant={variant === 'outlined' ? 'text' : variant}
             color={color}
             size={size}
             disabled={disabled || isDisabled}
-            aria-pressed={multiValue ? multiValue?.includes(radioValue) : value === radioValue}
-            onClick={() => onChange(radioValue)}
+            aria-pressed={multiValue ? multiValue?.includes(toggleValue) : value === toggleValue}
+            onClick={() => handleToggleClick(toggleValue)}
             {...restButtonProps}
           >
             {content || radioLabel}

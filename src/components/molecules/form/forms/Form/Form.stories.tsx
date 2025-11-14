@@ -6,7 +6,7 @@ import z from 'zod'
 
 import { Button } from '@/components/atoms/common/Button'
 import { Label } from '@/components/atoms/common/Label'
-import { useFilterData } from '@/utils/hooks/useFilterData'
+import { FilterOperator, useFilterData } from '@/utils/hooks/useFilterData'
 
 import { formSchema, getOptions, initialValues } from '../../../../../../.storybook/helpers'
 import { AutocompleteField } from '../../comboboxes/AutocompleteField'
@@ -151,14 +151,18 @@ const FormWithHooks = (args: FormProps<object>) => {
           label="Autocomplete:"
           placeholder="autocomplete"
           options={autocompleteOptions}
-          onInputChange={(value: string) => setAutocompleteFilter({ label: value })}
+          onInputChange={(value: string) =>
+            setAutocompleteFilter({ label: { value: value, operator: FilterOperator.CONTAINS } })
+          }
         />
         <MultiAutocompleteField
           name="multiAutocompleteStory"
           label="MultiAutocomplete:"
           placeholder="multiAutocomplete"
           options={multiAutocompleteOptions}
-          onInputChange={(value: string) => setMultiAutocompleteFilter({ label: value })}
+          onInputChange={(value: string) =>
+            setMultiAutocompleteFilter({ label: { value: value, operator: FilterOperator.CONTAINS } })
+          }
         />
         <Button type="submit">Submit</Button>
       </Form>

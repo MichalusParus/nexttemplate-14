@@ -126,7 +126,14 @@ export const Menu = forwardRef<HTMLDivElement | null, PropsWithChildren<MenuProp
               aria-haspopup="menu"
               aria-controls={nameIdMenu}
               aria-owns={nameIdMenu}
-              onClick={onHoverOpen ? undefined : () => handleOpen(!openState)}
+              onClick={
+                onHoverOpen
+                  ? undefined
+                  : e => {
+                      e?.stopPropagation()
+                      handleOpen(!openState)
+                    }
+              }
               onFocus={onHoverOpen ? () => handleOpen(true) : undefined}
               data-testid="MenuButton"
               ref={menuButtonRef}

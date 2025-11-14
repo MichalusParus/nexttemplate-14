@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Button } from '@/components/atoms/common/Button'
 import { PlusIcon } from '@/components/atoms/icons'
 
-import { tabs, textContent } from '../../../../../.storybook/helpers'
+import { tabsOptions, textContent } from '../../../../../.storybook/helpers'
 import { Tabs } from '.'
 import { TabsProps } from './Tabs'
 
@@ -51,7 +51,7 @@ export const PrimaryDefault: Story = {
     className: 'className',
     name: 'tabsStory',
     selectedValue: '',
-    tabs: tabs,
+    tabs: tabsOptions,
     variant: 'text',
     color: 'primary',
     size: 'md',
@@ -74,7 +74,7 @@ export const FullWidth: Story = {
 export const Content: Story = {
   args: {
     ...PrimaryDefault.args,
-    tabs: tabs.map(tab => ({
+    tabs: tabsOptions.map(tab => ({
       ...tab,
       content: (
         <div className="flex gap-2">

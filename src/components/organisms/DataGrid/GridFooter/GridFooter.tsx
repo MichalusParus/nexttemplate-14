@@ -1,29 +1,29 @@
 'use client'
-import { forwardRef } from 'react'
+import { useTranslations } from 'next-intl'
+import { useCallback, useMemo } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { SignInIcon } from '@/components/atoms/icons'
+import { P } from '@/components/atoms/typography/P'
 import { Select } from '@/components/molecules/form/comboboxes/SelectField/Select'
 import { Tooltip } from '@/components/molecules/popovers/Tooltip'
-import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { MobilePagination } from '../../common/Pagination/MobilePagination'
 import { rowgroupVariant } from '../GridHeader/GridHeader.style'
-import { RowDef } from '../types'
-import { gridRowPadding, paginationMarginClass, rowClass } from './GridFooter.style'
+import { useDataGridContext } from '../utils/DataGridContext'
+import { exportToCSV } from '../utils/utils'
+import { gridRowPadding } from './GridFooter.style'
 
-export type GridFooterProps = StyleProps & {
+export type GridFooterProps<T extends Record<string, unknown> = Record<string, unknown>> = {
   /** filtered data for export */
-  filteredData: RowDef[]
+  filteredData: T[]
   /** current selected rowsPerPage */
   selectedRowsPerPage: number
   /** available pages for pagination */
   pages: number[]
   /** current selected page for pagination */
   selectedPage: number
-  /** optional for hiding export */
-  hideExport?: boolean
   /** page selecting function for pagination */
   setSelectedPage: (value: number) => void
   /** rowsPerPage selecting function */
@@ -31,75 +31,78 @@ export type GridFooterProps = StyleProps & {
 }
 
 /** Footer for DataGrid with rows per page, export and pagination. USE CLIENT */
-export const GridFooter = forwardRef<HTMLDivElement | null, GridFooterProps>(
-  (
-    {
-      filteredData,
-      selectedRowsPerPage,
-      pages,
-      selectedPage,
-      variant = 'outlined',
-      color = 'primary',
-      size = 'md',
-      hideExport,
-      setSelectedPage,
-      setSelectedRowsPerPage,
-    },
-    ref,
-  ) => {
-    const rowPerPageOptions = Array.from({ length: 5 }, (_, i) => ({
-      label: `${(i + 1) * 10}`,
-      value: `${(i + 1) * 10}`,
-    }))
+export const GridFooter = <T extends Record<string, unknown> = Record<string, unknown>>({
+  filteredData,
+  selectedRowsPerPage,
+  pages,
+  selectedPage,
+  setSelectedPage,
+  setSelectedRowsPerPage,
+}: GridFooterProps<T>) => {
+  const t = useTranslations('Components')
+  const {
+    variant,
+    color,
+    size,
+    name,
+    columnsInRow,
+    hideExport,
+    selectedRowsCount,
+    filteredDataCount,
+  } = useDataGridContext()
 
-    const handleRowsPerPage = (value: string) => {
+  const rowPerPageOptions = useMemo(
+    () =>
+      Array.from({ length: 5 }, (_, i) => ({
+        label: `${(i + 1) * 10}`,
+        value: (i + 1) * 10,
+      })),
+    [],
+  )
+
+  const handleRowsPerPage = useCallback(
+    (value: number) => {
       setSelectedPage(1)
-      setSelectedRowsPerPage(Number(value))
-    }
+      setSelectedRowsPerPage(value)
+    },
+    [setSelectedPage, setSelectedRowsPerPage],
+  )
 
-    const handleExport = () => {
-      const dataKeys = Object.entries(filteredData[0]).map(d1 => d1[0])
-      const dataArray = filteredData.map(d => Object.entries(d).map(d1 => d1[1]))
-      const csvContent =
-        'data:text/csv;charset=utf-8,' +
-        [dataKeys, ...dataArray]
-          .map(row =>
-            row
-              .map(String)
-              .map(v => `"${v.replaceAll('"', '""')}"`)
-              .join(','),
-          )
-          .join('\r\n')
-      const encodedUri = encodeURI(csvContent)
-      window.open(encodedUri)
-    }
+  const handleExport = useCallback(() => {
+    const filename = `${name}-export.csv`
+    exportToCSV(filteredData, columnsInRow, filename)
+  }, [name, filteredData, columnsInRow])
 
-    return (
-      <div
-        className={cn('GridFooter', 'rounded-b-md border', rowgroupVariant[variant][color])}
-        role="rowgroup"
-        ref={ref}
-      >
-        <div className={cn('GridRow', rowClass, gridRowPadding[size])} role="row">
-          <div className={cn('LeftWrap', 'flex items-center')}>
-            <Select
-              className={cn(
-                'RowsPerPageSelect',
-                'items-center border-transparent dark:border-transparent',
-                pages.length <= 1 && 'hidden',
-              )}
-              name="rowsPerPage"
-              placement="top"
-              placeholder="Rows"
-              value={String(selectedRowsPerPage)}
-              options={rowPerPageOptions}
-              variant={variant}
-              color={color}
-              size={size}
-              tabIndex={-1}
-              onChange={(value: string) => handleRowsPerPage(value)}
-            />
-            {!hideExport && (
+  return (
+    <div
+      className={cn('GridFooter', 'rounded-b-md border', rowgroupVariant[variant][color])}
+      role="rowgroup"
+    >
+      <div className={cn('GridRow', 'relative', gridRowPadding[size])} role="row">
+        <div
+          className={cn('GridCell', 'flex w-full items-center justify-between')}
+          role="gridcell"
+          aria-colspan={columnsInRow.length}
+        >
+          <div className={cn('LeftWrap', 'flex items-center gap-2')}>
+            {filteredData.length > (rowPerPageOptions[0]?.value ?? 10) && (
+              <Select<number>
+                className={cn(
+                  'RowsPerPageSelect',
+                  'items-center border-transparent dark:border-transparent',
+                )}
+                name="rowsPerPage"
+                placement="top"
+                placeholder="Rows"
+                value={selectedRowsPerPage}
+                options={rowPerPageOptions}
+                variant={variant}
+                color={color}
+                size={size}
+                onChange={handleRowsPerPage}
+              />
+            )}
+            {!hideExport && filteredData.length > 0 && (
               <Tooltip title="Export">
                 <Button
                   className={cn('ExportButton', 'border-transparent dark:border-transparent')}
@@ -109,26 +112,40 @@ export const GridFooter = forwardRef<HTMLDivElement | null, GridFooterProps>(
                   startIcon={<SignInIcon className="rotate-90" />}
                   aria-label="Export"
                   hideShadow
-                  tabIndex={-1}
                   onClick={handleExport}
+                  data-testid="GridExportButton"
                 />
               </Tooltip>
             )}
           </div>
+          {selectedRowsCount > 0 && (
+            <P
+              size={size}
+              color="none"
+              className="whitespace-nowrap"
+              aria-live="polite"
+              aria-atomic="true"
+              data-testid="GridSelectionCount"
+            >
+              {t('selectedOf', { count: selectedRowsCount, total: filteredDataCount })}
+            </P>
+          )}
           <MobilePagination
-            className={paginationMarginClass[size]}
             count={pages.length}
             page={selectedPage}
             variant={variant}
             color={color}
             size={size}
-            buttonProps={{ className: 'border-transparent dark:border-transparent', tabIndex: -1 }}
+            buttonProps={{
+              className: 'border-transparent dark:border-transparent',
+              tabIndex: -1,
+            }}
             onChange={setSelectedPage}
           />
         </div>
       </div>
-    )
-  },
-)
+    </div>
+  )
+}
 
 GridFooter.displayName = 'GridFooter'

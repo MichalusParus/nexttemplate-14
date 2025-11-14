@@ -71,7 +71,7 @@ describe('Gallery', () => {
     })
   })
 
-  it('open', () => {
+  it('open', async () => {
     render(<Gallery items={items} ratio="aspect-video" />)
     const imageViewerTestId = screen.getByTestId('ImageViewer')
     const viewerDialogQuery = screen.queryByRole('dialog')
@@ -88,12 +88,10 @@ describe('Gallery', () => {
     expect(closeButtonTestId).toBeInTheDocument()
 
     fireEvent.click(closeButtonTestId)
-    const viewerDialogQuery2 = screen.queryByRole('dialog')
-    const closeButtonQuery2 = screen.queryByTestId('ImageViewerCloseButton')
 
-    waitFor(() => {
-      expect(viewerDialogQuery2).toBeNull()
-      expect(closeButtonQuery2).toBeNull()
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+      expect(screen.queryByTestId('ImageViewerCloseButton')).toBeNull()
     })
   })
 

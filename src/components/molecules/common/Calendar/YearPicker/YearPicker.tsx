@@ -80,9 +80,17 @@ export const YearPicker = ({
   )
 
   useEffect(() => {
-    if (year) {
-      const selectedTab = scrollRef?.current?.querySelector('.selected')
-      selectedTab?.scrollIntoView({ behavior: 'auto', block: 'center' })
+    if (year && scrollRef.current) {
+      const container = scrollRef.current.querySelector('.ContentWrap') as HTMLElement | null
+      const selectedTab = scrollRef.current.querySelector('.selected') as HTMLElement | null
+
+      if (selectedTab && container) {
+        const selectedTop = selectedTab.offsetTop
+        const containerHeight = container.clientHeight
+        const selectedHeight = selectedTab.clientHeight
+        const scrollPosition = selectedTop - containerHeight / 2 + selectedHeight / 2
+        container.scrollTop = scrollPosition
+      }
     }
   }, [year])
 

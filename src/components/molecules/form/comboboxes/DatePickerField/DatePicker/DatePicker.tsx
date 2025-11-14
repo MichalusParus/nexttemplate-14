@@ -5,14 +5,18 @@ import { forwardRef, useRef, useState } from 'react'
 import { Calendar } from '@/components/molecules/common/Calendar'
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
-import { cn } from '@/utils/utils'
+import { cn, normalizeDateValue } from '@/utils/utils'
 
 import { DatePickerCombobox, DatePickerComboboxProps } from './DatePickerCombobox'
 
+export type DateValue = string | Date | number
+
 export type DatePickerProps = Omit<
   DatePickerComboboxProps,
-  'isOpen' | 'handleOpen' | 'handleOnChange'
+  'isOpen' | 'value' | 'handleOpen' | 'handleOnChange'
 > & {
+  /** current value of component */
+  value?: DateValue
   /** position of dropdown */
   placement?: Placement
   /** for passing aditional props to dropdown */
@@ -49,6 +53,7 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
     const dropdownRef = useRef<HTMLDivElement>(null)
     const { scrollShadowProps, ...restDropdownProps } = dropdownProps
     const { paperProps, ...restCalendarProps } = calendarProps
+    const dateValue = normalizeDateValue(value)
 
     const handleOpen = () => {
       if (isOpen) {
@@ -75,7 +80,7 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
         <DatePickerCombobox
           isOpen={isOpen}
           name={name}
-          value={value}
+          value={dateValue}
           variant={variant}
           color={color}
           size={size}
@@ -104,7 +109,7 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
         >
           <Calendar
             name={`${name}-calendar`}
-            date={value}
+            date={dateValue}
             variant={variant}
             color={color}
             size={size}

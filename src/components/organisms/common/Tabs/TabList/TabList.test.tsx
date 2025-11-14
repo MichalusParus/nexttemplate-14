@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { axe, toHaveNoViolations } from 'jest-axe'
 
 import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
-import { tabs } from '../../../../../../.storybook/helpers'
+import { tabsOptions } from '../../../../../../.storybook/helpers'
 import { TabList } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -11,7 +11,12 @@ expect.extend(toHaveNoViolations)
 describe('TabList', () => {
   it('default', () => {
     render(
-      <TabList className="className" selectedTab={tabs[0]} tabs={tabs} onTabChange={() => {}} />,
+      <TabList
+        className="className"
+        selectedTab={tabsOptions[0]}
+        tabs={tabsOptions}
+        onTabChange={() => {}}
+      />,
     )
     const paperWrapTestId = screen.getByTestId('Paper')
     const tablistRole = screen.getByRole('tablist')
@@ -21,11 +26,11 @@ describe('TabList', () => {
     expect(paperWrapTestId).toHaveClass('className')
     expect(tablistRole).toBeInTheDocument()
     expect(tablistRole).toHaveAttribute('aria-orientation', 'horizontal')
-    expect(tabRoles).toHaveLength(tabs.length)
-    expect(tabRoles[0]).toHaveTextContent(tabs[0].label)
-    expect(tabRoles[1]).toHaveTextContent(tabs[1].label)
-    expect(tabRoles[2]).toHaveTextContent(tabs[2].label)
-    expect(tabRoles[0]).toHaveAttribute('aria-controls', `${tabs[0].value}-tabpanel`)
+    expect(tabRoles).toHaveLength(tabsOptions.length)
+    expect(tabRoles[0]).toHaveTextContent(tabsOptions[0].label)
+    expect(tabRoles[1]).toHaveTextContent(tabsOptions[1].label)
+    expect(tabRoles[2]).toHaveTextContent(tabsOptions[2].label)
+    expect(tabRoles[0]).toHaveAttribute('aria-controls', `${tabsOptions[0].value}-tabpanel`)
     expect(tabRoles[0]).toHaveClass('selected')
     expect(tabRoles[0]).toHaveAttribute('aria-selected', 'true')
     tabRoles[0].focus()
@@ -35,22 +40,26 @@ describe('TabList', () => {
   it('hidden', () => {
     render(
       <TabList
-        selectedTab={tabs[0]}
-        tabs={tabs.map((tab, i) => ({ ...tab, isHidden: i === 0 })).filter(tab => !tab.isHidden)}
+        selectedTab={tabsOptions[0]}
+        tabs={tabsOptions
+          .map((tab, i) => ({ ...tab, isHidden: i === 0 }))
+          .filter(tab => !tab.isHidden)}
         onTabChange={() => {}}
       />,
     )
     const tabsQuery = screen.queryAllByRole('tab')
-    const firstTabText = screen.queryByText(tabs[0].label)
+    const firstTabText = screen.queryByText(tabsOptions[0].label)
 
-    expect(tabsQuery).toHaveLength(tabs.length - 1)
+    expect(tabsQuery).toHaveLength(tabsOptions.length - 1)
     expect(firstTabText).toBeNull()
-    expect(tabsQuery[0]).toHaveTextContent(tabs[1].label)
-    expect(tabsQuery[1]).toHaveTextContent(tabs[2].label)
+    expect(tabsQuery[0]).toHaveTextContent(tabsOptions[1].label)
+    expect(tabsQuery[1]).toHaveTextContent(tabsOptions[2].label)
   })
 
   it('fullWidth', () => {
-    render(<TabList selectedTab={tabs[0]} tabs={tabs} fullWidth onTabChange={() => {}} />)
+    render(
+      <TabList selectedTab={tabsOptions[0]} tabs={tabsOptions} fullWidth onTabChange={() => {}} />,
+    )
     const liTestIds = screen.getAllByTestId('tabLi')
     const tabRoles = screen.getAllByRole('tab')
 
@@ -60,7 +69,7 @@ describe('TabList', () => {
 
   it('children', () => {
     render(
-      <TabList selectedTab={tabs[0]} tabs={tabs} onTabChange={() => {}}>
+      <TabList selectedTab={tabsOptions[0]} tabs={tabsOptions} onTabChange={() => {}}>
         <li>
           <button>button</button>
         </li>
@@ -73,19 +82,19 @@ describe('TabList', () => {
 
   it('onTabChange', () => {
     const spy = jest.fn()
-    render(<TabList selectedTab={tabs[0]} tabs={tabs} onTabChange={spy} />)
+    render(<TabList selectedTab={tabsOptions[0]} tabs={tabsOptions} onTabChange={spy} />)
     const tabRoles = screen.getAllByRole('tab')
 
     fireEvent.click(tabRoles[0])
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(tabs[0].value)
+    expect(spy).toHaveBeenCalledWith(tabsOptions[0].value)
   })
 
   it('tabButtonProps', () => {
     render(
       <TabList
-        selectedTab={tabs[0]}
-        tabs={tabs}
+        selectedTab={tabsOptions[0]}
+        tabs={tabsOptions}
         tabButtonProps={{ className: 'className' }}
         onTabChange={() => {}}
       />,
@@ -98,8 +107,8 @@ describe('TabList', () => {
   it('axe', async () => {
     const { container } = render(
       <>
-        <TabList selectedTab={tabs[0]} tabs={tabs} onTabChange={() => {}} />,
-        <div id={`${tabs[0].value}-tabpanel`}>TabPanel</div>
+        <TabList selectedTab={tabsOptions[0]} tabs={tabsOptions} onTabChange={() => {}} />,
+        <div id={`${tabsOptions[0].value}-tabpanel`}>TabPanel</div>
       </>,
     )
 

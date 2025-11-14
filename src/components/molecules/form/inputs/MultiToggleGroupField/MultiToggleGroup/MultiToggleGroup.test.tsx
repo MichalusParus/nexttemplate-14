@@ -127,7 +127,7 @@ describe('MultiToggleGroup', () => {
     render(
       <MultiToggleGroup
         name="toggleGroupTest"
-        value={[options[0].value]}
+        value={[options[0].value, options[1].value]}
         options={options}
         error="error"
         onChange={spy}
@@ -135,9 +135,33 @@ describe('MultiToggleGroup', () => {
     )
     const buttonRoles = screen.getAllByRole('button')
 
-    fireEvent.click(buttonRoles[1])
+    fireEvent.click(buttonRoles[2])
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith([options[0].value, options[1].value])
+    expect(spy).toHaveBeenCalledWith([options[0].value, options[1].value, options[2].value])
+
+    fireEvent.click(buttonRoles[1])
+    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy).toHaveBeenCalledWith([options[0].value])
+  })
+
+  it('onClear', () => {
+    const onChangeSpy = jest.fn()
+    const onClearSpy = jest.fn()
+    render(
+      <MultiToggleGroup
+        name="toggleGroupTest"
+        value={[options[0].value]}
+        options={options}
+        onChange={onChangeSpy}
+        onClear={onClearSpy}
+      />,
+    )
+    const buttonRoles = screen.getAllByRole('button')
+
+    fireEvent.click(buttonRoles[0])
+
+    expect(onClearSpy).toHaveBeenCalledTimes(1)
+    expect(onChangeSpy).not.toHaveBeenCalled()
   })
 
   it('disabled', () => {

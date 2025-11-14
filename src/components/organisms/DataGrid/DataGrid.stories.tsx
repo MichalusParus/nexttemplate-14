@@ -4,10 +4,20 @@ import {
   gridCleanColsDef,
   gridColsDef,
   gridData,
-  gridDoubleColsDef,
-  routerMock,
+  gridMultiColsDef,
 } from '../../../../.storybook/helpers'
 import { DataGrid } from '.'
+
+const routerMock = {
+  nextjs: {
+    appDirectory: true,
+    router: {
+      navigation: {
+        basePath: '/',
+      },
+    },
+  },
+}
 
 const meta: Meta<typeof DataGrid> = {
   title: 'Organisms/Common/DataGrid',
@@ -20,7 +30,6 @@ const meta: Meta<typeof DataGrid> = {
   argTypes: {
     columns: { control: false },
     rows: { control: false },
-    multiselectButtonProps: { control: false },
   },
 }
 
@@ -41,8 +50,9 @@ export const PrimaryDefault: Story = {
     maxHeight: 'max-h-[80vh]',
     hideShadow: false,
     hideExport: false,
-    multiselectButtonProps: undefined,
-    onMultiselectSubmit: undefined,
+    defaultSelectedRows: undefined,
+    getRowId: undefined,
+    onSelectionChange: undefined,
     onRowClick: undefined,
   },
 }
@@ -62,17 +72,10 @@ export const Pages: Story = {
   },
 }
 
-export const IsLoading: Story = {
+export const MultiHeader: Story = {
   args: {
     ...PrimaryDefault.args,
-    isLoading: true,
-  },
-}
-
-export const DoubleHeader: Story = {
-  args: {
-    ...PrimaryDefault.args,
-    columns: gridDoubleColsDef,
+    columns: gridMultiColsDef,
     rows: gridData,
   },
 }
@@ -80,17 +83,17 @@ export const DoubleHeader: Story = {
 export const OnRowClick: Story = {
   args: {
     ...PrimaryDefault.args,
-    columns: gridDoubleColsDef,
+    columns: gridMultiColsDef,
     rows: gridData,
-    onRowClick: (row: object) => console.log(row),
+    onRowClick: (row: Record<string, unknown>) => console.log(row),
   },
 }
 
 export const MultiSelect: Story = {
   args: {
     ...PrimaryDefault.args,
-    columns: gridDoubleColsDef,
+    columns: gridMultiColsDef,
     rows: gridData,
-    onMultiselectSubmit: (row: object[]) => console.log(row),
+    onSelectionChange: (rows: Record<string, unknown>[]) => console.log('Selected:', rows),
   },
 }

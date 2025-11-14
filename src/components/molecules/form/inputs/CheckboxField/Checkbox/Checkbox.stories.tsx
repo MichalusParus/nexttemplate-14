@@ -40,11 +40,22 @@ export const PrimaryDefault: Story = {
     color: 'primary',
     size: 'md',
     isChecked: false,
+    isIndeterminate: false,
     error: '',
     fake: false,
     onChange: undefined,
   },
   render: args => <CheckboxWithHooks {...args} />,
+}
+
+export const Indeterminate: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'checkboxStory6',
+    isIndeterminate: true,
+    isChecked: false,
+  },
+  render: args => <Checkbox {...args} isChecked={false} isIndeterminate onChange={() => {}} />,
 }
 
 export const OptionsWithContent: Story = {

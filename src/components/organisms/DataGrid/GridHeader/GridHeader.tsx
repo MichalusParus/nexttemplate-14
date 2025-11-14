@@ -1,132 +1,108 @@
 'use client'
-import { forwardRef } from 'react'
+import { useMemo } from 'react'
 
-import { StyleProps } from '@/components/utils/types'
-import { FilterDef, SortingDef } from '@/utils/hooks/useFilterData'
 import { cn } from '@/utils/utils'
 
-import { ColumnDef } from '../types'
+import { useDataGridContext } from '../utils/DataGridContext'
+import { getColumnGridPosition, getColumnsAtDepth, getMaxDepth } from '../utils/utils'
 import { ColumnHead } from './ColumnHead'
 import { rowgroupVariant } from './GridHeader.style'
 import { SelectAllHead } from './SelectAllHead'
 
-type GridHeaderProps = StyleProps & {
+type GridHeaderProps = {
   /** for passing custom tailwind classes */
   className?: string
-  /** DataGrid name for id and aria purposes */
-  name: string
-  /** grid columns definition */
-  columns: ColumnDef[]
+  /** grid template columns string */
+  gridTemplateColumns: string
   /** boolean for all rows selected */
   allSelected?: boolean
-  /** current applied sort */
-  sorting?: SortingDef
-  /** current filter */
-  filter?: FilterDef
+  /** indeterminate state */
+  isIndeterminate?: boolean
   /** function for selecting all rows */
   handleAll?: () => void
-  /** function for setting sorting */
-  handleSorting?: (key: string) => void
-  /** function for setting filter options */
-  setFilter?: (value: FilterDef) => void
 }
 
-/** Header for DataGrid with select All and double row. USE CLIENT */
-export const GridHeader = forwardRef<HTMLDivElement | null, GridHeaderProps>(
-  (
-    {
-      className,
-      name,
-      columns,
-      variant = 'outlined',
-      color = 'primary',
-      size = 'md',
-      allSelected,
-      sorting,
-      filter,
-      handleAll,
-      handleSorting,
-      setFilter,
-    },
-    ref,
-  ) => {
-    const haveSubColumns = columns.some(col => col.columns && col.columns.length > 0)
-    const mergedSubColumns = columns.map(c => c.columns).flat()
+/** Header for DataGrid with multi-level nested rows. USE CLIENT */
+export const GridHeader = ({
+  className,
+  gridTemplateColumns,
+  allSelected,
+  isIndeterminate,
+  handleAll,
+}: GridHeaderProps) => {
+  const { variant, color, columns } = useDataGridContext()
+  const maxDepth = useMemo(() => getMaxDepth(columns), [columns])
+  const columnsByDepth = useMemo(
+    () =>
+      Array.from({ length: maxDepth }, (_, depth) =>
+        getColumnsAtDepth(columns, depth, 0, maxDepth),
+      ),
+    [columns, maxDepth],
+  )
 
-    return (
-      <div
-        className={cn(
-          'DataGridHeader',
-          'relative rounded-t-md border pr-2',
-          rowgroupVariant[variant][color],
-          className,
-        )}
-        role="rowgroup"
-        ref={ref}
-      >
-        <div className="GridRow flex" role="row">
-          {handleAll && (
-            <SelectAllHead
-              className="rounded-none rounded-tl-md"
-              name={name}
-              variant={variant}
-              color={color}
-              size={size}
-              isChecked={allSelected}
-              handleAll={handleAll}
-            />
-          )}
-          {columns.map((col, i) => (
+  return (
+    <div
+      className={cn(
+        'DataGridHeader',
+        'relative grid rounded-t-md border pr-2',
+        rowgroupVariant[variant][color],
+        className,
+      )}
+      style={{
+        gridTemplateColumns: handleAll ? `max-content ${gridTemplateColumns}` : gridTemplateColumns,
+        gridTemplateRows: `repeat(${maxDepth}, auto)`,
+      }}
+      role="rowgroup"
+    >
+      {handleAll && (
+        <>
+          <div
+            className="rounded-tl-md"
+            role="columnheader"
+            aria-hidden="true"
+            style={{
+              gridColumn: '1',
+              gridRow: `1 / span ${maxDepth - 1}`,
+            }}
+          />
+          <SelectAllHead
+            isChecked={allSelected}
+            isIndeterminate={isIndeterminate}
+            handleAll={handleAll}
+            gridColumn="1"
+            gridRow={`${maxDepth}`}
+          />
+        </>
+      )}
+      {columnsByDepth.map((columnsAtThisDepth, depth) => {
+        const isFirstRow = depth === 0
+
+        return columnsAtThisDepth.map((col, i) => {
+          const isFirstCol = i === 0 && !handleAll
+          const isLastCol = i + 1 === columnsAtThisDepth.length
+          const isLeafColumn = !col.columns || col.columns.length === 0
+          const isPlaceholder = col.name.includes('-placeholder-')
+          const canInteract = isLeafColumn && !isPlaceholder
+
+          return (
             <ColumnHead
+              key={`${depth}-${col.name}`}
               className={cn(
-                i === 0 && !handleAll && 'rounded-tl-md',
-                i + 1 === columns.length && 'rounded-tr-md',
+                isFirstRow && isFirstCol && 'rounded-tl-md',
+                isFirstRow && isLastCol && 'rounded-tr-md',
               )}
-              key={col.label}
-              name={name}
+              gridColumn={getColumnGridPosition(columns, col, depth, handleAll ? 1 : 0)}
+              gridRow={`${depth + 1}`}
+              ariaRowIndex={depth + 1}
               column={col}
-              variant={variant}
-              color={color}
-              size={size}
-              sorting={sorting}
-              filter={filter}
-              handleSorting={haveSubColumns ? undefined : handleSorting}
-              setFilter={haveSubColumns ? undefined : setFilter}
+              canSort={canInteract}
+              canFilter={canInteract}
             />
-          ))}
-        </div>
-        {haveSubColumns && (
-          <div className="GridRow flex" role="row">
-            {handleAll && (
-              <SelectAllHead
-                className="rounded-none rounded-tl-md"
-                name={name}
-                variant={variant}
-                color={color}
-                size={size}
-                isChecked={allSelected}
-                handleAll={handleAll}
-              />
-            )}
-            {mergedSubColumns.map(col => (
-              <ColumnHead
-                key={col!.label}
-                name={name}
-                column={col!}
-                variant={variant}
-                color={color}
-                size={size}
-                sorting={sorting}
-                filter={filter}
-                handleSorting={handleSorting}
-                setFilter={setFilter}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-    )
-  },
-)
+          )
+        })
+      })}
+    </div>
+  )
+}
 
 GridHeader.displayName = 'GridHeader'

@@ -4,8 +4,17 @@ import { PropsWithChildren, useRef, useState } from 'react'
 import { Button } from '@/components/atoms/common/Button'
 import { cn } from '@/utils/utils'
 
-import { MenuLinks } from '../../../../../.storybook/helpers'
+import { menuButtonOptions } from '../../../../../.storybook/helpers'
+import { MenuList } from '../Menu/MenuList'
 import { Drawer, DrawerProps } from './Drawer'
+
+const scrollMenuOptions = [
+  ...menuButtonOptions,
+  ...menuButtonOptions,
+  ...menuButtonOptions,
+  ...menuButtonOptions,
+  ...menuButtonOptions,
+]
 
 const meta: Meta<typeof Drawer> = {
   title: 'Molecules/Popovers/Drawer',
@@ -49,13 +58,12 @@ const DrawerWithHooks = (args: PropsWithChildren<DrawerProps>) => {
         Drawer button
       </Button>
       <Drawer {...args} isOpen={isOpen} anchorRef={anchorRef} onClose={() => setIsOpen(false)}>
-        <ul id="drawerStory">
-          <MenuLinks
-            length={args.className === 'scroll' ? 20 : undefined}
-            variant={args.variant}
-            color={args.color}
-          />
-        </ul>
+        <MenuList
+          name="drawerStory"
+          options={args.className === 'scroll' ? scrollMenuOptions : menuButtonOptions}
+          variant={args.variant}
+          color={args.color}
+        />
       </Drawer>
     </div>
   )
@@ -110,6 +118,6 @@ export const Right: Story = {
 }
 
 export const Scroll: Story = {
-  args: { ...PrimaryDefault.args, portalContainerId: 'storyContainer4' },
+  args: { ...PrimaryDefault.args, className: 'scroll', portalContainerId: 'storyContainer4' },
   render: args => <DrawerWithHooks {...args} />,
 }

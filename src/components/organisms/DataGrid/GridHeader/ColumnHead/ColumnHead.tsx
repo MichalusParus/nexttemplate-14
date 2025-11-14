@@ -1,186 +1,115 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, KeyboardEvent, MouseEvent, useCallback, useState } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 
-import { buttonSize, buttonVariant } from '@/components/atoms/common/Button/Button.style'
-import { ChevronIcon, FilterIcon } from '@/components/atoms/icons'
-import { Span } from '@/components/atoms/typography/Span'
-import { SearchInput } from '@/components/molecules/form/inputs/SearchField/SearchInput'
-import { Menu } from '@/components/molecules/popovers/Menu'
-import { Tooltip } from '@/components/molecules/popovers/Tooltip'
-import { StyleProps } from '@/components/utils/types'
-import { FilterDef, SortingDef } from '@/utils/hooks/useFilterData'
+import { Button } from '@/components/atoms/common/Button'
+import { buttonSize } from '@/components/atoms/common/Button/Button.style'
+import { ChevronIcon } from '@/components/atoms/icons'
+import { Ellipsis } from '@/components/atoms/typography/Ellipsis'
 import { cn } from '@/utils/utils'
 
-import { ColumnDef } from '../../types'
-import {
-  cellOverflow,
-  closeIconState,
-  filterMenuVisibility,
-  searchMenuClass,
-} from './ColumnHead.style'
+import { useDataGridContext } from '../../utils/DataGridContext'
+import { ColumnDef } from '../../utils/types'
+import { alignColumn } from './ColumnHead.style'
+import { GridFilter } from './GridFilter'
 
 enum AriaSort {
   asc = 'ascending',
-  dec = 'descending',
+  desc = 'descending',
   none = 'none',
 }
 
-export type ColumnHeadProps = StyleProps & {
+export type ColumnHeadProps = {
   /** for passing custom tailwind classes */
   className?: string
-  /** DataGrid name for id and aria purposes */
-  name: string
+  /** grid column span value (e.g., "1 / span 2") */
+  gridColumn?: string
+  /** grid row span value (e.g., "1" or "1 / span 2") */
+  gridRow?: string
+  /** ARIA row index for accessibility */
+  ariaRowIndex?: number
   /** grid column definition */
   column: ColumnDef
-  /** current applied sort */
-  sorting?: SortingDef
-  /** current filter */
-  filter?: FilterDef
-  /** function for setting sorting */
-  handleSorting?: (key: string) => void
-  /** function for setting filter options */
-  setFilter?: (value: FilterDef) => void
+  /** whether sorting is enabled for this column */
+  canSort?: boolean
+  /** whether filtering is enabled for this column */
+  canFilter?: boolean
 }
 
-/** ColumnHeader component for DataGrid with multiselect, sort and filter. USE CLIENT */
-export const ColumnHead = forwardRef<HTMLDivElement | null, ColumnHeadProps>(
-  (
-    {
-      className,
-      name,
-      column,
-      variant = 'outlined',
-      color = 'primary',
-      size = 'md',
-      sorting,
-      filter,
-      handleSorting,
-      setFilter,
-    },
-    ref,
-  ) => {
-    const t = useTranslations('Components')
-    const [isFilterOpen, setIsFilterOpen] = useState(false)
-    const isFilterApplied =
-      filter && Object.keys(filter).includes(column.name) && filter[column.name] !== ''
-    const ariaSorted = AriaSort[sorting?.key === column.name ? sorting?.value : 'none']
-    const isInteractive = Boolean(handleSorting || setFilter)
+/** ColumnHeader component for DataGrid - non-interactive container with separate sort and filter buttons. USE CLIENT */
+const ColumnHeadComponent = ({
+  className,
+  gridColumn,
+  gridRow,
+  ariaRowIndex,
+  column,
+  canSort = true,
+  canFilter = true,
+}: ColumnHeadProps) => {
+  const t = useTranslations('Components')
+  const { variant, color, size, sorting, handleSorting } = useDataGridContext()
+  const ariaSorted = AriaSort[sorting?.key === column.name ? sorting?.value : 'none']
+  const canSortColumn = canSort && !column.hideSort
+  const canFilterColumn = canFilter && column.filter
+  const isSorted = sorting?.key === column.name
+  const isLeafColumn = !column.columns || column.columns.length === 0
+  const align = column.align || (isLeafColumn ? 'left' : 'center')
 
-    const getIconState = useCallback(() => {
-      if (!sorting) return ''
-      switch (sorting[column.name] ? sorting[column.name] : 'default') {
-        case 'dec':
-          return 'opacity-100 rotate-0'
-        case 'asc':
-          return 'opacity-100 rotate-180'
-        default:
-          return closeIconState
-      }
-    }, [sorting, column.name])
-
-    const handleOpenFilter = (e: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => {
-      e.stopPropagation()
-      setIsFilterOpen(prev => !prev)
+  const chevronState = useMemo(() => {
+    if (!isSorted) {
+      return 'opacity-0 group-hover:opacity-40 group-focus-visible:opacity-40'
     }
+    return sorting?.value === 'desc' ? 'opacity-100 rotate-0' : 'opacity-100 rotate-180'
+  }, [isSorted, sorting?.value])
 
-    return (
-      <div
-        className={cn(
-          'ColumnHeader',
-          'group flex items-center justify-between transition-colors focus:outline-none',
-          column.shrink ? 'shrink-1' : 'shrink-0',
-          column.grow ? 'grow' : 'grow-0',
-          isInteractive && 'cursor-pointer',
-          isInteractive && buttonVariant[variant][color],
-          className,
-        )}
-        style={{ flexBasis: column.width }}
-        role="columnheader"
-        aria-label={t('sortIn', { field: column.label })}
-        aria-sort={ariaSorted}
-        ref={ref}
-        tabIndex={0}
-        data-testid="ColumnHeader"
-        onClick={() => handleSorting?.(column.name)}
-        onKeyDown={e =>
-          e.code === 'Enter' || e.code === 'Space' ? handleSorting?.(column.name) : null
-        }
-      >
-        <div
+  const handleSortClick = useCallback(() => {
+    if (canSortColumn) {
+      handleSorting(column.name)
+    }
+  }, [canSortColumn, handleSorting, column.name])
+
+  return (
+    <div
+      className={cn('ColumnHeader group grid items-center overflow-hidden', className)}
+      style={{
+        ...(gridColumn && { gridColumn }),
+        ...(gridRow && { gridRow }),
+        gridTemplateColumns: canFilterColumn ? '1fr auto' : '1fr',
+      }}
+      role="columnheader"
+      aria-sort={ariaSorted}
+      aria-rowindex={ariaRowIndex}
+      data-testid="ColumnHeader"
+    >
+      {canSortColumn ? (
+        <Button
           className={cn(
-            'flex w-full items-center justify-start whitespace-nowrap',
-            buttonSize[size],
+            'group w-full min-w-0 gap-1 rounded-none border-none pr-0.5',
+            alignColumn[align],
           )}
+          variant={variant}
+          color={color}
+          size={size}
+          hideShadow
+          onClick={handleSortClick}
+          aria-label={t('sortIn', { field: column.label })}
+          data-testid="ColumnHeadSortButton"
         >
-          <Span className={cellOverflow}>{column.label}</Span>
-          {!column.hideSort && handleSorting && (
-            <ChevronIcon className={cn('shrink-0 transition-transform', getIconState())} />
-          )}
+          <Ellipsis>{column.label}</Ellipsis>
+          <ChevronIcon className={cn('shrink-0 transition-all duration-200', chevronState)} />
+        </Button>
+      ) : (
+        <div
+          className={cn('flex w-full min-w-0 items-center', alignColumn[align], buttonSize[size])}
+        >
+          <Ellipsis>{column.label}</Ellipsis>
         </div>
-        {!column.hideFilter && setFilter && (
-          <>
-            <Tooltip
-              title={t('filterIn', { field: column.label })}
-              placement="top"
-              offset={[0, 15]}
-            >
-              <div
-                className={cn(
-                  'GridFilterButton',
-                  'relative border-transparent focus:outline-none dark:border-transparent',
-                  filterMenuVisibility,
-                  isFilterApplied &&
-                    'opacity-100 group-hover:opacity-100 group-focus-visible:opacity-100',
-                  buttonVariant[variant][color],
-                  buttonSize[size],
-                  isFilterOpen && 'z-combobox',
-                )}
-                role="button"
-                aria-label={t('filterIn', { field: column.label })}
-                aria-expanded={isFilterOpen}
-                aria-haspopup="menu"
-                aria-controls={`filter${name}${column.name}`}
-                aria-owns={`filter${name}${column.name}`}
-                tabIndex={0}
-                onClick={e => handleOpenFilter(e)}
-                onKeyDown={e =>
-                  e.code === 'Enter' || e.code === 'Space' ? handleOpenFilter(e) : null
-                }
-                data-testid="GridFilterButton"
-              >
-                <FilterIcon />
-              </div>
-            </Tooltip>
-            <Menu
-              className={cn('FilterMenu', searchMenuClass)}
-              isOpen={isFilterOpen}
-              name={`filter${name}${column.name}`}
-              variant={variant}
-              color={color}
-              width="min-w-max"
-              placement="bottom-end"
-              dropdownProps={{ className: 'mt-1', modal: true, offset: [0, 28] }}
-              setIsOpen={() => setIsFilterOpen(prev => !prev)}
-            >
-              <SearchInput
-                className="border-transparent"
-                name={`searchIn${column.name}`}
-                variant={variant}
-                color={color}
-                size={size}
-                placeholder={t('searchIn', { field: column.label })}
-                onClick={e => e.stopPropagation()}
-                onChange={value => {
-                  setFilter?.({ ...filter, [column.name]: String(value) })
-                }}
-              />
-            </Menu>
-          </>
-        )}
-      </div>
-    )
-  },
-)
+      )}
+      {canFilterColumn && <GridFilter column={column} />}
+    </div>
+  )
+}
+
+export const ColumnHead = memo(ColumnHeadComponent)
 
 ColumnHead.displayName = 'ColumnHead'

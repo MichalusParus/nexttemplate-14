@@ -17,6 +17,8 @@ export type SearchInputProps = NativeInputProps &
     value?: string
     /** onChange function */
     onChange: (value: string) => void
+    /** Optional callback when clear button is clicked */
+    onClear?: () => void
   }
 
 /** Basic styled uncontroled SearchInput. For form purposes use SearchField. Native InputHTMLAttributes props supported. USE CLIENT */
@@ -31,6 +33,7 @@ export const SearchInput = forwardRef<HTMLInputElement | null, SearchInputProps>
       error,
       disabled,
       onChange,
+      onClear,
       ...rest
     },
     ref,
@@ -68,7 +71,11 @@ export const SearchInput = forwardRef<HTMLInputElement | null, SearchInputProps>
             disabled={disabled}
             aria-label={t('clear')}
             onClick={() => {
-              onChange('')
+              if (onClear) {
+                onClear()
+              } else {
+                onChange('')
+              }
               inputRef.current!.value = ''
             }}
           />

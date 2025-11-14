@@ -11,8 +11,6 @@ export const cellSize = {
   none: '',
 }
 
-export const searchMenuClass = cn('rounded-md pt-0')
-
 export const closeIconState = cn(
   'opacity-0 transition-colors group-hover:opacity-50 group-focus-visible:opacity-50',
 )
@@ -20,3 +18,9 @@ export const closeIconState = cn(
 export const filterMenuVisibility = cn(
   'border-transparent opacity-0 transition-colors focus-visible:opacity-100 group-hover:bg-transparent group-hover:opacity-50 group-focus-visible:opacity-50',
 )
+
+export const alignColumn = {
+  left: 'justify-start text-left',
+  center: 'justify-center text-center',
+  right: 'justify-end text-right',
+}

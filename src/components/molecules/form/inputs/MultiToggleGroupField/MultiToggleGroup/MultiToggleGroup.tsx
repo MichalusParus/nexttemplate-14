@@ -13,16 +13,21 @@ export type MultiToggleGroupProps = Omit<ToggleGroupProps, 'value' | 'onChange' 
 
 /** Basic styled uncontroled MultiToggleGroup. For form purposes use MultiMultiToggleGroupField. Native DivHTMLAttributes and Button props supported. USE CLIENT */
 export const MultiToggleGroup = forwardRef<HTMLDivElement | null, MultiToggleGroupProps>(
-  ({ value, onChange, ...rest }, ref) => {
+  ({ value, onChange, onClear, ...rest }, ref) => {
     const handleOnChange = useCallback(
       (v: string) => {
         if (value.some(val => isEqual(val, v))) {
-          onChange(value.filter(val => val !== v))
+          const newValue = value.filter(val => val !== v)
+          if (newValue.length === 0 && onClear) {
+            onClear()
+          } else {
+            onChange(newValue)
+          }
         } else {
           onChange([...value, v])
         }
       },
-      [value, onChange],
+      [value, onChange, onClear],
     )
 
     return (

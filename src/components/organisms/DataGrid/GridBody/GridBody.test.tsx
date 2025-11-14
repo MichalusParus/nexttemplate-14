@@ -1,53 +1,107 @@
 import '@testing-library/jest-dom'
 
+import { axe, toHaveNoViolations } from 'jest-axe'
+
 import { fireEvent, render, screen } from '../../../../../.jest/customRender'
-import { gridColsDef, gridData } from '../../../../../.storybook/helpers'
+import { gridData, JestDataGridProvider } from '../../../../../.storybook/helpers'
 import { GridBody } from '.'
 
+expect.extend(toHaveNoViolations)
+
 describe('GridBody', () => {
+  const defaultGetRowId = (row: Record<string, unknown>) => row.id as string | number
+  const defaultGridTemplateColumns = '1fr 1fr 1fr 1fr 1fr 1fr'
+  const emptySelectedRowIds = new Set<string | number>()
+
   it('default', () => {
     render(
-      <GridBody
-        columns={gridColsDef}
-        pagedData={gridData.slice(0, 10)}
-        selectedRows={[]}
-        multiselect={false}
-        handleRowClick={() => {}}
-      />,
+      <JestDataGridProvider>
+        <GridBody
+          pagedData={gridData.slice(0, 10)}
+          selectedRowIds={emptySelectedRowIds}
+          getRowId={defaultGetRowId}
+          headerDepth={1}
+          multiselect={false}
+          gridTemplateColumns={defaultGridTemplateColumns}
+          handleRowClick={() => {}}
+        />
+      </JestDataGridProvider>,
     )
     expect(screen.getByRole('rowgroup')).toBeInTheDocument()
     expect(screen.getByRole('rowgroup')).toHaveClass('GridBody')
     expect(screen.getAllByRole('row')).toHaveLength(10)
-    expect(screen.getAllByRole('gridcell')).toHaveLength(40)
+    expect(screen.getAllByRole('gridcell')).toHaveLength(60)
   })
 
   it('loading', () => {
     render(
-      <GridBody
-        columns={gridColsDef}
-        pagedData={gridData.slice(0, 20)}
-        selectedRows={[]}
-        multiselect={false}
-        rowsPerPage={5}
-        isLoading
-        handleRowClick={() => {}}
-      />,
+      <JestDataGridProvider>
+        <GridBody
+          pagedData={gridData.slice(0, 20)}
+          selectedRowIds={emptySelectedRowIds}
+          getRowId={defaultGetRowId}
+          multiselect={false}
+          headerDepth={1}
+          gridTemplateColumns={defaultGridTemplateColumns}
+          rowsPerPage={5}
+          isLoading
+          handleRowClick={() => {}}
+        />
+      </JestDataGridProvider>,
     )
-    expect(screen.getAllByRole('status')).toHaveLength(5)
+    const rows = screen.getAllByRole('row')
+    expect(rows).toHaveLength(5)
+    expect(rows[0]).toHaveAttribute('aria-rowindex', '2')
+    expect(rows[0]).toHaveAttribute('id', 'loading-2')
+    expect(rows[0]).not.toHaveAttribute('aria-selected')
+    const gridcells = screen.getAllByRole('gridcell')
+    expect(gridcells.length).toBeGreaterThan(0)
   })
 
   it('handleRowClick', () => {
     const spy = jest.fn()
     render(
-      <GridBody
-        columns={gridColsDef}
-        pagedData={gridData.slice(0, 20)}
-        selectedRows={[]}
-        multiselect={false}
-        handleRowClick={spy}
-      />,
+      <JestDataGridProvider>
+        <GridBody
+          pagedData={gridData.slice(0, 20)}
+          selectedRowIds={emptySelectedRowIds}
+          getRowId={defaultGetRowId}
+          headerDepth={1}
+          multiselect={false}
+          gridTemplateColumns={defaultGridTemplateColumns}
+          handleRowClick={spy}
+        />
+      </JestDataGridProvider>,
     )
-    fireEvent.click(screen.getAllByRole('button')[0])
+    const firstRow = screen.getAllByRole('row')[0]
+    const rowInner = firstRow.querySelector('.RowInnerWrap')
+    fireEvent.click(rowInner!)
     expect(spy).toHaveBeenCalled()
+  })
+
+  it('axe', async () => {
+    const { container } = render(
+      <JestDataGridProvider>
+        <div role="grid">
+          <GridBody
+            pagedData={gridData.slice(0, 10)}
+            selectedRowIds={emptySelectedRowIds}
+            getRowId={defaultGetRowId}
+            headerDepth={1}
+            multiselect={false}
+            gridTemplateColumns={defaultGridTemplateColumns}
+            handleRowClick={() => {}}
+          />
+        </div>
+      </JestDataGridProvider>,
+    )
+
+    const results = await axe(container, {
+      rules: {
+        'aria-required-children': { enabled: false },
+        'aria-required-parent': { enabled: false },
+      },
+    })
+    expect(results).toHaveNoViolations()
   })
 })

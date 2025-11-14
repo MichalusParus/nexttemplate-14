@@ -4,7 +4,7 @@ import { axe, toHaveNoViolations } from 'jest-axe'
 import { act, createRef } from 'react'
 
 import { fireEvent, render, screen } from '../../../../../.jest/customRender'
-import { tabs } from '../../../../../.storybook/helpers'
+import { tabsOptions } from '../../../../../.storybook/helpers'
 import { Tabs } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -22,7 +22,14 @@ jest.mock('next/navigation', () => ({
 
 describe('Tabs', () => {
   it('default', async () => {
-    render(<Tabs className="className" name="tabsTest" selectedValue={tabs[0].value} tabs={tabs} />)
+    render(
+      <Tabs
+        className="className"
+        name="tabsTest"
+        selectedValue={tabsOptions[0].value}
+        tabs={tabsOptions}
+      />,
+    )
     const tabsTestId = screen.getByTestId('Tabs')
     const tablistRole = screen.getByRole('tablist')
     const tabRoles = screen.getAllByRole('tab')
@@ -31,10 +38,10 @@ describe('Tabs', () => {
     expect(tabsTestId).toBeInTheDocument()
     expect(tabsTestId).toHaveClass('className')
     expect(tablistRole).toBeInTheDocument()
-    expect(tabRoles).toHaveLength(tabs.length)
-    expect(tabRoles[0]).toHaveTextContent(tabs[0].label)
-    expect(tabRoles[1]).toHaveTextContent(tabs[1].label)
-    expect(tabRoles[2]).toHaveTextContent(tabs[2].label)
+    expect(tabRoles).toHaveLength(tabsOptions.length)
+    expect(tabRoles[0]).toHaveTextContent(tabsOptions[0].label)
+    expect(tabRoles[1]).toHaveTextContent(tabsOptions[1].label)
+    expect(tabRoles[2]).toHaveTextContent(tabsOptions[2].label)
     expect(tabRoles[0]).toHaveAttribute('aria-controls', tabPanelRoles[0].getAttribute('id'))
     expect(tabRoles[0]).toHaveClass('selected')
     expect(tabRoles[0]).toHaveAttribute('aria-selected', 'true')
@@ -49,7 +56,7 @@ describe('Tabs', () => {
   })
 
   it('selectedValue', () => {
-    render(<Tabs name="tabsTest" selectedValue={tabs[2].value} tabs={tabs} />)
+    render(<Tabs name="tabsTest" selectedValue={tabsOptions[2].value} tabs={tabsOptions} />)
     const tabRoles = screen.getAllByRole('tab')
     const tabPanelText = screen.getByText('Content 3')
 
@@ -59,7 +66,9 @@ describe('Tabs', () => {
   })
 
   it('fullWidth', () => {
-    render(<Tabs name="tabsTest" selectedValue={tabs[0].value} tabs={tabs} fullWidth />)
+    render(
+      <Tabs name="tabsTest" selectedValue={tabsOptions[0].value} tabs={tabsOptions} fullWidth />,
+    )
     const liTestIds = screen.getAllByTestId('tabLi')
     const tabRoles = screen.getAllByRole('tab')
 
@@ -71,8 +80,8 @@ describe('Tabs', () => {
     render(
       <Tabs
         name="tabsTest"
-        selectedValue={tabs[0].value}
-        tabs={tabs}
+        selectedValue={tabsOptions[0].value}
+        tabs={tabsOptions}
         tabButtonProps={{ className: 'tabButtonClass' }}
         selectProps={{ className: 'selectProps' }}
       />,
@@ -90,19 +99,26 @@ describe('Tabs', () => {
 
   it('onTabChange', async () => {
     const spy = jest.fn()
-    render(<Tabs name="tabsTest" selectedValue={tabs[0].value} tabs={tabs} onTabChange={spy} />)
+    render(
+      <Tabs
+        name="tabsTest"
+        selectedValue={tabsOptions[0].value}
+        tabs={tabsOptions}
+        onTabChange={spy}
+      />,
+    )
     const tabRoles = screen.getAllByRole('tab')
 
     await act(async () => {
       fireEvent.click(tabRoles[0])
     })
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(tabs[0].value)
+    expect(spy).toHaveBeenCalledWith(tabsOptions[0].value)
   })
 
   it('ref', () => {
     const ref = createRef<HTMLDivElement>()
-    render(<Tabs ref={ref} name="tabsTest" selectedValue="label1" tabs={tabs} />)
+    render(<Tabs ref={ref} name="tabsTest" selectedValue="label1" tabs={tabsOptions} />)
 
     expect(ref.current).not.toBeNull()
     expect(ref.current?.focus).toBeDefined()
@@ -116,7 +132,12 @@ describe('Tabs', () => {
 
   it('axe', async () => {
     const { container } = render(
-      <Tabs name="tabsTest" selectedValue="label1" tabs={tabs} selectProps={{ title: 'title' }} />,
+      <Tabs
+        name="tabsTest"
+        selectedValue="label1"
+        tabs={tabsOptions}
+        selectProps={{ title: 'title' }}
+      />,
     )
 
     const results = await axe(container)

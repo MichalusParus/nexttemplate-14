@@ -4,7 +4,7 @@ import { axe, toHaveNoViolations } from 'jest-axe'
 import { act, createRef } from 'react'
 
 import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
-import { tabs } from '../../../../../../.storybook/helpers'
+import { tabsOptions } from '../../../../../../.storybook/helpers'
 import { StepForm } from './StepForm'
 
 expect.extend(toHaveNoViolations)
@@ -20,7 +20,7 @@ jest.mock('next/navigation', () => ({
   }),
 }))
 
-const steps = tabs.map((tab, i) => ({ ...tab, value: i }))
+const steps = tabsOptions.map((tab, i) => ({ ...tab, value: i }))
 
 describe('StepForm', () => {
   it('default', async () => {
@@ -33,10 +33,10 @@ describe('StepForm', () => {
     expect(tabsTestId).toBeInTheDocument()
     expect(tabsTestId).toHaveClass('className')
     expect(tablistRole).toBeInTheDocument()
-    expect(tabRoles).toHaveLength(tabs.length)
-    expect(tabRoles[0]).toHaveTextContent(tabs[0].label)
-    expect(tabRoles[1]).toHaveTextContent(tabs[1].label)
-    expect(tabRoles[2]).toHaveTextContent(tabs[2].label)
+    expect(tabRoles).toHaveLength(tabsOptions.length)
+    expect(tabRoles[0]).toHaveTextContent(tabsOptions[0].label)
+    expect(tabRoles[1]).toHaveTextContent(tabsOptions[1].label)
+    expect(tabRoles[2]).toHaveTextContent(tabsOptions[2].label)
     expect(tabRoles[0]).toHaveAttribute('aria-controls', tabPanelRoles[0].getAttribute('id'))
     expect(tabRoles[0]).toHaveClass('selected')
     expect(tabRoles[1]).toHaveAttribute('disabled')

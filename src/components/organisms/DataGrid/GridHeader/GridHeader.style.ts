@@ -32,10 +32,3 @@ export const rowgroupVariant = {
     none: '',
   },
 }
-
-export const checkboxSize = {
-  sm: cn('px-smPY py-smPY'),
-  md: cn('px-mdPY py-mdPY'),
-  lg: cn('px-lgPY py-lgPY'),
-  none: '',
-}

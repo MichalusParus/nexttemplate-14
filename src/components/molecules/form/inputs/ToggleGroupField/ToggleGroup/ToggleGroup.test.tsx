@@ -129,6 +129,47 @@ describe('ToggleGroup', () => {
     fireEvent.click(buttonRoles[1])
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith(options[1].value)
+
+    fireEvent.click(buttonRoles[0])
+    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy).toHaveBeenCalledWith('')
+  })
+
+  it('onClear', () => {
+    const onChangeSpy = jest.fn()
+    const onClearSpy = jest.fn()
+    render(
+      <ToggleGroup
+        name="toggleGroupTest"
+        value={options[0].value}
+        options={options}
+        onChange={onChangeSpy}
+        onClear={onClearSpy}
+        allowEmpty={true}
+      />,
+    )
+    const buttonRoles = screen.getAllByRole('button')
+
+    fireEvent.click(buttonRoles[0])
+    expect(onClearSpy).toHaveBeenCalledTimes(1)
+    expect(onChangeSpy).not.toHaveBeenCalled()
+  })
+
+  it('allowEmpty false', () => {
+    const spy = jest.fn()
+    render(
+      <ToggleGroup
+        name="toggleGroupTest"
+        value={options[0].value}
+        options={options}
+        onChange={spy}
+        allowEmpty={false}
+      />,
+    )
+    const buttonRoles = screen.getAllByRole('button')
+
+    fireEvent.click(buttonRoles[0])
+    expect(spy).not.toHaveBeenCalled()
   })
 
   it('disabled', () => {

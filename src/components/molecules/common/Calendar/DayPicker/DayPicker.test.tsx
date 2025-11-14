@@ -1,12 +1,42 @@
 import '@testing-library/jest-dom'
 
+import {
+  eachDayOfInterval,
+  endOfMonth,
+  endOfWeek,
+  isSameMonth,
+  startOfMonth,
+  startOfWeek,
+} from 'date-fns'
 import { axe, toHaveNoViolations } from 'jest-axe'
 
 import { fireEvent, render, screen, within } from '../../../../../../.jest/customRender'
-import { getDaysInMonth } from '../../../../../../.storybook/helpers'
 import { DayPicker } from '.'
+import { DateButtonType } from '.'
 
 expect.extend(toHaveNoViolations)
+
+const getDaysInMonth = (weekStart: 0 | 1) => {
+  const daysToDisplay = eachDayOfInterval({
+    start: startOfWeek(startOfMonth(new Date('2023-01-15')), { weekStartsOn: weekStart }),
+    end: endOfWeek(endOfMonth(new Date('2023-01-15')), { weekStartsOn: weekStart }),
+  })
+    .map((day, index) => ({
+      day,
+      isSelected: index === 0,
+      isCurrent: isSameMonth(day, new Date('2023-01-15')),
+      isDisabled: index === 5,
+    }))
+    .reduce((weeks: DateButtonType[][], day, index: number) => {
+      if (index % 7 === 0) {
+        weeks.push([day])
+      } else {
+        weeks[weeks.length - 1].push(day)
+      }
+      return weeks
+    }, [])
+  return daysToDisplay
+}
 
 describe('DayPicker', () => {
   it('default', () => {
@@ -30,7 +60,6 @@ describe('DayPicker', () => {
     expect(cellRoles).toHaveLength(42)
     expect(headerRoles[0]).toHaveTextContent('Mon')
     expect(cellRoles[0]).toHaveTextContent('26')
-    // expect(cellRoles[0]).toHaveAttribute('aria-label', '26')
     expect(cellRoles[0]).toHaveClass('selected')
     expect(cellRoles[0]).toHaveAttribute('aria-selected')
     expect(cellRoles[1]).toHaveAttribute('aria-selected', 'false')

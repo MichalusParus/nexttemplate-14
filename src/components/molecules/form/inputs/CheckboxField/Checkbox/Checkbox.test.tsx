@@ -89,6 +89,27 @@ describe('Checkbox', () => {
     expect(checkTestId).toHaveClass('opacity-100')
   })
 
+  it('isIndeterminate', () => {
+    render(
+      <Checkbox
+        className="className"
+        name="checkboxTest"
+        label="label"
+        isChecked={false}
+        isIndeterminate
+        onChange={() => {}}
+      />,
+    )
+    const inputWrapTestId = screen.getByTestId('CheckboxInputWrap')
+    const minusIcon = screen.getByTestId('MinusIcon')
+    const checkIconQuery = screen.queryByTestId('CheckIcon')
+
+    expect(inputWrapTestId).toHaveClass('checked')
+    expect(minusIcon).toBeInTheDocument()
+    expect(minusIcon).toHaveClass('opacity-100')
+    expect(checkIconQuery).toBeNull()
+  })
+
   it('onChange', () => {
     const spy = jest.fn()
     render(

@@ -45,11 +45,21 @@ export const PrimaryDefault: Story = {
   render: args => <ToggleGroupWithHooks {...args} />,
 }
 
-export const Column: Story = {
+export const Exclusive: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'toggleGroupStory2',
-    options: getOptions('toggleGroupStory2', 5),
+    options: getOptions('toggleGroupStory2', 3),
+    allowEmpty: false,
+  },
+  render: args => <ToggleGroupWithHooks {...args} />,
+}
+
+export const Column: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'toggleGroupStory3',
+    options: getOptions('toggleGroupStory3', 5),
 
     column: true,
   },
@@ -59,7 +69,7 @@ export const Column: Story = {
 export const OptionsWithContent: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'toggleGroupStory3',
+    name: 'toggleGroupStory4',
     options: optionsWithContent.slice(0, 3),
   },
   render: args => <ToggleGroupWithHooks {...args} />,
@@ -68,8 +78,8 @@ export const OptionsWithContent: Story = {
 export const Error: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'toggleGroupStory4',
-    options: getOptions('toggleGroupStory4', 5),
+    name: 'toggleGroupStory5',
+    options: getOptions('toggleGroupStory5', 5),
     error: 'error',
   },
   render: args => <ToggleGroupWithHooks {...args} />,
@@ -78,9 +88,9 @@ export const Error: Story = {
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,
-    name: 'toggleGroupStory5',
+    name: 'toggleGroupStory6',
     disabled: true,
-    options: getOptions('toggleGroupStory5', 5),
+    options: getOptions('toggleGroupStory6', 5),
   },
   render: args => <ToggleGroupWithHooks {...args} />,
 }

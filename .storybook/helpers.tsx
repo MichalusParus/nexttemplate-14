@@ -2,7 +2,6 @@ import { Divider } from '@/components/atoms/common/Divider'
 import { Image } from '@/components/atoms/common/Image'
 import { Label } from '@/components/atoms/common/Label'
 import { PlusIcon, ProfileIcon } from '@/components/atoms/icons'
-import { DateButtonType } from '@/components/molecules/common/Calendar/DayPicker'
 import { CarouselItemType } from '@/components/molecules/common/Carousel'
 import { AutocompleteField } from '@/components/molecules/form/comboboxes/AutocompleteField'
 import { DatePickerField } from '@/components/molecules/form/comboboxes/DatePickerField'
@@ -11,7 +10,6 @@ import { MultiDatePickerField } from '@/components/molecules/form/comboboxes/Mul
 import { MultiSelectField } from '@/components/molecules/form/comboboxes/MultiSelectField'
 import { RangeDatePickerField } from '@/components/molecules/form/comboboxes/RangeDatePickerField'
 import { SelectField } from '@/components/molecules/form/comboboxes/SelectField'
-import { Form } from '@/components/molecules/form/forms/Form'
 import { CheckboxField } from '@/components/molecules/form/inputs/CheckboxField'
 import { CheckboxGroupField } from '@/components/molecules/form/inputs/CheckboxGroupField'
 import { FileField } from '@/components/molecules/form/inputs/FileField'
@@ -24,51 +22,26 @@ import { SearchField } from '@/components/molecules/form/inputs/SearchField'
 import { TextAreaField } from '@/components/molecules/form/inputs/TextAreaField'
 import { TextField } from '@/components/molecules/form/inputs/TextField'
 import { ToggleGroupField } from '@/components/molecules/form/inputs/ToggleGroupField'
-import {
-  MenuItemButton,
-  MenuItemCheckbox,
-  MenuItemRadioGroup,
-} from '@/components/molecules/popovers/Menu/items'
 import { MenuOptionGroupType, MenuOptionType } from '@/components/molecules/popovers/Menu/types'
 import { TabOption } from '@/components/organisms/common/Tabs/TabList'
+import { ColumnDef } from '@/components/organisms/DataGrid/utils/types'
+import { DataGridProvider } from '@/components/organisms/DataGrid/utils/DataGridContext'
 import { OptionGroupType, OptionType, StyleProps } from '@/components/utils/types'
-import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  eachDayOfInterval,
-  endOfMonth,
-  endOfWeek,
-  isSameMonth,
-  startOfMonth,
-  startOfWeek,
-} from 'date-fns'
-import { PropsWithChildren, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { FilterDef, FilterOperator } from '@/utils/hooks/useFilterData'
+import { PropsWithChildren } from 'react'
 import z from 'zod'
-
-export const getDaysInMonth = (weekStart: 0 | 1) => {
-  const daysToDisplay = eachDayOfInterval({
-    start: startOfWeek(startOfMonth(new Date('2023-01-15')), { weekStartsOn: weekStart }),
-    end: endOfWeek(endOfMonth(new Date('2023-01-15')), { weekStartsOn: weekStart }),
-  })
-    .map((day, index) => ({
-      day,
-      isSelected: index === 0,
-      isCurrent: isSameMonth(day, new Date('2023-01-15')),
-      isDisabled: index === 5,
-    }))
-    .reduce((weeks: DateButtonType[][], day, index: number) => {
-      if (index % 7 === 0) {
-        weeks.push([day])
-      } else {
-        weeks[weeks.length - 1].push(day)
-      }
-      return weeks
-    }, [])
-  return daysToDisplay
-}
 
 export const textContent =
   'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Corrupti ex totam blanditiis maiores itaque earum eius, delectus perferendis commodi at cupiditate quos veritatis dolore, quas optio provident ipsam debitis dignissimos eos, modi perspiciatis aspernatur aperiam nemo magnam. Quasi ex at ad eaque distinctio porro natus vitae praesentium. Libero quidem vel deleniti possimus repellendus. In optio sint accusantium quidem aspernatur qui ut necessitatibus cum quam ratione veritatis beatae eos rerum vero natus atque, ea repellat! Nemo assumenda eos accusantium voluptatum itaque alias architecto quo magni repudiandae rem libero dignissimos, tempore adipisci et officia dolor voluptate odit iusto, repellat dolore, vitae sequi? Vitae eveniet totam doloremque necessitatibus, quo cumque quam harum pariatur rem praesentium possimus natus voluptate distinctio cupiditate ut officiis. Quibusdam cumque illo iusto dolorum harum tempora voluptate consequuntur ab? Accusantium officiis molestias, at non qui alias fugiat tempore mollitia assumenda quia ipsam quae! Reprehenderit, labore quas adipisci architecto, commodi laborum iusto odio obcaecati mollitia fugit qui debitis. Fuga quasi iusto id fugiat, alias officiis reprehenderit impedit soluta culpa ipsam, tenetur voluptas dolorum perferendis est, libero eaque qui ipsum. Neque aliquam esse explicabo commodi beatae, velit accusamus, magni modi quia suscipit odit nobis nemo aut iusto rerum ex delectus architecto exercitationem atque illum. Facere saepe quidem eaque dolores et expedita pariatur, unde eum dicta soluta! Quod mollitia enim, consectetur reprehenderit vitae asperiores quo. In eum quo neque nesciunt at voluptas, labore, blanditiis hic pariatur corporis tenetur voluptatum maxime doloribus, expedita beatae nulla temporibus alias suscipit obcaecati nostrum ex cupiditate. Sint repudiandae quod asperiores? Cupiditate ipsam pariatur, eos consectetur doloremque similique, dicta nobis veritatis explicabo officiis quos, deleniti sed asperiores repudiandae vero! Rem nihil impedit ducimus dolore molestiae, ex doloribus saepe aspernatur autem atque alias, sit quaerat quasi totam repudiandae delectus cumque! Esse nihil eligendi saepe repudiandae nulla cum id ea. Dolore recusandae veritatis quidem, accusantium optio dignissimos, vero facere architecto reprehenderit eius provident sapiente soluta expedita amet omnis quibusdam dolorem sint itaque. Dolorum laboriosam reprehenderit placeat iste repudiandae quod non esse? Quae repellat assumenda iste. Nulla odit quos deleniti voluptate nemo delectus accusantium porro, ducimus vel dolore ipsam velit minima maiores dolor! Consequatur necessitatibus vitae unde vel, aut aliquam repudiandae ad ullam minus dolores magni distinctio nemo expedita odit, quisquam voluptas reprehenderit, doloremque asperiores? Modi doloremque quidem voluptates perspiciatis dolore perferendis officiis, voluptas reprehenderit laboriosam ex dignissimos! Quam dolore exercitationem consequuntur eveniet atque recusandae dignissimos autem laboriosam aperiam. Ratione, aspernatur rerum, recusandae laboriosam magni numquam delectus distinctio saepe quo autem, unde quibusdam sed optio at consequuntur fugit. Minima, aliquam autem corporis nostrum nemo eius dolore alias placeat eum ratione expedita quas, perspiciatis reprehenderit in quisquam! Repudiandae illo qui voluptas quos quo iste, eaque, amet suscipit alias omnis quam minus reprehenderit, eum ea ullam voluptatum labore dignissimos eveniet nesciunt! Vel enim asperiores eum illo ullam! Quis animi recusandae laudantium ad excepturi, culpa velit. Molestias corporis quaerat blanditiis illo veritatis, dolore eius natus eveniet unde fugiat cupiditate, quos deserunt odio, cum culpa omnis odit voluptatum. Voluptatum eius iusto, quis distinctio voluptatibus fugiat non.'
+
+export const titleSizeVariants: ('none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl')[] = [
+  'sm',
+  'md',
+  'lg',
+  'xl',
+  '2xl',
+  '3xl',
+]
 
 export const getOptions = (name?: string, length?: number) =>
   Array.from({ length: length || 20 }, (_, i) => ({
@@ -110,10 +83,72 @@ export const optionsWithContent = Array.from({ length: 20 }, (_, i) => ({
   ),
 }))
 
-export const tileData = Array.from({ length: 200 }, (_, i) => ({
-  id: i,
-  name: `Title ${i}`,
+export const getGalleryItems = (length: number) => {
+  const srcs = [
+    'https://picsum.photos/1600/900',
+    'https://picsum.photos/1600/800',
+    'https://picsum.photos/900/800',
+    'https://picsum.photos/1200/900',
+  ]
+  return Array.from({ length: length }, (_, i) => ({
+    src: srcs[i % 4],
+    label: 'img' + (i + 1),
+  }))
+}
+
+export const getCarouselItems = (count: number): CarouselItemType[] => {
+  return getGalleryItems(count).map(img => ({
+    label: img.label,
+    content: <Image src={img.src} alt={img.label} width="w-full" />,
+  }))
+}
+
+export const tabsOptions: TabOption<string>[] = [
+  { length: 100 },
+  { length: 800 },
+  { length: 800 },
+].map(({ length }, i) => ({
+  label: `Label ${i + 1}`,
+  value: `label${i + 1}`,
+  component: (
+    <div className="flex h-96 flex-col items-center justify-start">
+      <h2 className="text-2xl" data-testid={`tab${i + 1}Title`}>
+        Content {i + 1}
+      </h2>
+      <p className={i === 0 ? 'pt-20' : ''}>{textContent.slice(0, length)}</p>
+    </div>
+  ),
 }))
+
+export const breadcrumbOptions = [
+  { label: 'Users', href: '/' },
+  { label: 'Favourite', href: '/favourite' },
+  { label: 'Bffs', href: '/bffs' },
+]
+
+export const accordionOptions = [
+  {
+    title: 'Disclosure Title 1',
+    content: textContent.slice(0, 500),
+    expanded: true,
+  },
+  {
+    title: 'Disclosure Title 2',
+    content: textContent.slice(0, 500),
+  },
+  {
+    title: 'Disclosure Title 3',
+    content: textContent.slice(0, 500),
+  },
+  {
+    title: 'Disclosure Title 4',
+    content: textContent.slice(0, 500),
+  },
+  {
+    title: 'Disclosure Title 5',
+    content: textContent.slice(0, 500),
+  },
+]
 
 export type MenuValuesType = {
   checkbox1?: string | null
@@ -405,248 +440,7 @@ export const getMenuOptions = (
   ]
 }
 
-export const MenuLinks = ({
-  length = 5,
-  variant,
-  color,
-  index,
-}: {
-  index?: number
-  length?: number
-  variant?: 'text' | 'outlined' | 'contained'
-  color?: 'primary' | 'secondary' | 'terciary' | 'none'
-  size?: 'sm' | 'md' | 'lg' | 'inline' | 'none'
-}) => {
-  const [value, setValue] = useState<string[]>([])
-  const [radioValue, setRadioValue] = useState<string>('label2')
-
-  return (
-    <>
-      <MenuItemRadioGroup
-        name={'menuRadioStory' + index}
-        options={getOptions(`menuRadioStory${index}`, 5)}
-        value={radioValue}
-        variant={variant}
-        color={color}
-        onChange={v => setRadioValue(v)}
-      />
-      <li className="py-4" role="presentation">
-        <Divider className="px-8" />
-      </li>
-      <MenuItemCheckbox
-        name={'menuCheckboxStory1' + index}
-        variant={variant}
-        color={color}
-        isChecked={value.includes('1')}
-        onClick={() =>
-          setValue(value.includes('1') ? value.filter(v => v !== '1') : [...value, '1'])
-        }
-      >
-        MenuCheckbox1
-      </MenuItemCheckbox>
-      <MenuItemCheckbox
-        name={'menuCheckboxStory2' + index}
-        variant={variant}
-        color={color}
-        isChecked={value.includes('2')}
-        onClick={() =>
-          setValue(value.includes('2') ? value.filter(v => v !== '2') : [...value, '2'])
-        }
-      >
-        MenuCheckbox2
-      </MenuItemCheckbox>
-      <MenuItemCheckbox
-        name={'menuCheckboxStory3' + index}
-        variant={variant}
-        color={color}
-        isChecked={value.includes('3')}
-        onClick={() =>
-          setValue(value.includes('3') ? value.filter(v => v !== '3') : [...value, '3'])
-        }
-      >
-        MenuCheckbox3
-      </MenuItemCheckbox>
-      <li className="py-4" role="presentation">
-        <Divider className="px-8" />
-      </li>
-      {Array.from({ length: length }, (_, i) => (
-        <MenuItemButton key={i + 'btn' + index} variant={variant} color={color} hideShadow>
-          {'MenuItemButton' + i}
-        </MenuItemButton>
-      ))}
-    </>
-  )
-}
-
-export const routerMock = {
-  nextjs: {
-    appDirectory: true,
-    router: {
-      navigation: {
-        basePath: '/',
-      },
-    },
-  },
-}
-
-export const accordionOptions = [
-  {
-    title: 'Disclosure Title 1',
-    content: textContent.slice(0, 500),
-    expanded: true,
-  },
-  {
-    title: 'Disclosure Title 2',
-    content: textContent.slice(0, 500),
-  },
-  {
-    title: 'Disclosure Title 3',
-    content: textContent.slice(0, 500),
-  },
-  {
-    title: 'Disclosure Title 4',
-    content: textContent.slice(0, 500),
-  },
-  {
-    title: 'Disclosure Title 5',
-    content: textContent.slice(0, 500),
-  },
-]
-
-export const getCarouselItems = (count: number): CarouselItemType[] => {
-  return getGalleryItems(count).map(img => ({
-    label: img.label,
-    content: <Image src={img.src} alt={img.label} width="w-full" />,
-  }))
-}
-
-export const getGalleryItems = (length: number) => {
-  const srcs = [
-    'https://picsum.photos/1600/900',
-    'https://picsum.photos/1600/800',
-    'https://picsum.photos/900/800',
-    'https://picsum.photos/1200/900',
-  ]
-  return Array.from({ length: length }, (_, i) => ({
-    src: srcs[i % 4],
-    label: 'img' + (i + 1),
-  }))
-}
-
-export const gridDoubleColsDef = [
-  {
-    label: 'Column Head 1',
-    name: 'col1',
-    width: '400px',
-    grow: true,
-    columns: [
-      {
-        label: 'Subcol Head 1',
-        name: 'name1',
-        width: '250px',
-        grow: true,
-      },
-      {
-        label: 'Num 2',
-        name: 'name2',
-        width: '150px',
-        shrink: true,
-      },
-    ],
-  },
-  {
-    label: 'Column Head 2',
-    name: 'col2',
-    width: '500px',
-    columns: [
-      {
-        label: 'Subcol Head 3',
-        name: 'name3',
-        width: '250px',
-        shrink: true,
-      },
-      {
-        label: 'Subcol Head 4',
-        name: 'name4',
-        width: '250px',
-        shrink: true,
-      },
-    ],
-  },
-]
-export const gridColsDef = [
-  {
-    label: 'Column Head 1',
-    name: 'name1',
-    width: '250px',
-    grow: true,
-  },
-  {
-    label: 'Num 2',
-    name: 'name2',
-    width: '150px',
-  },
-  {
-    label: 'Column Head 3',
-    name: 'name3',
-    width: '250px',
-  },
-  {
-    label: 'Column Head 4',
-    name: 'name4',
-    width: '250px',
-  },
-]
-
-export const gridCleanColsDef = [
-  {
-    label: 'Column Head 1',
-    name: 'name1',
-    width: '250px',
-    grow: true,
-    hideFilter: true,
-    hideSort: true,
-  },
-  {
-    label: 'Num 2',
-    name: 'name2',
-    width: '150px',
-    hideFilter: true,
-    hideSort: true,
-  },
-  {
-    label: 'Column Head 3',
-    name: 'name3',
-    width: '250px',
-    hideFilter: true,
-    hideSort: true,
-  },
-  {
-    label: 'Column Head 4',
-    name: 'name4',
-    width: '250px',
-    hideFilter: true,
-    hideSort: true,
-  },
-]
-
-export const gridData = Array.from({ length: 110 }, (_, i) => ({
-  id: 'id' + i,
-  name1: 'col1 data ' + (i + 1),
-  name2: i + 1,
-  name3: 'col2 data ' + (110 - i),
-  name4: 'col4 data ' + (110 - i),
-}))
-
-export const titleSizeVariants: ('none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl')[] = [
-  'sm',
-  'md',
-  'lg',
-  'xl',
-  '2xl',
-  '3xl',
-]
-
+// FORM HELPERS
 export const InputFields = ({
   handleMockUpload,
 }: {
@@ -727,8 +521,8 @@ export const ComboboxFields = ({
 }: {
   autocompleteOptions: OptionType<string>[]
   multiAutocompleteOptions: OptionType<string>[]
-  setAutocompleteFilter: (value: any) => void
-  setMultiAutocompleteFilter: (value: any) => void
+  setAutocompleteFilter: (value: FilterDef) => void
+  setMultiAutocompleteFilter: (value: FilterDef) => void
 }) => {
   return (
     <>
@@ -757,14 +551,18 @@ export const ComboboxFields = ({
         label="Autocomplete:"
         placeholder="autocomplete"
         options={autocompleteOptions}
-        onInputChange={(value: string) => setAutocompleteFilter({ label: value })}
+        onInputChange={(value: string) =>
+          setAutocompleteFilter({ label: { value, operator: FilterOperator.CONTAINS } })
+        }
       />
       <MultiAutocompleteField
         name="multiAutocompleteStory"
         label="MultiAutocomplete:"
         placeholder="multiAutocomplete"
         options={multiAutocompleteOptions}
-        onInputChange={(value: string) => setMultiAutocompleteFilter({ label: value })}
+        onInputChange={(value: string) =>
+          setMultiAutocompleteFilter({ label: { value, operator: FilterOperator.CONTAINS } })
+        }
       />
     </>
   )
@@ -799,12 +597,6 @@ export const comboboxFormDefaultValues = {
   multiAutocompleteStory: [],
 }
 
-export const initialValues = {
-  ...inputFormDefaultValues,
-  ...radioFormDefaultValues,
-  ...comboboxFormDefaultValues,
-}
-
 export const inputSchema = z.object({
   inputStory: z.string().min(1),
   numberStory: z.number().min(1),
@@ -836,76 +628,293 @@ export const comboboxSchema = z.object({
 
 export const formSchema = inputSchema.merge(radioSchema).merge(comboboxSchema)
 
-export const tabs: TabOption<string>[] = [
-  {
-    label: 'Label 1',
-    value: 'label1',
-    component: (
-      <div className="flex h-96 flex-col items-center justify-start">
-        <h2 className="text-2xl" data-testid="tab1Title">
-          Content 1
-        </h2>
-        <p className="pt-20">{textContent.slice(0, 100)}</p>
-      </div>
-    ),
-  },
-  {
-    label: 'Label 2',
-    value: 'label2',
-    component: (
-      <div className="flex h-96 flex-col items-center justify-start">
-        <h2 className="text-2xl" data-testid="tab2Title">
-          Content 2
-        </h2>
-        <p>{textContent.slice(0, 800)}</p>
-      </div>
-    ),
-  },
-  {
-    label: 'Label 3',
-    value: 'label3',
-    component: (
-      <div className="flex h-96 flex-col items-center justify-start">
-        <h2 className="text-2xl" data-testid="tab3Title">
-          Content 3
-        </h2>
-        <p>{textContent.slice(0, 800)}</p>
-      </div>
-    ),
-  },
-]
+export const initialValues = {
+  ...inputFormDefaultValues,
+  ...radioFormDefaultValues,
+  ...comboboxFormDefaultValues,
+}
 
-export const breadcrumbOptions = [
-  { label: 'Users', href: '/' },
-  { label: 'Favourite', href: '/favourite' },
-  { label: 'Bffs', href: '/bffs' },
-]
-
-export const JestFormProvider = ({
-  className,
-  fields,
-  values,
-  required,
-  onSubmit = () => {},
+// GRID HELPERS
+export const JestDataGridProvider = ({
+  name = 'testGrid',
+  variant = 'outlined',
+  color = 'primary',
+  size = 'md',
+  columns = gridCleanColsDef,
+  columnsInRow,
+  hideExport = false,
+  filter = {},
+  setFilter = () => {},
+  sorting = { key: null, value: 'none' as const },
+  handleSorting = () => {},
+  selectedRowsCount = 0,
+  filteredDataCount = 0,
   children,
 }: PropsWithChildren<{
-  className?: string
-  fields: string[]
-  values?: any[]
-  required?: boolean
-  onSubmit?: (v: any) => void
+  name?: string
+  variant?: StyleProps['variant']
+  color?: StyleProps['color']
+  size?: StyleProps['size']
+  columns?: ColumnDef[]
+  columnsInRow?: ColumnDef[]
+  hideExport?: boolean
+  filter?: FilterDef
+  setFilter?: (filter: FilterDef) => void
+  sorting?: { key: string | null; value: 'asc' | 'desc' | 'none' }
+  handleSorting?: (key: string) => void
+  selectedRowsCount?: number
+  filteredDataCount?: number
 }>) => {
-  const zodFields = Object.fromEntries(fields.map(field => [field, z.unknown()]))
-  const schema = z.object(zodFields)
-  const formValues = Object.fromEntries(fields.map((field, i) => [field, values?.[i]]))
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: formValues,
-  })
+  const contextValue = {
+    name,
+    variant,
+    color,
+    size,
+    columns,
+    columnsInRow:
+      columnsInRow ||
+      columns.flatMap(col =>
+        col.columns && col.columns.length > 0
+          ? col.columns.flatMap(c => (c.columns ? c.columns : [c]))
+          : [col],
+      ),
+    hideExport,
+    filter,
+    setFilter,
+    sorting,
+    handleSorting,
+    selectedRowsCount,
+    filteredDataCount,
+  }
 
-  return (
-    <Form className={className} name="jestForm" form={form} onSubmit={onSubmit}>
-      {children}
-    </Form>
-  )
+  return <DataGridProvider value={contextValue}>{children}</DataGridProvider>
 }
+
+export const gridColsDef: ColumnDef[] = [
+  {
+    label: 'Name',
+    name: 'name',
+    width: '200px',
+    grow: 1,
+    filter: {
+      type: 'text',
+    },
+  },
+  {
+    label: 'Age',
+    name: 'age',
+    width: '120px',
+    filter: {
+      type: 'number',
+      operator: FilterOperator.EQUALS,
+    },
+  },
+  {
+    label: 'Status',
+    name: 'status',
+    width: '150px',
+    filter: {
+      type: 'select',
+      options: [
+        { label: 'Active', value: 'active' },
+        { label: 'Inactive', value: 'inactive' },
+        { label: 'Pending', value: 'pending' },
+      ],
+    },
+  },
+  {
+    label: 'Active',
+    name: 'isActive',
+    width: '140px',
+    filter: {
+      type: 'toggle',
+      options: [
+        { label: 'Yes', value: 'true' },
+        { label: 'No', value: 'false' },
+      ],
+    },
+  },
+  {
+    label: 'Join Date',
+    name: 'joinDate',
+    width: '150px',
+    filter: {
+      type: 'date',
+      operator: FilterOperator.EQUALS,
+    },
+  },
+  {
+    label: 'Department',
+    name: 'department',
+    width: '180px',
+    filter: {
+      type: 'select',
+      options: [
+        { label: 'Engineering', value: 'engineering' },
+        { label: 'Marketing', value: 'marketing' },
+        { label: 'Sales', value: 'sales' },
+        { label: 'HR', value: 'hr' },
+      ],
+    },
+  },
+]
+
+export const gridCleanColsDef: ColumnDef[] = [
+  {
+    label: 'Name',
+    name: 'name',
+    width: '200px',
+    grow: true,
+    hideSort: true,
+  },
+  {
+    label: 'Age',
+    name: 'age',
+    width: '120px',
+    hideSort: true,
+  },
+  {
+    label: 'Status',
+    name: 'status',
+    width: '150px',
+    hideSort: true,
+  },
+  {
+    label: 'Active',
+    name: 'isActive',
+    width: '120px',
+    hideSort: true,
+  },
+  {
+    label: 'Join Date',
+    name: 'joinDate',
+    width: '150px',
+    hideSort: true,
+  },
+  {
+    label: 'Department',
+    name: 'department',
+    width: '180px',
+    hideSort: true,
+  },
+]
+
+export const gridMultiColsDef: ColumnDef[] = [
+  {
+    label: 'Employee Information',
+    name: 'col1',
+    columns: [
+      {
+        label: 'Personal Details',
+        name: 'personal',
+        columns: [
+          {
+            label: 'Name',
+            name: 'name',
+            grow: 1,
+            filter: {
+              type: 'text',
+            },
+          },
+          {
+            label: 'Age',
+            name: 'age',
+            width: '120px',
+            filter: {
+              type: 'number',
+              operator: FilterOperator.EQUALS,
+            },
+          },
+        ],
+      },
+      {
+        label: 'Status Info',
+        name: 'statusInfo',
+        columns: [
+          {
+            label: 'Status',
+            name: 'status',
+            filter: {
+              type: 'select',
+              options: [
+                { label: 'Active', value: 'active' },
+                { label: 'Inactive', value: 'inactive' },
+                { label: 'Pending', value: 'pending' },
+              ],
+            },
+          },
+          {
+            label: 'Active',
+            name: 'isActive',
+            filter: {
+              type: 'toggle',
+              options: [
+                { label: 'Yes', value: 'true' },
+                { label: 'No', value: 'false' },
+              ],
+            },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    label: 'Work Information',
+    name: 'col2',
+    columns: [
+      {
+        label: 'Employment',
+        name: 'employment',
+        columns: [
+          {
+            label: 'Department',
+            name: 'department',
+            filter: {
+              type: 'select',
+              options: [
+                { label: 'Engineering', value: 'engineering' },
+                { label: 'Marketing', value: 'marketing' },
+                { label: 'Sales', value: 'sales' },
+                { label: 'HR', value: 'hr' },
+              ],
+            },
+          },
+          {
+            label: 'Join Date',
+            name: 'joinDate',
+            filter: {
+              type: 'date',
+              operator: FilterOperator.EQUALS,
+            },
+          },
+        ],
+      },
+    ],
+  },
+]
+
+const statuses = ['active', 'inactive', 'pending']
+const departments = ['engineering', 'marketing', 'sales', 'hr']
+const names = [
+  'John Doe',
+  'Jane Smith',
+  'Bob Johnson',
+  'Alice Williams',
+  'Charlie Brown',
+  'Diana Davis',
+  'Eve Wilson',
+  'Frank Miller',
+]
+
+export const gridData = Array.from({ length: 110 }, (_, i) => {
+  const date = new Date(2020 + (i % 5), i % 12, (i % 28) + 1)
+  return {
+    id: 'id' + i,
+    name: names[i % names.length] + ' ' + (Math.floor(i / names.length) + 1),
+    age: 20 + (i % 50),
+    status: statuses[i % statuses.length],
+    isActive: i % 3 !== 0 ? 'true' : 'false',
+    joinDate: date.toISOString().split('T')[0],
+    department: departments[i % departments.length],
+  }
+})

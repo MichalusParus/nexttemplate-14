@@ -4,10 +4,14 @@ import { useEffect, useState, useTransition } from 'react'
 import { Ghost } from '@/components/atoms/loaders/Ghost'
 import { usePagination } from '@/utils/hooks/usePagination'
 
-import { tileData } from '../../../../../.storybook/helpers'
 import { MobilePagination } from './MobilePagination'
 import { Pagination, PaginationProps } from './Pagination'
 import { ScreenPagination } from './ScreenPagination'
+
+const tileData = Array.from({ length: 200 }, (_, i) => ({
+  id: i,
+  name: `Title ${i}`,
+}))
 
 const meta: Meta<typeof Pagination> = {
   title: 'Organisms/Common/Pagination',

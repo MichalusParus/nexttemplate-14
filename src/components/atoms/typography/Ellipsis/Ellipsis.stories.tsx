@@ -30,6 +30,7 @@ type Story = StoryObj<typeof Ellipsis>
 export const Default: Story = {
   args: {
     className: '',
+    lineClamp: '',
     variant: 'none',
     color: 'none',
     tooltipProps: {},

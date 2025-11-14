@@ -18,8 +18,8 @@ import { ellipsisClass } from './Ellipsis.style'
 export type ComponentTemplateProps = SpanProps & {
   /** for passing custom tailwind classes */
   className?: string
-  /** children */
-  lines?: number
+  /** line clamp as tailwind class */
+  lineClamp?: string
   /** optional props for tooltip component */
   tooltipProps?: Partial<TooltipProps>
 }
@@ -28,7 +28,7 @@ export type ComponentTemplateProps = SpanProps & {
 export const Ellipsis = forwardRef<
   HTMLSpanElement | null,
   PropsWithChildren<ComponentTemplateProps>
->(({ className, tooltipProps, children, ...rest }, ref) => {
+>(({ className, lineClamp, tooltipProps, children, ...rest }, ref) => {
   const [isOverflow, setIsOverflow] = useState(false)
   const componentRef = useRef<HTMLSpanElement>(null)
   useImperativeHandle<HTMLSpanElement | null, HTMLSpanElement | null>(
@@ -57,7 +57,7 @@ export const Ellipsis = forwardRef<
   if (!isOverflow)
     return (
       <Span
-        className={cn('Ellipsis', ellipsisClass, className)}
+        className={cn('Ellipsis', ellipsisClass, lineClamp, className)}
         ref={componentRef}
         data-testid="Ellipsis"
         {...rest}
@@ -69,7 +69,7 @@ export const Ellipsis = forwardRef<
   return (
     <Tooltip title={children} {...tooltipProps}>
       <Span
-        className={cn('Ellipsis', ellipsisClass, className)}
+        className={cn('Ellipsis', ellipsisClass, lineClamp, className)}
         ref={componentRef}
         data-testid="Ellipsis"
         {...rest}

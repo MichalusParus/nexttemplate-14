@@ -27,6 +27,11 @@ export const useNonModalDropdown = (
     (e: Event) => {
       const focusEvent = e as FocusEvent
       const target = focusEvent.relatedTarget as HTMLElement | null
+
+      if (!target) {
+        return
+      }
+
       const refs = submenuRefs?.()
       const isInsideAnchorRef = anchorRef.current?.contains(target)
       const isInsidePopoverEl = popoverEl?.contains(target)

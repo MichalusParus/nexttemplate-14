@@ -4,7 +4,7 @@ import { axe, toHaveNoViolations } from 'jest-axe'
 import { act } from 'react'
 
 import { fireEvent, render, screen } from '../../../../../../.jest/customRender'
-import { tabs } from '../../../../../../.storybook/helpers'
+import { tabsOptions } from '../../../../../../.storybook/helpers'
 import { TabListSelect } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -14,8 +14,8 @@ describe('TabListSelect', () => {
     render(
       <TabListSelect
         className="className"
-        selectedTab={tabs[0]}
-        tabs={tabs}
+        selectedTab={tabsOptions[0]}
+        tabs={tabsOptions}
         onTabChange={() => {}}
       />,
     )
@@ -25,7 +25,7 @@ describe('TabListSelect', () => {
 
     expect(comboboxRole).toBeInTheDocument()
     expect(comboboxRole).toHaveClass('className')
-    expect(comboboxRole).toHaveTextContent(tabs[0].label)
+    expect(comboboxRole).toHaveTextContent(tabsOptions[0].label)
     expect(comboboxRole).toHaveAttribute('aria-expanded', 'false')
     expect(comboboxRole).toHaveAttribute('aria-controls', 'select-tablist-listbox')
     expect(comboboxRole).toHaveAttribute('aria-owns', 'select-tablist-listbox')
@@ -39,7 +39,7 @@ describe('TabListSelect', () => {
   })
 
   it('open/close', async () => {
-    render(<TabListSelect selectedTab={tabs[0]} tabs={tabs} onTabChange={() => {}} />)
+    render(<TabListSelect selectedTab={tabsOptions[0]} tabs={tabsOptions} onTabChange={() => {}} />)
     const comboboxRole = screen.getByRole('combobox')
     await act(async () => {
       fireEvent.click(comboboxRole)
@@ -50,14 +50,14 @@ describe('TabListSelect', () => {
 
     expect(tablistQuery).toBeInTheDocument()
     expect(tablistQuery).toHaveAttribute('aria-hidden', 'false')
-    expect(tabsQuery).toHaveLength(tabs.length)
+    expect(tabsQuery).toHaveLength(tabsOptions.length)
     expect(comboboxRole).toBeInTheDocument()
-    expect(comboboxRole).toHaveTextContent(tabs[0].label)
+    expect(comboboxRole).toHaveTextContent(tabsOptions[0].label)
     expect(dropdownTestId).toBeInTheDocument()
-    expect(tabsQuery[0]).toHaveTextContent(tabs[0].label)
-    expect(tabsQuery[1]).toHaveTextContent(tabs[1].label)
-    expect(tabsQuery[2]).toHaveTextContent(tabs[2].label)
-    expect(tabsQuery[0]).toHaveAttribute('aria-controls', `${tabs[0].value}-tabpanel`)
+    expect(tabsQuery[0]).toHaveTextContent(tabsOptions[0].label)
+    expect(tabsQuery[1]).toHaveTextContent(tabsOptions[1].label)
+    expect(tabsQuery[2]).toHaveTextContent(tabsOptions[2].label)
+    expect(tabsQuery[0]).toHaveAttribute('aria-controls', `${tabsOptions[0].value}-tabpanel`)
     expect(tabsQuery[0]).toHaveClass('selected')
     expect(tabsQuery[0]).toHaveAttribute('aria-selected', 'true')
     act(() => {
@@ -69,8 +69,10 @@ describe('TabListSelect', () => {
   it('hidden', async () => {
     render(
       <TabListSelect
-        selectedTab={tabs[1]}
-        tabs={tabs.map((tab, i) => ({ ...tab, isHidden: i === 0 })).filter(tab => !tab.isHidden)}
+        selectedTab={tabsOptions[1]}
+        tabs={tabsOptions
+          .map((tab, i) => ({ ...tab, isHidden: i === 0 }))
+          .filter(tab => !tab.isHidden)}
         onTabChange={() => {}}
       />,
     )
@@ -79,17 +81,17 @@ describe('TabListSelect', () => {
       fireEvent.click(comboboxRole)
     })
     const tabsQuery = screen.queryAllByRole('tab')
-    const firstTabText = screen.queryByText(tabs[0].label)
+    const firstTabText = screen.queryByText(tabsOptions[0].label)
 
-    expect(tabsQuery).toHaveLength(tabs.length - 1)
+    expect(tabsQuery).toHaveLength(tabsOptions.length - 1)
     expect(firstTabText).toBeNull()
-    expect(tabsQuery[0]).toHaveTextContent(tabs[1].label)
-    expect(tabsQuery[1]).toHaveTextContent(tabs[2].label)
+    expect(tabsQuery[0]).toHaveTextContent(tabsOptions[1].label)
+    expect(tabsQuery[1]).toHaveTextContent(tabsOptions[2].label)
   })
 
   it('children', async () => {
     render(
-      <TabListSelect selectedTab={tabs[0]} tabs={tabs} onTabChange={() => {}}>
+      <TabListSelect selectedTab={tabsOptions[0]} tabs={tabsOptions} onTabChange={() => {}}>
         <li>
           <button data-testid="button">button</button>
         </li>
@@ -106,7 +108,7 @@ describe('TabListSelect', () => {
 
   it('onTabChange', async () => {
     const spy = jest.fn()
-    render(<TabListSelect selectedTab={tabs[0]} tabs={tabs} onTabChange={spy} />)
+    render(<TabListSelect selectedTab={tabsOptions[0]} tabs={tabsOptions} onTabChange={spy} />)
     const comboboxRole = screen.getByRole('combobox')
     fireEvent.click(comboboxRole)
     const tabRoles = screen.getAllByRole('tab')
@@ -115,14 +117,14 @@ describe('TabListSelect', () => {
       fireEvent.click(tabRoles[0])
     })
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(tabs[0].value)
+    expect(spy).toHaveBeenCalledWith(tabsOptions[0].value)
   })
 
   it('tabButtonProps/selectProps', async () => {
     render(
       <TabListSelect
-        selectedTab={tabs[0]}
-        tabs={tabs}
+        selectedTab={tabsOptions[0]}
+        tabs={tabsOptions}
         tabButtonProps={{ className: 'tabButtonClass' }}
         selectProps={{ className: 'selectClass' }}
         onTabChange={() => {}}
@@ -142,8 +144,8 @@ describe('TabListSelect', () => {
     const { container } = render(
       <>
         <TabListSelect
-          selectedTab={tabs[0]}
-          tabs={tabs}
+          selectedTab={tabsOptions[0]}
+          tabs={tabsOptions}
           onTabChange={() => {}}
           selectProps={{ title: 'title' }}
         />

@@ -43,7 +43,7 @@
       "search": "search",
       "selectAll": "select all",
       "sortIn": "sort in {field}",
-      "filterIn": "filter in {field}",
+      "filterIn": "Filter in {field}",
       "searchIn": "search in {field}",
       "noRows": "No rows found",
       "carousel": "Carousel",
@@ -52,8 +52,11 @@
       "dialog": "Dialog",
       "pagination": "Pagination",
       "slideLabel": "Slide {count} of {total}",
+      "selectedOf": "{count} of {total} selected",
       "pause": "Pause",
       "play": "Play",
+      "min": "Min",
+      "max": "Max",
       "hidePassword": "Hide password",
       "showPassword": "Show password",
       "drawer": "Drawer",
@@ -82,6 +85,25 @@
         "9": "October",
         "10": "November",
         "11": "December"
+      },
+      "dataGrid": {
+      "operatorLabel": "operator:"
+      },
+      "operators": {
+        "equals": "Equals",
+        "notEquals": "Not Equals",
+        "isEmpty": "Is Empty",
+        "isNotEmpty": "Is Not Empty",
+        "contains": "Contains",
+        "startsWith": "Starts With",
+        "endsWith": "Ends With",
+        "gt": "Greater Than",
+        "gte": "Greater Than or Equal",
+        "lt": "Less Than",
+        "lte": "Less Than or Equal",
+        "between": "Between",
+        "in": "In",
+        "notIn": "Not In"
       }
     },
     "Auth": {

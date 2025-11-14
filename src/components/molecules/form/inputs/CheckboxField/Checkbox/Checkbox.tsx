@@ -1,7 +1,7 @@
 'use client'
 import { forwardRef, ReactNode } from 'react'
 
-import { CheckIcon } from '@/components/atoms/icons'
+import { CheckIcon, MinusIcon } from '@/components/atoms/icons'
 import { FieldProps, InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -26,6 +26,8 @@ export type CheckboxProps = NativeInputProps &
     content?: ReactNode
     /** optional checked status for Group use */
     isChecked: boolean
+    /** isIndeterminate state */
+    isIndeterminate?: boolean
     /** error state */
     fake?: boolean
     /** onChange function */
@@ -45,6 +47,7 @@ export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
       color = 'primary',
       size = 'md',
       isChecked,
+      isIndeterminate = false,
       error,
       fake,
       disabled,
@@ -53,7 +56,7 @@ export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
     },
     ref,
   ) => {
-    const checkVisibility = isChecked || disabled ? 'opacity-100' : 'opacity-0'
+    const checkVisibility = isChecked || isIndeterminate || disabled ? 'opacity-100' : 'opacity-0'
 
     return (
       <div
@@ -68,9 +71,10 @@ export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
         <div
           className={cn(
             'CheckboxInputWrap',
-            'relative mr-2 flex',
+            'relative flex',
+            !fake && 'mr-2',
             inputWrapClass,
-            isChecked && 'checked',
+            (isChecked || isIndeterminate) && 'checked',
             checkboxVariant[variant][color],
             checkboxSize[size],
             error && !disabled && 'error ' + inputErrorClass,
@@ -95,17 +99,31 @@ export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
               {...rest}
             />
           )}
-          <CheckIcon
-            className={cn(
-              'CheckIcon',
-              'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
-              disabled && 'disabled',
-              checkVariant[variant][color],
-              checkboxSize[size],
-              checkVisibility,
-            )}
-            data-testid="CheckIcon"
-          />
+          {isIndeterminate ? (
+            <MinusIcon
+              className={cn(
+                'MinusIcon',
+                'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
+                disabled && 'disabled',
+                checkVariant[variant][color],
+                checkboxSize[size],
+                checkVisibility,
+              )}
+              data-testid="MinusIcon"
+            />
+          ) : (
+            <CheckIcon
+              className={cn(
+                'CheckIcon',
+                'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
+                disabled && 'disabled',
+                checkVariant[variant][color],
+                checkboxSize[size],
+                checkVisibility,
+              )}
+              data-testid="CheckIcon"
+            />
+          )}
         </div>
         {!fake && (
           <label

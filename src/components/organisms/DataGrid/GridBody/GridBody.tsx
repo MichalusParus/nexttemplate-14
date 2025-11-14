@@ -1,180 +1,92 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef } from 'react'
 
-import { Button } from '@/components/atoms/common/Button'
-import { iconOnlySize } from '@/components/atoms/common/Button/Button.style'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
-import { Ghost } from '@/components/atoms/loaders/Ghost'
 import { P } from '@/components/atoms/typography/P'
-import { Checkbox } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
-import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { cellOverflow, cellSize } from '../GridHeader/ColumnHead/ColumnHead.style'
-import { checkboxSize, rowgroupVariant } from '../GridHeader/GridHeader.style'
-import { ColumnDef, RowDef } from '../types'
+import { rowgroupVariant } from '../GridHeader/GridHeader.style'
+import { useDataGridContext } from '../utils/DataGridContext'
+import { GridRow } from './GridRow'
 
-export type GridBodyProps = StyleProps & {
-  /** grid columns definition */
-  columns: ColumnDef[]
+export type GridBodyProps<T extends Record<string, unknown> = Record<string, unknown>> = {
   /** paged data for display */
-  pagedData: RowDef[]
-  /** selected rows for multiselect */
-  selectedRows: RowDef[]
+  pagedData: T[]
+  /** selected row ids */
+  selectedRowIds: Set<string | number>
   /** loading ghost state */
   isLoading?: boolean
   /** default rowsPerPage option for ghost loading */
   rowsPerPage?: number
   /** optional max height for scrollShadow as tailwind class */
   maxHeight?: string
-  /** bolean for if multiselect is chosen */
+  /** boolean for if multiselect is chosen */
   multiselect: boolean
+  /** header depth for aria-rowindex calculation */
+  headerDepth: number
+  /** grid template column def */
+  gridTemplateColumns: string
+  /** function to extract unique row identifier */
+  getRowId: (row: T) => string | number
   /** on row click function */
-  handleRowClick?: (row: RowDef) => void
+  handleRowClick?: (row: T) => void
 }
 
 /** Body for DataGrid with ScrollShadow. USE CLIENT */
-export const GridBody = forwardRef<HTMLDivElement | null, GridBodyProps>(
-  (
-    {
-      columns,
-      pagedData,
-      selectedRows,
-      variant = 'outlined',
-      color = 'primary',
-      size = 'md',
-      isLoading,
-      rowsPerPage,
-      maxHeight,
-      multiselect,
-      handleRowClick,
-    },
-    ref,
-  ) => {
-    const t = useTranslations('Components')
-    const isRowInteractive = Boolean(handleRowClick || multiselect)
-    const haveSubColumns = columns.some(col => col.columns && col.columns.length > 0)
+export const GridBody = <T extends Record<string, unknown> = Record<string, unknown>>({
+  pagedData,
+  selectedRowIds,
+  isLoading,
+  rowsPerPage,
+  maxHeight,
+  multiselect,
+  headerDepth,
+  gridTemplateColumns,
+  getRowId,
+  handleRowClick,
+}: GridBodyProps<T>) => {
+  const t = useTranslations('Components')
+  const { variant, color, size } = useDataGridContext()
 
-    const selectedClass = (rowId: string) => {
-      if (selectedRows.length) {
-        return selectedRows.map(r => r.id).includes(rowId) ? 'selected' : ''
-      }
-      return ''
-    }
-
-    if (isLoading) {
-      return (
-        <div
-          className={cn('GridLoadingBody', 'border', rowgroupVariant[variant][color])}
-          role="rowgroup"
-          ref={ref}
-        >
-          <ScrollShadow height={maxHeight} gutter disableHorizontal>
-            {Array.from({ length: rowsPerPage || 10 }, (_, i) => (
-              <div
-                key={`gridGhost${i}`}
-                className={cn('GhostRow', 'border border-transparent', checkboxSize[size])}
-                role="row"
-                aria-rowindex={i + (haveSubColumns ? 3 : 2)}
-              >
-                <Ghost size={size} />
-              </div>
-            ))}
-          </ScrollShadow>
-        </div>
-      )
-    }
-
-    return (
-      <div className={cn('GridBody', 'border', rowgroupVariant[variant][color])} role="rowgroup">
-        <ScrollShadow height={maxHeight} gutter disableHorizontal>
-          {pagedData.length ? (
-            pagedData.map((row, index) => (
-              <div
-                key={String(row.id)}
-                id={String(row.id)}
-                className="GridRow"
-                role="row"
-                aria-rowindex={index + (haveSubColumns ? 3 : 2)}
-              >
-                <Button
-                  className={cn(
-                    'RowButton',
-                    'group w-full rounded-none border-none',
-                    selectedClass(String(row.id)),
-                    isRowInteractive ? 'cursor-pointer' : 'cursor-default',
-                  )}
-                  variant={variant}
-                  color={isRowInteractive ? color : 'none'}
-                  size="none"
-                  hideShadow
-                  tabIndex={-1}
-                  aria-selected={selectedRows.some(row => row.id)}
-                  onClick={() => (handleRowClick ? handleRowClick(row) : {})}
-                >
-                  <div className={cn('RowInnerWrap', 'flex w-full')}>
-                    {multiselect && (
-                      <div
-                        role="gridcell"
-                        className={cn(
-                          'GridCell',
-                          selectedClass(String(row.id)),
-                          iconOnlySize[size],
-                        )}
-                      >
-                        <Checkbox
-                          name={String(row.id)}
-                          label=""
-                          value={String(row.id)}
-                          variant={variant === 'text' ? 'outlined' : variant}
-                          color={color}
-                          size={size}
-                          isChecked={Boolean(selectedClass(String(row.id)))}
-                          fake
-                          onChange={() => {}}
-                        />
-                      </div>
-                    )}
-                    {columns.map((col, index) => (
-                      <div
-                        key={row.id + col!.name}
-                        className={cn(
-                          'GridCell',
-                          'font-normal',
-                          cellOverflow,
-                          cellSize[size],
-                          col.width,
-                          !col.shrink && 'shrink-0',
-                          col.grow && 'grow',
-                          !isRowInteractive && 'cursor-text',
-                          typeof row[col.name] === 'number' && 'text-right',
-                          selectedClass(String(row.id)),
-                        )}
-                        style={{ flexBasis: col.width }}
-                        role="gridcell"
-                        aria-colindex={index + (multiselect ? 2 : 1)}
-                      >
-                        {row[col.name]}
-                      </div>
-                    ))}
-                  </div>
-                </Button>
-              </div>
-            ))
-          ) : (
-            <div className="GridRow" role="row">
-              <div className="GridCell" role="gridcell">
-                <P className="my-6 text-center" color="none" size={size}>
-                  {t('noRows')}
-                </P>
-              </div>
+  return (
+    <div className={cn('GridBody', 'border', rowgroupVariant[variant][color])} role="rowgroup">
+      <ScrollShadow height={maxHeight} gutter disableHorizontal>
+        {isLoading &&
+          Array.from({ length: rowsPerPage || 10 }, (_, i) => (
+            <GridRow
+              key={`loading-${i}`}
+              rowIndex={i + headerDepth + 1}
+              multiselect={multiselect}
+              gridTemplateColumns={gridTemplateColumns}
+              isLoading
+            />
+          ))}
+        {!isLoading &&
+          pagedData.length > 0 &&
+          pagedData.map((row, index) => (
+            <GridRow
+              key={String(getRowId(row))}
+              row={row}
+              getRowId={getRowId}
+              rowIndex={index + headerDepth + 1}
+              isSelected={selectedRowIds.has(getRowId(row))}
+              multiselect={multiselect}
+              gridTemplateColumns={gridTemplateColumns}
+              handleRowClick={handleRowClick}
+            />
+          ))}
+        {!isLoading && pagedData.length === 0 && (
+          <div role="row">
+            <div role="gridcell">
+              <P className="my-6 text-center" color="none" size={size}>
+                {t('noRows')}
+              </P>
             </div>
-          )}
-        </ScrollShadow>
-      </div>
-    )
-  },
-)
+          </div>
+        )}
+      </ScrollShadow>
+    </div>
+  )
+}
 
 GridBody.displayName = 'GridBody'
