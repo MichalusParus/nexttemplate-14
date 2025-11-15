@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const switchClass = cn(
-  'cursor-pointer appearance-none rounded-3xl transition-activity focus:outline-none',
+  'cursor-pointer appearance-none rounded-3xl transition-activity focus:outline-hidden',
   'disabled:cursor-not-allowed disabled:opacity-50 [&.disabled]:cursor-not-allowed [&.disabled]:opacity-50',
 )
 
@@ -95,9 +95,9 @@ export const thumbVariant = {
 }
 
 export const switchSize = {
-  sm: cn('h-smIcon w-8 text-sm [&>.SwitchThumb]:h-smIcon [&>.SwitchThumb]:w-smIcon'),
-  md: cn('h-mdIcon w-10 text-base [&>.SwitchThumb]:h-mdIcon [&>.SwitchThumb]:w-mdIcon'),
-  lg: cn('h-lgIcon w-12 text-lg [&>.SwitchThumb]:h-lgIcon [&>.SwitchThumb]:w-lgIcon'),
+  sm: cn('h-sm-icon w-8 text-sm [&>.SwitchThumb]:h-sm-icon [&>.SwitchThumb]:w-sm-icon'),
+  md: cn('h-md-icon w-10 text-base [&>.SwitchThumb]:h-md-icon [&>.SwitchThumb]:w-md-icon'),
+  lg: cn('h-lg-icon w-12 text-lg [&>.SwitchThumb]:h-lg-icon [&>.SwitchThumb]:w-lg-icon'),
   none: '',
 }
 
@@ -117,15 +117,15 @@ export const switchLeft = {
 
 export const disabledVariant = {
   text: cn(
-    '[&.disabled]:border-transparent [&.disabled]:bg-dark-200 [&.disabled]:shadow-none group-hover:[&.disabled]:bg-dark-200',
+    '[&.disabled]:border-transparent [&.disabled]:bg-dark-200 [&.disabled]:shadow-none [&.disabled]:group-hover:bg-dark-200',
     'dark:[&.disabled]:bg-dark-200 dark:[&.disabled]:text-dark-500',
   ),
   outlined: cn(
-    '[&.disabled]:border-dark-400 [&.disabled]:bg-dark-200 [&.disabled]:shadow-none group-hover:[&.disabled]:bg-dark-200',
+    '[&.disabled]:border-dark-400 [&.disabled]:bg-dark-200 [&.disabled]:shadow-none [&.disabled]:group-hover:bg-dark-200',
     'dark:[&.disabled]:border-dark-500 dark:[&.disabled]:bg-dark-200 dark:[&.disabled]:text-dark-500',
   ),
   contained: cn(
-    '[&.disabled]:border-dark-400 [&.disabled]:bg-dark-400 [&.disabled]:shadow-none group-hover:[&.disabled]:bg-dark-400',
+    '[&.disabled]:border-dark-400 [&.disabled]:bg-dark-400 [&.disabled]:shadow-none [&.disabled]:group-hover:bg-dark-400',
     'dark:[&.disabled]:border-dark-500 dark:[&.disabled]:bg-dark-500 dark:[&.disabled]:text-dark-500',
   ),
 }

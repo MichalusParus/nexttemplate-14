@@ -32,7 +32,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     <html lang={locale}>
       <body
         className={cn(
-          'flex min-h-[100vh] flex-col bg-bg text-dark-950 dark:bg-darkBg dark:text-contrast',
+          'flex min-h-screen flex-col bg-bg text-dark-950 dark:bg-dark-bg dark:text-contrast',
           inter.className,
         )}
       >

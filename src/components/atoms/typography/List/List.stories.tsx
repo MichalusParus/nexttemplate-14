@@ -59,7 +59,7 @@ export const CustomIcon: Story = {
 }
 
 export const Title: Story = {
-  args: { ...Default.args, listStyleType: 'list-[none]', title: 'List Title', icon: <CheckIcon /> },
+  args: { ...Default.args, listStyleType: 'list-none', title: 'List Title', icon: <CheckIcon /> },
 }
 
 export const Description: Story = {
@@ -100,7 +100,7 @@ export const AllSizesAndLoading: Story = {
   render: args => (
     <div className="flex flex-col gap-10">
       {titleSizeVariants.slice(0, 3).map(variant => (
-        <div key={variant} className="flex w-96 [&>*]:basis-1/2">
+        <div key={variant} className="flex w-96 *:basis-1/2">
           <div>
             <List {...args} size={variant as 'sm' | 'md' | 'lg'} />
           </div>

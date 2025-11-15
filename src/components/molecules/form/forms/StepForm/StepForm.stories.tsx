@@ -190,7 +190,7 @@ const StepFormWithHooks = (args: StepFormProps) => {
 
 export const Default: Story = {
   args: {
-    className: 'w-[30rem] mx-auto',
+    className: 'w-120 mx-auto',
     name: 'step',
     steps: [],
     currentStep: 0,

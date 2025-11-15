@@ -10,7 +10,7 @@ export const HamburgerIcon = ({ className, isOpen, ...rest }: Props) => {
       <div className="relative">
         <div
           className={`absolute left-0 h-1 w-full bg-current transition-position ${
-            isOpen ? 'top-[1rem] rotate-[135deg]' : 'left-0 top-1.5'
+            isOpen ? 'top-4 rotate-135' : 'left-0 top-1.5'
           }`}
         />
         <div
@@ -20,7 +20,7 @@ export const HamburgerIcon = ({ className, isOpen, ...rest }: Props) => {
         />
         <div
           className={`absolute left-0 h-1 w-full bg-current transition-position ${
-            isOpen ? 'top-[1rem] rotate-[-135deg]' : 'left-0 top-[1.625rem]'
+            isOpen ? 'top-4 rotate-[-135deg]' : 'left-0 top-6.5'
           }`}
         />
       </div>

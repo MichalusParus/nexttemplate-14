@@ -34,6 +34,6 @@ export const avatarVariant = {
 export const avatarSize = {
   sm: cn('h-8 w-8 min-w-8 text-sm'),
   md: cn('h-10 w-10 min-w-10 text-lg'),
-  lg: cn('h-12 w-12 min-w-12 text-xl'),
+  lg: cn('h-12 w-12 min-w-12 text-2xl'),
   none: '',
 }

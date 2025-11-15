@@ -54,7 +54,7 @@ function OptionItemComponent<T = string>(
       <Button
         className={cn(
           'Option',
-          'flex w-full items-center justify-start rounded-none border border-transparent focus:outline-none dark:border-transparent',
+          'flex w-full items-center justify-start rounded-none border border-transparent focus:outline-hidden dark:border-transparent',
           isSelected && 'selected',
           isLoading ? 'cursor-not-allowed' : 'cursor-pointer',
           buttonClassName,

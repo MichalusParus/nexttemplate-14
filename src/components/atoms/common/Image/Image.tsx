@@ -31,10 +31,10 @@ export type ImageProps = NativeImgProps &
       | 'object-bottom'
       | 'object-left'
       | 'object-right'
-      | 'object-left-top'
-      | 'object-right-bottom'
-      | 'object-left-bottom'
-      | 'object-right-top'
+      | 'object-top-left'
+      | 'object-bottom-right'
+      | 'object-bottom-left'
+      | 'object-top-right'
   }
 
 /** Next Image component with ratio wrap. Native ImgHTMLAttributes & ImageProps supported. */

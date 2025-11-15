@@ -6,6 +6,7 @@ import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { ProfileIcon } from '../../icons'
+import { buttonIconSize } from '../Button/Button.style'
 import { Image } from '../Image'
 import { avatarClass, avatarSize, avatarVariant } from './Avatar.style'
 
@@ -56,8 +57,8 @@ export const Avatar = forwardRef<HTMLDivElement | null, AvatarProps>(
         )
       } else {
         return (
-          <div role="img" aria-label={t('profile')}>
-            <ProfileIcon className="min-h-full min-w-full p-0.5" />
+          <div className={buttonIconSize[size]} role="img" aria-label={t('profile')}>
+            <ProfileIcon />
           </div>
         )
       }

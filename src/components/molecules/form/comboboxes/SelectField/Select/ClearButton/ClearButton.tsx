@@ -27,7 +27,7 @@ export const ClearButton = ({ className, label, onClick, ...rest }: ClearButtonP
     <span
       className={cn(
         'ClearButton',
-        'shrink-0 rounded-full focus:outline-none focus-visible:outline-current',
+        'shrink-0 rounded-full focus:outline-hidden focus-visible:outline-current',
         className,
       )}
       role="button"

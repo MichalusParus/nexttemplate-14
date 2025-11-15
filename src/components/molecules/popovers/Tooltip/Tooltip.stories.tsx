@@ -43,7 +43,7 @@ export const HidePointer: Story = {
 export const Element: Story = {
   args: {
     ...Default.args,
-    className: '!p-0',
+    className: 'p-0!',
     title: (
       <Alert status="info" variant="contained">
         info

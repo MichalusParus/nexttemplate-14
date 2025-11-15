@@ -1,9 +1,9 @@
 import { cn } from '@/utils/utils'
 
 export const pageButtonSize = {
-  sm: cn('mx-1 min-w-[2rem]'),
-  md: cn('mx-1 min-w-[2.375rem] md:mx-1.5'),
-  lg: cn('mx-1 min-w-[2.75rem] md:mx-2'),
+  sm: cn('mx-1 min-w-8'),
+  md: cn('mx-1 min-w-9.5 md:mx-1.5'),
+  lg: cn('mx-1 min-w-11 md:mx-2'),
   none: '',
 }
 export const dottColor = {

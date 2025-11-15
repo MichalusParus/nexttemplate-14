@@ -31,16 +31,16 @@ export const rangeColor = {
 
 export const rangeSize = {
   sm: cn(
-    'py-smPY pr-smPX [&>::-moz-range-thumb]:h-smIcon [&>::-moz-range-thumb]:w-smIcon',
-    '[&>::-webkit-slider-thumb]:h-smIcon [&>::-webkit-slider-thumb]:w-smIcon',
+    'py-sm-y [&>::-moz-range-thumb]:h-sm-icon [&>::-moz-range-thumb]:w-sm-icon pr-sm-x',
+    '[&>::-webkit-slider-thumb]:h-sm-icon [&>::-webkit-slider-thumb]:w-sm-icon',
   ),
   md: cn(
-    'py-mdPY pr-mdPX [&>::-moz-range-thumb]:h-mdIcon [&>::-moz-range-thumb]:w-mdIcon',
-    '[&>::-webkit-slider-thumb]:h-mdIcon [&>::-webkit-slider-thumb]:w-mdIcon',
+    '[&>::-moz-range-thumb]:h-md-icon [&>::-moz-range-thumb]:w-md-icon pr-md-x py-md-y',
+    '[&>::-webkit-slider-thumb]:h-md-icon [&>::-webkit-slider-thumb]:w-md-icon',
   ),
   lg: cn(
-    'py-lgPY pr-lgPX [&>::-moz-range-thumb]:h-lgIcon [&>::-moz-range-thumb]:w-lgIcon',
-    '[&>::-webkit-slider-thumb]:h-lgIcon [&>::-webkit-slider-thumb]:w-lgIcon',
+    '[&>::-moz-range-thumb]:h-lg-icon [&>::-moz-range-thumb]:w-lg-icon py-lg-y pr-lg-x',
+    '[&>::-webkit-slider-thumb]:h-lg-icon [&>::-webkit-slider-thumb]:w-lg-icon',
   ),
   none: '',
 }

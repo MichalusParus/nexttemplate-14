@@ -44,7 +44,7 @@ export const CircularLoader = forwardRef<HTMLDivElement | null, CircularLoaderPr
             spinnerSize[size],
           )}
         >
-          <div className={cn('Spinner', 'animate-circularLoaderAnim', spinnerClass)} />
+          <div className={cn('Spinner', 'animate-circular-loader', spinnerClass)} />
         </div>
         {!hideLabel && label}
       </div>

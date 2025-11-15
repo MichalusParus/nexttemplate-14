@@ -1,6 +1,6 @@
 import { cn } from '@/utils/utils'
 
-export const containerSize = cn('mx-auto w-full max-w-screen-2xl')
+export const containerSize = cn('mx-auto w-full max-w-(--breakpoint-2xl)')
 
 export const headerClass = cn(
   'border-b border-primary-900 bg-primary-800 shadow-header dark:bg-dark-900 md:h-auto',

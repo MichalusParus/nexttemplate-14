@@ -87,7 +87,7 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
               className={cn(
                 'GalleryCarousel',
                 'h-full w-full',
-                isOpen && '[&>.CarouselRatioWrap]:max-h-galleryInnerHeight',
+                isOpen && '[&>.CarouselRatioWrap]:max-h-gallery-inner-height',
                 carouselClassName,
               )}
               items={carouselItems}

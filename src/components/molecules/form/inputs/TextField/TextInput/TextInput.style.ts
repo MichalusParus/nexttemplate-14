@@ -5,7 +5,7 @@ export const inputWrapClass = cn(
 )
 
 export const inputClass = cn(
-  'w-full appearance-none border-none bg-transparent font-semibold placeholder:text-placeholder focus:outline-none disabled:cursor-not-allowed [&::-webkit-search-cancel-button]:hidden',
+  'focus:outline-hidden w-full appearance-none border-none bg-transparent font-semibold placeholder:text-placeholder disabled:cursor-not-allowed [&::-webkit-search-cancel-button]:hidden',
 )
 
 export const inputVariant = {
@@ -92,12 +92,12 @@ export const disabledVariant = {
 }
 
 export const inputErrorClass = cn(
-  '[&.error]:border-error-800 [&.error]:shadow-error [&.error]:dark:border-error-800',
+  '[&.error]:border-error-800 [&.error]:shadow-error dark:[&.error]:border-error-800',
 )
 
 export const inputSize = {
-  sm: cn('px-smPX py-smPY text-sm'),
-  md: cn('px-mdPX py-mdPY text-base'),
-  lg: cn('px-lgPX py-lgPY text-lg'),
+  sm: cn('py-sm-y px-sm-x text-sm'),
+  md: cn('px-md-x py-md-y text-base'),
+  lg: cn('py-lg-y px-lg-x text-lg'),
   none: '',
 }

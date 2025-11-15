@@ -1,5 +1,5 @@
 import { cn } from '@/utils/utils'
 
 export const mainClass = cn(
-  'relative mt-smHeaderHeight flex-1 overflow-hidden bg-bg py-10 dark:bg-darkBg lg:mt-lgHeaderHeight lg:py-16',
+  'relative mt-sm-header-height flex-1 overflow-hidden bg-bg py-10 dark:bg-dark-bg lg:mt-lg-header-height lg:py-16',
 )

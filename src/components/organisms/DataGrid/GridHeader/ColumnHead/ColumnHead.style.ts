@@ -5,9 +5,9 @@ export const cellOverflow = cn(
 )
 
 export const cellSize = {
-  sm: cn('px-smPX py-smPY text-sm'),
-  md: cn('px-mdPX py-mdPY text-base'),
-  lg: cn('px-lgPX py-lgPY text-lg'),
+  sm: cn('py-sm-y px-sm-x text-sm'),
+  md: cn('px-md-x py-md-y text-base'),
+  lg: cn('py-lg-y px-lg-x text-lg'),
   none: '',
 }
 

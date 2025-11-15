@@ -1,160 +1,148 @@
 import { Meta } from '@storybook/blocks';
-import { ColorPalette, ColorItem } from '@storybook/blocks';
+import { ColorSwatch } from '../../../.storybook/helpers';
 
 <Meta title="Colors" />
 
 # Colors
 
-List of colors used in project. Use colors from tailwind theme (primary-500,secondary-500,terciary-500). CSS variables are for presentational purposes.
-
 ## Main Colors
 
+<ColorSwatch
+  title="Primary"
+  colors={[
+    { name: 'primary-50', variable: '--color-primary-50' },
+    { name: 'primary-100', variable: '--color-primary-100' },
+    { name: 'primary-200', variable: '--color-primary-200' },
+    { name: 'primary-300', variable: '--color-primary-300' },
+    { name: 'primary-400', variable: '--color-primary-400' },
+    { name: 'primary-500', variable: '--color-primary-500' },
+    { name: 'primary-600', variable: '--color-primary-600' },
+    { name: 'primary-700', variable: '--color-primary-700' },
+    { name: 'primary-800', variable: '--color-primary-800' },
+    { name: 'primary-900', variable: '--color-primary-900' },
+    { name: 'primary-950', variable: '--color-primary-950' },
+  ]}
+/>
 
-<ColorPalette>
-  <ColorItem
-    title="Primary"
-    subtitle="primary color spectrum"
-    colors={{
-      '50': 'rgb(var(--color-prim-50))',
-      '100': 'rgb(var(--color-prim-100))',
-      '200': 'rgb(var(--color-prim-200))',
-      '300': 'rgb(var(--color-prim-300))',
-      '400': 'rgb(var(--color-prim-400))',
-      '500': 'rgb(var(--color-prim-500))',
-      '600': 'rgb(var(--color-prim-600))',
-      '700': 'rgb(var(--color-prim-700))',
-      '800': 'rgb(var(--color-prim-800))',
-      '900': 'rgb(var(--color-prim-900))',
-      '950': 'rgb(var(--color-prim-950))',
-    }}
-  />
-  <ColorItem
-    title="Secondary"
-    subtitle="secondary color spectrum"
-    colors={{
-      '50': 'rgb(var(--color-second-50))',
-      '100': 'rgb(var(--color-second-100))',
-      '200': 'rgb(var(--color-second-200))',
-      '300': 'rgb(var(--color-second-300))',
-      '400': 'rgb(var(--color-second-400))',
-      '500': 'rgb(var(--color-second-500))',
-      '600': 'rgb(var(--color-second-600))',
-      '700': 'rgb(var(--color-second-700))',
-      '800': 'rgb(var(--color-second-800))',
-      '900': 'rgb(var(--color-second-900))',
-      '950': 'rgb(var(--color-second-950))',
-    }}
-  />
-  <ColorItem
-    title="Terciary"
-    subtitle="terciary color spectrum"
-    colors={{
-      '50': 'rgb(var(--color-terc-50))',
-      '100': 'rgb(var(--color-terc-100))',
-      '200': 'rgb(var(--color-terc-200))',
-      '300': 'rgb(var(--color-terc-300))',
-      '400': 'rgb(var(--color-terc-400))',
-      '500': 'rgb(var(--color-terc-500))',
-      '600': 'rgb(var(--color-terc-600))',
-      '700': 'rgb(var(--color-terc-700))',
-      '800': 'rgb(var(--color-terc-800))',
-      '900': 'rgb(var(--color-terc-900))',
-      '950': 'rgb(var(--color-terc-950))',
-    }}
-  />
-</ColorPalette>
+<ColorSwatch
+  title="Secondary"
+  colors={[
+    { name: 'secondary-50', variable: '--color-secondary-50' },
+    { name: 'secondary-100', variable: '--color-secondary-100' },
+    { name: 'secondary-200', variable: '--color-secondary-200' },
+    { name: 'secondary-300', variable: '--color-secondary-300' },
+    { name: 'secondary-400', variable: '--color-secondary-400' },
+    { name: 'secondary-500', variable: '--color-secondary-500' },
+    { name: 'secondary-600', variable: '--color-secondary-600' },
+    { name: 'secondary-700', variable: '--color-secondary-700' },
+    { name: 'secondary-800', variable: '--color-secondary-800' },
+    { name: 'secondary-900', variable: '--color-secondary-900' },
+    { name: 'secondary-950', variable: '--color-secondary-950' },
+  ]}
+/>
+
+<ColorSwatch
+  title="Terciary"
+  colors={[
+    { name: 'terciary-50', variable: '--color-terciary-50' },
+    { name: 'terciary-100', variable: '--color-terciary-100' },
+    { name: 'terciary-200', variable: '--color-terciary-200' },
+    { name: 'terciary-300', variable: '--color-terciary-300' },
+    { name: 'terciary-400', variable: '--color-terciary-400' },
+    { name: 'terciary-500', variable: '--color-terciary-500' },
+    { name: 'terciary-600', variable: '--color-terciary-600' },
+    { name: 'terciary-700', variable: '--color-terciary-700' },
+    { name: 'terciary-800', variable: '--color-terciary-800' },
+    { name: 'terciary-900', variable: '--color-terciary-900' },
+    { name: 'terciary-950', variable: '--color-terciary-950' },
+  ]}
+/>
 
 ## Neutral Colors
 
-<ColorPalette>
-  <ColorItem
-    title="Dark"
-    subtitle="neutral color spectrum"
-    colors={{
-      '50': 'rgb(var(--color-dark-50))',
-      '100': 'rgb(var(--color-dark-100))',
-      '200': 'rgb(var(--color-dark-200))',
-      '300': 'rgb(var(--color-dark-300))',
-      '400': 'rgb(var(--color-dark-400))',
-      '500': 'rgb(var(--color-dark-500))',
-      '600': 'rgb(var(--color-dark-600))',
-      '700': 'rgb(var(--color-dark-700))',
-      '800': 'rgb(var(--color-dark-800))',
-      '900': 'rgb(var(--color-dark-900))',
-      '950': 'rgb(var(--color-dark-950))',
-    }}
-  />
-</ColorPalette>
+<ColorSwatch
+  title="Dark"
+  colors={[
+    { name: 'dark-50', variable: '--color-dark-50' },
+    { name: 'dark-100', variable: '--color-dark-100' },
+    { name: 'dark-200', variable: '--color-dark-200' },
+    { name: 'dark-300', variable: '--color-dark-300' },
+    { name: 'dark-400', variable: '--color-dark-400' },
+    { name: 'dark-500', variable: '--color-dark-500' },
+    { name: 'dark-600', variable: '--color-dark-600' },
+    { name: 'dark-700', variable: '--color-dark-700' },
+    { name: 'dark-800', variable: '--color-dark-800' },
+    { name: 'dark-900', variable: '--color-dark-900' },
+    { name: 'dark-950', variable: '--color-dark-950' },
+  ]}
+/>
 
 ## Semantic Colors
 
-<ColorPalette>
-  <ColorItem
-    title="Info"
-    subtitle="info color spectrum"
-    colors={{
-      '50': 'rgb(var(--color-info-50))',
-      '100': 'rgb(var(--color-info-100))',
-      '200': 'rgb(var(--color-info-200))',
-      '300': 'rgb(var(--color-info-300))',
-      '400': 'rgb(var(--color-info-400))',
-      '500': 'rgb(var(--color-info-500))',
-      '600': 'rgb(var(--color-info-600))',
-      '700': 'rgb(var(--color-info-700))',
-      '800': 'rgb(var(--color-info-800))',
-      '900': 'rgb(var(--color-info-900))',
-      '950': 'rgb(var(--color-info-950))',
-    }}
-  />
-  <ColorItem
-    title="Success"
-    subtitle="success color spectrum"
-    colors={{
-      '50': 'rgb(var(--color-success-50))',
-      '100': 'rgb(var(--color-success-100))',
-      '200': 'rgb(var(--color-success-200))',
-      '300': 'rgb(var(--color-success-300))',
-      '400': 'rgb(var(--color-success-400))',
-      '500': 'rgb(var(--color-success-500))',
-      '600': 'rgb(var(--color-success-600))',
-      '700': 'rgb(var(--color-success-700))',
-      '800': 'rgb(var(--color-success-800))',
-      '900': 'rgb(var(--color-success-900))',
-      '950': 'rgb(var(--color-success-950))',
-    }}
-  />
-  <ColorItem
-    title="Warning"
-    subtitle="warning color spectrum"
-    colors={{
-      '50': 'rgb(var(--color-warning-50))',
-      '100': 'rgb(var(--color-warning-100))',
-      '200': 'rgb(var(--color-warning-200))',
-      '300': 'rgb(var(--color-warning-300))',
-      '400': 'rgb(var(--color-warning-400))',
-      '500': 'rgb(var(--color-warning-500))',
-      '600': 'rgb(var(--color-warning-600))',
-      '700': 'rgb(var(--color-warning-700))',
-      '800': 'rgb(var(--color-warning-800))',
-      '900': 'rgb(var(--color-warning-900))',
-      '950': 'rgb(var(--color-warning-950))',
-    }}
-  />
-  <ColorItem
-    title="Error"
-    subtitle="error and delete color spectrum"
-    colors={{
-      '50': 'rgb(var(--color-error-50))',
-      '100': 'rgb(var(--color-error-100))',
-      '200': 'rgb(var(--color-error-200))',
-      '300': 'rgb(var(--color-error-300))',
-      '400': 'rgb(var(--color-error-400))',
-      '500': 'rgb(var(--color-error-500))',
-      '600': 'rgb(var(--color-error-600))',
-      '700': 'rgb(var(--color-error-700))',
-      '800': 'rgb(var(--color-error-800))',
-      '900': 'rgb(var(--color-error-900))',
-      '950': 'rgb(var(--color-error-950))',
-    }}
-  />
-</ColorPalette>
+<ColorSwatch
+  title="Info"
+  colors={[
+    { name: 'info-50', variable: '--color-info-50' },
+    { name: 'info-100', variable: '--color-info-100' },
+    { name: 'info-200', variable: '--color-info-200' },
+    { name: 'info-300', variable: '--color-info-300' },
+    { name: 'info-400', variable: '--color-info-400' },
+    { name: 'info-500', variable: '--color-info-500' },
+    { name: 'info-600', variable: '--color-info-600' },
+    { name: 'info-700', variable: '--color-info-700' },
+    { name: 'info-800', variable: '--color-info-800' },
+    { name: 'info-900', variable: '--color-info-900' },
+    { name: 'info-950', variable: '--color-info-950' },
+  ]}
+/>
+
+<ColorSwatch
+  title="Success"
+  colors={[
+    { name: 'success-50', variable: '--color-success-50' },
+    { name: 'success-100', variable: '--color-success-100' },
+    { name: 'success-200', variable: '--color-success-200' },
+    { name: 'success-300', variable: '--color-success-300' },
+    { name: 'success-400', variable: '--color-success-400' },
+    { name: 'success-500', variable: '--color-success-500' },
+    { name: 'success-600', variable: '--color-success-600' },
+    { name: 'success-700', variable: '--color-success-700' },
+    { name: 'success-800', variable: '--color-success-800' },
+    { name: 'success-900', variable: '--color-success-900' },
+    { name: 'success-950', variable: '--color-success-950' },
+  ]}
+/>
+
+<ColorSwatch
+  title="Warning"
+  colors={[
+    { name: 'warning-50', variable: '--color-warning-50' },
+    { name: 'warning-100', variable: '--color-warning-100' },
+    { name: 'warning-200', variable: '--color-warning-200' },
+    { name: 'warning-300', variable: '--color-warning-300' },
+    { name: 'warning-400', variable: '--color-warning-400' },
+    { name: 'warning-500', variable: '--color-warning-500' },
+    { name: 'warning-600', variable: '--color-warning-600' },
+    { name: 'warning-700', variable: '--color-warning-700' },
+    { name: 'warning-800', variable: '--color-warning-800' },
+    { name: 'warning-900', variable: '--color-warning-900' },
+    { name: 'warning-950', variable: '--color-warning-950' },
+  ]}
+/>
+
+<ColorSwatch
+  title="Error"
+  colors={[
+    { name: 'error-50', variable: '--color-error-50' },
+    { name: 'error-100', variable: '--color-error-100' },
+    { name: 'error-200', variable: '--color-error-200' },
+    { name: 'error-300', variable: '--color-error-300' },
+    { name: 'error-400', variable: '--color-error-400' },
+    { name: 'error-500', variable: '--color-error-500' },
+    { name: 'error-600', variable: '--color-error-600' },
+    { name: 'error-700', variable: '--color-error-700' },
+    { name: 'error-800', variable: '--color-error-800' },
+    { name: 'error-900', variable: '--color-error-900' },
+    { name: 'error-950', variable: '--color-error-950' },
+  ]}
+/>

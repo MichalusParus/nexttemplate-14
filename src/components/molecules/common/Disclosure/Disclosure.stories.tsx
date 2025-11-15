@@ -10,7 +10,7 @@ const meta: Meta<typeof Disclosure> = {
   tags: ['autodocs'],
   decorators: [
     Story => (
-      <div className="min-h-[20rem]">
+      <div className="min-h-80">
         <Story />
       </div>
     ),

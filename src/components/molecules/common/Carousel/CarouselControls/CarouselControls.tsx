@@ -54,7 +54,7 @@ export const CarouselControls = ({
       {!hideArrows && pages > 1 && (
         <>
           <Button
-            className={cn('PreviousButton', 'left-0', arrowClass, controlClass)}
+            className={cn('PreviousButton', 'left-0 border-none', arrowClass, controlClass)}
             color="none"
             size="none"
             startIcon={<ChevronIcon className={'h-8 w-8 rotate-90'} />}
@@ -69,7 +69,7 @@ export const CarouselControls = ({
             data-testid="PreviousButton"
           />
           <Button
-            className={cn('NextButton', 'right-0', arrowClass, controlClass)}
+            className={cn('NextButton', 'right-0 border-none', arrowClass, controlClass)}
             color="none"
             size="none"
             startIcon={<ChevronIcon className={'h-8 w-8 -rotate-90'} />}
@@ -87,7 +87,7 @@ export const CarouselControls = ({
         <Button
           className={cn(
             'AutoplayButton',
-            'absolute left-1/2 top-0 -translate-x-1/2 rounded-md bg-dark-950/25 opacity-0 focus-visible:opacity-100 group-hover:opacity-100',
+            'absolute left-1/2 top-0 -translate-x-1/2 rounded-md border-none bg-dark-950/25 opacity-0 focus-visible:opacity-100 group-hover:opacity-100',
             controlClass,
           )}
           color="none"
@@ -119,7 +119,7 @@ export const CarouselControls = ({
               key={`ControlDott${index}`}
               className={cn(
                 'ControlDott',
-                'p-1.5',
+                'border-none p-1.5',
                 selectedPage === index + 1 && 'selected [&>div]:scale-150',
                 controlClass,
               )}

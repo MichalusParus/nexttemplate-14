@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const viewerDialogClass = cn(
-  'fixed left-0 top-0 z-modal block h-[100vh] w-[100vw] scale-90 opacity-0 transition-position',
+  'fixed left-0 top-0 z-modal block h-screen w-screen scale-90 opacity-0 transition-position',
 )
 
 export const viewerInnerWrapClass = cn(
@@ -9,7 +9,7 @@ export const viewerInnerWrapClass = cn(
 )
 
 export const viewerButtonClass = cn(
-  'w-full shrink-0 cursor-zoom-in overflow-hidden rounded-md border-none focus-visible:outline-1 focus-visible:outline-dark-950',
+  'w-full shrink-0 cursor-zoom-in overflow-hidden rounded-md border-none border-none focus-visible:outline-1 focus-visible:outline-dark-950',
 )
 
 export const closeButtonClass = cn(

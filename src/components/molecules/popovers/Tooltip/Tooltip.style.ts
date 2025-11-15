@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const tooltipClass = cn(
-  'absolute z-modal max-w-[50vw] rounded-md bg-dark-500 px-smPX py-smPY text-sm text-dark-100 shadow-paper transition-opacity',
+  'py-sm-y px-sm-x absolute z-modal max-w-[50vw] rounded-md bg-dark-500 text-sm text-dark-100 shadow-paper transition-opacity',
 )
 
 const topAfter = cn(

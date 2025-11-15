@@ -38,7 +38,7 @@ export const ProgressBar = forwardRef<HTMLDivElement | null, ProgressBarProps>(
         {...rest}
       >
         <div
-          className={cn('Progress', 'rounded-sm', height)}
+          className={cn('Progress', 'rounded-xs', height)}
           style={{ width: `${progressValue}%`, transition: '200ms width linear' }}
         />
       </div>

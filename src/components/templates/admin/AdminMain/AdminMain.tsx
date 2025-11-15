@@ -13,7 +13,7 @@ export const AdminMain = ({ className, children }: PropsWithChildren<MainProps>)
     <main
       className={cn(
         'AdminMain',
-        'ml-smSideBarWidth flex-1 px-8 py-5 md:ml-sideBarWidth',
+        'ml-sm-side-bar-width flex-1 px-8 py-5 md:ml-side-bar-width',
         className,
       )}
       data-testid="AdminMain"

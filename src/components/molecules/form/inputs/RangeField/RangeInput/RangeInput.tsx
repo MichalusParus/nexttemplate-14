@@ -27,7 +27,7 @@ export const RangeInput = forwardRef<HTMLInputElement | null, RangeProps>(
         className={cn('RangeWrap', rangeWrapClass, rangeSize[size], className)}
         data-testid="RangeWrap"
       >
-        <Span className={cn('ValueWrap', 'min-w-[3rem]', !value && 'opacity-0')}>
+        <Span className={cn('ValueWrap', 'min-w-12', !value && 'opacity-0')}>
           {value || '0'}
         </Span>
         <input

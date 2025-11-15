@@ -1,5 +1,4 @@
 import '../src/app/globals.css'
-import React from 'react'
 import type { Preview } from '@storybook/react'
 import { NextIntlClientProvider } from 'next-intl'
 import messages from '../messages/en.json'
@@ -17,23 +16,23 @@ const preview: Preview = {
       values: [
         {
           name: 'bg',
-          value: 'rgb(var(--color-dark-50))',
+          value: 'var(--color-bg)',
         },
         {
           name: 'primary',
-          value: 'rgb(var(--color-prim-800))',
+          value: 'var(--color-primary-800)',
         },
         {
           name: 'secondary',
-          value: 'rgb(var(--color-second-800))',
+          value: 'var(--color-secondary-800)',
         },
         {
           name: 'terciary',
-          value: 'rgb(var(--color-terc-800))',
+          value: 'var(--color-terciary-800)',
         },
         {
           name: 'dark',
-          value: 'rgb(var(--color-dark-800))',
+          value: 'var(--color-dark-800)',
         },
       ],
     },

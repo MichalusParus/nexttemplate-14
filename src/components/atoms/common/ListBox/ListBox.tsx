@@ -93,7 +93,7 @@ function ListBoxComponent<T = string>(
   return (
     <ul
       id={name}
-      className={cn('ListBox', isGrouped && 'space-y-3', className)}
+      className={cn('ListBox', isGrouped && 'flex flex-col gap-3', className)}
       aria-labelledby={`${name}-label`}
       role="listbox"
       ref={ref}

@@ -100,7 +100,7 @@ export const Disclosure = forwardRef<HTMLDivElement | null, PropsWithChildren<Di
           id={dropdownId}
           className={cn(
             'Dropdown',
-            'translate-y-1.5 overflow-hidden transition-maxHeight',
+            'translate-y-1.5 overflow-hidden transition-max-height',
             openState ? 'visible max-h-max opacity-100' : 'invisible max-h-0 opacity-50',
             className,
           )}

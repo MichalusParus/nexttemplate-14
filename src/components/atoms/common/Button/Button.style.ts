@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const buttonClass = cn(
-  'relative items-center justify-center gap-2 whitespace-nowrap rounded-md border font-semibold transition-activity focus:outline-none [&.error]:border-error-800 [&.error]:shadow-error',
+  'focus:outline-hidden relative items-center justify-center gap-2 whitespace-nowrap rounded-md border font-semibold transition-activity [&.error]:border-error-800 [&.error]:shadow-error',
 )
 
 export const buttonVariant = {
@@ -136,25 +136,25 @@ export const buttonDisabledVariant = {
 }
 
 export const iconOnlySize = {
-  sm: cn('p-smPY text-sm '),
-  md: cn('p-mdPY text-base'),
-  lg: cn('p-lgPY text-lg'),
+  sm: cn('p-sm-y text-sm '),
+  md: cn('p-md-y text-base'),
+  lg: cn('p-lg-y text-lg'),
   inline: cn('border-0 px-1'),
   none: '',
 }
 
 export const buttonSize = {
-  sm: cn('px-smPX py-smPY text-sm'),
-  md: cn('px-mdPX py-mdPY text-base'),
-  lg: cn('px-lgPX py-lgPY text-lg'),
+  sm: cn('py-sm-y px-sm-x text-sm'),
+  md: cn('px-md-x py-md-y text-base'),
+  lg: cn('py-lg-y px-lg-x text-lg'),
   inline: cn('border-0 px-1 hover:underline focus-visible:underline'),
   none: '',
 }
 
 export const buttonIconSize = {
-  sm: cn('[&_svg]:h-smIcon [&_svg]:w-smIcon [&_svg]:min-w-smIcon'),
-  md: cn('[&_svg]:h-mdIcon [&_svg]:w-mdIcon [&_svg]:min-w-mdIcon'),
-  lg: cn('[&_svg]:h-lgIcon [&_svg]:w-lgIcon [&_svg]:min-w-lgIcon'),
+  sm: cn('[&_svg]:h-sm-icon [&_svg]:w-sm-icon [&_svg]:min-w-sm-icon'),
+  md: cn('[&_svg]:h-md-icon [&_svg]:w-md-icon [&_svg]:min-w-md-icon'),
+  lg: cn('[&_svg]:h-lg-icon [&_svg]:w-lg-icon [&_svg]:min-w-lg-icon'),
   inline: cn('[&_svg]:h-sm [&_svg]:w-sm [&_svg]:min-w-sm'),
   none: '',
 }

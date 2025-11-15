@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const inputWrapClass = cn(
-  'shrink-0 cursor-pointer appearance-none overflow-hidden rounded-md transition-activity focus:outline-none',
+  'shrink-0 cursor-pointer appearance-none overflow-hidden rounded-md transition-activity focus:outline-hidden',
   'disabled:cursor-not-allowed disabled:opacity-50 [&.disabled]:cursor-not-allowed [&.disabled]:opacity-50',
 )
 
@@ -84,9 +84,9 @@ export const checkVariant = {
 }
 
 export const checkboxSize = {
-  sm: cn('h-smIcon w-smIcon'),
-  md: cn('h-mdIcon w-mdIcon'),
-  lg: cn('h-lgIcon w-lgIcon'),
+  sm: cn('h-sm-icon w-sm-icon'),
+  md: cn('h-md-icon w-md-icon'),
+  lg: cn('h-lg-icon w-lg-icon'),
   none: '',
 }
 
@@ -106,15 +106,15 @@ export const checkboxMargin = {
 
 export const disabledVariant = {
   text: cn(
-    '[&.disabled]:border-transparent [&.disabled]:bg-dark-200 [&.disabled]:shadow-none group-hover:[&.disabled]:bg-dark-200',
+    '[&.disabled]:border-transparent [&.disabled]:bg-dark-200 [&.disabled]:shadow-none [&.disabled]:group-hover:bg-dark-200',
     'dark:[&.disabled]:bg-dark-200 dark:[&.disabled]:text-dark-500',
   ),
   outlined: cn(
-    '[&.disabled]:border-dark-400 [&.disabled]:bg-dark-200 [&.disabled]:shadow-none group-hover:[&.disabled]:bg-dark-200',
+    '[&.disabled]:border-dark-400 [&.disabled]:bg-dark-200 [&.disabled]:shadow-none [&.disabled]:group-hover:bg-dark-200',
     'dark:[&.disabled]:border-dark-500 dark:[&.disabled]:bg-dark-200 dark:[&.disabled]:text-dark-500',
   ),
   contained: cn(
-    '[&.disabled]:border-dark-400 [&.disabled]:bg-dark-400 [&.disabled]:shadow-none group-hover:[&.disabled]:bg-dark-400',
+    '[&.disabled]:border-dark-400 [&.disabled]:bg-dark-400 [&.disabled]:shadow-none [&.disabled]:group-hover:bg-dark-400',
     'dark:[&.disabled]:border-dark-500 dark:[&.disabled]:bg-dark-500 dark:[&.disabled]:text-dark-500',
   ),
 }

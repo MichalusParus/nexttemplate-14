@@ -38,8 +38,8 @@ export const alertSize = {
 }
 
 export const alertIconSize = {
-  sm: cn('[&_svg]:h-smIcon [&_svg]:w-smIcon [&_svg]:min-w-smIcon'),
-  md: cn('[&_svg]:h-mdIcon [&_svg]:w-mdIcon [&_svg]:min-w-mdIcon'),
-  lg: cn('[&_svg]:h-lgIcon [&_svg]:w-lgIcon [&_svg]:min-w-lgIcon'),
+  sm: cn('[&_svg]:h-sm-icon [&_svg]:w-sm-icon [&_svg]:min-w-sm-icon'),
+  md: cn('[&_svg]:h-md-icon [&_svg]:w-md-icon [&_svg]:min-w-md-icon'),
+  lg: cn('[&_svg]:h-lg-icon [&_svg]:w-lg-icon [&_svg]:min-w-lg-icon'),
   none: '',
 }

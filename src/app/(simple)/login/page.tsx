@@ -12,7 +12,7 @@ export default async function Login() {
 
   return (
     <Paper
-      className="flex min-w-full flex-col gap-8 md:min-w-[30rem]"
+      className="flex min-w-full flex-col gap-8 md:min-w-120"
       padding="py-4 px-2 md:py-8 md:px-12"
     >
       <Title variant="h1" size="2xl" align="text-center">

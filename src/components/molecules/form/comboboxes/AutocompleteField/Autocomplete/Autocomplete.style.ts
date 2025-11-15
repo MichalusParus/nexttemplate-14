@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const comboboxClass = cn(
-  'flex w-full items-center justify-between rounded-md border transition-colors focus:outline-none',
+  'flex w-full items-center justify-between rounded-md border transition-colors focus:outline-hidden',
 )
 
 export const disabledVariant = {

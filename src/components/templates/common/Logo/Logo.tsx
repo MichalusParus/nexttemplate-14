@@ -24,7 +24,7 @@ export const Logo = ({ className, href }: LogoProps) => {
       <div
         className={cn(
           'LogoImageWrap',
-          'relative flex h-lgIcon w-lgIcon md:h-xlIcon md:w-xlIcon lg:h-2xlIcon lg:w-2xlIcon',
+          'relative flex h-lg-icon w-lg-icon md:h-xl-icon md:w-xl-icon lg:h-2xl-icon lg:w-2xl-icon',
         )}
       >
         <Image src="/images/favicon.ico" alt="Logo" fill />

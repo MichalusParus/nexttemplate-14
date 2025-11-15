@@ -1,7 +1,7 @@
 import { cn } from '@/utils/utils'
 
 export const radioClass = cn(
-  'relative mr-2 shrink-0 cursor-pointer appearance-none rounded-full transition-activity focus:outline-none',
+  'relative mr-2 shrink-0 cursor-pointer appearance-none rounded-full transition-activity focus:outline-hidden',
 )
 
 export const radioVariant = {
@@ -94,13 +94,13 @@ export const disableVariant = {
 
 export const radioSize = {
   sm: cn(
-    'mb-1 mr-3 text-sm [&_input]:h-smIcon [&_input]:w-smIcon [&_input]:after:h-2 [&_input]:after:w-2',
+    'mb-1 mr-3 text-sm [&_input]:h-sm-icon [&_input]:w-sm-icon [&_input]:after:h-2 [&_input]:after:w-2',
   ),
   md: cn(
-    'mb-2 mr-4 text-base [&_input]:h-mdIcon [&_input]:w-mdIcon [&_input]:after:h-2.5 [&_input]:after:w-2.5',
+    'mb-2 mr-4 text-base [&_input]:h-md-icon [&_input]:w-md-icon [&_input]:after:h-2.5 [&_input]:after:w-2.5',
   ),
   lg: cn(
-    'mb-3 mr-5 text-lg [&_input]:h-lgIcon [&_input]:w-lgIcon [&_input]:after:h-3 [&_input]:after:w-3',
+    'mb-3 mr-5 text-lg [&_input]:h-lg-icon [&_input]:w-lg-icon [&_input]:after:h-3 [&_input]:after:w-3',
   ),
   none: '',
 }

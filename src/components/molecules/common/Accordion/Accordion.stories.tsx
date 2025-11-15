@@ -10,7 +10,7 @@ const meta: Meta<typeof Accordion> = {
   tags: ['autodocs'],
   decorators: [
     Story => (
-      <div className="min-h-[32rem]">
+      <div className="min-h-128">
         <Story />
       </div>
     ),

@@ -40,7 +40,7 @@ export const SideBar = ({ className }: HeaderProps) => {
     <aside
       className={cn(
         'SideBar',
-        'absolute bottom-0 left-0 top-0 w-smSideBarWidth md:w-sideBarWidth',
+        'absolute bottom-0 left-0 top-0 w-sm-side-bar-width md:w-side-bar-width',
         className,
       )}
       aria-label="sideBar"

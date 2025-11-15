@@ -1,132 +1,235 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-/* 1. CSS Variables */
-/* 2. Default CSS */
-/* 4. Scrollbar */
-/* 3. Animations */
+@theme {
+  /* Breakpoints */
+  --breakpoint-xs: 30rem; /* 480px */
+  --breakpoint-sm: 40rem; /* 640px */
+  --breakpoint-md: 48rem; /* 768px */
+  --breakpoint-lg: 64rem; /* 1024px */
+  --breakpoint-xl: 80rem; /* 1280px */
+  --breakpoint-2xl: 96rem; /* 1536px */
+  --breakpoint-3xl: 120rem; /* 1920px */
 
-@layer base {
-  :root {
-    /* CSS Variables */
-      /* COLORS defined as RGB values, in tailwind theme used with opacity */
-      /* Primary */
-      --color-prim-50: 236 254 255;
-      --color-prim-100: 207 250 254;
-      --color-prim-200: 165 243 252;
-      --color-prim-300: 103 232 249;
-      --color-prim-400: 34 211 238;
-      --color-prim-500: 6 182 212;
-      --color-prim-600: 8 145 178;
-      --color-prim-700: 14 116 144;
-      --color-prim-800: 21 94 117;
-      --color-prim-900: 22 78 99;
-      --color-prim-950: 8 51 68;
-      /* Secondary */
-      --color-second-50: 236 253 245;
-      --color-second-100: 209 250 229;
-      --color-second-200: 167 243 208;
-      --color-second-300: 110 231 183;
-      --color-second-400: 52 211 153;
-      --color-second-500: 16 185 129;
-      --color-second-600: 5 150 105;
-      --color-second-700: 4 120 87;
-      --color-second-800: 6 95 70;
-      --color-second-900: 6 78 59;
-      --color-second-950: 2 44 34;
-      /* Terciary */
-      --color-terc-50: 253 244 255;
-      --color-terc-100: 250 232 255;
-      --color-terc-200: 245 208 254;
-      --color-terc-300: 240 171 252;
-      --color-terc-400: 232 121 249;
-      --color-terc-500: 217 70 239;
-      --color-terc-600: 192 38 211;
-      --color-terc-700: 162 28 175;
-      --color-terc-800: 134 25 143;
-      --color-terc-900: 112 26 117;
-      --color-terc-950: 74 4 78;
-      /* Dark */
-      --color-dark-50: 250 250 250;
-      --color-dark-100: 245	245	245;
-      --color-dark-200: 229	229	229;
-      --color-dark-300: 212	212	212;
-      --color-dark-400: 163	163	163;
-      --color-dark-500: 115	115	115;
-      --color-dark-600: 82 82	82;
-      --color-dark-700: 64 64	64;
-      --color-dark-800: 38 38	38;
-      --color-dark-900: 23 23	23;
-      --color-dark-950:	10 10	10;
-      /* Info */
-      --color-info-50: 240 249 255;
-      --color-info-100: 224 242 254;
-      --color-info-200: 186 230 253;
-      --color-info-300: 125 211 252;
-      --color-info-400: 56 189 248;
-      --color-info-500: 14 165 233;
-      --color-info-600: 2 132 199;
-      --color-info-700: 3 105 161;
-      --color-info-800: 7 89 133;
-      --color-info-900: 12 74 110;
-      --color-info-950: 8 47 73;
-      /* Success */
-      --color-success-50: 247 254 231;
-      --color-success-100: 236 252 203;
-      --color-success-200: 217 249 157;
-      --color-success-300: 190 242 100;
-      --color-success-400: 163 230 53;
-      --color-success-500: 132 204 22;
-      --color-success-600: 101 163 13;
-      --color-success-700: 77 124 15;
-      --color-success-800: 63 98 18;
-      --color-success-900: 54 83 20;
-      --color-success-950: 26 46 5;
-      /* Warning */
-      --color-warning-50: 255 251 235;
-      --color-warning-100: 254 243 199;
-      --color-warning-200: 253 230 138;
-      --color-warning-300: 252 211 77;
-      --color-warning-400: 251 191 36;
-      --color-warning-500: 245 158 11;
-      --color-warning-600: 217 119 6;
-      --color-warning-700: 180 83 9;
-      --color-warning-800: 146 64 14;
-      --color-warning-900: 120 53 15;
-      --color-warning-950: 69 26 3;
-      /* Error */
-      --color-error-50: 254 242 242;
-      --color-error-100: 254 226 226;
-      --color-error-200: 254 202 202;
-      --color-error-300: 252 165 165;
-      --color-error-400: 248 113 113;
-      --color-error-500: 239 68 68;
-      --color-error-600: 220 38 38;
-      --color-error-700: 185 28 28;
-      --color-error-800: 153 27 27;
-      --color-error-900: 127 29 29;
-      --color-error-950: 69 10 10;
-    
-    
-      /* SHADOWS */
-      --shadow-header: 0px 0px 4px 0px rgba(0, 0, 0, 0.4), 0px 0px 8px 0px rgba(0, 0, 0, 0.3);
-      --shadow-button: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-      --shadow-paper: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
-      --shadow-modal: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
-      --shadow-error: 0 0 2px 1px rgb(var(--color-error-800));
-      --shadow-ring: inset 0 0 0 1px currentColor;
+  /* Basic colors */
+  --color-text: oklch(13% 0 0);
+  --color-contrast: oklch(98% 0 0);
+  --color-placeholder: oklch(71% 0 0);
+  --color-bg: oklch(98% 0 0);
+  --color-dark-bg: oklch(30% 0 0);
+
+  /* Primary colors */
+  --color-primary-50: oklch(98% 0.05 195);
+  --color-primary-100: oklch(95% 0.08 195);
+  --color-primary-200: oklch(91% 0.12 195);
+  --color-primary-300: oklch(85% 0.15 195);
+  --color-primary-400: oklch(77% 0.17 195);
+  --color-primary-500: oklch(68% 0.16 195);
+  --color-primary-600: oklch(58% 0.13 195);
+  --color-primary-700: oklch(49% 0.11 195);
+  --color-primary-800: oklch(41% 0.09 195);
+  --color-primary-900: oklch(35% 0.07 195);
+  --color-primary-950: oklch(25% 0.05 195);
+
+  /* Secondary colors */
+  --color-secondary-50: oklch(98% 0.04 155);
+  --color-secondary-100: oklch(95% 0.08 155);
+  --color-secondary-200: oklch(91% 0.12 155);
+  --color-secondary-300: oklch(85% 0.15 155);
+  --color-secondary-400: oklch(77% 0.16 155);
+  --color-secondary-500: oklch(68% 0.15 155);
+  --color-secondary-600: oklch(58% 0.13 155);
+  --color-secondary-700: oklch(48% 0.11 155);
+  --color-secondary-800: oklch(40% 0.09 155);
+  --color-secondary-900: oklch(34% 0.07 155);
+  --color-secondary-950: oklch(22% 0.05 155);
+
+  /* Terciary colors */
+  --color-terciary-50: oklch(98% 0.04 310);
+  --color-terciary-100: oklch(94% 0.08 310);
+  --color-terciary-200: oklch(88% 0.14 310);
+  --color-terciary-300: oklch(78% 0.20 310);
+  --color-terciary-400: oklch(68% 0.24 310);
+  --color-terciary-500: oklch(60% 0.25 310);
+  --color-terciary-600: oklch(52% 0.22 310);
+  --color-terciary-700: oklch(45% 0.19 310);
+  --color-terciary-800: oklch(39% 0.16 310);
+  --color-terciary-900: oklch(34% 0.13 310);
+  --color-terciary-950: oklch(24% 0.10 310);
+
+  /* Dark colors (neutral) */
+  --color-dark-50: oklch(98% 0 0);
+  --color-dark-100: oklch(96% 0 0);
+  --color-dark-200: oklch(90% 0 0);
+  --color-dark-300: oklch(84% 0 0);
+  --color-dark-400: oklch(71% 0 0);
+  --color-dark-500: oklch(54% 0 0);
+  --color-dark-600: oklch(42% 0 0);
+  --color-dark-700: oklch(34% 0 0);
+  --color-dark-800: oklch(30% 0 0);
+  --color-dark-900: oklch(20% 0 0);
+  --color-dark-950: oklch(13% 0 0);
+
+  /* Info colors */
+  --color-info-50: oklch(97% 0.04 230);
+  --color-info-100: oklch(94% 0.07 230);
+  --color-info-200: oklch(88% 0.11 230);
+  --color-info-300: oklch(80% 0.14 230);
+  --color-info-400: oklch(71% 0.15 230);
+  --color-info-500: oklch(64% 0.14 230);
+  --color-info-600: oklch(54% 0.12 230);
+  --color-info-700: oklch(45% 0.10 230);
+  --color-info-800: oklch(39% 0.09 230);
+  --color-info-900: oklch(33% 0.07 230);
+  --color-info-950: oklch(23% 0.05 230);
+
+  /* Success colors */
+  --color-success-50: oklch(98% 0.06 120);
+  --color-success-100: oklch(96% 0.10 120);
+  --color-success-200: oklch(93% 0.16 120);
+  --color-success-300: oklch(89% 0.20 120);
+  --color-success-400: oklch(84% 0.22 120);
+  --color-success-500: oklch(76% 0.20 120);
+  --color-success-600: oklch(64% 0.17 120);
+  --color-success-700: oklch(51% 0.14 120);
+  --color-success-800: oklch(42% 0.11 120);
+  --color-success-900: oklch(36% 0.09 120);
+  --color-success-950: oklch(23% 0.06 120);
+
+  /* Warning colors */
+  --color-warning-50: oklch(98% 0.04 85);
+  --color-warning-100: oklch(96% 0.08 85);
+  --color-warning-200: oklch(92% 0.13 85);
+  --color-warning-300: oklch(86% 0.16 85);
+  --color-warning-400: oklch(80% 0.18 85);
+  --color-warning-500: oklch(71% 0.17 85);
+  --color-warning-600: oklch(60% 0.15 85);
+  --color-warning-700: oklch(49% 0.13 85);
+  --color-warning-800: oklch(42% 0.11 85);
+  --color-warning-900: oklch(37% 0.09 85);
+  --color-warning-950: oklch(25% 0.06 85);
+
+  /* Error colors */
+  --color-error-50: oklch(97% 0.04 25);
+  --color-error-100: oklch(93% 0.07 25);
+  --color-error-200: oklch(87% 0.11 25);
+  --color-error-300: oklch(77% 0.15 25);
+  --color-error-400: oklch(65% 0.18 25);
+  --color-error-500: oklch(56% 0.19 25);
+  --color-error-600: oklch(48% 0.18 25);
+  --color-error-700: oklch(42% 0.16 25);
+  --color-error-800: oklch(38% 0.14 25);
+  --color-error-900: oklch(34% 0.12 25);
+  --color-error-950: oklch(23% 0.09 25);
+
+  /* Spacing values - generates p-*, m-*, w-*, h-*, gap-* utilities */
+  --spacing-sm-y: 0.375rem;
+  --spacing-sm-x: 0.5rem;
+  --spacing-sm-icon: 1.25rem;
+  --spacing-sm: var(--text-sm);
+  --spacing-md-y: 0.5rem;
+  --spacing-md-x: 0.75rem;
+  --spacing-md-icon: 1.5rem;
+  --spacing-md: var(--text-base);
+  --spacing-lg-y: 0.625rem;
+  --spacing-lg-x: 1rem;
+  --spacing-lg-icon: 1.75rem;
+  --spacing-lg: var(--text-lg);
+  --spacing-xl: var(--text-xl);
+  --spacing-xl-icon: 1.75rem;
+  --spacing-2xl: var(--text-2xl);
+  --spacing-2xl-icon: 2rem;
+  --spacing-3xl: var(--text-3xl);
+  --spacing-sm-header: 3.313rem;
+  --spacing-lg-header: 4.063rem;
+  --spacing-sidebar: 16rem;
+  --spacing-sm-sidebar: 6rem;
+  --spacing-gallery-inner: calc(100vh - 98px);
+
+  /* Box shadows */
+  --shadow-header: 0px 0px 4px 0px rgba(0, 0, 0, 0.4), 0px 0px 8px 0px rgba(0, 0, 0, 0.3);
+  --shadow-button: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  --shadow-paper: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+  --shadow-modal: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+  --shadow-error: 0 0 2px 1px rgb(153 27 27);
+  --shadow-ring: inset 0 0 0 1px currentColor;
+
+  /* Z-index values */
+  --z-index-modal: 100;
+  --z-index-combobox: 40;
+  --z-index-header: 20;
+  --z-index-overlay: 30;
+
+  /* Animations */
+  --animate-ghost: ghostAnim 1500ms infinite;
+  --animate-inline-loader: inlineLoaderAnim 1400ms infinite;
+  --animate-circular-loader: circularLoaderAnim1 800ms infinite linear alternate, circularLoaderAnim2 1600ms infinite linear;
+
+  /* Keyframe definitions */
+  @keyframes inlineLoaderAnim {
+    0%, 80%, 100% {
+      transform: scale(0);
     }
+    40% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes circularLoaderAnim1 {
+    0%    { clip-path: polygon(50% 50%, 0 0, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%); }
+    12.5% { clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%); }
+    25%   { clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 100%); }
+    50%   { clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%); }
+    62.5% { clip-path: polygon(50% 50%, 100% 0, 100% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%); }
+    75%   { clip-path: polygon(50% 50%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 50% 100%, 0% 100%); }
+    100%  { clip-path: polygon(50% 50%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 0% 100%); }
+  }
+
+  @keyframes circularLoaderAnim2 {
+    0%     { transform: scaleY(1) rotate(0deg); }
+    49.99% { transform: scaleY(1) rotate(135deg); }
+    50%    { transform: scaleY(-1) rotate(0deg); }
+    100%   { transform: scaleY(-1) rotate(-135deg); }
+  }
+
+  @keyframes ghostAnim {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
 }
 
+/* Utility variants configuration */
+@variant dark (.dark &);
+@variant autofill (&:-webkit-autofill);
+@variant hover-supported (@media (hover: hover));
+
+/* Custom utilities - transition properties */
+@utility transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity;
+}
+
+@utility transition-position {
+  transition-property: top, left, bottom, right, transform, opacity;
+}
+
+@utility transition-activity {
+  transition-property: background-color, color, box-shadow, border-color;
+}
+
+@utility transition-max-height {
+  transition-property: max-height, opacity;
+}
+
+@utility transition-margin {
+  transition-property: margin;
+}
 
 /* Default CSS */
 * {
   box-sizing: border-box;
-}
-
-button {
-  border-color: transparent;
 }
 
 /* Scrollbar */
@@ -155,38 +258,16 @@ button {
   background: transparent;
 }
 
-
-/* Animations */
-@keyframes inlineLoaderAnim {
-  0%,
-  80%,
-  100% {
-    transform: scale(0);
-  }
-  40% {
-    transform: scale(1);
-  }
-}
-
-@keyframes circularLoaderAnim1 {
-0%  {clip-path: polygon(50% 50%,0 0,50% 0%,50% 0%,50% 0%,50% 0%,50% 0% )}  
-12.5% {clip-path: polygon(50% 50%,0 0,50% 0%,100% 0%,100% 0%,100% 0%,100% 0% )}
-25% {clip-path: polygon(50% 50%,0 0,50% 0%,100% 0%,100% 100%,100% 100%,100% 100% )}
-50% {clip-path: polygon(50% 50%,0 0,50% 0%,100% 0%,100% 100%,50% 100%,0% 100% )}
-62.5% {clip-path: polygon(50% 50%,100% 0,100% 0%,100% 0%,100% 100%,50% 100%,0% 100% )}
-75% {clip-path: polygon(50% 50%,100% 100%,100% 100%,100% 100%,100% 100%,50% 100%,0% 100% )}
-100%{clip-path: polygon(50% 50%,50% 100%,50% 100%,50% 100%,50% 100%,50% 100%,0% 100% )}
-}
-
-@keyframes circularLoaderAnim2 {
-  0%    {transform:scaleY(1)  rotate(0deg)}
-  49.99%{transform:scaleY(1)  rotate(135deg)}
-  50%   {transform:scaleY(-1) rotate(0deg)}
-  100%  {transform:scaleY(-1) rotate(-135deg)}
-}
-
-@keyframes ghostAnim {
-  100% {
-    transform: translateX(100%);
-  }
+/* Autofill override - removes browser's default yellow/blue background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+input:-internal-autofill-selected {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  box-shadow: 0 0 0 1000px transparent inset !important;
+  -webkit-text-fill-color: inherit !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  transition: background-color 5000s ease-in-out 0s;
 }

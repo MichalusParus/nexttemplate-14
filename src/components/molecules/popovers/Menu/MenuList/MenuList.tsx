@@ -132,7 +132,7 @@ function MenuListComponent<T = string>(
   return (
     <ul
       id={name}
-      className={cn('MenuList', isGrouped && 'space-y-3', className)}
+      className={cn('MenuList', isGrouped && 'flex flex-col gap-3', className)}
       aria-labelledby={`${name}-button`}
       role="menu"
       data-testid="MenuList"

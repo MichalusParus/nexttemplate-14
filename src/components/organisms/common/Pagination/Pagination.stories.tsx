@@ -51,15 +51,20 @@ const PaginationWithFetch = (args: PaginationProps) => {
   const limit = 10
 
   useEffect(() => {
-    startTransition(async () => {
-      await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
-        .then(res => res.json())
-        .then(res => {
-          console.log(res)
-          setRes(res)
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
+        const data = await response.json()
+        startTransition(() => {
+          setRes(data)
         })
-    })
-  }, [limit, offset])
+      } catch (error) {
+        console.error('Failed to fetch pokemon data:', error)
+      }
+    }
+
+    fetchData()
+  }, [offset])
 
   return (
     <div className="flex flex-col items-center gap-4">

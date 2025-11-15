@@ -49,7 +49,7 @@ export const AllSizesAndLoading: Story = {
   render: args => (
     <div className="flex flex-col gap-10">
       {titleSizeVariants.slice(0, 3).map(variant => (
-        <div key={variant} className="flex [&>*]:basis-1/2">
+        <div key={variant} className="flex *:basis-1/2">
           <P {...args} size={variant} />
           <P {...args} isLoading size={variant} />
         </div>

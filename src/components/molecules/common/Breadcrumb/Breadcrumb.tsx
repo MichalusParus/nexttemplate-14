@@ -18,7 +18,7 @@ export const Breadcrumb = forwardRef<HTMLDivElement | null, BreadcrumbProps>(
   ({ className, options, color = 'none', ...rest }, ref) => {
     return (
       <nav className={cn('Breadcrumb', className)} ref={ref} aria-label="breadcrumb" {...rest}>
-        <ol className="flex flex-wrap items-center gap-2.5 break-words">
+        <ol className="flex flex-wrap items-center gap-2.5 wrap-break-word">
           {options.map((option, index) => (
             <Fragment key={`${option.href}-${index}`}>
               <li>
