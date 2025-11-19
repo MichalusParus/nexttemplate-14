@@ -107,6 +107,8 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
     }
 
     useEffect(() => {
+      if (typeof window === 'undefined') return
+
       let timerId: NodeJS.Timeout
       if (isOpen) {
         setIsVisible(true)
@@ -122,6 +124,7 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
     }, [isOpen])
 
     if (!isOpen && !isVisible) return null
+    if (!container) return null
 
     return createPortal(
       <>

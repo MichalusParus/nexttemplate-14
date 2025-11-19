@@ -60,7 +60,7 @@ export const CalendarHeader = ({
         }
         onClick={() => setCalendarState(calendarState === 'days' ? 'years' : 'days')}
       >
-        {t(`months.${getMonth(currentMonth)}`) + ' ' + getYear(currentMonth)}
+        {t(`months.${getMonth(currentMonth)}` as Parameters<typeof t>[0]) + ' ' + getYear(currentMonth)}
         <ChevronIcon
           className={cn(
             'text-inherit transition-transform',

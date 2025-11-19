@@ -3,8 +3,8 @@ import { useTranslations } from 'next-intl'
 import { forwardRef, useImperativeHandle, useRef } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
-import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
 import { SearchIcon, XIcon } from '@/components/atoms/icons'
+import { childrenIconSize } from '@/components/utils/common.style'
 import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -59,7 +59,7 @@ export const SearchInput = forwardRef<HTMLInputElement | null, SearchInputProps>
             className={cn(
               'ClearButton',
               'invisible border-none',
-              buttonIconSize[size],
+              childrenIconSize[size],
               (value || inputRef?.current?.value) && 'visible',
             )}
             type="button"

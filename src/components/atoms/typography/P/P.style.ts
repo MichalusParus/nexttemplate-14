@@ -7,16 +7,6 @@ export const PColor = {
   none: cn('text-inherit dark:text-inherit'),
 }
 
-export const PSize = {
-  sm: cn('text-sm'),
-  md: cn('text-base'),
-  lg: cn('text-lg'),
-  xl: cn('text-xl'),
-  '2xl': cn('text-2xl'),
-  '3xl': cn('text-3xl'),
-  none: '',
-}
-
 export const GhostAlign = {
   'text-left': 'items-start',
   'text-center': 'items-center',

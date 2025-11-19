@@ -2,10 +2,11 @@ import { LinkProps as NextLinkProps } from 'next/link'
 import NextLink from 'next/link'
 import { Children, forwardRef, LinkHTMLAttributes, ReactNode } from 'react'
 
+import { childrenIconSize } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { buttonIconSize, buttonSize, buttonVariant, iconOnlySize } from '../Button/Button.style'
+import { buttonSize, buttonVariant, iconOnlySize } from '../Button/Button.style'
 import { linkClass } from './Link.style'
 
 type NativeAnchorProps = Omit<LinkHTMLAttributes<HTMLAnchorElement>, 'className' | 'color'>
@@ -58,7 +59,7 @@ export const Link = forwardRef<HTMLAnchorElement | null, LinkProps>(
           linkFlex,
           buttonVariant[variant][color],
           iconOnly ? iconOnlySize[size] : buttonSize[size],
-          buttonIconSize[size],
+          childrenIconSize[size],
           variant === 'contained' && !hideShadow && 'shadow-button active:shadow-none',
           className,
         )}

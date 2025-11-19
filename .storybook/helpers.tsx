@@ -10,18 +10,18 @@ import { MultiDatePickerField } from '@/components/molecules/form/comboboxes/Mul
 import { MultiSelectField } from '@/components/molecules/form/comboboxes/MultiSelectField'
 import { RangeDatePickerField } from '@/components/molecules/form/comboboxes/RangeDatePickerField'
 import { SelectField } from '@/components/molecules/form/comboboxes/SelectField'
-import { CheckboxField } from '@/components/molecules/form/inputs/CheckboxField'
-import { CheckboxGroupField } from '@/components/molecules/form/inputs/CheckboxGroupField'
+import { CheckboxField } from '@/components/molecules/form/toggles/CheckboxField'
+import { CheckboxGroupField } from '@/components/molecules/form/toggles/CheckboxGroupField'
 import { FileField } from '@/components/molecules/form/inputs/FileField'
-import { MultiToggleGroupField } from '@/components/molecules/form/inputs/MultiToggleGroupField'
+import { MultiToggleGroupField } from '@/components/molecules/form/toggles/MultiToggleGroupField'
 import { NumberField } from '@/components/molecules/form/inputs/NumberField'
 import { PasswordField } from '@/components/molecules/form/inputs/PasswordField'
-import { RadioGroupField } from '@/components/molecules/form/inputs/RadioGroupField'
+import { RadioGroupField } from '@/components/molecules/form/toggles/RadioGroupField'
 import { RangeField } from '@/components/molecules/form/inputs/RangeField'
 import { SearchField } from '@/components/molecules/form/inputs/SearchField'
 import { TextAreaField } from '@/components/molecules/form/inputs/TextAreaField'
 import { TextField } from '@/components/molecules/form/inputs/TextField'
-import { ToggleGroupField } from '@/components/molecules/form/inputs/ToggleGroupField'
+import { ToggleGroupField } from '@/components/molecules/form/toggles/ToggleGroupField'
 import { MenuOptionGroupType, MenuOptionType } from '@/components/molecules/popovers/Menu/types'
 import { TabOption } from '@/components/organisms/common/Tabs/TabList'
 import { ColumnDef } from '@/components/organisms/DataGrid/utils/types'
@@ -83,6 +83,148 @@ export const ColorSwatch = ({ colors, title, subtitle }: ColorSwatchProps) => {
           </div>
         ))}
       </div>
+    </div>
+  )
+}
+
+type ComponentCardProps = {
+  name: string
+  path: string
+  description?: string
+  badge?: string
+}
+
+export const ComponentCard = ({ name, path, description, badge }: ComponentCardProps) => {
+  return (
+    <a
+      href={`?path=/story/${path}--docs`}
+      style={{
+        display: 'block',
+        padding: '1.25rem',
+        border: '1px solid rgba(0, 0, 0, 0.1)',
+        borderRadius: '8px',
+        textDecoration: 'none',
+        color: 'inherit',
+        transition: 'all 0.2s ease',
+        backgroundColor: 'var(--color-bg, #fff)',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+      className="component-card"
+    >
+      <style>{`
+        .component-card:hover {
+          border-color: var(--color-primary-500, #3b82f6);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          transform: translateY(-2px);
+        }
+      `}</style>
+      {badge && (
+        <span
+          style={{
+            position: 'absolute',
+            top: '0.5rem',
+            right: '0.5rem',
+            fontSize: '0.625rem',
+            fontWeight: 600,
+            padding: '0.25rem 0.5rem',
+            borderRadius: '4px',
+            backgroundColor: 'var(--color-primary-100, #dbeafe)',
+            color: 'var(--color-primary-700, #1d4ed8)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+          }}
+        >
+          {badge}
+        </span>
+      )}
+      <h4
+        style={{
+          margin: '0 0 0.5rem 0',
+          fontSize: '1rem',
+          fontWeight: 600,
+          color: 'var(--color-text-primary, #1f2937)',
+        }}
+      >
+        {name}
+      </h4>
+      {description && (
+        <p
+          style={{
+            margin: 0,
+            fontSize: '0.875rem',
+            color: 'var(--color-text-secondary, #6b7280)',
+            lineHeight: '1.5',
+          }}
+        >
+          {description}
+        </p>
+      )}
+    </a>
+  )
+}
+
+type ComponentGridProps = {
+  children: React.ReactNode
+  columns?: number
+}
+
+export const ComponentGrid = ({ children, columns = 3 }: ComponentGridProps) => {
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(auto-fill, minmax(${columns === 2 ? '320px' : '280px'}, 1fr))`,
+        gap: '1rem',
+        marginBottom: '2rem',
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+type ComponentSectionProps = {
+  title: string
+  subtitle?: string
+  count?: number
+  children: React.ReactNode
+}
+
+export const ComponentSection = ({ title, subtitle, count, children }: ComponentSectionProps) => {
+  return (
+    <div style={{ marginBottom: '3rem' }}>
+      <div style={{ marginBottom: '1rem' }}>
+        <h2
+          style={{
+            fontSize: '1.5rem',
+            fontWeight: 700,
+            margin: '0 0 0.25rem 0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+          }}
+        >
+          {title}
+          {count !== undefined && (
+            <span
+              style={{
+                fontSize: '1rem',
+                fontWeight: 500,
+                color: 'var(--color-text-secondary, #6b7280)',
+              }}
+            >
+              ({count})
+            </span>
+          )}
+        </h2>
+        {subtitle && (
+          <p style={{ margin: 0, color: 'var(--color-text-secondary, #6b7280)', fontSize: '0.875rem' }}>
+            {subtitle}
+          </p>
+        )}
+      </div>
+      {children}
     </div>
   )
 }
@@ -673,9 +815,22 @@ export const radioSchema = z.object({
 })
 
 export const comboboxSchema = z.object({
-  dateStory: z.date(),
-  dateRangeStory: z.object({ start: z.date(), end: z.date() }),
-  dateMultiStory: z.array(z.date()).min(1),
+  dateStory: z
+    .date({
+      required_error: 'Date is required',
+      invalid_type_error: 'Please select a date',
+    })
+    .or(z.undefined())
+    .refine(val => val !== undefined, { message: 'Date is required' }),
+  dateRangeStory: z
+    .object({
+      start: z.date().optional().nullable(),
+      end: z.date().optional().nullable(),
+    })
+    .refine(data => data.start && data.end, {
+      message: 'Both start and end dates are required',
+    }),
+  dateMultiStory: z.array(z.date()).min(1, { message: 'Select at least one date' }),
   selectStory: z.string().min(1),
   multiSelectStory: z.array(z.string()).min(1),
   autocompleteStory: z.string().min(1),

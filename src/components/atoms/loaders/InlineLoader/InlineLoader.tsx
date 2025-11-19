@@ -2,10 +2,11 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
+import { iconPaddingSize } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { dottClass, loaderSize } from './InlineLoader.style'
+import { dottClass } from './InlineLoader.style'
 
 type NativeInlineLoaderProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'>
 
@@ -30,13 +31,13 @@ export const InlineLoader = forwardRef<HTMLSpanElement | null, InlineLoaderProps
         ref={ref}
         {...rest}
       >
-        <span className={cn('Dott', dottClass, loaderSize[size])} />
+        <span className={cn('Dott', dottClass, iconPaddingSize[size])} />
         <span
-          className={cn('Dott', dottClass, loaderSize[size])}
+          className={cn('Dott', dottClass, iconPaddingSize[size])}
           style={{ animationDelay: '150ms' }}
         />
         <span
-          className={cn('Dott', dottClass, loaderSize[size])}
+          className={cn('Dott', dottClass, iconPaddingSize[size])}
           style={{ animationDelay: '300ms' }}
         />
       </span>

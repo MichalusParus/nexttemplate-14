@@ -1,78 +1,481 @@
-import { Meta } from '@storybook/blocks';
+import { Meta } from '@storybook/addon-docs/blocks';
+import { ComponentCard, ComponentGrid, ComponentSection } from '../../../.storybook/helpers';
 
 <Meta title="Components" />
 
 # ParusUI
 
-ParusUI is built with focus on minimal size, reusability and customization.
+ParusUI is a comprehensive component library built with focus on minimal size, reusability, and deep customization.
 
 ## Features
 
-- `Complex` - ParusUI contains 64 components and 8 hooks.
+**Component Library**
+- **58 Components** organized in atomic design structure (Atoms, Molecules, Organisms, Templates)
+- **8 Custom Hooks** for common UI patterns and interactions
+- **24 SVG Icons** for consistent iconography
 
-- `LibraryFree` - ParusUI are lightweighted and fully custom builded with no additional libraries except React Hook Form, Zod and Popper.
+**Styling & Theming**
+- **TailwindCSS-powered** with rich theme
+- **3 Variant Types** (text, outlined, contained) combinable with any color
+- **Dark Mode** support with class-based strategy (`dark:` prefix)
+- **Fully Customizable** via CSS variables, common styles, and className overrides
 
-- `Folder structure` - Components are modular and organized in atomic folder structure.
+**Developer Experience**
+- **TypeScript** with full type safety and IntelliSense support
+- **Zero External UI Libraries** - custom-built with only React Hook Form, Zod, and Popper
+- **Flexible Props** - variant, color, size, className for easy customization
+- **Ref Forwarding** on all components for imperative control
+- **Generic type support
 
-- `TailwindCSS` - Components are build with tailwindCSS for easy customization and fast performance.
+**Accessibility & UX**
+- **WAI-ARIA** compliant with proper roles and aria attributes
+- **Keyboard Navigation** with tab order and focus traps
+- **Screen Reader** support (tested with Google SR)
+- **Touchscreen Optimized** with swipe gestures and disabled hover states
+- **921 Jest Tests** ensuring component reliability
 
-- `SVG Icons` - Contains 24 common SVG icons.
+**Internationalization**
+- **next-intl Integration** with translation JSON files for all components
+- Multi-language support out of the box
 
-- `Custom Hooks` - Contains 7 usefull custom hooks for easy develompent.
+**Documentation**
+- **Storybook** with interactive examples, controls, and documentation
 
-- `Localization` - I18N support with next-intl. Components have translations json files.
+For detailed guides on styling and theming, see:
+- **[Colors](?path=/story/colors--docs)** - Full color palette reference
+- **[Iconography](?path=/story/iconography--docs)** - Icon system documentation
 
-- `Theme` - Rich tailwind theme for easy customization.
+---
 
-- `DarkMode` - All components have dark mode support. Darkmode autodetect is disabled by default.
+<ComponentSection title="Atoms" count={20} subtitle="Basic building blocks for your UI">
 
-- `Props` - HTML and Next props support. ClassName for easy customization by tailwind classes. Components have style, color and size variants.
+### Common (9)
 
-- `Refs` - All components support forwarding refs by default.
+<ComponentGrid>
+  <ComponentCard
+    name="Alert"
+    path="atoms-common-alert"
+    description="Basic alert component"
+  />
+  <ComponentCard
+    name="Avatar"
+    path="atoms-common-avatar"
+    description="User profile images with fallback support"
+  />
+  <ComponentCard
+    name="Button"
+    path="atoms-common-button"
+    description="Basic button with loading and icon support"
+  />
+  <ComponentCard
+    name="Chip"
+    path="atoms-common-chip"
+    description="Styled badge component"
+  />
+  <ComponentCard
+    name="Divider"
+    path="atoms-common-divider"
+    description="Visual separator with optional label"
+  />
+  <ComponentCard
+    name="Image"
+    path="atoms-common-image"
+    description="Next image component"
+  />
+  <ComponentCard
+    name="Label"
+    path="atoms-common-label"
+    description="Form label"
+  />
+  <ComponentCard
+    name="Link"
+    path="atoms-common-link"
+    description="Next Link with button styles"
+  />
+  <ComponentCard
+    name="Overlay"
+    path="atoms-common-overlay"
+    description="Background overlay for modal popovers"
+  />
+</ComponentGrid>
 
-- `Storybook` - Components have rich presentation with usecases and documentation build by Storybook.
+### Containers (2)
 
-- `Tests` - Components have 178 jest unit tests.
+<ComponentGrid>
+  <ComponentCard
+    name="Paper"
+    path="atoms-containers-paper"
+    description="Basic styled wrapper"
+  />
+  <ComponentCard
+    name="ScrollShadow"
+    path="atoms-containers-scrollshadow"
+    description="Scroll shadow for both Axis scrolling"
+  />
+</ComponentGrid>
 
-- `WAI-ARIA` - Components have WAI-ARIA support. Components have role atributte and aria attributes if needed.
+### Loaders (4)
 
-- `Keyboard support` - Components have keyboard control support with tab order and focus traps.
+<ComponentGrid>
+  <ComponentCard
+    name="Ghost"
+    path="atoms-loaders-ghost"
+    description="Skeleton placeholder for loading content"
+  />
+  <ComponentCard
+    name="InlineLoader"
+    path="atoms-loaders-inlineloader"
+    description="Small inline loading spinner"
+  />
+  <ComponentCard
+    name="ProgressBar"
+    path="atoms-loaders-progressbar"
+    description="Linear progress indicator with percentage"
+  />
+  <ComponentCard
+    name="CircularLoader"
+    path="atoms-loaders-circularloader"
+    description="Circular loading spinner animation"
+  />
+</ComponentGrid>
 
-- `Screen readers support` - Currenctly only google SR supported.
+### Typography (5)
 
-- `Touchscreen support` - Components have swipe support with useSwipe Hook. Components have disabled hover on touchscreen devices by default.
+<ComponentGrid>
+  <ComponentCard
+    name="Ellipsis"
+    path="atoms-typography-ellipsis"
+    description="Text truncation"
+  />
+  <ComponentCard
+    name="List"
+    path="atoms-typography-list"
+    description="Ordered and unordered list elements"
+  />
+  <ComponentCard
+    name="P"
+    path="atoms-typography-p"
+    description="Paragraph with loading"
+  />
+  <ComponentCard
+    name="Span"
+    path="atoms-typography-span"
+    description="Inline text with color and size variants"
+  />
+  <ComponentCard
+    name="Title"
+    path="atoms-typography-title"
+    description="Heading with loading"
+  />
+</ComponentGrid>
 
+</ComponentSection>
 
+---
 
+<ComponentSection title="Molecules" count={34}>
 
-## Atoms (22)
+### Common (5)
 
-### Common (10) : [Alert](?path=/docs/atoms-common-alert--docs) - [Avatar](?path=/docs/atoms-common-avatar--docs) - [Button](?path=/docs/atoms-common-button--docs) - [Chip](?path=/docs/atoms-common-chip--docs) - [Divider](?path=/docs/atoms-common-divider--docs) - [Image](?path=/docs/atoms-common-image--docs) - [Label](?path=/docs/atoms-common-label--docs) - [Link](?path=/docs/atoms-common-link--docs) - [ListBox](?path=/docs/atoms-common-listbox--docs) - [Overlay](?path=/docs/atoms-common-overlay--docs)
+<ComponentGrid>
+  <ComponentCard
+    name="Accordion"
+    path="molecules-common-accordion"
+    description="Set of disclosures"
+  />
+  <ComponentCard
+    name="Breadcrumb"
+    path="molecules-common-breadcrumb"
+    description="Navigation page hierarchy"
+  />
+  <ComponentCard
+    name="Calendar"
+    path="molecules-common-calendar"
+    description="Interactive date calendar component"
+  />
+  <ComponentCard
+    name="Carousel"
+    path="molecules-common-carousel"
+    description="Slideshow component"
+  />
+  <ComponentCard
+    name="Disclosure"
+    path="molecules-common-disclosure"
+    description="Expandable content"
+  />
+</ComponentGrid>
 
-### Containers (2) : [Paper](?path=/docs/atoms-containers-paper--docs) - [ScrollShadow](?path=/docs/atoms-containers-scrollshadow--docs)
+### Form - Forms (2)
 
-### Loaders (4) : [Ghost](?path=/docs/atoms-loaders-ghost--docs) - [InlineLoader](?path=/docs/atoms-loaders-inlineloader--docs) - [ProgressBar](?path=/docs/atoms-loaders-progressbar--docs) - [CircularLoader](?path=/docs/atoms-loaders-circularloader--docs)
+<ComponentGrid>
+  <ComponentCard
+    name="Form"
+    path="molecules-form-forms-form"
+    description="Comprehensive form wrapper with validation"
+  />
+  <ComponentCard
+    name="StepForm"
+    path="molecules-form-forms-stepform"
+    description="Multi-step form with tabs"
+  />
+</ComponentGrid>
 
-### Typography (5) : [Ellipsis](?path=/docs/atoms-typography-ellipsis--docs) - [List](?path=/docs/atoms-typography-list--docs) - [P](?path=/docs/atoms-typography-p--docs) - [Span](?path=/docs/atoms-typography-span--docs) - [Title](?path=/docs/atoms-typography-title--docs)
+### Form - Inputs (7)
 
-## Molecules (31)
+<ComponentGrid>
+  <ComponentCard
+    name="TextInput"
+    path="molecules-form-inputs-textinput"
+    description="Single-line text input"
+  />
+  <ComponentCard
+    name="NumberInput"
+    path="molecules-form-inputs-numberinput"
+    description="String based formatted number input"
+  />
+  <ComponentCard
+    name="PasswordInput"
+    path="molecules-form-inputs-passwordinput"
+    description="Password input with vissibility toggle"
+  />
+  <ComponentCard
+    name="SearchInput"
+    path="molecules-form-inputs-searchinput"
+    description="Search field with icon and clear button"
+  />
+  <ComponentCard
+    name="TextArea"
+    path="molecules-form-inputs-textarea"
+    description="Multi-line text input"
+  />
+  <ComponentCard
+    name="RangeInput"
+    path="molecules-form-inputs-rangeinput"
+    description="Slider input for numeric ranges"
+  />
+  <ComponentCard
+    name="FileInput"
+    path="molecules-form-inputs-fileinput"
+    description="File upload with drag-and-drop support"
+  />
+</ComponentGrid>
 
-### Common (5) : [Accordion](?path=/docs/molecules-common-accordion--docs) - [Breadcrumb](?path=/docs/molecules-common-breadcrumb--docs) - [Calendar](?path=/docs/molecules-common-calendar--docs) - [Carousel](?path=/docs/molecules-common-carousel--docs) - [Disclosure](?path=/docs/molecules-common-disclosure--docs)
+### Form - Toggles (6)
 
-### Form (22) : [Form](?path=/docs/molecules-form-forms-form--docs) - [StepForm](?path=/docs/molecules-form-forms-stepform--docs) - [TextInput](?path=/docs/molecules-form-inputs-textinput--docs) - [NumberInput](?path=/docs/molecules-form-inputs-numberinput--docs) - [PasswordInput](?path=/docs/molecules-form-inputs-passwordinput--docs) - [SearchInput](?path=/docs/molecules-form-inputs-searchinput--docs) - [TextArea](?path=/docs/molecules-form-inputs-textarea--docs) - [RangeInput](?path=/docs/molecules-form-inputs-rangeinput--docs) - [FileInput](?path=/docs/molecules-form-inputs-fileinput--docs) - [Checkbox](?path=/docs/molecules-form-inputs-checkbox--docs) - [Switch](?path=/docs/molecules-form-inputs-switch--docs) - [CheckboxGroup](?path=/docs/molecules-form-inputs-checkboxgroup--docs) - [RadioGroup](?path=/docs/molecules-form-inputs-radiogroup--docs) - [ToggleGroup](?path=/docs/molecules-form-inputs-togglegroup--docs) - [MultiToggleGroup](?path=/docs/molecules-form-inputs-multitogglegroup--docs) - [Select](?path=/docs/molecules-form-comboboxes-select--docs) - [MultiSelect](?path=/docs/molecules-form-comboboxes-multiselect--docs) - [Autocomplete](?path=/docs/molecules-form-comboboxes-autocomplete--docs) - [MultiAutocomplete](?path=/docs/molecules-form-comboboxes-multiautocomplete--docs) - [DatePicker](?path=/docs/molecules-form-comboboxes-datepicker--docs) - [RangeDatePicker](?path=/docs/molecules-form-comboboxes-rangedatepicker--docs) - [MultiDatePicker](?path=/docs/molecules-form-comboboxes-multidatepicker--docs)
+<ComponentGrid>
+  <ComponentCard
+    name="Checkbox"
+    path="molecules-form-toggles-checkbox"
+    description="Single checkbox with label"
+  />
+  <ComponentCard
+    name="Switch"
+    path="molecules-form-toggles-switch"
+    description="Toggle switch with label"
+  />
+  <ComponentCard
+    name="CheckboxGroup"
+    path="molecules-form-toggles-checkboxgroup"
+    description="Group of Checkboxis or Switches"
+  />
+  <ComponentCard
+    name="RadioGroup"
+    path="molecules-form-toggles-radiogroup"
+    description="Radio input group"
+  />
+  <ComponentCard
+    name="ToggleGroup"
+    path="molecules-form-toggles-togglegroup"
+    description="Toggle group for single value"
+  />
+  <ComponentCard
+    name="MultiToggleGroup"
+    path="molecules-form-toggles-multitogglegroup"
+    description="Toggle group for multi value"
+  />
+</ComponentGrid>
 
-### Popovers (7) : [Drawer](?path=/docs/molecules-popovers-drawer--docs) - [Dropdown](?path=/docs/molecules-popovers-dropdown--docs) - [ImageViewer](?path=/docs/molecules-popovers-imageviewer--docs) - [Menu](?path=/docs/molecules-popovers-menu--docs) - [Dialog](?path=/docs/molecules-popovers-dialog--docs) - [Toast(provider)](?path=/docs/molecules-popovers-toast-provider--docs) - [Tooltip](?path=/docs/molecules-popovers-tooltip--docs)
+### Form - Comboboxes (7)
 
-## Organisms (4)
+<ComponentGrid>
+  <ComponentCard
+    name="Select"
+    path="molecules-form-comboboxes-select"
+    description="Dropdown select"
+  />
+  <ComponentCard
+    name="MultiSelect"
+    path="molecules-form-comboboxes-multiselect"
+    description="Multi-selection dropdown"
+  />
+  <ComponentCard
+    name="Autocomplete"
+    path="molecules-form-comboboxes-autocomplete"
+    description="Searchable combobox for single value"
+  />
+  <ComponentCard
+    name="MultiAutocomplete"
+    path="molecules-form-comboboxes-multiautocomplete"
+    description="Searchable combobox for multi value"
+  />
+  <ComponentCard
+    name="DatePicker"
+    path="molecules-form-comboboxes-datepicker"
+    description="Date input with calendar dropdown"
+  />
+  <ComponentCard
+    name="RangeDatePicker"
+    path="molecules-form-comboboxes-rangedatepicker"
+    description="Date input for range dates"
+  />
+  <ComponentCard
+    name="MultiDatePicker"
+    path="molecules-form-comboboxes-multidatepicker"
+    description="Date input for multi selection"
+  />
+</ComponentGrid>
 
-### Common (4) : [Pagination](?path=/docs/organisms-pagination-pagination--docs) - [Tabs](?path=/docs/organisms-common-tabs--docs) - [Gallery](?path=/docs/molecules-common-gallery--docs) - [DataGrid](?path=/docs/organisms-datagrid--docs)
+### Popovers (7)
 
-## Templates (7)
+<ComponentGrid>
+  <ComponentCard
+    name="Drawer"
+    path="molecules-popovers-drawer"
+    description="Slide-in panel from screen edges"
+  />
+  <ComponentCard
+    name="Dropdown"
+    path="molecules-popovers-dropdown"
+    description="Customizable basic dropdown"
+  />
+  <ComponentCard
+    name="ImageViewer"
+    path="molecules-popovers-imageviewer"
+    description="Full-screen image preview modal"
+  />
+  <ComponentCard
+    name="Menu"
+    path="molecules-popovers-menu"
+    description="Menu dropdown with submenu support"
+  />
+  <ComponentCard
+    name="Dialog"
+    path="molecules-popovers-dialog"
+    description="Modal dialog with backdrop overlay"
+  />
+  <ComponentCard
+    name="ToastProvider"
+    path="molecules-popovers-toast-provider"
+    description="Notification toast messages provider"
+    badge="Provider"
+  />
+  <ComponentCard
+    name="Tooltip"
+    path="molecules-popovers-tooltip"
+    description="Hover information tooltips"
+  />
+</ComponentGrid>
 
-### Header (4) : [Header](?path=/docs/templates-header--docs) - [Logo](?path=/docs/templates-logo--docs) - [Nav](?path=/docs/templates-nav--docs) - [HamburgerMenu](?path=/docs/templates-hamburgermenu--docs)
+</ComponentSection>
 
-### Main (1) : [Main](?path=/docs/templates-main--docs)
+---
 
-### Footer (1) : [Footer](?path=/docs/templates-footer--docs)
+<ComponentSection title="Organisms" count={4}>
 
-### ComponentTemplate (1) : [ComponentTemplate](?path=/docs/templates-componenttemplate--docs)
+### Data & Navigation (4)
+
+<ComponentGrid>
+  <ComponentCard
+    name="Pagination"
+    path="organisms-pagination-pagination"
+    description="Responsive pagination"
+  />
+  <ComponentCard
+    name="Tabs"
+    path="organisms-common-tabs"
+    description="Tabbed content navigation"
+  />
+  <ComponentCard
+    name="Gallery"
+    path="organisms-common-gallery"
+    description="Image gallery viewer"
+  />
+  <ComponentCard
+    name="DataGrid"
+    path="organisms-datagrid"
+    description="Data grid with sorting and filtering"
+  />
+</ComponentGrid>
+
+</ComponentSection>
+
+---
+
+## Customization Guide
+
+Quick guide for adapting ParusUI to your project's design system.
+
+### Style System Overview
+
+**Color System**
+
+ParusUI provides **3 main brand palettes** (Primary, Secondary, Terciary) plus semantic colors (Info, Success, Warning, Error), and a neutral Dark palette. Each includes 11 shades (50-950).
+
+For detailed color reference, see [Colors](?path=/story/colors--docs).
+
+**Variants**
+
+Components support **3 visual variants**:
+- **text** - Minimal styling, transparent background, colored text
+- **outlined** - Colored border, transparent/light background
+- **contained** - Filled background with contrasting text
+
+Combine variants with color palettes via `variant` and `color` props.
+All variants have dark mode support. Enable globally or by adding `dark` class to any component. Especially useful for text and outlined variants on darker backgrounds.
+
+**Interactive UI States**
+
+Components have unified hover, focus, active, disabled, and selected states.
+Selected is a custom "persistent active" state, enabled by passing the `selected` class to a component.
+Style classes for these states are in the [common.style.ts](src/components/utils/common.style.ts) file.
+
+For disabled styling, use custom `disabled-native:` (native elements) or `disabled-aria:` (custom elements) variants due to specificity conflicts with other states.
+
+**Common Styles**
+
+All main styling patterns are centralized in [common.style.ts](src/components/utils/common.style.ts). Components combine these patterns for consistency - a single source of truth. Components require all current classes to function properly, so only remove them if you're certain.
+
+---
+
+### Customization Steps
+
+**1. Change Brand Colors**
+
+Edit [globals.css](src/app/globals.css) and modify the main color schemes.
+
+**Available variables:** `--color-primary-500`, `--color-secondary-500`, `--color-terciary-500`, plus all shades (50-950)
+
+**2. Customize Templates**
+
+Three layout templates are available:
+- **Simple Layout** - Minimal layout for auth pages
+- **Main Layout** - Standard app layout with header and footer
+- **Admin Layout** - Dashboard layout with sidebar
+
+Check the [templates folder](src/components/templates) and restyle Header, Footer, Main, Logo, and other layout components to match your design.
+
+**3. Modify Component Variants**
+
+For global design changes affecting all components, edit [common.style.ts](src/components/utils/common.style.ts).
+
+**4. Component-Level Customization**
+
+Components use common style patterns defined in [common.style.ts](src/components/utils/common.style.ts). You can copy and rewrite styles for any component if you need a more custom design, or you can add new variants or sizes.
+
+**5. Use-Case-Level Customization**
+
+All components use the `cn()` utility function for intelligent class merging, allowing you to fully customize any component through the `className` prop regardless of current styling.
+
+**Setting `color="none"`** disables all color-related styles for a clean component if needed.
+
+Complex components have subcomponent prop support, so you can customize even subcomponents.

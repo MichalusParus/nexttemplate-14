@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 
 import { textContent } from '../../../../../.storybook/helpers'
 import { Divider } from '.'

@@ -157,7 +157,7 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
         ref={componentRef}
         aria-owns={isOpen ? `${id}-tooltip` : undefined}
       >
-        {!isOpen && !isVisible
+        {!isOpen && !isVisible || !container
           ? null
           : createPortal(
               <div

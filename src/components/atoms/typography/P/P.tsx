@@ -1,10 +1,11 @@
 import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react'
 
+import { textSize } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { Ghost } from '../../loaders/Ghost'
-import { GhostAlign, PColor, PSize } from './P.style'
+import { GhostAlign, PColor } from './P.style'
 
 type NativePProps = Omit<HTMLAttributes<HTMLParagraphElement>, 'color' | 'className'>
 
@@ -44,7 +45,7 @@ export const P = forwardRef<HTMLParagraphElement | null, PropsWithChildren<PProp
         className={cn(
           'whitespace-pre-wrap',
           PColor[color],
-          PSize[size],
+          textSize[size],
           align,
           isLoading && 'flex flex-col ' + GhostAlign[align],
           className,

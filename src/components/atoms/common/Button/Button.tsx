@@ -1,18 +1,12 @@
 'use client'
 import { ButtonHTMLAttributes, Children, forwardRef, ReactNode } from 'react'
 
+import { childrenIconSize, disabledVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { InlineLoader } from '../../loaders/InlineLoader'
-import {
-  buttonClass,
-  buttonDisabledVariant,
-  buttonIconSize,
-  buttonSize,
-  buttonVariant,
-  iconOnlySize,
-} from './Button.style'
+import { buttonClass, buttonSize, buttonVariant, iconOnlySize } from './Button.style'
 
 type NativeButtonProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -85,8 +79,8 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(
           buttonFlex,
           buttonVariant[variant][color],
           iconOnly ? iconOnlySize[size] : buttonSize[size],
-          buttonIconSize[size],
-          buttonDisabledVariant[variant],
+          childrenIconSize[size],
+          disabledVariant[variant],
           isLoading && 'selected cursor-progress opacity-80',
           variant === 'contained' && !hideShadow && 'shadow-button active:shadow-none',
           className,
@@ -94,7 +88,7 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(
         type={type}
         disabled={disabled}
         aria-busy={isLoading}
-        aria-disabled={isLoading || disabled}
+        aria-disabled={disabled}
         onClick={!isLoading ? onClick : undefined}
         ref={ref}
         {...rest}

@@ -4,8 +4,14 @@ import { Span } from '@/components/atoms/typography/Span'
 import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { inputErrorClass } from '../../TextField/TextInput/TextInput.style'
-import { rangeClass, rangeColor, rangeSize, rangeWrapClass } from './RangeInput.style'
+import {
+  rangeClass,
+  rangeColor,
+  rangeThumbSize,
+  rangeWrapClass,
+  rangeWrapFocusRing,
+  rangeWrapSize,
+} from './RangeInput.style'
 
 export type RangeProps = NativeInputProps &
   InputProps &
@@ -24,7 +30,14 @@ export const RangeInput = forwardRef<HTMLInputElement | null, RangeProps>(
   ) => {
     return (
       <div
-        className={cn('RangeWrap', rangeWrapClass, rangeSize[size], className)}
+        className={cn(
+          'RangeWrap',
+          rangeWrapClass,
+          rangeWrapSize[size],
+          rangeWrapFocusRing[color],
+          error && 'error',
+          className,
+        )}
         data-testid="RangeWrap"
       >
         <Span className={cn('ValueWrap', 'min-w-12', !value && 'opacity-0')}>
@@ -35,7 +48,8 @@ export const RangeInput = forwardRef<HTMLInputElement | null, RangeProps>(
           className={cn(
             rangeClass,
             rangeColor[color],
-            error && !disabled && 'error ' + inputErrorClass,
+            rangeThumbSize[size],
+            error && 'error',
           )}
           type="range"
           name={name}

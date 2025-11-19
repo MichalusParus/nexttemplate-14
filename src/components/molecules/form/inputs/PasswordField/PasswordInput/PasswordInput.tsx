@@ -3,8 +3,8 @@ import { useTranslations } from 'next-intl'
 import { forwardRef, useState } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
-import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
 import { CloseEyeIcon, OpenEyeIcon } from '@/components/atoms/icons'
+import { childrenIconSize } from '@/components/utils/common.style'
 import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -48,7 +48,7 @@ export const PasswordInput = forwardRef<HTMLInputElement | null, PasswordInputPr
         size={size}
         endIcon={
           <Button
-            className={cn('VisibilityButton', 'border-none', buttonIconSize[size])}
+            className={cn('VisibilityButton', 'border-none', childrenIconSize[size])}
             type="button"
             variant={variant}
             color={color}

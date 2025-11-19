@@ -49,7 +49,15 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
     const pages = useMemo(() => Array.from({ length: count }, (_, i) => i + 1), [count])
     const showEllipsis = count > ((pageSpread - 5) / 2) * 2 + 6
     const sidePagesCount = (pageSpread - 5) / 2
+
+    const loadingPages = useMemo(() => {
+      const skeletonCount = Math.min(5, pageSpread)
+      return Array.from({ length: skeletonCount }, (_, i) => i + 1)
+    }, [pageSpread])
+
     const displayablePages = useMemo(() => {
+      if (isLoading) return loadingPages
+
       const minPagesForEllipsis = sidePagesCount * 2 + 6
       // too short fot ellipsis
       if (count <= minPagesForEllipsis) return pages
@@ -63,7 +71,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
       }
       // both ellipsis
       return pages.filter(p => p >= page - sidePagesCount && p <= page + sidePagesCount)
-    }, [pages, count, page, sidePagesCount])
+    }, [isLoading, loadingPages, pages, count, page, sidePagesCount])
 
     const getSelectedClass = useCallback(
       (pageNum: number) => pageNum >= page && pageNum <= page + loadMoreCount && 'selected',
@@ -116,7 +124,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               {...restButtonProps}
             />
           )}
-          {showEllipsis && page > sidePagesCount + 3 && (
+          {!isLoading && showEllipsis && page > sidePagesCount + 3 && (
             <Button
               className={cn(
                 'PageButton',
@@ -136,7 +144,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               {...restButtonProps}
             />
           )}
-          {showEllipsis && page > sidePagesCount + 3 && (
+          {!isLoading && showEllipsis && page > sidePagesCount + 3 && (
             <div
               className={cn('DottWrap', 'flex items-center justify-around', pageButtonSize[size])}
               role="presentation"
@@ -169,7 +177,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               {...restButtonProps}
             />
           ))}
-          {showEllipsis && page < count - (sidePagesCount + 2) && (
+          {!isLoading && showEllipsis && page < count - (sidePagesCount + 2) && (
             <div
               className={cn('DottWrap', 'flex items-center justify-around', pageButtonSize[size])}
               role="presentation"
@@ -181,7 +189,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               <div className={dottColor[color]} />
             </div>
           )}
-          {showEllipsis && page < count - (sidePagesCount + 2) && (
+          {!isLoading && showEllipsis && page < count - (sidePagesCount + 2) && (
             <Button
               className={cn(
                 'PageButton',

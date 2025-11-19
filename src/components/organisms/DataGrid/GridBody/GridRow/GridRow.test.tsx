@@ -136,7 +136,7 @@ describe('GridRow', () => {
 
     expect(rowInner).toHaveClass('selected')
     expect(row).toHaveAttribute('aria-selected', 'true')
-    expect(checkboxInputWrap).toHaveClass('checked')
+    expect(checkboxInputWrap).toHaveClass('selected')
     expect(checkIcon).toHaveClass('opacity-100')
   })
 

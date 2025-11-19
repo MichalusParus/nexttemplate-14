@@ -7,16 +7,6 @@ export const titleColor = {
   none: '',
 }
 
-export const titleSize = {
-  sm: cn('text-sm'),
-  md: cn('text-base'),
-  lg: cn('text-lg'),
-  xl: cn('text-xl'),
-  '2xl': cn('text-2xl'),
-  '3xl': cn('text-3xl'),
-  none: '',
-}
-
 export const ghostAligment = {
   left: cn(''),
   center: cn('ml-auto mr-auto'),

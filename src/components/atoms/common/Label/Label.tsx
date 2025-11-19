@@ -1,10 +1,9 @@
 import { forwardRef, LabelHTMLAttributes } from 'react'
 
 import { Alert } from '@/components/atoms/common/Alert'
+import { textSize } from '@/components/utils/common.style'
 import { FieldProps, InputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
-
-import { labelClass, textSize } from './Label.style'
 
 type NativeLabelProps = Omit<
   LabelHTMLAttributes<HTMLLabelElement>,
@@ -61,7 +60,7 @@ export const Label = forwardRef<HTMLLabelElement | null, LabelProps>(
         {fakeLabel || legend ? (
           <Element
             id={`${name}-label`}
-            className={cn('FakeLabel', labelClass, textSize[size], labelVisibility)}
+            className={cn('FakeLabel', 'text-inherit', textSize[size], labelVisibility)}
             data-testid="FakeLabel"
           >
             {label}
@@ -69,7 +68,7 @@ export const Label = forwardRef<HTMLLabelElement | null, LabelProps>(
         ) : (
           <label
             id={`${name}-label`}
-            className={cn('Label', labelClass, textSize[size], labelVisibility)}
+            className={cn('Label', 'text-inherit', textSize[size], labelVisibility)}
             htmlFor={name}
             ref={ref}
             data-testid="Label"

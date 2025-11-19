@@ -45,6 +45,8 @@ export const ImageViewer = forwardRef<
   const { openState, handleOpen } = useInternalOpenState(isOpen, setIsOpen)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     let timerId: NodeJS.Timeout
     if (openState) {
       setIsVisible(true)
@@ -77,7 +79,7 @@ export const ImageViewer = forwardRef<
       >
         {!openState && children}
       </Button>
-      {!openState && !isVisible
+      {!openState && !isVisible || !container
         ? null
         : createPortal(
             <div

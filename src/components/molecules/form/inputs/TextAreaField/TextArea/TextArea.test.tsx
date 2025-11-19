@@ -61,8 +61,11 @@ describe('TextArea', () => {
   it('disabled', () => {
     render(<TextArea name="name" value="" disabled onChange={() => {}} />)
     const textAreaRole = screen.getByRole('textbox')
+    const textAreaWrapTestId = screen.getByTestId('TextAreaWrap')
 
     expect(textAreaRole).toHaveAttribute('disabled', '')
+    expect(textAreaWrapTestId).toHaveAttribute('aria-disabled', 'true')
+    expect(textAreaWrapTestId).toHaveClass('disabled')
   })
 
   it('ref', () => {

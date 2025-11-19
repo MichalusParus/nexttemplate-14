@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import { PropsWithChildren, useState } from 'react'
 
 import { textContent } from '../../../../../.storybook/helpers'

@@ -1,160 +1,111 @@
+import {
+  errorStateClass,
+  focusVisibleVariant,
+  iconPaddingSize,
+  interactiveVariant,
+  paddingSize,
+  paperVariant,
+  textSize,
+} from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
 export const buttonClass = cn(
-  'focus:outline-hidden relative items-center justify-center gap-2 whitespace-nowrap rounded-md border font-semibold transition-activity [&.error]:border-error-800 [&.error]:shadow-error',
+  'focus:outline-hidden relative cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border font-semibold transition-activity focus-visible:ring-1',
+  errorStateClass,
 )
 
 export const buttonVariant = {
   text: {
     primary: cn(
-      'border-transparent bg-transparent text-primary-800 dark:text-primary-100',
-      'hover:bg-primary-100 focus-visible:bg-primary-100 active:bg-primary-50 group-focus-visible:bg-primary-100',
-      'dark:hover:bg-primary-900 dark:focus-visible:bg-primary-900 dark:active:bg-primary-700 dark:group-focus-visible:bg-primary-900',
-      '[&.selected]:bg-primary-50 [&.selected]:hover:bg-primary-100 [&.selected]:focus-visible:bg-primary-100',
-      'dark:[&.selected]:bg-primary-700 dark:[&.selected]:hover:bg-primary-900 dark:[&.selected]:focus-visible:bg-primary-900',
+      paperVariant.text.primary,
+      'bg-transparent dark:bg-transparent',
+      focusVisibleVariant.text.primary,
+      interactiveVariant.text.primary,
     ),
     secondary: cn(
-      'border-transparent bg-transparent text-secondary-800 dark:text-secondary-100',
-      'hover:bg-secondary-200 focus-visible:bg-secondary-200 active:bg-secondary-100 group-focus-visible:bg-secondary-200',
-      'dark:hover:bg-secondary-900 dark:focus-visible:bg-secondary-900 dark:active:bg-secondary-700 dark:group-focus-visible:bg-secondary-900',
-      '[&.selected]:bg-secondary-100 [&.selected]:hover:bg-secondary-200 [&.selected]:focus-visible:bg-secondary-200',
-      'dark:[&.selected]:bg-secondary-700 dark:[&.selected]:hover:bg-secondary-900 dark:[&.selected]:focus-visible:bg-secondary-900',
+      paperVariant.text.secondary,
+      'bg-transparent dark:bg-transparent',
+      focusVisibleVariant.text.secondary,
+      interactiveVariant.text.secondary,
     ),
     terciary: cn(
-      'border-transparent bg-transparent text-terciary-800 dark:text-terciary-100',
-      'hover:bg-terciary-200 focus-visible:bg-terciary-200 active:bg-terciary-100 group-focus-visible:bg-terciary-200',
-      'dark:hover:bg-terciary-900 dark:focus-visible:bg-terciary-900 dark:active:bg-terciary-700 dark:group-focus-visible:bg-terciary-900',
-      '[&.selected]:bg-terciary-100 [&.selected]:hover:bg-terciary-200 [&.selected]:focus-visible:bg-terciary-200',
-      'dark:[&.selected]:bg-terciary-700 dark:[&.selected]:hover:bg-terciary-900 dark:[&.selected]:focus-visible:bg-terciary-900',
+      paperVariant.text.terciary,
+      'bg-transparent dark:bg-transparent',
+      focusVisibleVariant.text.terciary,
+      interactiveVariant.text.terciary,
     ),
     error: cn(
-      'border-transparent bg-transparent text-error-800 dark:text-error-100',
-      'hover:bg-error-200 focus-visible:bg-error-200 active:bg-error-100 group-focus-visible:bg-error-200',
-      'dark:hover:bg-error-900 dark:focus-visible:bg-error-900 dark:active:bg-error-700 dark:group-focus-visible:bg-error-900',
-      '[&.selected]:bg-error-100 [&.selected]:hover:bg-error-200 [&.selected]:focus-visible:bg-error-200',
-      'dark:[&.selected]:bg-error-700 dark:[&.selected]:hover:bg-error-900 dark:[&.selected]:focus-visible:bg-error-900',
+      paperVariant.text.error,
+      'bg-transparent dark:bg-transparent',
+      focusVisibleVariant.text.error,
+      interactiveVariant.text.error,
     ),
     none: '',
   },
   outlined: {
     primary: cn(
-      'border-primary-800 bg-transparent text-primary-800 dark:border-primary-100 dark:border-primary-100 dark:text-primary-100',
-      'hover:bg-primary-100 focus-visible:bg-primary-100 active:bg-primary-50 group-focus-visible:bg-primary-100',
-      'dark:hover:bg-primary-900 dark:focus-visible:bg-primary-900 dark:active:bg-primary-700 dark:group-focus-visible:bg-primary-900',
-      '[&.selected]:bg-primary-50 [&.selected]:hover:bg-primary-100 [&.selected]:focus-visible:bg-primary-100',
-      'dark:[&.selected]:bg-primary-700 dark:[&.selected]:hover:bg-primary-900 dark:[&.selected]:focus-visible:bg-primary-900',
+      paperVariant.outlined.primary,
+      'bg-transparent dark:bg-transparent',
+      focusVisibleVariant.outlined.primary,
+      interactiveVariant.outlined.primary,
     ),
     secondary: cn(
-      'border-secondary-800 bg-transparent text-secondary-800 dark:border-secondary-100 dark:border-secondary-100 dark:text-secondary-100',
-      'hover:bg-secondary-200 focus-visible:bg-secondary-200 active:bg-secondary-100 group-focus-visible:bg-secondary-200',
-      'dark:hover:bg-secondary-900 dark:focus-visible:bg-secondary-900 dark:active:bg-secondary-700 dark:group-focus-visible:bg-secondary-900',
-      '[&.selected]:bg-secondary-100 [&.selected]:hover:bg-secondary-200 [&.selected]:focus-visible:bg-secondary-200',
-      'dark:[&.selected]:bg-secondary-700 dark:[&.selected]:hover:bg-secondary-900 dark:[&.selected]:focus-visible:bg-secondary-900',
+      paperVariant.outlined.secondary,
+      'bg-transparent dark:bg-transparent',
+      focusVisibleVariant.outlined.secondary,
+      interactiveVariant.outlined.secondary,
     ),
     terciary: cn(
-      'border-terciary-800 bg-transparent text-terciary-800 dark:border-terciary-100 dark:border-terciary-100 dark:text-terciary-100',
-      'hover:bg-terciary-200 focus-visible:bg-terciary-200 active:bg-terciary-100 group-focus-visible:bg-terciary-200',
-      'dark:hover:bg-terciary-900 dark:focus-visible:bg-terciary-900 dark:active:bg-terciary-700 dark:group-focus-visible:bg-terciary-900',
-      '[&.selected]:bg-terciary-100 [&.selected]:hover:bg-terciary-200 [&.selected]:focus-visible:bg-terciary-200',
-      'dark:[&.selected]:bg-terciary-700 dark:[&.selected]:hover:bg-terciary-900 dark:[&.selected]:focus-visible:bg-terciary-900',
+      paperVariant.outlined.terciary,
+      'bg-transparent dark:bg-transparent',
+      focusVisibleVariant.outlined.terciary,
+      interactiveVariant.outlined.terciary,
     ),
     error: cn(
-      'border-error-800 bg-transparent text-error-800 dark:border-error-100 dark:border-error-100 dark:text-error-100',
-      'hover:bg-error-200 focus-visible:bg-error-200 active:bg-error-100 group-focus-visible:bg-error-200',
-      'dark:hover:bg-error-900 dark:focus-visible:bg-error-900 dark:active:bg-error-700 dark:group-focus-visible:bg-error-900',
-      '[&.selected]:bg-error-100 [&.selected]:hover:bg-error-200 [&.selected]:focus-visible:bg-error-200',
-      'dark:[&.selected]:bg-error-700 dark:[&.selected]:hover:bg-error-900 dark:[&.selected]:focus-visible:bg-error-900',
+      paperVariant.outlined.error,
+      'bg-transparent dark:bg-transparent',
+      focusVisibleVariant.outlined.error,
+      interactiveVariant.outlined.error,
     ),
     none: '',
   },
   contained: {
     primary: cn(
-      'border-primary-800 bg-primary-800 text-primary-100',
-      'hover:border-primary-900 hover:bg-primary-900 focus-visible:border-primary-900 focus-visible:bg-primary-900 active:bg-primary-700 group-focus-visible:bg-primary-900',
-      '[&.selected]:bg-primary-700 [&.selected]:hover:bg-primary-900 [&.selected]:focus-visible:bg-primary-900',
+      paperVariant.contained.primary,
+      focusVisibleVariant.contained.primary,
+      interactiveVariant.contained.primary,
     ),
     secondary: cn(
-      'border-secondary-800 bg-secondary-800 text-secondary-100',
-      'hover:border-secondary-900 hover:bg-secondary-900 focus-visible:border-secondary-900 focus-visible:bg-secondary-900 active:bg-secondary-700 group-focus-visible:bg-secondary-900',
-      '[&.selected]:bg-secondary-700 [&.selected]:hover:bg-secondary-900 [&.selected]:focus-visible:bg-secondary-900',
+      paperVariant.contained.secondary,
+      focusVisibleVariant.contained.secondary,
+      interactiveVariant.contained.secondary,
     ),
     terciary: cn(
-      'border-terciary-800 bg-terciary-800 text-terciary-100',
-      'hover:border-terciary-900 hover:bg-terciary-900 focus-visible:border-terciary-900 focus-visible:bg-terciary-900 active:bg-terciary-700 group-focus-visible:bg-terciary-900',
-      '[&.selected]:bg-terciary-700 [&.selected]:hover:bg-terciary-900 [&.selected]:focus-visible:bg-terciary-900',
+      paperVariant.contained.terciary,
+      focusVisibleVariant.contained.terciary,
+      interactiveVariant.contained.terciary,
     ),
     error: cn(
-      'border-error-800 bg-error-800 text-error-100',
-      'hover:border-error-900 hover:bg-error-900 focus-visible:border-error-900 focus-visible:bg-error-900 active:bg-error-700 group-focus-visible:bg-error-900',
-      '[&.selected]:bg-error-700 [&.selected]:hover:bg-error-900 [&.selected]:focus-visible:bg-error-900',
+      paperVariant.contained.error,
+      focusVisibleVariant.contained.error,
+      interactiveVariant.contained.error,
     ),
     none: '',
   },
-}
-
-export const buttonFocusWithinVariant = {
-  text: {
-    primary: 'focus-within:bg-primary-100 dark:focus-within:bg-primary-900',
-    secondary: 'focus-within:bg-secondary-200 dark:focus-within:bg-secondary-900',
-    terciary: 'focus-within:bg-terciary-200 dark:focus-within:bg-terciary-900',
-    error: 'focus-within:bg-error-200 dark:focus-within:bg-error-900',
-    none: '',
-  },
-  outlined: {
-    primary: 'focus-within:bg-primary-100 dark:focus-within:bg-primary-900',
-    secondary: 'focus-within:bg-secondary-200 dark:focus-within:bg-secondary-900',
-    terciary: 'focus-within:bg-terciary-200 dark:focus-within:bg-terciary-900',
-    error: 'focus-within:bg-error-200 dark:focus-within:bg-error-900',
-    none: '',
-  },
-  contained: {
-    primary: 'focus-within:border-primary-900 focus-within:bg-primary-900',
-    secondary: 'focus-within:border-secondary-900 focus-within:bg-secondary-900',
-    terciary: 'focus-within:border-terciary-900 focus-within:bg-terciary-900',
-    error: 'focus-within:border-error-900 focus-within:bg-error-900',
-    none: '',
-  },
-}
-
-export const buttonDisabledVariant = {
-  text: cn(
-    'disabled:cursor-not-allowed disabled:bg-dark-200 disabled:text-dark-500 disabled:opacity-50',
-    'dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:opacity-50',
-    '[&.selected]:disabled:bg-dark-200 [&.selected]:disabled:hover:bg-dark-200 [&.selected]:disabled:focus-visible:bg-dark-200',
-    'dark:[&.selected]:disabled:bg-dark-200 dark:[&.selected]:disabled:hover:bg-dark-200 dark:[&.selected]:disabled:focus-visible:bg-dark-200',
-  ),
-  outlined: cn(
-    'disabled:cursor-not-allowed disabled:border-dark-500 disabled:bg-dark-200 disabled:text-dark-500 disabled:opacity-50',
-    'dark:disabled:border-dark-500 dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:opacity-50',
-    '[&.selected]:disabled:bg-dark-200 [&.selected]:disabled:hover:bg-dark-200 [&.selected]:disabled:focus-visible:bg-dark-200',
-    'dark:[&.selected]:disabled:bg-dark-200 dark:[&.selected]:disabled:hover:bg-dark-200 dark:[&.selected]:disabled:focus-visible:bg-dark-200',
-  ),
-  contained: cn(
-    'disabled:cursor-not-allowed disabled:border-dark-500 disabled:bg-dark-500 disabled:text-dark-300 disabled:opacity-50 disabled:shadow-none',
-    '[&.selected]:disabled:bg-dark-500 [&.selected]:disabled:hover:bg-dark-500 [&.selected]:disabled:focus-visible:bg-dark-500',
-  ),
 }
 
 export const iconOnlySize = {
-  sm: cn('p-sm-y text-sm '),
-  md: cn('p-md-y text-base'),
-  lg: cn('p-lg-y text-lg'),
+  sm: cn(iconPaddingSize.sm, textSize.sm),
+  md: cn(iconPaddingSize.md, textSize.md),
+  lg: cn(iconPaddingSize.lg, textSize.lg),
   inline: cn('border-0 px-1'),
   none: '',
 }
 
 export const buttonSize = {
-  sm: cn('py-sm-y px-sm-x text-sm'),
-  md: cn('px-md-x py-md-y text-base'),
-  lg: cn('py-lg-y px-lg-x text-lg'),
+  sm: cn(paddingSize.sm, textSize.sm),
+  md: cn(paddingSize.md, textSize.md),
+  lg: cn(paddingSize.lg, textSize.lg),
   inline: cn('border-0 px-1 hover:underline focus-visible:underline'),
-  none: '',
-}
-
-export const buttonIconSize = {
-  sm: cn('[&_svg]:h-sm-icon [&_svg]:w-sm-icon [&_svg]:min-w-sm-icon'),
-  md: cn('[&_svg]:h-md-icon [&_svg]:w-md-icon [&_svg]:min-w-md-icon'),
-  lg: cn('[&_svg]:h-lg-icon [&_svg]:w-lg-icon [&_svg]:min-w-lg-icon'),
-  inline: cn('[&_svg]:h-sm [&_svg]:w-sm [&_svg]:min-w-sm'),
   none: '',
 }

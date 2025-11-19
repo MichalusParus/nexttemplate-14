@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import { useState } from 'react'
 
 import { ToastProvider } from '@/components/molecules/popovers/ToastProvider'

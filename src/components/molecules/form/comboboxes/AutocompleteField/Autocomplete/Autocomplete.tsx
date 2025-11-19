@@ -16,14 +16,13 @@ import {
   useState,
 } from 'react'
 
-import { ListBox } from '@/components/atoms/common/ListBox'
-import { ListBoxProps } from '@/components/atoms/common/ListBox/ListBox'
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
 import { useGroupedOptions } from '@/components/utils/hooks/useGroupedOptions'
 import { InputProps, OptionGroupType, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
+import { ListBox, ListBoxProps } from '../../SelectField/Select/ListBox'
 import { AutocompleteCombobox, AutocompleteComboboxProps } from './AutocompleteCombobox'
 
 export type AutocompleteProps<T = string> = Omit<

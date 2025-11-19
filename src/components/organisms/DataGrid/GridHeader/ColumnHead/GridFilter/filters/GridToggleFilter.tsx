@@ -1,6 +1,6 @@
 'use client'
-import { MultiToggleGroup } from '@/components/molecules/form/inputs/MultiToggleGroupField/MultiToggleGroup'
-import { ToggleGroup } from '@/components/molecules/form/inputs/ToggleGroupField/ToggleGroup'
+import { MultiToggleGroup } from '@/components/molecules/form/toggles/MultiToggleGroupField/MultiToggleGroup'
+import { ToggleGroup } from '@/components/molecules/form/toggles/ToggleGroupField/ToggleGroup'
 import { useDataGridContext } from '@/components/organisms/DataGrid/utils/DataGridContext'
 import { ColumnDef } from '@/components/organisms/DataGrid/utils/types'
 import { removeColumnFilter } from '@/components/organisms/DataGrid/utils/utils'

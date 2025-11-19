@@ -198,9 +198,10 @@ describe('FileInput', () => {
 
   it('disabled', () => {
     render(<FileInput name="inputTest" disabled onDrop={asyncMockFn} onDelete={async () => {}} />)
-    const inputTestId = screen.getByTestId('FileInput')
+    const inputWrapTestId = screen.getByTestId('InputWrap')
 
-    expect(inputTestId).toHaveAttribute('disabled')
+    expect(inputWrapTestId).toHaveAttribute('aria-disabled', 'true')
+    expect(inputWrapTestId).toHaveClass('disabled')
   })
 
   it('ref', async () => {

@@ -2,7 +2,7 @@
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/atoms/common/Button'
-import { Checkbox } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
+import { Checkbox } from '@/components/molecules/form/toggles/CheckboxField/Checkbox'
 import { Tooltip } from '@/components/molecules/popovers/Tooltip'
 import { cn } from '@/utils/utils'
 

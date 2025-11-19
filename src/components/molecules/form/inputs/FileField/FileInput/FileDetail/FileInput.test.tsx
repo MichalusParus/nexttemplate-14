@@ -43,7 +43,6 @@ describe('FileDetail', () => {
     expect(deleteButtonTestId).toBeInTheDocument()
     expect(fileDetailTestId).toHaveTextContent('')
     expect(deleteButtonTestId).toHaveAttribute('aria-busy', 'true')
-    expect(deleteButtonTestId).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('onDelete', () => {

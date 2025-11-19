@@ -1,12 +1,12 @@
 'use client'
 import { useMemo } from 'react'
 
+import { paperVariant, textVariant } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
 import { useDataGridContext } from '../utils/DataGridContext'
 import { getColumnGridPosition, getColumnsAtDepth, getMaxDepth } from '../utils/utils'
 import { ColumnHead } from './ColumnHead'
-import { rowgroupVariant } from './GridHeader.style'
 import { SelectAllHead } from './SelectAllHead'
 
 type GridHeaderProps = {
@@ -45,7 +45,8 @@ export const GridHeader = ({
       className={cn(
         'DataGridHeader',
         'relative grid rounded-t-md border pr-2',
-        rowgroupVariant[variant][color],
+        paperVariant[variant][color],
+        textVariant[variant][color],
         className,
       )}
       style={{

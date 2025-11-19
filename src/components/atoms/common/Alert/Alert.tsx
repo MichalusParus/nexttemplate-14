@@ -1,11 +1,12 @@
 import { forwardRef, ReactNode } from 'react'
 
+import { childrenIconSize } from '@/components/utils/common.style'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from '../../icons'
 import { Span } from '../../typography/Span'
-import { alertClass, alertIconSize, alertSize, alertVariant } from './Alert.style'
+import { alertClass, alertSize, alertVariant } from './Alert.style'
 
 export type AlertStatusType = 'success' | 'info' | 'warning' | 'error' | 'none'
 
@@ -46,7 +47,7 @@ export const Alert = forwardRef<HTMLDivElement | null, AlertProps>(
           alertClass,
           alertVariant[variant][status],
           alertSize[size],
-          alertIconSize[size],
+          childrenIconSize[size],
           className,
         )}
         role={status === 'error' ? 'alert' : undefined}

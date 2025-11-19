@@ -1,11 +1,11 @@
 import { forwardRef, ReactNode } from 'react'
 
+import { childrenIconSize, paperVariant, textVariant } from '@/components/utils/common.style'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { Span } from '../../typography/Span'
-import { buttonIconSize } from '../Button/Button.style'
-import { chipClass, chipSize, chipVariant } from './Chip.style'
+import { chipClass, chipSize } from './Chip.style'
 
 export type ChipProps = NativeDivProps &
   StyleProps & {
@@ -40,9 +40,10 @@ export const Chip = forwardRef<HTMLDivElement | null, ChipProps>(
         className={cn(
           'Chip',
           chipClass,
-          chipVariant[variant][color],
+          paperVariant[variant][color],
+          textVariant[variant][color],
           chipSize[size],
-          buttonIconSize[size],
+          childrenIconSize[size],
           className,
         )}
         data-testid="Chip"

@@ -84,8 +84,8 @@ export const MonthPicker = ({
               variant={variant}
               color={color}
               size={size}
-              startIcon={t(`months.${getMonth(m)}`)}
-              aria-label={t(`months.${getMonth(m)}`)}
+              startIcon={t(`months.${getMonth(m)}` as Parameters<typeof t>[0])}
+              aria-label={t(`months.${getMonth(m)}` as Parameters<typeof t>[0])}
               hideShadow
               disabled={
                 (minMaxDate?.min && isBefore(startOfMonth(m), startOfMonth(minMaxDate?.min))) ||

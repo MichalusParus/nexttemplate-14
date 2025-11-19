@@ -2,14 +2,14 @@
 import { forwardRef } from 'react'
 
 import { buttonSize, buttonVariant } from '@/components/atoms/common/Button/Button.style'
-import { RadioGroupProps } from '@/components/molecules/form/inputs/RadioGroupField/RadioGroup'
+import { RadioGroupProps } from '@/components/molecules/form/toggles/RadioGroupField/RadioGroup'
 import {
   afterClass,
-  disableVariant,
   radioClass,
   radioSize,
   radioVariant,
-} from '@/components/molecules/form/inputs/RadioGroupField/RadioGroup/RadioGroup.style'
+} from '@/components/molecules/form/toggles/RadioGroupField/RadioGroup/RadioGroup.style'
+import { disabledVariant } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
 export type MenuItemRadioGroupProps = Omit<RadioGroupProps, 'label' | 'labelProps' | 'error'>
@@ -61,7 +61,7 @@ export const MenuItemRadioGroup = forwardRef<HTMLInputElement | null, MenuItemRa
                 className={cn(
                   radioClass,
                   radioVariant[variant][color],
-                  disableVariant[variant],
+                  disabledVariant[variant],
                   afterClass,
                 )}
                 name={name}

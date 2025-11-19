@@ -7,10 +7,10 @@ import { SignInIcon } from '@/components/atoms/icons'
 import { P } from '@/components/atoms/typography/P'
 import { Select } from '@/components/molecules/form/comboboxes/SelectField/Select'
 import { Tooltip } from '@/components/molecules/popovers/Tooltip'
+import { paperVariant } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
 import { MobilePagination } from '../../common/Pagination/MobilePagination'
-import { rowgroupVariant } from '../GridHeader/GridHeader.style'
 import { useDataGridContext } from '../utils/DataGridContext'
 import { exportToCSV } from '../utils/utils'
 import { gridRowPadding } from './GridFooter.style'
@@ -24,6 +24,8 @@ export type GridFooterProps<T extends Record<string, unknown> = Record<string, u
   pages: number[]
   /** current selected page for pagination */
   selectedPage: number
+  /** loading state for pagination */
+  isLoading?: boolean
   /** page selecting function for pagination */
   setSelectedPage: (value: number) => void
   /** rowsPerPage selecting function */
@@ -36,6 +38,7 @@ export const GridFooter = <T extends Record<string, unknown> = Record<string, un
   selectedRowsPerPage,
   pages,
   selectedPage,
+  isLoading,
   setSelectedPage,
   setSelectedRowsPerPage,
 }: GridFooterProps<T>) => {
@@ -75,7 +78,7 @@ export const GridFooter = <T extends Record<string, unknown> = Record<string, un
 
   return (
     <div
-      className={cn('GridFooter', 'rounded-b-md border', rowgroupVariant[variant][color])}
+      className={cn('GridFooter', 'rounded-b-md border', paperVariant[variant][color])}
       role="rowgroup"
     >
       <div className={cn('GridRow', 'relative', gridRowPadding[size])} role="row">
@@ -136,6 +139,7 @@ export const GridFooter = <T extends Record<string, unknown> = Record<string, un
             variant={variant}
             color={color}
             size={size}
+            isLoading={isLoading}
             buttonProps={{
               className: 'border-transparent dark:border-transparent',
               tabIndex: -1,

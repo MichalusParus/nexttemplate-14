@@ -1,44 +1,13 @@
+import { childrenIconSize, textSize } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
 export const chipClass = cn(
   'flex max-w-max items-center gap-1 rounded-3xl border px-2 text-inherit',
 )
 
-export const chipVariant = {
-  text: {
-    primary: cn('border-transparent bg-transparent text-primary-800 dark:text-primary-100'),
-    secondary: cn('border-transparent bg-transparent text-secondary-800 dark:text-secondary-100'),
-    terciary: cn('border-transparent bg-transparent text-terciary-800 dark:text-terciary-100'),
-    error: cn('border-transparent bg-transparent text-error-800 dark:text-error-100'),
-    none: '',
-  },
-  outlined: {
-    primary: cn(
-      'border-primary-800 bg-transparent text-primary-800 dark:border-primary-100 dark:text-primary-100',
-    ),
-    secondary: cn(
-      'border-secondary-800 bg-transparent text-secondary-800 dark:border-secondary-100 dark:text-secondary-100',
-    ),
-    terciary: cn(
-      'border-terciary-800 bg-transparent text-terciary-800 dark:border-terciary-100 dark:text-terciary-100',
-    ),
-    error: cn(
-      'border-error-800 bg-transparent text-error-800 dark:border-error-100 dark:text-error-100',
-    ),
-    none: '',
-  },
-  contained: {
-    primary: cn('border-primary-800 bg-primary-800 text-primary-100'),
-    secondary: cn('border-secondary-800 bg-secondary-800 text-secondary-100'),
-    terciary: cn('border-terciary-800 bg-terciary-800 text-terciary-100'),
-    error: cn('border-error-800 bg-error-800 text-error-100'),
-    none: '',
-  },
-}
-
 export const chipSize = {
-  sm: cn('text-sm leading-4 [&_svg]:h-sm-icon [&_svg]:min-w-sm-icon'),
-  md: cn('text-base leading-5 [&_svg]:h-md-icon [&_svg]:min-w-md-icon'),
-  lg: cn('text-lg leading-6 [&_svg]:h-lg-icon [&_svg]:min-w-lg-icon'),
+  sm: cn(childrenIconSize.sm, textSize.sm, 'leading-4'),
+  md: cn(childrenIconSize.md, textSize.md, 'leading-5'),
+  lg: cn(childrenIconSize.lg, textSize.lg, 'leading-6'),
   none: '',
 }

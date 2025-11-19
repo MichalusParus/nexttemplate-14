@@ -2,7 +2,7 @@
 import { forwardRef } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
-import { Checkbox, CheckboxProps } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
+import { Checkbox, CheckboxProps } from '@/components/molecules/form/toggles/CheckboxField/Checkbox'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -39,7 +39,7 @@ export const MenuItemCheckbox = forwardRef<HTMLButtonElement | null, MenuItemChe
       <li role="presentation">
         <Button
           className={cn(
-            'w-full justify-start gap-0 rounded-none border-transparent dark:border-transparent',
+            'w-full justify-start rounded-none border-transparent dark:border-transparent',
             className,
           )}
           variant={variant}

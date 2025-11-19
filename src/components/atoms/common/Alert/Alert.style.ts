@@ -36,10 +36,3 @@ export const alertSize = {
   lg: cn('px-2 py-1.5 text-lg'),
   none: '',
 }
-
-export const alertIconSize = {
-  sm: cn('[&_svg]:h-sm-icon [&_svg]:w-sm-icon [&_svg]:min-w-sm-icon'),
-  md: cn('[&_svg]:h-md-icon [&_svg]:w-md-icon [&_svg]:min-w-md-icon'),
-  lg: cn('[&_svg]:h-lg-icon [&_svg]:w-lg-icon [&_svg]:min-w-lg-icon'),
-  none: '',
-}

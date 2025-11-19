@@ -7,11 +7,4 @@ export const listColor = {
   none: '',
 }
 
-export const listSize = {
-  sm: cn('text-sm'),
-  md: cn('text-base'),
-  lg: cn('text-lg'),
-  none: '',
-}
-
 export const liIconClass = cn('[&>svg]:absolute [&>svg]:left-3')

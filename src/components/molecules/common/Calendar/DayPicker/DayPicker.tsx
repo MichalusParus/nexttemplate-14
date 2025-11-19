@@ -57,7 +57,7 @@ export const DayPicker = ({
             role="columnheader"
           >
             <P className={cn(variant === 'contained' && 'text-contrast')} size={size}>
-              {t(`days.${getDay(day)}`).slice(0, 3)}
+              {t(`days.${getDay(day)}` as Parameters<typeof t>[0]).slice(0, 3)}
             </P>
           </div>
         ))}

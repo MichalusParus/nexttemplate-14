@@ -1,10 +1,11 @@
 import { forwardRef, HTMLAttributes } from 'react'
 
+import { textSize } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { Ghost } from '../../loaders/Ghost'
-import { ghostAligment, titleColor, titleSize } from './Title.style'
+import { ghostAligment, titleColor } from './Title.style'
 
 type NativeHeadingProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'color' | 'className'>
 
@@ -44,7 +45,7 @@ export const Title = forwardRef<HTMLHeadingElement | null, TitleProps>(
 
     return (
       <Element
-        className={cn('w-full font-semibold', titleColor[color], titleSize[size], align, className)}
+        className={cn('w-full font-semibold', titleColor[color], textSize[size], align, className)}
         ref={ref}
         {...rest}
       >

@@ -94,7 +94,7 @@ export const ToastProvider = forwardRef<HTMLDivElement | null, ToastProviderProp
     return (
       <ToastContext.Provider value={contextValue}>
         {children}
-        {!!toasts.length &&
+        {!!toasts.length && container &&
           createPortal(
             <div
               className={cn(

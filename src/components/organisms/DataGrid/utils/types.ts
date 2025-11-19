@@ -5,9 +5,9 @@ import { MultiDatePickerProps } from '@/components/molecules/form/comboboxes/Mul
 import { MultiSelectProps } from '@/components/molecules/form/comboboxes/MultiSelectField/MultiSelect'
 import { RangeDatePickerProps } from '@/components/molecules/form/comboboxes/RangeDatePickerField/RangeDatePicker'
 import { SelectProps } from '@/components/molecules/form/comboboxes/SelectField/Select'
-import { MultiToggleGroupProps } from '@/components/molecules/form/inputs/MultiToggleGroupField/MultiToggleGroup'
+import { MultiToggleGroupProps } from '@/components/molecules/form/toggles/MultiToggleGroupField/MultiToggleGroup'
 import { TextInputProps } from '@/components/molecules/form/inputs/TextField/TextInput'
-import { ToggleGroupProps } from '@/components/molecules/form/inputs/ToggleGroupField/ToggleGroup'
+import { ToggleGroupProps } from '@/components/molecules/form/toggles/ToggleGroupField/ToggleGroup'
 import { OptionType } from '@/components/utils/types'
 import { FilterOperator } from '@/utils/hooks/useFilterData'
 

@@ -11,4 +11,15 @@ const customJestConfig = {
   },
 }
 
-module.exports = createJestConfig(customJestConfig)
+// For pnpm compatibility, we need to export as async function
+module.exports = async () => {
+  const jestConfig = await createJestConfig(customJestConfig)()
+  return {
+    ...jestConfig,
+    // Override transformIgnorePatterns to transform next-intl and use-intl
+    // This pattern works with pnpm's .pnpm directory structure
+    transformIgnorePatterns: [
+      'node_modules/(?!(.pnpm/)?next-intl|(.pnpm/)?use-intl)',
+    ],
+  }
+}

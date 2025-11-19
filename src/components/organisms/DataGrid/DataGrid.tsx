@@ -221,6 +221,7 @@ function DataGridComponent<T extends Record<string, unknown> = Record<string, un
             selectedRowsPerPage={selectedRowsPerPage}
             pages={pages}
             selectedPage={selectedPage}
+            isLoading={isLoading}
             setSelectedPage={setSelectedPage}
             setSelectedRowsPerPage={setSelectedRowsPerPage}
           />

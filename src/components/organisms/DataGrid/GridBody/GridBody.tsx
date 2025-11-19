@@ -3,9 +3,9 @@ import { useTranslations } from 'next-intl'
 
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { P } from '@/components/atoms/typography/P'
+import { paperVariant, textVariant } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
-import { rowgroupVariant } from '../GridHeader/GridHeader.style'
 import { useDataGridContext } from '../utils/DataGridContext'
 import { GridRow } from './GridRow'
 
@@ -49,7 +49,15 @@ export const GridBody = <T extends Record<string, unknown> = Record<string, unkn
   const { variant, color, size } = useDataGridContext()
 
   return (
-    <div className={cn('GridBody', 'border', rowgroupVariant[variant][color])} role="rowgroup">
+    <div
+      className={cn(
+        'GridBody',
+        'border',
+        paperVariant[variant][color],
+        textVariant[variant][color],
+      )}
+      role="rowgroup"
+    >
       <ScrollShadow height={maxHeight} gutter disableHorizontal>
         {isLoading &&
           Array.from({ length: rowsPerPage || 10 }, (_, i) => (

@@ -80,8 +80,11 @@ describe('TextInput', () => {
   it('disabled', () => {
     render(<TextInput name="name" value="" disabled onChange={() => {}} />)
     const inputRole = screen.getByRole('textbox')
+    const inputWrapTestId = screen.getByTestId('InputWrap')
 
     expect(inputRole).toHaveAttribute('disabled')
+    expect(inputWrapTestId).toHaveAttribute('aria-disabled', 'true')
+    expect(inputWrapTestId).toHaveClass('disabled')
   })
 
   it('ref', () => {

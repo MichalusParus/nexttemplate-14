@@ -1,11 +1,11 @@
 import { PropsWithChildren, ReactNode } from 'react'
 
-import { buttonIconSize } from '@/components/atoms/common/Button/Button.style'
 import { Ghost } from '@/components/atoms/loaders/Ghost'
+import { childrenIconSize, textSize } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { liIconClass, listColor, listSize } from './Li.style'
+import { liIconClass, listColor } from './Li.style'
 
 export type LiProps = Omit<StyleProps, 'variant'> & {
   /** for passing custom tailwind classes */
@@ -30,8 +30,8 @@ export const Li = ({
         'Li',
         liIconClass,
         listColor[color],
-        listSize[size],
-        buttonIconSize[size],
+        textSize[size],
+        childrenIconSize[size],
         className,
       )}
     >

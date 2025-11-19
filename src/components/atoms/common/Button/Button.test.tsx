@@ -62,7 +62,6 @@ describe('Button', () => {
 
     expect(statusRole).toBeInTheDocument()
     expect(buttonRole).toHaveAttribute('aria-busy', 'true')
-    expect(buttonRole).toHaveAttribute('aria-disabled', 'true')
     expect(buttonText).toHaveAttribute('aria-hidden', 'true')
     expect(buttonText).toHaveClass('invisible')
     fireEvent.click(screen.getByRole('button'))

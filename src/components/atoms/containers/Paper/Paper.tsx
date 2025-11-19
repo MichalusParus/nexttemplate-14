@@ -1,9 +1,8 @@
 import { forwardRef, PropsWithChildren, ReactNode } from 'react'
 
+import { paperVariant } from '@/components/utils/common.style'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
-
-import { paperVariant } from './Paper.style'
 
 export type PaperProps = NativeDivProps &
   Omit<StyleProps, 'size'> & {
@@ -38,6 +37,7 @@ export const Paper = forwardRef<HTMLDivElement | null, PropsWithChildren<PaperPr
       <div
         className={cn(
           'Paper',
+          'border',
           paperVariant[variant][color],
           padding,
           rounded,

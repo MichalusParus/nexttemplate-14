@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 
 import { getOptions, textContent, titleSizeVariants } from '../../../../../.storybook/helpers'
 import { CheckIcon } from '../../icons'

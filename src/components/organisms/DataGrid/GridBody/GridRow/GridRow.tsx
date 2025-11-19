@@ -3,10 +3,11 @@ import { memo } from 'react'
 
 import { buttonVariant, iconOnlySize } from '@/components/atoms/common/Button/Button.style'
 import { P } from '@/components/atoms/typography/P'
-import { Checkbox } from '@/components/molecules/form/inputs/CheckboxField/Checkbox'
+import { Checkbox } from '@/components/molecules/form/toggles/CheckboxField/Checkbox'
+import { paddingSize, textSize } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
-import { cellOverflow, cellSize } from '../../GridHeader/ColumnHead/ColumnHead.style'
+import { cellOverflow } from '../../GridHeader/ColumnHead/ColumnHead.style'
 import { useDataGridContext } from '../../utils/DataGridContext'
 
 export type GridRowProps<T extends Record<string, unknown> = Record<string, unknown>> = {
@@ -110,7 +111,13 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
         renderCell(
           renderCellContent(col),
           `${rowId}-${col.name}`,
-          cn('font-normal', cellOverflow, cellSize[size], !isRowInteractive && 'cursor-text'),
+          cn(
+            'font-normal',
+            cellOverflow,
+            paddingSize[size],
+            textSize[size],
+            !isRowInteractive && 'cursor-text',
+          ),
           index + (multiselect ? 2 : 1),
         ),
       )

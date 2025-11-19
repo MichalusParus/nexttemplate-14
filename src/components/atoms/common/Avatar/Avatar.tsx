@@ -2,13 +2,13 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef } from 'react'
 
+import { childrenIconSize, paperVariant, textVariant } from '@/components/utils/common.style'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { ProfileIcon } from '../../icons'
-import { buttonIconSize } from '../Button/Button.style'
 import { Image } from '../Image'
-import { avatarClass, avatarSize, avatarVariant } from './Avatar.style'
+import { avatarClass, avatarSize } from './Avatar.style'
 
 export type AvatarProps = NativeDivProps &
   StyleProps & {
@@ -57,7 +57,7 @@ export const Avatar = forwardRef<HTMLDivElement | null, AvatarProps>(
         )
       } else {
         return (
-          <div className={buttonIconSize[size]} role="img" aria-label={t('profile')}>
+          <div className={childrenIconSize[size]} role="img" aria-label={t('profile')}>
             <ProfileIcon />
           </div>
         )
@@ -69,7 +69,8 @@ export const Avatar = forwardRef<HTMLDivElement | null, AvatarProps>(
         className={cn(
           'Avatar',
           avatarClass,
-          avatarVariant[variant][color],
+          paperVariant[variant][color],
+          textVariant[variant][color],
           avatarSize[size],
           className,
         )}

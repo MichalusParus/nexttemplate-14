@@ -93,6 +93,8 @@ export const Drawer = forwardRef<HTMLDivElement | null, PropsWithChildren<Drawer
     const { className: paperClassName, ...restPaperProps } = paperProps
 
     useEffect(() => {
+      if (typeof window === 'undefined') return
+
       let timerId: NodeJS.Timeout
       if (isOpen) {
         setIsVisible(true)
@@ -111,6 +113,7 @@ export const Drawer = forwardRef<HTMLDivElement | null, PropsWithChildren<Drawer
     }, [isOpen, modal])
 
     if (!isOpen && !isVisible) return null
+    if (!container) return null
 
     return createPortal(
       <>

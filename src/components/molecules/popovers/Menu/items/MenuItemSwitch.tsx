@@ -2,7 +2,7 @@
 import { forwardRef } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
-import { Switch, SwitchProps } from '@/components/molecules/form/inputs/SwitchField/Switch'
+import { Switch, SwitchProps } from '@/components/molecules/form/toggles/SwitchField/Switch'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -39,7 +39,7 @@ export const MenuItemSwitch = forwardRef<HTMLButtonElement | null, MenuItemSwitc
       <li role="presentation">
         <Button
           className={cn(
-            'w-full justify-start gap-0 rounded-none border-transparent dark:border-transparent',
+            'w-full justify-start rounded-none border-transparent dark:border-transparent',
             className,
           )}
           variant={variant}

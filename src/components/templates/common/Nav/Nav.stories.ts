@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 
 import { Nav } from '.'
 
@@ -18,19 +18,19 @@ export default meta
 type Story = StoryObj<typeof Nav>
 
 export const Default: Story = {
-  parameters: {
-    backgrounds: {
-      default: 'primary',
-    },
-  },
   args: { className: '' },
+  globals: {
+    backgrounds: {
+      value: 'primary'
+    }
+  },
 }
 
 export const Menu: Story = {
-  parameters: {
-    backgrounds: {
-      default: 'bg',
-    },
-  },
   args: { ...Default.args, menu: true },
+  globals: {
+    backgrounds: {
+      value: 'bg'
+    }
+  },
 }

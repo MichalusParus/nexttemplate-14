@@ -1,23 +1,18 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, useEffect, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 import { FileRejection, useDropzone } from 'react-dropzone'
 
-import { buttonIconSize as inputIconSize } from '@/components/atoms/common/Button/Button.style'
 import { SignOutIcon } from '@/components/atoms/icons'
 import { Span } from '@/components/atoms/typography/Span'
 import { useToast } from '@/components/molecules/popovers/ToastProvider'
+import { childrenIconSize, disabledClassVariant } from '@/components/utils/common.style'
 import { InputProps, NativeInputProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import {
-  disabledVariant,
-  inputErrorClass,
-  inputSize,
-  inputVariant,
-} from '../../TextField/TextInput/TextInput.style'
+import { inputSize } from '../../TextField/TextInput/TextInput.style'
 import { FileDetail, FileDetailProps } from './FileDetail'
-import { fileInputWrapClass } from './FileInput.style'
+import { fileInputVariant, fileInputWrapClass } from './FileInput.style'
 
 const defaultAllowedFileTypes = ['application/pdf', 'image/jpeg', 'image/png']
 
@@ -74,7 +69,7 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
     },
     ref,
   ) => {
-    const t = useTranslations('')
+    const t = useTranslations()
     const { addToast } = useToast()
     const defaultValue = (Array.isArray(value) ? value : []).map(f => ({
       file: f,
@@ -152,37 +147,52 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
       onDrop: handleDrop,
-      noKeyboard: true,
       onDropAccepted: onDropAccepted,
       onDropRejected: onDropRejected,
+      disabled,
     })
+
+    const inputPropsObj = getInputProps({
+      id: name,
+      name,
+      accept: allowedFileTypes.join(','),
+      ...rest,
+    })
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if (disabled) return
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        inputRef.current?.click()
+      }
+    }
 
     return (
       <div className="flex w-full flex-col gap-2">
         <div
-          className={cn(
-            'InputWrap',
-            fileInputWrapClass,
-            inputVariant[variant][color],
-            inputSize[size],
-            error && !disabled && 'error ' + inputErrorClass,
-            disabled && 'disabled ' + disabledVariant[variant],
-            inputIconSize[size],
-            className,
-          )}
-          {...getRootProps()}
-          ref={ref}
-          data-testid="InputWrap"
+          {...getRootProps({
+            className: cn(
+              'InputWrap',
+              fileInputWrapClass,
+              fileInputVariant[variant][color],
+              inputSize[size],
+              error && 'error',
+              disabled && 'disabled ' + disabledClassVariant[variant],
+              childrenIconSize[size],
+              className,
+            ),
+            'aria-disabled': disabled,
+            ref,
+            'data-testid': 'InputWrap',
+            role: 'presentation',
+            onKeyDown: handleKeyDown,
+          })}
         >
           <SignOutIcon className="-rotate-90" />
           <input
-            {...getInputProps({
-              id: name,
-              name,
-              disabled,
-              accept: allowedFileTypes.join(','),
-              ...rest,
-            })}
+            {...inputPropsObj}
+            ref={inputRef}
             data-testid="FileInput"
           />
           {isDragActive ? (

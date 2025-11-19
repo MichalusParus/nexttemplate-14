@@ -141,6 +141,7 @@ export const Dropdown = forwardRef<HTMLDivElement | null, PropsWithChildren<Drop
     }
 
     if (disablePortal) return renderDropdown()
+    if (!container) return null
 
     return createPortal(renderDropdown(), container)
   },

@@ -1,14 +1,12 @@
 'use client'
 import { forwardRef, ReactNode } from 'react'
 
-import { buttonIconSize as inputIconSize } from '@/components/atoms/common/Button/Button.style'
+import { childrenIconSize, disabledClassVariant } from '@/components/utils/common.style'
 import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import {
-  disabledVariant,
   inputClass,
-  inputErrorClass,
   inputSize,
   inputVariant,
   inputWrapClass,
@@ -55,11 +53,12 @@ export const TextInput = forwardRef<HTMLInputElement | null, TextInputProps>(
           'InputWrap',
           inputWrapClass,
           inputVariant[variant][color],
-          error && !disabled && 'error ' + inputErrorClass,
-          disabled && 'disabled ' + disabledVariant[variant],
-          inputIconSize[size],
+          error && 'error',
+          disabled && 'disabled ' + disabledClassVariant[variant],
+          childrenIconSize[size],
           className,
         )}
+        aria-disabled={disabled}
         data-testid="InputWrap"
       >
         {startIcon && (
