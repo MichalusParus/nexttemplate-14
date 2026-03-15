@@ -70,22 +70,29 @@ const ColumnHeadComponent = ({
 
   return (
     <div
-      className={cn('ColumnHeader group grid items-center overflow-hidden', className)}
+      className={cn(
+        'ColumnHeader group grid items-center overflow-hidden focus-visible:ring focus-visible:z-10 ring-current focus:outline-none',
+        className,
+      )}
       style={{
         ...(gridColumn && { gridColumn }),
         ...(gridRow && { gridRow }),
-        gridTemplateColumns: canFilterColumn ? '1fr auto' : '1fr',
+        gridTemplateColumns: canFilterColumn
+          ? align === 'right' ? 'auto 1fr' : '1fr auto'
+          : '1fr',
       }}
       role="columnheader"
       aria-sort={ariaSorted}
       aria-rowindex={ariaRowIndex}
+      tabIndex={isLeafColumn ? -1 : undefined}
       data-testid="ColumnHeader"
     >
+      {align === 'right' && canFilterColumn && <GridFilter column={column} />}
       {canSortColumn ? (
         <Button
           className={cn(
-            'group w-full min-w-0 gap-1 rounded-none border-none pr-0.5',
-            alignColumn[align],
+            'group w-full min-w-0 gap-1 rounded-none border-none focus-visible:ring-0',
+            align === 'right' ? 'flex-row-reverse justify-start pl-0.5' : cn('pr-0.5', alignColumn[align]),
           )}
           variant={variant}
           color={color}
@@ -94,6 +101,7 @@ const ColumnHeadComponent = ({
           onClick={handleSortClick}
           aria-label={t('sortIn', { field: column.label })}
           data-testid="ColumnHeadSortButton"
+          tabIndex={-1}
         >
           <Ellipsis>{column.label}</Ellipsis>
           <ChevronIcon className={cn('shrink-0 transition-all duration-200', chevronState)} />
@@ -105,7 +113,7 @@ const ColumnHeadComponent = ({
           <Ellipsis>{column.label}</Ellipsis>
         </div>
       )}
-      {canFilterColumn && <GridFilter column={column} />}
+      {align !== 'right' && canFilterColumn && <GridFilter column={column} />}
     </div>
   )
 }

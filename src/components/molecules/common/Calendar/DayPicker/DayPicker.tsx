@@ -1,10 +1,11 @@
 'use client'
 import { eachDayOfInterval, endOfWeek, format, getDay, isSameDay, startOfWeek } from 'date-fns'
 import { useTranslations } from 'next-intl'
-import { useMemo } from 'react'
+import { MutableRefObject, useMemo } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { P } from '@/components/atoms/typography/P'
+import { disabledClassVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -22,6 +23,8 @@ export type DayPickerProps = StyleProps & {
   weekStart?: 0 | 1
   /** optional combobox props for select combobox */
   buttonProps?: Partial<ButtonProps>
+  /** ref for the grid container (used by useCalendarFocus) */
+  gridRef?: MutableRefObject<HTMLDivElement | null>
   /** onChange function */
   onChange: (date: Date) => void
 }
@@ -34,6 +37,7 @@ export const DayPicker = ({
   size = 'md',
   weekStart,
   buttonProps = {},
+  gridRef,
   onChange,
 }: DayPickerProps) => {
   const t = useTranslations('Components')
@@ -48,7 +52,7 @@ export const DayPicker = ({
   )
 
   return (
-    <div className={cn('DayPicker', 'grid grid-cols-7 gap-1')} role="grid" data-testid="DayPicker">
+    <div className={cn('DayPicker', 'grid grid-cols-7 gap-1')} role="grid" data-testid="DayPicker" ref={gridRef}>
       <div className="contents" role="row">
         {daysInWeek.map(day => (
           <div
@@ -71,6 +75,8 @@ export const DayPicker = ({
               className={cn(
                 'DateButton',
                 'w-full border-none font-normal',
+                isDisabled && 'disabled',
+                disabledClassVariant[variant],
                 isSelected && 'selected shadow-ring',
                 !isCurrent && 'opacity-50',
                 buttonClassName,
@@ -83,10 +89,11 @@ export const DayPicker = ({
               hideShadow
               tabIndex={-1}
               role="gridcell"
+              data-date={day.toISOString()}
               aria-selected={isSelected}
               aria-current={isSameDay(day, new Date()) ? 'date' : undefined}
-              disabled={isDisabled}
-              onClick={() => onChange(day)}
+              aria-disabled={isDisabled || undefined}
+              onClick={() => !isDisabled && onChange(day)}
               {...restButtonProps}
             />
           ))}

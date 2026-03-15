@@ -12,9 +12,10 @@ import {
   startOfYear,
 } from 'date-fns'
 import { useTranslations } from 'next-intl'
-import { useCallback, useMemo } from 'react'
+import { MutableRefObject, useCallback, useMemo } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
+import { disabledClassVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -25,6 +26,8 @@ export type MonthPickerProps = StyleProps & {
   minMaxDate?: { min?: Date; max?: Date }
   /** optional combobox props for select combobox */
   buttonProps?: Partial<ButtonProps>
+  /** ref for the grid container (used by useCalendarFocus) */
+  gridRef?: MutableRefObject<HTMLDivElement | null>
   /** set calendar state function */
   setCalendarState: (state: 'days' | 'months' | 'years') => void
   /** set current month function */
@@ -39,6 +42,7 @@ export const MonthPicker = ({
   color = 'primary',
   size = 'md',
   buttonProps = {},
+  gridRef,
   setCalendarState,
   setCurrentMonth,
 }: MonthPickerProps) => {
@@ -69,36 +73,41 @@ export const MonthPicker = ({
       className={cn('MonthPicker', 'grid grid-cols-3 gap-x-1 gap-y-6 py-6')}
       role="grid"
       data-testid="MonthPicker"
+      ref={gridRef}
     >
       {monthRows.map(row => (
         <div key={String([row[0], row[6]])} className="contents" role="row">
-          {row.map(m => (
-            <Button
-              key={m.toDateString()}
-              className={cn(
-                'DateButton',
-                'w-full border-none font-normal',
-                isSameMonth(m, month) && 'selected shadow-ring',
-                buttonClassName,
-              )}
-              variant={variant}
-              color={color}
-              size={size}
-              startIcon={t(`months.${getMonth(m)}` as Parameters<typeof t>[0])}
-              aria-label={t(`months.${getMonth(m)}` as Parameters<typeof t>[0])}
-              hideShadow
-              disabled={
-                (minMaxDate?.min && isBefore(startOfMonth(m), startOfMonth(minMaxDate?.min))) ||
-                (minMaxDate?.max && isAfter(startOfMonth(m), startOfMonth(minMaxDate?.max)))
-              }
-              tabIndex={-1}
-              role="gridcell"
-              aria-selected={isSameMonth(m, month)}
-              aria-current={isSameMonth(m, new Date()) ? 'date' : undefined}
-              onClick={() => handleMonthChange(m)}
-              {...restButtonProps}
-            />
-          ))}
+          {row.map(m => {
+            const isDisabled =
+              (minMaxDate?.min && isBefore(startOfMonth(m), startOfMonth(minMaxDate?.min))) ||
+              (minMaxDate?.max && isAfter(startOfMonth(m), startOfMonth(minMaxDate?.max)))
+            return (
+              <Button
+                key={m.toDateString()}
+                className={cn(
+                  'DateButton',
+                  'w-full border-none font-normal',
+                  isDisabled && 'disabled',
+                  disabledClassVariant[variant],
+                  isSameMonth(m, month) && 'selected shadow-ring',
+                  buttonClassName,
+                )}
+                variant={variant}
+                color={color}
+                size={size}
+                startIcon={t(`months.${getMonth(m)}` as Parameters<typeof t>[0])}
+                aria-label={t(`months.${getMonth(m)}` as Parameters<typeof t>[0])}
+                hideShadow
+                aria-disabled={isDisabled || undefined}
+                tabIndex={-1}
+                role="gridcell"
+                aria-selected={isSameMonth(m, month)}
+                aria-current={isSameMonth(m, new Date()) ? 'date' : undefined}
+                onClick={() => !isDisabled && handleMonthChange(m)}
+                {...restButtonProps}
+              />
+            )
+          })}
         </div>
       ))}
     </div>

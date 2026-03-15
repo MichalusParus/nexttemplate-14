@@ -135,6 +135,24 @@ describe('Tooltip', () => {
     focusMock.mockRestore()
   })
 
+  it('does not show tooltip when child has aria-expanded="true"', async () => {
+    render(
+      <Tooltip title="tooltip">
+        <button data-testid="button" aria-expanded="true">
+          Children
+        </button>
+      </Tooltip>,
+    )
+    const buttonTestId = screen.getByTestId('button')
+
+    await act(async () => {
+      fireEvent.mouseEnter(buttonTestId)
+      jest.advanceTimersByTime(defaultDelay + 100)
+    })
+
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
+  })
+
   it('axe', async () => {
     jest.setTimeout(10000)
     jest.useRealTimers()

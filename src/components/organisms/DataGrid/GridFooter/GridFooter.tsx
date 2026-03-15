@@ -78,75 +78,75 @@ export const GridFooter = <T extends Record<string, unknown> = Record<string, un
 
   return (
     <div
-      className={cn('GridFooter', 'rounded-b-md border', paperVariant[variant][color])}
-      role="rowgroup"
+      className={cn('GridFooter', 'min-w-max rounded-b-md border pr-2', paperVariant[variant][color])}
+      role="toolbar"
+      aria-label="Grid controls"
     >
-      <div className={cn('GridRow', 'relative', gridRowPadding[size])} role="row">
-        <div
-          className={cn('GridCell', 'flex w-full items-center justify-between')}
-          role="gridcell"
-          aria-colspan={columnsInRow.length}
-        >
-          <div className={cn('LeftWrap', 'flex items-center gap-2')}>
-            {filteredData.length > (rowPerPageOptions[0]?.value ?? 10) && (
-              <Select<number>
-                className={cn(
-                  'RowsPerPageSelect',
-                  'items-center border-transparent dark:border-transparent',
-                )}
-                name="rowsPerPage"
-                placement="top"
-                placeholder="Rows"
-                value={selectedRowsPerPage}
-                options={rowPerPageOptions}
+      <div
+        className={cn(
+          'GridFooterContent',
+          'relative flex w-full items-center justify-between',
+          gridRowPadding[size],
+        )}
+      >
+        <div className={cn('LeftWrap', 'flex items-center gap-2')}>
+          {filteredDataCount > (rowPerPageOptions[0]?.value ?? 10) && (
+            <Select<number>
+              className={cn(
+                'RowsPerPageSelect',
+                'items-center border-transparent dark:border-transparent',
+              )}
+              name="rowsPerPage"
+              placement="top"
+              placeholder="Rows"
+              value={selectedRowsPerPage}
+              options={rowPerPageOptions}
+              variant={variant}
+              color={color}
+              size={size}
+              onChange={handleRowsPerPage}
+            />
+          )}
+          {!hideExport && filteredDataCount > 0 && (
+            <Tooltip title="Export">
+              <Button
+                className={cn('ExportButton', 'border-transparent dark:border-transparent')}
                 variant={variant}
                 color={color}
                 size={size}
-                onChange={handleRowsPerPage}
+                startIcon={<SignInIcon className="rotate-90" />}
+                aria-label="Export"
+                hideShadow
+                onClick={handleExport}
+                data-testid="GridExportButton"
               />
-            )}
-            {!hideExport && filteredData.length > 0 && (
-              <Tooltip title="Export">
-                <Button
-                  className={cn('ExportButton', 'border-transparent dark:border-transparent')}
-                  variant={variant}
-                  color={color}
-                  size={size}
-                  startIcon={<SignInIcon className="rotate-90" />}
-                  aria-label="Export"
-                  hideShadow
-                  onClick={handleExport}
-                  data-testid="GridExportButton"
-                />
-              </Tooltip>
-            )}
-          </div>
-          {selectedRowsCount > 0 && (
-            <P
-              size={size}
-              color="none"
-              className="whitespace-nowrap"
-              aria-live="polite"
-              aria-atomic="true"
-              data-testid="GridSelectionCount"
-            >
-              {t('selectedOf', { count: selectedRowsCount, total: filteredDataCount })}
-            </P>
+            </Tooltip>
           )}
-          <MobilePagination
-            count={pages.length}
-            page={selectedPage}
-            variant={variant}
-            color={color}
-            size={size}
-            isLoading={isLoading}
-            buttonProps={{
-              className: 'border-transparent dark:border-transparent',
-              tabIndex: -1,
-            }}
-            onChange={setSelectedPage}
-          />
         </div>
+        {selectedRowsCount > 0 && (
+          <P
+            size={size}
+            color="none"
+            className="whitespace-nowrap"
+            aria-live="polite"
+            aria-atomic="true"
+            data-testid="GridSelectionCount"
+          >
+            {t('selectedOf', { count: selectedRowsCount, total: filteredDataCount })}
+          </P>
+        )}
+        <MobilePagination
+          count={pages.length}
+          page={selectedPage}
+          variant={variant}
+          color={color}
+          size={size}
+          isLoading={isLoading}
+          buttonProps={{
+            className: 'border-transparent dark:border-transparent',
+          }}
+          onChange={setSelectedPage}
+        />
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef } from 'react'
+import { forwardRef, useRef } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
@@ -49,8 +49,26 @@ export const MobilePagination = forwardRef<HTMLDivElement | null, MobilePaginati
     ref,
   ) => {
     const t = useTranslations('Components')
+    const previousButtonRef = useRef<HTMLButtonElement>(null)
+    const nextButtonRef = useRef<HTMLButtonElement>(null)
     const { className: buttonClassName, ...restButtonProps } = buttonProps
     const Element = hideNav ? 'div' : 'nav'
+
+    const handlePrevious = () => {
+      const newPage = page - 1
+      if (newPage === 1 && nextButtonRef.current) {
+        nextButtonRef.current.focus()
+      }
+      onChange(newPage)
+    }
+
+    const handleNext = () => {
+      const newPage = page + loadMoreCount + 1
+      if (newPage + loadMoreCount >= count && previousButtonRef.current) {
+        previousButtonRef.current.focus()
+      }
+      onChange(newPage)
+    }
 
     return (
       <Element
@@ -67,15 +85,16 @@ export const MobilePagination = forwardRef<HTMLDivElement | null, MobilePaginati
       >
         {page !== 1 && (
           <Button
-            className={cn('LeftChevronButton', 'rotate-90', arrowClass, buttonClassName)}
-            variant={variant}
-            color={color}
-            size={size}
-            disabled={isLoading}
-            startIcon={<ChevronIcon />}
-            onClick={() => onChange(page - 1)}
-            aria-label={t('previousPage', { page: page - 1 })}
-            hideShadow
+          className={cn('LeftChevronButton', 'rotate-90', arrowClass, buttonClassName)}
+          variant={variant}
+          color={color}
+          size={size}
+          disabled={isLoading}
+          startIcon={<ChevronIcon />}
+          onClick={handlePrevious}
+          aria-label={t('previousPage', { page: page - 1 })}
+          hideShadow
+          ref={previousButtonRef}
             {...restButtonProps}
           />
         )}
@@ -94,17 +113,18 @@ export const MobilePagination = forwardRef<HTMLDivElement | null, MobilePaginati
         </P>
         {page + loadMoreCount < count && (
           <Button
-            className={cn('RightChevronButton', '-rotate-90', arrowClass, buttonClassName)}
-            variant={variant}
-            color={color}
-            size={size}
-            startIcon={<ChevronIcon />}
-            disabled={isLoading}
-            onClick={() => onChange(page + loadMoreCount + 1)}
-            aria-label={t('nextPage', {
-              page: page + loadMoreCount + 1,
-            })}
-            hideShadow
+          className={cn('RightChevronButton', '-rotate-90', arrowClass, buttonClassName)}
+          variant={variant}
+          color={color}
+          size={size}
+          startIcon={<ChevronIcon />}
+          disabled={isLoading}
+          onClick={handleNext}
+          aria-label={t('nextPage', {
+            page: page + loadMoreCount + 1,
+          })}
+          hideShadow
+          ref={nextButtonRef}
             {...restButtonProps}
           />
         )}

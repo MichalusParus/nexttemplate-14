@@ -19,7 +19,8 @@ describe('Dropdown', () => {
         anchorRef={anchorRef}
         width={500}
         height="max-h-[40vh]"
-        padding="p-8"
+        paddingX="px-4"
+        paddingY="p-8"
         onClose={() => {}}
       >
         Children
@@ -35,8 +36,8 @@ describe('Dropdown', () => {
     expect(dropdownTestId).toHaveStyle('width: 500px')
     expect(contentWrapTestId).toHaveClass('max-h-[40vh]')
     expect(dropdownTestId).toHaveTextContent('Children')
-    expect(paperTestId).toBeInTheDocument()
     expect(paperTestId).toHaveClass('p-8')
+    expect(contentWrapTestId).toHaveClass('px-4')
     expect(scrollShadowTestId).toBeInTheDocument()
   })
 

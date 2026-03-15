@@ -13,6 +13,7 @@ import {
 
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
+import { FOCUS_SELECTORS, useFocus } from '@/components/utils/hooks/useFocus'
 import { useGroupedOptions } from '@/components/utils/hooks/useGroupedOptions'
 import { OptionGroupType, OptionType } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
@@ -22,7 +23,7 @@ import { SelectCombobox, SelectComboboxProps } from './SelectCombobox'
 
 export type SelectProps<T = string> = Omit<
   SelectComboboxProps<T>,
-  'isOpen' | 'handleOpen' | 'selectedOptions' | 'handleOnChange'
+  'isOpen' | 'handleToggle' | 'selectedOptions' | 'handleOnChange'
 > & {
   /** position of dropdown */
   placement?: Placement
@@ -66,7 +67,8 @@ function SelectComponent<T = string>(
   ref: ForwardedRef<HTMLButtonElement>,
 ) {
   const componentRef = useRef<HTMLButtonElement>(null)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [dropdownEl, setDropdownEl] = useState<HTMLDivElement | null>(null)
+
   useImperativeHandle<HTMLButtonElement | null, HTMLButtonElement | null>(
     ref,
     () => componentRef.current,
@@ -77,30 +79,43 @@ function SelectComponent<T = string>(
     multiValue ? multiValue.some(v => isEqual(v, option.value)) : isEqual(value, option.value),
   )
 
-  const handleClose = useCallback(() => {
-    setIsOpen(false)
-    onClose?.()
-  }, [setIsOpen, onClose])
+  const handleToggle = useCallback(
+    (open?: boolean) => {
+      const nextState = open ?? !isOpen
+      setIsOpen(nextState)
+      nextState ? onOpen?.() : onClose?.()
+    },
+    [isOpen, onOpen, onClose],
+  )
 
-  const handleOpen = useCallback(() => {
-    // if (focusableEl[0]) {
-    //   focusableEl[0].focus()
-    // }
-    if (isOpen) handleClose()
-    else {
-      onOpen?.()
-      setIsOpen(true)
-    }
-  }, [isOpen, setIsOpen, onOpen, handleClose])
+  useFocus(isOpen, componentRef, {
+    portalEl: dropdownEl,
+    selectors: FOCUS_SELECTORS.select,
+    onToggle: handleToggle,
+    value: multiValue ?? value,
+    scope: true,
+    triggerNav: true,
+    scopeType: 'dropdown',
+    typeAhead: true,
+    onOpen: ({ focusableElements, focusElement }) => {
+      requestAnimationFrame(() => {
+        const selectedIndex = focusableElements.findIndex(
+          el => el.classList.contains('selected') && el.role !== 'combobox',
+        )
+        focusElement(selectedIndex !== -1 ? selectedIndex : 0)
+      })
+    },
+  })
 
   const handleOnChange = useCallback(
     (value: T) => {
       onChange(value)
       if (!multiValue) {
-        handleOpen()
+        componentRef.current?.focus()
+        handleToggle(false)
       }
     },
-    [multiValue, onChange, handleOpen],
+    [multiValue, onChange, handleToggle],
   )
 
   return (
@@ -113,7 +128,7 @@ function SelectComponent<T = string>(
         variant={variant}
         color={color}
         size={size}
-        handleOpen={handleOpen}
+        handleToggle={handleToggle}
         handleOnChange={handleOnChange}
         ref={componentRef}
         {...rest}
@@ -124,9 +139,9 @@ function SelectComponent<T = string>(
         placement={placement}
         variant={variant}
         color={color}
-        onClose={handleClose}
+        onClose={() => handleToggle(false)}
         scrollShadowProps={{ disableHorizontal: true }}
-        ref={dropdownRef}
+        ref={setDropdownEl}
         {...dropdownProps}
       >
         <ListBox<T>

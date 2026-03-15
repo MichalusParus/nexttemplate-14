@@ -4,6 +4,7 @@ import { forwardRef, useId, useState } from 'react'
 
 import { Image } from '@/components/atoms/common/Image'
 import { Paper, PaperProps } from '@/components/atoms/containers/Paper'
+import { focusWithinVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -66,7 +67,14 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
 
     return (
       <Paper
-        className={cn('Gallery', 'overflow-hidden', paperClassName, className)}
+        className={cn(
+          'Gallery',
+          'overflow-hidden focus-within:ring',
+          focusWithinVariant[variant][color],
+          width,
+          paperClassName,
+          className,
+        )}
         variant={variant}
         color={color}
         padding="p-0"
@@ -92,7 +100,6 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
               )}
               items={carouselItems}
               currentPage={currentPage}
-              width={width}
               ratio={isOpen ? 'aspect-video' : ratio}
               autoplay="paused"
               hideControlDotts

@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/molecules/form/toggles/CheckboxField/Chec
 import { paddingSize, textSize } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
-import { cellOverflow } from '../../GridHeader/ColumnHead/ColumnHead.style'
+import { alignColumn, cellOverflow } from '../../GridHeader/ColumnHead/ColumnHead.style'
 import { useDataGridContext } from '../../utils/DataGridContext'
 
 export type GridRowProps<T extends Record<string, unknown> = Record<string, unknown>> = {
@@ -46,6 +46,8 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
   const { variant, color, size, columnsInRow } = useDataGridContext()
   const isRowInteractive = Boolean(handleRowClick || multiselect)
 
+  const rowId = row && getRowId ? String(getRowId(row)) : `loading-${rowIndex}`
+
   const renderCellContent = (col: (typeof columnsInRow)[number]): React.ReactNode => {
     if (isLoading) {
       return <P size={size} color="none" isLoading />
@@ -74,8 +76,13 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
     <div
       key={cellKey}
       role="gridcell"
-      className={cn('GridCell', cellClasses, isSelected && 'selected')}
+      className={cn(
+        'GridCell focus-visible:ring ring-current focus:outline-none',
+        cellClasses,
+        isSelected && 'selected',
+      )}
       aria-colindex={colIndex}
+      tabIndex={-1}
     >
       {content}
     </div>
@@ -83,7 +90,6 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
 
   const renderCells = () => {
     const cells: React.ReactNode[] = []
-    const rowId = row && getRowId ? String(getRowId(row)) : `loading-${rowIndex}`
 
     if (multiselect) {
       cells.push(
@@ -97,6 +103,7 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
             size={size}
             isChecked={isSelected}
             fake
+            tabIndex={-1}
             onChange={() => {}}
           />,
           `${rowId}-checkbox`,
@@ -114,6 +121,7 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
           cn(
             'font-normal',
             cellOverflow,
+            col.align && alignColumn[col.align],
             paddingSize[size],
             textSize[size],
             !isRowInteractive && 'cursor-text',
@@ -126,14 +134,10 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
     return cells
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (isRowInteractive && !isLoading && row && (e.key === 'Enter' || e.key === ' ')) {
-      e.preventDefault()
-      handleRowClick?.(row)
-    }
+  const handleRowInteraction = () => {
+    if (!isRowInteractive || isLoading || !row) return
+    handleRowClick?.(row)
   }
-
-  const rowId = row && getRowId ? String(getRowId(row)) : `loading-${rowIndex}`
 
   return (
     <div
@@ -159,14 +163,8 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
             ? `max-content ${gridTemplateColumns}`
             : gridTemplateColumns,
         }}
-        {...(isRowInteractive &&
-          !isLoading &&
-          row && {
-            role: 'button',
-            tabIndex: 0,
-            onClick: () => handleRowClick?.(row),
-            onKeyDown: handleKeyDown,
-          })}
+        role="presentation"
+        onClick={isRowInteractive && !isLoading && row ? handleRowInteraction : undefined}
       >
         {renderCells()}
       </div>
@@ -179,6 +177,8 @@ export const GridRow = memo(GridRowComponent, (prevProps, nextProps) => {
   if (prevProps.isLoading && nextProps.isLoading) {
     return prevProps.rowIndex === nextProps.rowIndex
   }
+  if (prevProps.gridTemplateColumns !== nextProps.gridTemplateColumns) return false
+  if (prevProps.multiselect !== nextProps.multiselect) return false
   if (prevProps.row && nextProps.row && prevProps.getRowId && nextProps.getRowId) {
     return (
       prevProps.getRowId(prevProps.row) === nextProps.getRowId(nextProps.row) &&

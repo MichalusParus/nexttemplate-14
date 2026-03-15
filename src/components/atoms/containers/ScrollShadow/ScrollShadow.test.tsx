@@ -11,12 +11,14 @@ expect.extend(toHaveNoViolations)
 
 describe('ScrollShadow', () => {
   it('default', () => {
-    render(<ScrollShadow className="className" color="from-primary-800" />)
+    render(<ScrollShadow className="className" color="from-primary-800" padding="px-4" />)
     const scrollShadowTestId = screen.getByTestId('ScrollShadow')
+    const contentWrapTestId = screen.getByTestId('ContentWrap')
 
     expect(scrollShadowTestId).toBeInTheDocument()
     expect(scrollShadowTestId).toHaveClass('className')
     expect(scrollShadowTestId).toHaveClass('from-primary-800')
+    expect(contentWrapTestId).toHaveClass('px-4')
   })
 
   it('vertical', () => {

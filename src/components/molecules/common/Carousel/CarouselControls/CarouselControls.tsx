@@ -126,6 +126,7 @@ export const CarouselControls = ({
               color="none"
               size="none"
               hideShadow
+              tabIndex={-1}
               aria-label={t('page', { page: index + 1 })}
               onClick={() => {
                 onPageChange(index + 1, true)

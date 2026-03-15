@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+window.HTMLElement.prototype.scrollIntoView = jest.fn()
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { startOfDay } from 'date-fns'
 import { axe, toHaveNoViolations } from 'jest-axe'

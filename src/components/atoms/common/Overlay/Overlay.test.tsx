@@ -42,6 +42,38 @@ describe('Overlay', () => {
     focusMock.mockRestore()
   })
 
+  it('sets inert on #__next when open', () => {
+    const appRoot = document.createElement('div')
+    appRoot.id = '__next'
+    document.body.appendChild(appRoot)
+
+    const { rerender } = render(<Overlay isOpen onClose={() => {}} />)
+    expect(appRoot.inert).toBe(true)
+
+    rerender(<Overlay isOpen={false} onClose={() => {}} />)
+    expect(appRoot.inert).toBe(false)
+
+    document.body.removeChild(appRoot)
+  })
+
+  it('keeps inert for nested modals', () => {
+    const appRoot = document.createElement('div')
+    appRoot.id = '__next'
+    document.body.appendChild(appRoot)
+
+    const { unmount: unmountOuter } = render(<Overlay isOpen onClose={() => {}} />)
+    const { unmount: unmountInner } = render(<Overlay isOpen onClose={() => {}} />)
+    expect(appRoot.inert).toBe(true)
+
+    unmountInner()
+    expect(appRoot.inert).toBe(true)
+
+    unmountOuter()
+    expect(appRoot.inert).toBe(false)
+
+    document.body.removeChild(appRoot)
+  })
+
   it('axe', async () => {
     const { container } = render(<Overlay isOpen={false} onClose={() => {}} />)
 

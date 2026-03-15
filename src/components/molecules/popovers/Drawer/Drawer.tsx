@@ -6,7 +6,6 @@ import {
   PropsWithChildren,
   useEffect,
   useImperativeHandle,
-  useRef,
   useState,
 } from 'react'
 import { createPortal } from 'react-dom'
@@ -16,10 +15,9 @@ import { Paper } from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
-import { useNonModalDropdown } from '@/components/utils/hooks/useNonModalDropdown'
+import { useFocus } from '@/components/utils/hooks/useFocus'
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
-// import { useFocus } from '@/utils/hooks/useFocus'
 import { cn } from '@/utils/utils'
 
 import { closeClass, drawerClass, openClass } from './Drawer.style'
@@ -42,8 +40,10 @@ export type DrawerProps = NativeDivProps &
     offsetY?: string
     /** for setting component width as tailwind class */
     width?: string
-    /** for setting internal padding of Paper component */
-    padding?: string
+    /** for setting horizontal content padding as tailwind class */
+    paddingX?: string
+    /** for setting vertical Paper padding as tailwind class */
+    paddingY?: string
     /** optional for modal overlay */
     modal?: boolean
     /** optional id for portal container */
@@ -70,7 +70,8 @@ export const Drawer = forwardRef<HTMLDivElement | null, PropsWithChildren<Drawer
       variant = 'outlined',
       color = 'primary',
       width = 'w-1/3',
-      padding = 'p-0',
+      paddingX = '',
+      paddingY = '',
       modal = false,
       portalContainerId,
       paperProps = {},
@@ -82,13 +83,19 @@ export const Drawer = forwardRef<HTMLDivElement | null, PropsWithChildren<Drawer
     ref,
   ) => {
     const t = useTranslations('Components')
-    const componentRef = useRef<HTMLDivElement | null>(null)
-    useNonModalDropdown(isOpen, anchorRef, componentRef.current, modal, onClose)
+    const [componentEl, setComponentEl] = useState<HTMLDivElement | null>(null)
     const [isVisible, setIsVisible] = useState(false)
+
+    useFocus(isOpen, anchorRef as MutableRefObject<HTMLElement | null>, {
+      portalEl: componentEl,
+      dismiss: modal ? 'modal' : 'non-modal',
+      onToggle: (open: boolean) => !open && onClose(),
+    })
+
     const container = usePortalContainer(portalContainerId)
     useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
       ref,
-      () => componentRef.current,
+      () => componentEl,
     )
     const { className: paperClassName, ...restPaperProps } = paperProps
 
@@ -129,7 +136,7 @@ export const Drawer = forwardRef<HTMLDivElement | null, PropsWithChildren<Drawer
             isVisible && isOpen && openClass[placement],
             className,
           )}
-          ref={componentRef}
+          ref={el => setComponentEl(el as HTMLDivElement | null)}
           role={modal ? 'dialog' : undefined}
           aria-label={label || t('drawer')}
           aria-modal={modal}
@@ -140,11 +147,13 @@ export const Drawer = forwardRef<HTMLDivElement | null, PropsWithChildren<Drawer
             className={cn('relative h-full', paperClassName)}
             variant={variant}
             color={color}
-            padding={padding}
+            padding={paddingY}
             rounded={placement === 'left' ? 'rounded-r-md' : 'rounded-l-md'}
             {...restPaperProps}
           >
-            <ScrollShadow {...scrollShadowProps}>{children}</ScrollShadow>
+            <ScrollShadow padding={paddingX} {...scrollShadowProps}>
+              {children}
+            </ScrollShadow>
           </Paper>
         </aside>
       </>,

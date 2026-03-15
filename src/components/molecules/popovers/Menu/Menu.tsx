@@ -5,15 +5,16 @@ import {
   MutableRefObject,
   PropsWithChildren,
   ReactNode,
+  useCallback,
   useId,
   useMemo,
   useRef,
+  useState,
 } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { useInternalOpenState } from '@/components/utils/hooks/useInternalOpenState'
 import { StyleProps } from '@/components/utils/types'
-// import { useFocus } from '@/utils/hooks/useFocus'
 import { cn } from '@/utils/utils'
 
 import { Dropdown } from '../Dropdown'
@@ -21,7 +22,8 @@ import { DropdownProps } from '../Dropdown/Dropdown'
 import { MenuContext, useMenuContext } from './MenuContext'
 import { MenuList } from './MenuList'
 import { MenuOptionGroupType, MenuOptionType } from './types'
-import { useSubmenu } from './useSubmenu'
+import { useMenuFocus } from './useMenuFocus'
+import { useMenuHover } from './useMenuHover'
 
 export type MenuProps = StyleProps & {
   /** for passing custom tailwind classes */
@@ -80,40 +82,65 @@ export const Menu = forwardRef<HTMLDivElement | null, PropsWithChildren<MenuProp
     const nameId = name || id
     const nameIdMenu = `${nameId}-menu`
     const menuButtonRef = useRef<HTMLButtonElement>(null)
-    const dropdownRef = useRef<HTMLDivElement>(null)
+    const [dropdownEl, setDropdownEl] = useState<HTMLDivElement | null>(null)
     const { openState, handleOpen } = useInternalOpenState(isOpen, setIsOpen)
-    const { registerSubmenu, submenuRefs, closeAll } = useSubmenu(dropdownRef, () =>
-      handleOpen(false),
-    )
-    const isSubmenu = !!useMenuContext()
+    const parentContext = useMenuContext()
+    const isSubmenu = !!parentContext
+
     const { children: buttonChildren, className: buttonClassName, ...restButtonProps } = buttonProps
+
+    const { hoverOpen, handleWrapMouseLeave, cancelHoverClose, onChildHoverClosed } = useMenuHover({
+      onHoverOpen,
+      dropdownEl,
+      handleOpen,
+      parentContext,
+    })
+
+    const { restoreFocusToItem, registerSubmenuActivateFocus, activateSubmenuFocus, focusScope } = useMenuFocus({
+      isOpen: openState,
+      isSubmenu,
+      onHoverOpen,
+      menuButtonRef,
+      portalEl: dropdownEl,
+      handleOpen,
+    })
+
+    const onDropdownClose = useCallback(() => handleOpen(false), [handleOpen])
+
+    const closeAll = useCallback(() => {
+      if (parentContext?.closeAll) {
+        parentContext.closeAll()
+      } else {
+        focusScope?.deactivateDescendants()
+        handleOpen(false)
+      }
+    }, [parentContext, focusScope, handleOpen])
 
     const contextValue = useMemo(
       () => ({
-        registerSubmenu,
+        restoreFocusToItem,
+        registerSubmenuActivateFocus,
+        activateSubmenuFocus,
         closeAll,
+        ...(onHoverOpen && {
+          cancelHoverClose,
+          onChildHoverClosed,
+        }),
       }),
-      [registerSubmenu, closeAll],
+      [restoreFocusToItem, registerSubmenuActivateFocus, activateSubmenuFocus, closeAll, onHoverOpen, cancelHoverClose, onChildHoverClosed],
     )
-
-    // const { focusableEl } = useFocus(
-    //   openState,
-    //   componentRef,
-    //   ['button:not(.Overlay)', '[href]', 'input', '[tabindex]:not([tabindex="-1"])'],
-    //   handleOpen,
-    //   {
-    //     portalRef: dropdownRef,
-    //   },
-    // )
 
     return (
       <MenuContext.Provider value={contextValue}>
         <div
           className={cn('MenuWrap', className)}
-          onMouseEnter={onHoverOpen ? () => handleOpen(true) : undefined}
-          onMouseLeave={onHoverOpen ? () => handleOpen(false) : undefined}
+          onMouseEnter={onHoverOpen ? hoverOpen : undefined}
+          onMouseLeave={onHoverOpen ? handleWrapMouseLeave : undefined}
           data-testid="MenuWrap"
-          ref={ref}
+          ref={el => {
+            if (typeof ref === 'function') ref(el)
+            else if (ref) ref.current = el
+          }}
         >
           {!setIsOpen && (
             <Button
@@ -150,9 +177,9 @@ export const Menu = forwardRef<HTMLDivElement | null, PropsWithChildren<MenuProp
             color={color}
             width={width}
             modal={isModal && !isSubmenu}
-            submenuRefs={submenuRefs}
-            onClose={() => handleOpen(false)}
-            ref={dropdownRef}
+            submenuRefs={focusScope?.getDescendantElements}
+            onClose={onDropdownClose}
+            ref={setDropdownEl}
             {...dropdownProps}
           >
             <MenuList

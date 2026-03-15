@@ -7,6 +7,7 @@ import {
   PropsWithChildren,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from 'react'
 import { createPortal } from 'react-dom'
@@ -16,7 +17,7 @@ import { Paper } from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
-import { useNonModalDropdown } from '@/components/utils/hooks/useNonModalDropdown'
+import { useFocus } from '@/components/utils/hooks/useFocus'
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { usePopper } from '@/utils/hooks/usePopper'
@@ -40,8 +41,10 @@ export type DropdownProps = NativeDivProps &
     width?: number | string
     /** for setting component height or maxHeight as tailwind class */
     height?: string
-    /** for setting internal padding of Paper component */
-    padding?: string
+    /** for setting horizontal content padding as tailwind class */
+    paddingX?: string
+    /** for setting vertical Paper padding as tailwind class */
+    paddingY?: string
     /** optional for modal overlay */
     modal?: boolean
     /** optional id for portal container */
@@ -72,7 +75,8 @@ export const Dropdown = forwardRef<HTMLDivElement | null, PropsWithChildren<Drop
       color = 'primary',
       width,
       height = 'max-h-[40vh]',
-      padding = 'p-0',
+      paddingX = '',
+      paddingY = '',
       modal = false,
       portalContainerId,
       disablePortal,
@@ -86,11 +90,18 @@ export const Dropdown = forwardRef<HTMLDivElement | null, PropsWithChildren<Drop
     ref,
   ) => {
     const t = useTranslations('Components')
+    const nullRef = useRef<HTMLElement | null>(null)
     const { popoverEl, setPopoverEl } = usePopper(anchorRef, placement, offset)
-    useNonModalDropdown(isOpen, anchorRef, popoverEl, modal, onClose, submenuRefs)
+    useFocus(isOpen, modal ? nullRef : anchorRef, {
+      portalEl: popoverEl,
+      dismiss: modal ? 'modal' : 'non-modal',
+      onToggle: (open) => !open && onClose(),
+      submenuRefs,
+      ...(modal && { triggerRef: nullRef }),
+    })
     const [isVisible, setIsVisible] = useState(false)
     const container = usePortalContainer(portalContainerId)
-    useImperativeHandle<HTMLElement | null, HTMLElement | null>(ref, () => popoverEl)
+    useImperativeHandle<HTMLElement | null, HTMLElement | null>(ref, () => popoverEl, [popoverEl])
     const { className: paperClassName, ...restPaperProps } = paperProps
 
     useEffect(() => {
@@ -128,10 +139,10 @@ export const Dropdown = forwardRef<HTMLDivElement | null, PropsWithChildren<Drop
               className={cn('overflow-hidden', paperClassName)}
               variant={variant}
               color={color}
-              padding={padding}
+              padding={paddingY}
               {...restPaperProps}
             >
-              <ScrollShadow height={height} {...scrollShadowProps}>
+              <ScrollShadow height={height} padding={paddingX} {...scrollShadowProps}>
                 {children}
               </ScrollShadow>
             </Paper>

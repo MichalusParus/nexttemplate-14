@@ -87,11 +87,12 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
     const handleShow = useCallback(
       (e: TooltipEventType) => {
         if (isTouchDevice) return
+        if (componentRef.current?.querySelector('[aria-expanded="true"]')) return
         e.stopPropagation()
         clearTimeout(timeoutRef.current)
         timeoutRef.current = setTimeout(() => setIsOpen(true), delay)
       },
-      [delay, isTouchDevice, setIsOpen],
+      [delay, isTouchDevice, componentRef],
     )
 
     const handleHide = useCallback(

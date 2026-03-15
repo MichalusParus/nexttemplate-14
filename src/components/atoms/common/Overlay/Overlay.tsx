@@ -1,6 +1,6 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { ButtonHTMLAttributes, forwardRef } from 'react'
+import { ButtonHTMLAttributes, forwardRef, useEffect } from 'react'
 
 import { cn } from '@/utils/utils'
 
@@ -17,10 +17,30 @@ export type OverlayProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'classN
   onClose: () => void
 }
 
+// Reference counter for nested modals
+let modalCount = 0
+
 /** Overlay is used in popover components for closing popover on click outside. USE CLIENT */
 export const Overlay = forwardRef<HTMLButtonElement | null, OverlayProps>(
   ({ className, isOpen, dark, onClose, ...rest }, ref) => {
     const t = useTranslations('Components')
+
+    // Set inert on app root when modal overlay is open
+    useEffect(() => {
+      if (!isOpen) return
+      const appRoot = document.getElementById('__next')
+      if (!appRoot) return
+
+      modalCount++
+      appRoot.inert = true
+
+      return () => {
+        modalCount--
+        if (modalCount === 0) {
+          appRoot.inert = false
+        }
+      }
+    }, [isOpen])
 
     return (
       <button

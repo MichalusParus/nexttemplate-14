@@ -1,8 +1,9 @@
 'use client'
-import { PropsWithChildren, ReactNode } from 'react'
+import { PropsWithChildren, ReactNode, useRef } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { Paper } from '@/components/atoms/containers/Paper'
+import { useFocus } from '@/components/utils/hooks/useFocus'
 import { OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -44,6 +45,12 @@ export const TabList = <T,>({
   children,
 }: PropsWithChildren<TabListProps<T>>) => {
   const { className: buttonClassName, ...restButtonProps } = tabButtonProps
+  const componentRef = useRef<HTMLUListElement>(null)
+
+  useFocus(true, componentRef, {
+    triggerRef: { current: null },
+    selectors: ['.Tab'],
+  })
 
   return (
     <Paper
@@ -56,12 +63,13 @@ export const TabList = <T,>({
       <ul
         className={cn(
           'TabList',
-          'flex overflow-hidden rounded-md focus:outline-offset-8 focus:outline-text',
+          'flex rounded-md focus:outline-offset-8 focus:outline-text',
         )}
         role="tablist"
         aria-orientation="horizontal"
+        ref={componentRef}
       >
-        {tabs.map(tab => (
+        {tabs.map((tab, index) => (
           <li
             key={tab.label}
             className={cn(fullWidth && 'w-full')}
@@ -72,7 +80,9 @@ export const TabList = <T,>({
               id={`${name}-${tab.value}-tab`}
               className={cn(
                 'Tab',
-                'rounded-none border-none',
+                'rounded-none border-none focus-visible:z-10',
+                index === 0 && 'rounded-l-md',
+                index === tabs.length - 1 && 'rounded-r-md',
                 selectedTab.value === tab.value && 'selected',
                 fullWidth && 'w-full',
                 buttonClassName,
@@ -82,7 +92,7 @@ export const TabList = <T,>({
               size={size}
               hideShadow
               role="tab"
-              tabIndex={-1}
+              tabIndex={selectedTab.value === tab.value ? 0 : -1}
               disabled={tab.isDisabled}
               aria-controls={`${tab.value}-tabpanel`}
               aria-selected={tab.value === selectedTab.value}

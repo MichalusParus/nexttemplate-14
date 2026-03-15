@@ -68,7 +68,7 @@ export const GalleryControls = ({
               color="none"
               size="none"
               hideShadow
-              tabIndex={0}
+              tabIndex={-1}
               aria-label={t('page', { page: index + 1 })}
               onClick={e => {
                 e?.stopPropagation()

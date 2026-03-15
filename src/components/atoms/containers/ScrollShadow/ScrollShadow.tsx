@@ -15,6 +15,8 @@ export type ScrollShadowProps = NativeDivProps & {
   color?: string
   /** stable gutter for Y scroll */
   gutter?: boolean
+  /** for setting content padding as tailwind class */
+  padding?: string
   /** disable horizontal scroll */
   disableHorizontal?: boolean
 }
@@ -26,6 +28,7 @@ export const ScrollShadow = forwardRef<HTMLDivElement | null, ScrollShadowProps>
       className,
       height = 'h-full',
       color = 'from-inherit',
+      padding,
       gutter,
       disableHorizontal,
       children,
@@ -67,10 +70,12 @@ export const ScrollShadow = forwardRef<HTMLDivElement | null, ScrollShadowProps>
               'overflow-y-auto',
               disabledVertical,
               height,
+              padding,
               isVertical && 'py-4',
               isHorizontal && 'px-4',
             )}
             style={{ scrollbarGutter: gutter ? 'stable' : 'initial' }}
+            tabIndex={-1}
             ref={scrollShadowRef}
             data-testid="ContentWrap"
           >

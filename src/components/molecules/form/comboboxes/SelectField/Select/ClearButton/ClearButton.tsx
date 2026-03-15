@@ -19,6 +19,7 @@ export const ClearButton = ({ className, label, onClick, ...rest }: ClearButtonP
   const t = useTranslations('Components')
 
   const handleClear = (e: MouseEvent<HTMLSpanElement> | KeyboardEvent<HTMLSpanElement>) => {
+    e.preventDefault()
     e.stopPropagation()
     onClick?.()
   }
@@ -27,12 +28,12 @@ export const ClearButton = ({ className, label, onClick, ...rest }: ClearButtonP
     <span
       className={cn(
         'ClearButton',
-        'shrink-0 rounded-full focus:outline-hidden focus-visible:outline-current',
+        'shrink-0 rounded-full focus:outline-hidden focus-visible:ring-1 cursor-pointer',
         className,
       )}
       role="button"
       aria-label={label || t('clear')}
-      tabIndex={0}
+      tabIndex={-1}
       onClick={handleClear}
       onKeyDown={e => (e.code === 'Enter' || e.code === 'Space' ? handleClear(e) : null)}
       data-testid="ClearButton"

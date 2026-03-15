@@ -23,6 +23,7 @@ export const Default: Story = {
     className: '',
     height: 'max-h-96',
     color: 'from-bg',
+    padding: undefined,
     gutter: false,
     disableHorizontal: false,
     children: textContent,

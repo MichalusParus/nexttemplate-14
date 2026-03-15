@@ -1,5 +1,5 @@
 'use client'
-import { ForwardedRef, forwardRef, SyntheticEvent, useImperativeHandle, useRef } from 'react'
+import { FocusEvent, ForwardedRef, forwardRef, KeyboardEvent, MouseEvent, MutableRefObject, useCallback, useImperativeHandle, useRef } from 'react'
 
 import { ButtonProps } from '@/components/atoms/common/Button'
 import {
@@ -13,6 +13,7 @@ import { Ellipsis } from '@/components/atoms/typography/Ellipsis'
 import { ClearButton } from '@/components/molecules/form/comboboxes/SelectField/Select/ClearButton'
 import { TextInput, TextInputProps } from '@/components/molecules/form/inputs/TextField/TextInput'
 import { disabledClassVariant,focusWithinVariant } from '@/components/utils/common.style'
+import { FOCUS_SELECTORS } from '@/components/utils/hooks/useFocus'
 import { InputProps, NativeDivProps, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -40,8 +41,10 @@ export type AutocompleteComboboxProps<T = string> = NativeDivProps &
     chipProps?: Partial<ChipProps>
     /** optional onClear function for MultiDatePicker when multiValue is defined */
     onClear?: () => void
-    /** handle onOpen function */
-    handleOpen: (e: SyntheticEvent) => void
+    /** ref to expose input element to parent */
+    inputRef?: MutableRefObject<HTMLInputElement | null>
+    /** handle toggle function */
+    handleToggle: (open?: boolean) => void
     /** handle onInputChange function */
     onInputChange: (value: string) => void
     /** handle onChange function */
@@ -67,16 +70,17 @@ function AutocompleteComboboxComponent<T = string>(
     error,
     inputProps = {},
     chipProps = {},
+    inputRef,
     onFocus,
     onClear,
-    handleOpen,
+    handleToggle,
     onInputChange,
     handleOnChange,
     ...rest
   }: AutocompleteComboboxProps<T>,
   ref: ForwardedRef<HTMLDivElement | null>,
 ) {
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputElRef = useRef<HTMLInputElement | null>(null)
   const comboboxRef = useRef<HTMLDivElement | null>(null)
   useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => comboboxRef.current)
   const {
@@ -86,6 +90,35 @@ function AutocompleteComboboxComponent<T = string>(
     ...restInputProps
   } = inputProps
   const comboboxTitle = selectedOptions?.map(v => v.label).join(', ')
+
+  const handleComboboxFocus = useCallback(
+    (e: FocusEvent<HTMLDivElement>) => {
+      onFocus?.(e)
+      const relatedEl = e.relatedTarget
+      const isFromFocusableElement =
+        relatedEl instanceof HTMLElement &&
+        FOCUS_SELECTORS.autocomplete.some(sel => relatedEl.classList.contains(sel.slice(1)))
+      if (isFromFocusableElement || relatedEl === inputElRef.current) return
+      const input = inputElRef.current
+      if (input) {
+        input.focus()
+        requestAnimationFrame(() => {
+          const length = input.value.length
+          input.setSelectionRange(length, length)
+        })
+      }
+    },
+    [onFocus],
+  )
+
+  const handleOpen = useCallback(
+    (e: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => {
+      if (disabled || ('key' in e && !['Space', 'Enter'].includes(e.key as string))) return
+      e.stopPropagation()
+      handleToggle()
+    },
+    [disabled, handleToggle],
+  )
 
   return (
     <div
@@ -105,20 +138,13 @@ function AutocompleteComboboxComponent<T = string>(
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : 0}
       role="combobox"
-      title="button"
       aria-expanded={isOpen}
       aria-haspopup="listbox"
       aria-controls={`${name}-listbox`}
       aria-owns={`${name}-listbox`}
-      onClick={e => {
-        handleOpen(e)
-        inputRef.current?.focus()
-      }}
+      onClick={handleOpen}
       onKeyDown={handleOpen}
-      onFocus={e => {
-        onFocus?.(e)
-        if (e.relatedTarget !== inputRef.current) inputRef.current?.focus()
-      }}
+      onFocus={handleComboboxFocus}
       ref={comboboxRef}
       {...rest}
     >
@@ -160,7 +186,10 @@ function AutocompleteComboboxComponent<T = string>(
           onChange={onInputChange}
           onClick={handleOpen}
           onKeyDown={handleOpen}
-          ref={inputRef}
+          ref={el => {
+            inputElRef.current = el
+            if (inputRef) inputRef.current = el
+          }}
           onFocus={e => {
             inputOnFocus?.(e)
             if (comboboxRef.current) {

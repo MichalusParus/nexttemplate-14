@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+window.HTMLElement.prototype.scrollIntoView = jest.fn()
+
 import { addMonths, startOfDay } from 'date-fns'
 import { axe, toHaveNoViolations } from 'jest-axe'
 
@@ -52,8 +54,8 @@ describe('MonthPicker', () => {
     )
     const cellRoles = screen.getAllByRole('gridcell')
 
-    expect(cellRoles[0]).toHaveAttribute('disabled')
-    expect(cellRoles[4]).toHaveAttribute('disabled')
+    expect(cellRoles[0]).toHaveAttribute('aria-disabled', 'true')
+    expect(cellRoles[4]).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('buttonProps', () => {

@@ -44,7 +44,7 @@ export const GridHeader = ({
     <div
       className={cn(
         'DataGridHeader',
-        'relative grid rounded-t-md border pr-2',
+        'relative grid min-w-max rounded-t-md border pr-2',
         paperVariant[variant][color],
         textVariant[variant][color],
         className,

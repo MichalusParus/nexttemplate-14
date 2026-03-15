@@ -35,8 +35,8 @@ const MockedPageContent = ({
         ? Array.from({ length: 10 }, (_, i) => i + 1).map(item => (
             <Ghost key={item} className="h-12 w-full" />
           ))
-        : data.map(item => (
-            <div key={item.id} className="flex h-12 w-full flex-col gap-2 border p-2">
+        : data.map((item, index) => (
+            <div key={item.id ?? index} className="flex h-12 w-full flex-col gap-2 border p-2">
               {item.name}
             </div>
           ))}

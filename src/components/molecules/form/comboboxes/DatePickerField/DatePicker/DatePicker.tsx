@@ -1,10 +1,11 @@
 'use client'
 import { Placement } from '@popperjs/core'
-import { forwardRef, useRef, useState } from 'react'
+import { forwardRef, useCallback, useRef, useState } from 'react'
 
 import { Calendar } from '@/components/molecules/common/Calendar'
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
+import { FOCUS_SELECTORS, useFocus } from '@/components/utils/hooks/useFocus'
 import { cn, normalizeDateValue } from '@/utils/utils'
 
 import { DatePickerCombobox, DatePickerComboboxProps } from './DatePickerCombobox'
@@ -50,26 +51,67 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
   ) => {
     const [isOpen, setIsOpen] = useState(false)
     const componentRef = useRef<HTMLDivElement>(null)
-    const dropdownRef = useRef<HTMLDivElement>(null)
+    const comboboxRef = useRef<HTMLButtonElement | null>(null)
+    const [dropdownEl, setDropdownEl] = useState<HTMLDivElement | null>(null)
     const { scrollShadowProps, ...restDropdownProps } = dropdownProps
     const { paperProps, ...restCalendarProps } = calendarProps
     const dateValue = normalizeDateValue(value)
 
-    const handleOpen = () => {
-      if (isOpen) {
-        onClose?.()
-      } else {
-        onOpen?.()
-      }
-      setIsOpen(prev => !prev)
-    }
+    const handleToggle = useCallback(
+      (open?: boolean) => {
+        const nextState = open ?? !isOpen
+        setIsOpen(prev => {
+          if (prev && !nextState) onClose?.()
+          if (!prev && nextState) onOpen?.()
+          return nextState
+        })
+      },
+      [isOpen, onOpen, onClose],
+    )
 
-    const handleOnChange = (value: Date) => {
-      onChange(value)
-      if (!calendarProps?.range && !calendarProps?.multiValue) {
-        handleOpen()
-      }
-    }
+    const handleOnChange = useCallback(
+      (value: Date) => {
+        onChange(value)
+        if (!calendarProps?.range && !calendarProps?.multiValue) {
+          comboboxRef.current?.focus()
+          handleToggle(false)
+        }
+      },
+      [onChange, calendarProps?.range, calendarProps?.multiValue, handleToggle],
+    )
+
+    const handleCalendarClose = useCallback(() => {
+      comboboxRef.current?.focus()
+      handleToggle(false)
+    }, [handleToggle])
+
+    useFocus(isOpen, comboboxRef, {
+      portalEl: dropdownEl,
+      selectors: FOCUS_SELECTORS.datepicker,
+      onToggle: handleToggle,
+      scope: true,
+      triggerNav: true,
+      scopeType: 'dropdown',
+      value: dateValue,
+      onOpen: () => {
+        requestAnimationFrame(() => {
+          const grid = dropdownEl?.querySelector('[role="grid"]')
+          if (!grid) return
+          const cells = Array.from(
+            grid.querySelectorAll('[role="gridcell"][tabindex]') as NodeListOf<HTMLElement>,
+          )
+          if (cells.length === 0) return
+          const selected = cells.find(
+            el => el.classList.contains('DateButton') && el.getAttribute('aria-selected') === 'true',
+          )
+          const today = cells.find(
+            el => el.classList.contains('DateButton') && el.getAttribute('aria-current') === 'date',
+          )
+          const first = cells.find(el => el.classList.contains('DateButton'))
+          ;(selected ?? today ?? first ?? cells[0])?.focus()
+        })
+      },
+    })
 
     return (
       <div
@@ -85,9 +127,13 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
           color={color}
           size={size}
           calendarProps={calendarProps}
-          handleOpen={handleOpen}
+          handleOpen={() => handleToggle()}
           handleOnChange={handleOnChange}
-          ref={ref}
+          ref={el => {
+            comboboxRef.current = el
+            if (typeof ref === 'function') ref(el)
+            else if (ref) (ref as React.MutableRefObject<HTMLButtonElement | null>).current = el
+          }}
           {...rest}
         />
         <Dropdown
@@ -96,15 +142,13 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
           placement={placement}
           variant={variant}
           color={color}
-          padding="p-0"
+          paddingX="px-0"
+          paddingY="py-0"
           width={'w-auto'}
           height="max-h-full"
-          scrollShadowProps={{
-            className: '[&_.ContentWrap]:px-0',
-            ...scrollShadowProps,
-          }}
-          onClose={handleOpen}
-          ref={dropdownRef}
+          scrollShadowProps={scrollShadowProps}
+          onClose={() => handleToggle(false)}
+          ref={setDropdownEl}
           {...restDropdownProps}
         >
           <Calendar
@@ -113,6 +157,8 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
             variant={variant}
             color={color}
             size={size}
+            isActive={isOpen}
+            onClose={handleCalendarClose}
             aria-hidden={!isOpen}
             paperProps={{ className: 'border-none', ...paperProps }}
             onChange={handleOnChange}

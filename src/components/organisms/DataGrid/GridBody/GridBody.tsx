@@ -52,7 +52,7 @@ export const GridBody = <T extends Record<string, unknown> = Record<string, unkn
     <div
       className={cn(
         'GridBody',
-        'border',
+        'min-w-max border',
         paperVariant[variant][color],
         textVariant[variant][color],
       )}
@@ -84,8 +84,8 @@ export const GridBody = <T extends Record<string, unknown> = Record<string, unkn
             />
           ))}
         {!isLoading && pagedData.length === 0 && (
-          <div role="row">
-            <div role="gridcell">
+          <div role="row" aria-rowindex={headerDepth + 1}>
+            <div role="gridcell" aria-colindex={1}>
               <P className="my-6 text-center" color="none" size={size}>
                 {t('noRows')}
               </P>

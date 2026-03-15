@@ -8,10 +8,10 @@ import {
   KeyboardEvent,
   MouseEvent,
   PropsWithChildren,
-  SyntheticEvent,
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -24,10 +24,11 @@ import { cn } from '@/utils/utils'
 
 import { ListBox, ListBoxProps } from '../../SelectField/Select/ListBox'
 import { AutocompleteCombobox, AutocompleteComboboxProps } from './AutocompleteCombobox'
+import { useAutocompleteFocus } from './useAutocompleteFocus'
 
 export type AutocompleteProps<T = string> = Omit<
   AutocompleteComboboxProps<T>,
-  'isOpen' | 'handleOpen' | 'handleOnChange' | 'inputValue'
+  'isOpen' | 'handleToggle' | 'handleOnChange' | 'inputValue'
 > &
   InputProps &
   StyleProps & {
@@ -80,21 +81,36 @@ function AutocompleteComponent<T = string>(
 ) {
   const t = useTranslations('Components')
   const componentRef = useRef<HTMLDivElement>(null)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const [dropdownEl, setDropdownEl] = useState<HTMLDivElement | null>(null)
   useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => componentRef.current)
   const { isGrouped, flatOptions } = useGroupedOptions<OptionType<T>>(options)
   const [isOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState<string>('')
   const selectedLabel = flatOptions.find(option => isEqual(option.value, value))?.label || ''
 
-  const handleClose = useCallback(() => {
-    const selectedLabel = flatOptions.find(option => isEqual(option.value, value))?.label
-    if (isOpen && inputValue !== '' && inputValue !== selectedLabel && !multiValue) {
-      setInputValue(selectedLabel || '')
-      onInputChange(selectedLabel || '')
-    }
-    setIsOpen(prev => !prev)
-  }, [isOpen, flatOptions, value, inputValue, multiValue, onInputChange, setIsOpen])
+  const handleToggle = useCallback(
+    (open?: boolean) => {
+      const nextState = open ?? !isOpen
+      if (!nextState) {
+        requestAnimationFrame(() => {
+          const selectedLabel = flatOptions.find(option => isEqual(option.value, value))?.label
+          if (inputValue !== '' && inputValue !== selectedLabel && !multiValue) {
+            setInputValue(selectedLabel || '')
+            onInputChange(selectedLabel || '')
+          }
+        })
+      }
+      setIsOpen(nextState)
+      nextState ? onOpen?.() : onClose?.()
+    },
+    [isOpen, flatOptions, value, inputValue, multiValue, onInputChange, onOpen, onClose],
+  )
+
+  const focusValue = useMemo(
+    () => ({ selected: multiValue ?? value, optionsCount: flatOptions.length }),
+    [multiValue, value, flatOptions.length],
+  )
 
   const handleOnChange = useCallback(
     (target: T, e?: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => {
@@ -122,19 +138,15 @@ function AutocompleteComponent<T = string>(
     [isOpen, onInputChange],
   )
 
-  const handleOpen = useCallback(
-    (e: SyntheticEvent) => {
-      if (disabled || ('key' in e && !['Space', 'Enter'].includes(e.key as string))) return
-      e.stopPropagation()
-      if (isOpen) {
-        onClose?.()
-      } else {
-        onOpen?.()
-      }
-      setIsOpen(prev => !prev)
-    },
-    [isOpen, onOpen, disabled, onClose],
-  )
+  useAutocompleteFocus({
+    isOpen,
+    componentRef,
+    inputRef,
+    portalEl: dropdownEl,
+    onToggle: handleToggle,
+    value: focusValue,
+    onInputChange: handleInputChange,
+  })
 
   useEffect(() => {
     if (multiValue) return
@@ -165,7 +177,8 @@ function AutocompleteComponent<T = string>(
         inputProps={inputProps}
         chipProps={chipProps}
         onClear={onClear}
-        handleOpen={handleOpen}
+        inputRef={inputRef}
+        handleToggle={handleToggle}
         onInputChange={handleInputChange}
         handleOnChange={handleOnChange}
         ref={componentRef}
@@ -177,9 +190,9 @@ function AutocompleteComponent<T = string>(
         placement={placement}
         variant={variant}
         color={color}
-        onClose={handleClose}
+        onClose={() => handleToggle(false)}
         scrollShadowProps={{ disableHorizontal: true }}
-        ref={dropdownRef}
+        ref={setDropdownEl}
         {...dropdownProps}
       >
         <ListBox<T>

@@ -71,6 +71,7 @@ function ListBoxComponent<T = string>(
         return (
           <OptionItem
             key={`${name}-${label}-option`}
+            id={`${name}-${label}-option`}
             label={label}
             value={optionValue}
             isSelected={!!value.find(v => isEqual(v, optionValue))}
@@ -95,6 +96,7 @@ function ListBoxComponent<T = string>(
       id={name}
       className={cn('ListBox', isGrouped && 'flex flex-col gap-3', className)}
       aria-labelledby={`${name}-label`}
+      aria-busy={isLoading}
       role="listbox"
       ref={ref}
       data-testid="ListBox"

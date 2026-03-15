@@ -125,11 +125,11 @@ describe('Calendar', () => {
     const selected2Text = screen.getByText('10')
     const selected3Text = screen.getByText('13')
 
-    expect(cellRoles[0]).not.toHaveAttribute('disabled')
-    expect(selected1Text).toHaveAttribute('disabled')
-    expect(selected2Text).toHaveAttribute('disabled')
-    expect(selected3Text).toHaveAttribute('disabled')
-    expect(cellRoles[20]).not.toHaveAttribute('disabled')
+    expect(cellRoles[0]).not.toHaveAttribute('aria-disabled')
+    expect(selected1Text).toHaveAttribute('aria-disabled', 'true')
+    expect(selected2Text).toHaveAttribute('aria-disabled', 'true')
+    expect(selected3Text).toHaveAttribute('aria-disabled', 'true')
+    expect(cellRoles[20]).not.toHaveAttribute('aria-disabled')
   })
 
   it('minMax', () => {
@@ -143,8 +143,8 @@ describe('Calendar', () => {
     const cellRoles = screen.getAllByRole('gridcell')
     const buttonRoles = screen.getAllByRole('button')
 
-    expect(cellRoles[1]).toHaveAttribute('disabled')
-    expect(cellRoles[34]).toHaveAttribute('disabled')
+    expect(cellRoles[1]).toHaveAttribute('aria-disabled', 'true')
+    expect(cellRoles[34]).toHaveAttribute('aria-disabled', 'true')
     expect(buttonRoles[0]).toHaveAttribute('disabled')
     expect(buttonRoles[1]).toHaveAttribute('disabled')
     expect(buttonRoles[2]).toHaveAttribute('disabled')

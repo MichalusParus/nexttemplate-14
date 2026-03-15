@@ -13,7 +13,7 @@ import {
   startOfMonth,
   startOfWeek,
 } from 'date-fns'
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import { Paper } from '@/components/atoms/containers/Paper'
@@ -25,6 +25,7 @@ import { calendarSize } from './Calendar.styles'
 import { CalendarHeader } from './CalendarHeader'
 import { DateButtonType, DayPicker } from './DayPicker'
 import { MonthPicker } from './MonthPicker'
+import { useCalendarFocus } from './useCalendarFocus'
 import { YearPicker } from './YearPicker'
 
 export type CalendarProps = StyleProps & {
@@ -48,6 +49,10 @@ export type CalendarProps = StyleProps & {
   buttonProps?: Partial<ButtonProps>
   /** for passing aditional props to dropdown */
   paperProps?: Partial<PaperProps>
+  /** whether the calendar dropdown is open (enables keyboard navigation) */
+  isActive?: boolean
+  /** callback to close the dropdown (for Escape key from grid) */
+  onClose?: () => void
   /** onChange function */
   onChange: (date: Date) => void
 }
@@ -69,12 +74,15 @@ export const Calendar = forwardRef<HTMLDivElement | null, CalendarProps>(
       unavailable = [],
       buttonProps = {},
       paperProps = {},
+      isActive = false,
+      onClose,
       onChange,
       ...rest
     },
     ref,
   ) => {
     const componentRef = useRef<HTMLDivElement>(null)
+    const gridRef = useRef<HTMLDivElement>(null)
     useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
       ref,
       () => componentRef.current,
@@ -82,6 +90,59 @@ export const Calendar = forwardRef<HTMLDivElement | null, CalendarProps>(
     const [calendarState, setCalendarState] = useState<'days' | 'months' | 'years'>('days')
     const [currentMonth, setCurrentMonth] = useState<Date>(date || new Date())
     const { className: paperClassName, ...restPaperProps } = paperProps
+
+    useCalendarFocus({
+      isActive,
+      gridRef,
+      calendarState,
+      currentMonth,
+      setCurrentMonth,
+      onClose,
+    })
+
+    // Arrow key navigation on header buttons (PreviousMonth, MonthSelect, NextMonth).
+    // Native listener on componentRef fires before DatePicker's portal listener in bubbling order,
+    // so we intercept and stopPropagation to prevent DatePicker's useFocus from handling with stale index.
+    useEffect(() => {
+      const el = componentRef.current
+      if (!el || !isActive) return
+
+      const handleHeaderKeyDown = (e: KeyboardEvent) => {
+        const target = e.target as HTMLElement
+        if (gridRef.current?.contains(target)) return
+
+        const header = el.querySelector('.CalendarHeader')
+        if (!header?.contains(target)) return
+
+        const headerButtons = Array.from(
+          header.querySelectorAll('button:not([disabled])'),
+        ) as HTMLElement[]
+        const idx = headerButtons.indexOf(target)
+        if (idx === -1) return
+
+        const focusGrid = () => {
+          const gridCell = gridRef.current?.querySelector('[tabindex="0"]') as HTMLElement
+          gridCell?.focus()
+        }
+
+        if (e.code === 'ArrowRight') {
+          e.preventDefault()
+          e.stopPropagation()
+          idx < headerButtons.length - 1 ? headerButtons[idx + 1].focus() : focusGrid()
+        } else if (e.code === 'ArrowLeft') {
+          e.preventDefault()
+          e.stopPropagation()
+          idx > 0 ? headerButtons[idx - 1].focus() : focusGrid()
+        } else if (e.code === 'ArrowDown') {
+          e.preventDefault()
+          e.stopPropagation()
+          focusGrid()
+        }
+      }
+
+      el.addEventListener('keydown', handleHeaderKeyDown)
+      return () => el.removeEventListener('keydown', handleHeaderKeyDown)
+    }, [isActive])
 
     const handleOnChange = useCallback(
       (value: Date) => {
@@ -164,28 +225,34 @@ export const Calendar = forwardRef<HTMLDivElement | null, CalendarProps>(
           className={cn(calendarSize[size], paperClassName)}
           variant={variant}
           color={color}
-          padding="p-2"
+          padding="py-2"
           hideShadow
           {...restPaperProps}
         >
-          <CalendarHeader
-            currentMonth={currentMonth}
-            calendarState={calendarState}
-            minMaxDate={minMaxDate}
-            variant={variant}
-            color={color}
-            size={size}
-            setCalendarState={setCalendarState}
-            setCurrentMonth={setCurrentMonth}
-          />
+          <div className="px-2">
+            <CalendarHeader
+              currentMonth={currentMonth}
+              calendarState={calendarState}
+              minMaxDate={minMaxDate}
+              variant={variant}
+              color={color}
+              size={size}
+              setCalendarState={setCalendarState}
+              setCurrentMonth={setCurrentMonth}
+            />
+          </div>
           {calendarState === 'days' && (
-            <DayPicker daysInMonth={daysInMonth} weekStart={weekStart} {...pickerProps} />
+            <div className="px-2">
+              <DayPicker daysInMonth={daysInMonth} weekStart={weekStart} gridRef={gridRef} {...pickerProps} />
+            </div>
           )}
           {calendarState === 'months' && (
-            <MonthPicker month={currentMonth} minMaxDate={minMaxDate} {...pickerProps} />
+            <div className="px-2">
+              <MonthPicker month={currentMonth} minMaxDate={minMaxDate} gridRef={gridRef} {...pickerProps} />
+            </div>
           )}
           {calendarState === 'years' && (
-            <YearPicker year={currentMonth} minMaxDate={minMaxDate} {...pickerProps} />
+            <YearPicker year={currentMonth} minMaxDate={minMaxDate} gridRef={gridRef} {...pickerProps} />
           )}
         </Paper>
       </div>

@@ -915,6 +915,7 @@ export const gridColsDef: ColumnDef[] = [
     label: 'Age',
     name: 'age',
     width: '120px',
+    align: 'right',
     filter: {
       type: 'number',
       operator: FilterOperator.EQUALS,

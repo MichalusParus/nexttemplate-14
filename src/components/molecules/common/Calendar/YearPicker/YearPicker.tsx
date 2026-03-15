@@ -12,10 +12,11 @@ import {
   startOfMonth,
   startOfYear,
 } from 'date-fns'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
+import { disabledClassVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -28,6 +29,8 @@ export type YearPickerProps = StyleProps & {
   minMaxDate?: { min?: Date; max?: Date }
   /** optional combobox props for select combobox */
   buttonProps?: Partial<ButtonProps>
+  /** ref for the grid container (used by useCalendarFocus) */
+  gridRef?: MutableRefObject<HTMLDivElement | null>
   /** set calendar state function */
   setCalendarState: (state: 'days' | 'months' | 'years') => void
   /** set current month function */
@@ -42,6 +45,7 @@ export const YearPicker = ({
   color = 'primary',
   size = 'md',
   buttonProps = {},
+  gridRef,
   setCalendarState,
   setCurrentMonth,
 }: YearPickerProps) => {
@@ -95,41 +99,46 @@ export const YearPicker = ({
   }, [year])
 
   return (
-    <ScrollShadow height={scrollHeight[size]} gutter ref={scrollRef}>
+    <ScrollShadow height={scrollHeight[size]} gutter padding="px-2" ref={scrollRef}>
       <div
         className={cn('YearPicker', 'grid grid-cols-5 gap-1')}
         role="grid"
         data-testid="YearPicker"
+        ref={gridRef}
       >
         {yearRows.map(row => (
           <div key={String([row[0], row[4]])} className="contents" role="row">
-            {row.map(y => (
-              <Button
-                key={y.toDateString()}
-                className={cn(
-                  'DateButton',
-                  'w-full border-none font-normal',
-                  isSameYear(y, year) && 'selected shadow-ring',
-                  buttonClassName,
-                )}
-                variant={variant}
-                color={color}
-                size={size}
-                startIcon={format(y, 'yyyy')}
-                aria-label={format(y, 'yyyy')}
-                hideShadow
-                disabled={
-                  (minMaxDate?.min && getYear(minMaxDate?.min) > getYear(y)) ||
-                  (minMaxDate?.max && getYear(minMaxDate?.max) < getYear(y))
-                }
-                tabIndex={-1}
-                role="gridcell"
-                aria-selected={isSameYear(y, year)}
-                aria-current={isSameYear(y, new Date()) ? 'date' : undefined}
-                onClick={() => handleYearChange(y)}
-                {...restButtonProps}
-              />
-            ))}
+            {row.map(y => {
+              const isDisabled =
+                (minMaxDate?.min && getYear(minMaxDate?.min) > getYear(y)) ||
+                (minMaxDate?.max && getYear(minMaxDate?.max) < getYear(y))
+              return (
+                <Button
+                  key={y.toDateString()}
+                  className={cn(
+                    'DateButton',
+                    'w-full border-none font-normal',
+                    isDisabled && 'disabled',
+                    disabledClassVariant[variant],
+                    isSameYear(y, year) && 'selected shadow-ring',
+                    buttonClassName,
+                  )}
+                  variant={variant}
+                  color={color}
+                  size={size}
+                  startIcon={format(y, 'yyyy')}
+                  aria-label={format(y, 'yyyy')}
+                  hideShadow
+                  aria-disabled={isDisabled || undefined}
+                  tabIndex={-1}
+                  role="gridcell"
+                  aria-selected={isSameYear(y, year)}
+                  aria-current={isSameYear(y, new Date()) ? 'date' : undefined}
+                  onClick={() => !isDisabled && handleYearChange(y)}
+                  {...restButtonProps}
+                />
+              )
+            })}
           </div>
         ))}
       </div>

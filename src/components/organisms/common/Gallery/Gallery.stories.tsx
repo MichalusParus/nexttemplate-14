@@ -8,7 +8,7 @@ const meta: Meta<typeof Gallery> = {
   component: Gallery,
   tags: ['autodocs'],
   parameters: {
-    layout: 'padded',
+    layout: 'centered',
   },
   argTypes: {
     items: { control: false },
@@ -25,7 +25,7 @@ export const Default: Story = {
     label: 'Gallery',
     variant: 'outlined',
     color: 'primary',
-    width: 'w-full',
+    width: 'w-[900px]',
     ratio: 'aspect-video',
     paperProps: {},
     imageViewerProps: {},

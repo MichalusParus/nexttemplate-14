@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs'
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { useGroupedOptions } from '@/components/utils/hooks/useGroupedOptions'
@@ -33,27 +33,27 @@ const meta: Meta<typeof MultiAutocomplete> = {
 const MultiAutocompleteWithFetch = (args: MultiAutocompleteProps) => {
   const [value, setValue] = useState<string[]>([])
   const [options, setOptions] = useState<{ label: string; value: string }[]>([])
-  const [isPending, startTransition] = useTransition()
+  const [isLoading, setIsLoading] = useState(false)
 
-  const getOptions = async (value: string) => {
-    startTransition(async () => {
-      await fetch(
-        value.length
-          ? `https://restcountries.com/v3.1/name/${value}`
-          : 'https://restcountries.com/v3.1/all?fields=name',
+  const getOptions = (value: string) => {
+    setIsLoading(true)
+    fetch(
+      value.length
+        ? `https://restcountries.com/v3.1/name/${value}`
+        : 'https://restcountries.com/v3.1/all?fields=name',
+    )
+      .then(res => res.json())
+      .then(res =>
+        setOptions(
+          res.length
+            ? res.map((o: { name: { common: string }; id: string }) => ({
+                label: o.name.common,
+                value: o.name.common,
+              }))
+            : [],
+        ),
       )
-        .then(res => res.json())
-        .then(res =>
-          setOptions(
-            res.length
-              ? res.map((o: { name: { common: string }; id: string }) => ({
-                  label: o.name.common,
-                  value: o.name.common,
-                }))
-              : [],
-          ),
-        )
-    })
+      .finally(() => setIsLoading(false))
   }
 
   const debouncedFn = debounce(getOptions, 500)
@@ -65,7 +65,7 @@ const MultiAutocompleteWithFetch = (args: MultiAutocompleteProps) => {
       <MultiAutocomplete
         {...args}
         options={options}
-        isLoading={isPending || args.isLoading}
+        isLoading={isLoading || args.isLoading}
         value={value}
         onOpen={() => getOptions('')}
         onInputChange={debouncedFn}
@@ -131,6 +131,16 @@ export const PrimaryDefault: Story = {
     onChange: value => console.log(value),
   },
   render: args => <MultiAutocompleteWithFetch {...args} />,
+}
+
+export const DisplayChips: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'MultiAutocompleteStory1',
+    options: getOptions('MultiAutocompleteStory1', 5),
+    displayChips: true,
+  },
+  render: args => <ClientMultiAutocomplete {...args} />,
 }
 
 export const ClientFilter: Story = {

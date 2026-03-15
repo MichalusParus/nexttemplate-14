@@ -20,9 +20,9 @@ import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { XIcon } from '@/components/atoms/icons'
 import { Title } from '@/components/atoms/typography/Title'
 import { TitleProps } from '@/components/atoms/typography/Title/Title'
+import { useFocus } from '@/components/utils/hooks/useFocus'
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
-// import { useFocus } from '@/utils/hooks/useFocus'
 import { cn } from '@/utils/utils'
 
 import { closeClass, dialogPosition, openClass } from './Dialog.style'
@@ -41,8 +41,10 @@ export type DialogProps = NativeDivProps &
     label?: string
     /** for setting different dialog width than default value as tailwind class */
     width?: string
-    /** for setting different dialog padding than default value as tailwind class */
-    padding?: string
+    /** for setting horizontal content padding as tailwind class */
+    paddingX?: string
+    /** for setting vertical Paper padding as tailwind class */
+    paddingY?: string
     /** for passing actions buttons to dialog by props */
     dialogActions?: ReactNode
     /** boolean for adding close button into dialog actions */
@@ -71,7 +73,8 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
       variant = 'outlined',
       color = 'primary',
       width = 'w-full md:w-auto min-w-64',
-      padding = 'py-2 px-2 md:pb-3 md:px-5',
+      paddingX = 'px-2 md:px-5',
+      paddingY = 'py-2 md:pb-3',
       dialogActions,
       closeButton,
       hideXButton,
@@ -85,22 +88,21 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
     ref,
   ) => {
     const t = useTranslations('Components')
-    const componentRef = useRef<HTMLDivElement>(null)
+    const [componentEl, setComponentEl] = useState<HTMLDivElement | null>(null)
     useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
       ref,
-      () => componentRef.current,
+      () => componentEl,
     )
     const [isVisible, setIsVisible] = useState(false)
     const container = usePortalContainer(portalContainerId)
     const { className: paperClassName, ...restPaperProps } = paperProps
 
-    // const { focusableEl } = useFocus(
-    //   isOpen,
-    //   componentRef,
-    //   ['[tabindex]:not([tabindex="-1"])', '.Link'],
-    //   () => setIsOpen(!isOpen),
-    //   { trap: true },
-    // )
+    const containerRef = useRef<HTMLElement | null>(null)
+    useFocus(isOpen, containerRef, {
+      portalEl: componentEl,
+      dismiss: 'modal',
+      onToggle: setIsOpen,
+    })
 
     const handleClose = () => {
       setIsOpen(false)
@@ -142,17 +144,17 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
           aria-label={label || t('dialog')}
           aria-labelledby={title ? `${name}-title` : undefined}
           aria-modal="true"
-          ref={componentRef}
+          ref={setComponentEl}
           {...rest}
         >
           <Paper
             className={cn('shadow-dialog relative h-full w-full', paperClassName)}
             variant={variant}
             color={color}
-            padding={padding}
+            padding={paddingY}
             {...restPaperProps}
           >
-            <div className={cn('DialogTitleWrap', 'pb-8')}>
+            <div className={cn('DialogTitleWrap', 'relative', paddingX, 'pb-8')}>
               {title && (
                 <Title
                   id={`${name}-title`}
@@ -179,8 +181,10 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
                 />
               )}
             </div>
-            <ScrollShadow height="max-h-[75vh]">{children}</ScrollShadow>
-            <div className={cn('DialogActions', 'flex justify-end gap-3 pt-8')}>
+            <ScrollShadow height="max-h-[75vh]" padding={paddingX}>
+              {children}
+            </ScrollShadow>
+            <div className={cn('DialogActions', paddingX, 'flex justify-end gap-3 pt-8')}>
               {closeButton && (
                 <Button
                   className={cn('CloseButton', 'border-none')}

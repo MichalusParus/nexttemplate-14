@@ -3,15 +3,18 @@ import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState
 import { v4 as uuidv4 } from 'uuid'
 
 import { StyleProps } from '@/components/utils/types'
-import { useFilterData } from '@/utils/hooks/useFilterData'
+import { FilterDef, SortingState, useFilterData } from '@/utils/hooks/useFilterData'
 import { usePagination } from '@/utils/hooks/usePagination'
 import { cn } from '@/utils/utils'
+
+const EMPTY_ARRAY: never[] = []
 
 import { GridBody } from './GridBody'
 import { GridFooter } from './GridFooter'
 import { GridHeader } from './GridHeader'
 import { DataGridContextValue, DataGridProvider } from './utils/DataGridContext'
 import { ColumnDef } from './utils/types'
+import { useDataGridFocus } from './utils/useDataGridFocus'
 import { buildGridTemplateColumns, getFlatColumns, getMaxDepth } from './utils/utils'
 
 export type DataGridProps<T extends Record<string, unknown> = Record<string, unknown>> =
@@ -40,8 +43,18 @@ export type DataGridProps<T extends Record<string, unknown> = Record<string, unk
     getRowId?: (row: T) => string | number
     /** callback when selection changes - enables multiselect mode */
     onSelectionChange?: (rows: T[]) => void
-    /** function for clicable rows */
+    /** function for clickable rows */
     onRowClick?: (value: T) => void
+    /** callback when filter state changes - enables server-side filtering */
+    onFilterChange?: (filter: FilterDef) => void
+    /** callback when sorting state changes - enables server-side sorting */
+    onSortingChange?: (sorting: SortingState) => void
+    /** total number of pages - required with onPageChange (matches Pagination count prop) */
+    count?: number
+    /** controlled current page - used with onPageChange (matches Pagination page prop) */
+    page?: number
+    /** callback when page or rowsPerPage changes - enables server-side pagination */
+    onPageChange?: (page: number, rowsPerPage: number) => void
   }
 
 /** Grid "table" for displaying data in rows with filter, sort, pagination, data export, onClick and multiselection. USE CLIENT */
@@ -63,6 +76,11 @@ function DataGridComponent<T extends Record<string, unknown> = Record<string, un
     getRowId,
     onSelectionChange,
     onRowClick,
+    onFilterChange,
+    onSortingChange,
+    onPageChange,
+    count,
+    page,
   }: DataGridProps<T>,
   ref: React.ForwardedRef<HTMLDivElement | null>,
 ) {
@@ -86,26 +104,97 @@ function DataGridComponent<T extends Record<string, unknown> = Record<string, un
 
   const [selectedRows, setSelectedRows] = useState<T[]>(defaultSelectedRows || [])
   const [selectedRowsPerPage, setSelectedRowsPerPage] = useState(rowsPerPage)
-  const { filteredData, sorting, filter, setFilter, handleSorting } = useFilterData<T>(rows)
+  const { filteredData, sorting, filter, setFilter, handleSorting } = useFilterData<T>(rows, {
+    skipFiltering: Boolean(onFilterChange),
+    skipSorting: Boolean(onSortingChange),
+    onFilterChange,
+    onSortingChange,
+  })
+
   const {
-    pagedData,
-    pages,
-    page: selectedPage,
-    onChange: setSelectedPage,
-  } = usePagination(filteredData, selectedRowsPerPage)
+    pagedData: clientPagedData,
+    pages: clientPages,
+    page: clientPage,
+    onChange: clientPageChange,
+  } = usePagination(onPageChange ? EMPTY_ARRAY : filteredData, selectedRowsPerPage)
+
+  const pagination = useMemo(() => {
+    if (onPageChange) {
+      return {
+        pagedData: rows,
+        pages: Array.from({ length: count ?? 1 }, (_, i) => i + 1),
+        selectedPage: page ?? 1,
+        totalDataCount: (count ?? 1) * selectedRowsPerPage,
+        selectableData: rows,
+      }
+    }
+    return {
+      pagedData: clientPagedData,
+      pages: clientPages,
+      selectedPage: clientPage,
+      totalDataCount: filteredData.length,
+      selectableData: filteredData,
+    }
+  }, [
+    onPageChange,
+    rows,
+    count,
+    page,
+    selectedRowsPerPage,
+    clientPagedData,
+    clientPages,
+    clientPage,
+    filteredData,
+  ])
+
+  const setSelectedPage = useCallback(
+    (newPage: number) => {
+      if (onPageChange) {
+        onPageChange(newPage, selectedRowsPerPage)
+      } else {
+        clientPageChange(newPage)
+      }
+    },
+    [onPageChange, selectedRowsPerPage, clientPageChange],
+  )
+
+  const handleRowsPerPage = useCallback(
+    (value: number) => {
+      setSelectedRowsPerPage(value)
+      if (onPageChange) {
+        onPageChange(1, value)
+      }
+    },
+    [onPageChange],
+  )
+
+  const { pagedData, pages, selectedPage, totalDataCount, selectableData } = pagination
+
   const maxDepth = getMaxDepth(columns)
   const columnsInRow = getFlatColumns(columns)
 
   const gridTemplateColumns = useMemo(() => buildGridTemplateColumns(columnsInRow), [columnsInRow])
 
+  useDataGridFocus({
+    gridRef: componentRef,
+    gridColumns: columnsInRow.length + (onSelectionChange ? 1 : 0),
+    onRowSelect: rowIndex => {
+      const dataRowIndex = rowIndex - maxDepth - 1
+      const row = pagedData[dataRowIndex]
+      if (row) {
+        handleSelect(row)
+      }
+    },
+  })
+
   const allSelected = useMemo(
-    () => filteredData.length > 0 && selectedRows.length === filteredData.length,
-    [selectedRows.length, filteredData.length],
+    () => selectableData.length > 0 && selectedRows.length === selectableData.length,
+    [selectedRows.length, selectableData.length],
   )
 
   const isIndeterminate = useMemo(
-    () => selectedRows.length > 0 && selectedRows.length < filteredData.length,
-    [selectedRows.length, filteredData.length],
+    () => selectedRows.length > 0 && selectedRows.length < selectableData.length,
+    [selectedRows.length, selectableData.length],
   )
 
   const selectedRowIds = useMemo(
@@ -114,24 +203,22 @@ function DataGridComponent<T extends Record<string, unknown> = Record<string, un
   )
 
   const handleAll = useCallback(() => {
-    const newSelection = allSelected ? [] : filteredData
+    const newSelection = allSelected ? [] : selectableData
     setSelectedRows(newSelection)
     onSelectionChange?.(newSelection)
-  }, [allSelected, filteredData, onSelectionChange])
+  }, [allSelected, selectableData, onSelectionChange])
 
   const handleSelect = useCallback(
     (row: T) => {
       const rowId = handleRowId(row)
-      setSelectedRows(prev => {
-        const selectedIds = new Set(prev.map(r => handleRowId(r)))
-        const newSelection = selectedIds.has(rowId)
-          ? prev.filter(r => handleRowId(r) !== rowId)
-          : [...prev, row]
-        onSelectionChange?.(newSelection)
-        return newSelection
-      })
+      const selectedIds = new Set(selectedRows.map(r => handleRowId(r)))
+      const newSelection = selectedIds.has(rowId)
+        ? selectedRows.filter(r => handleRowId(r) !== rowId)
+        : [...selectedRows, row]
+      setSelectedRows(newSelection)
+      onSelectionChange?.(newSelection)
     },
-    [handleRowId, onSelectionChange],
+    [handleRowId, onSelectionChange, selectedRows],
   )
 
   const handleRowClick = useCallback(
@@ -159,7 +246,7 @@ function DataGridComponent<T extends Record<string, unknown> = Record<string, un
       setFilter,
       handleSorting,
       selectedRowsCount: selectedRows.length,
-      filteredDataCount: filteredData.length,
+      filteredDataCount: totalDataCount,
     }),
     [
       name,
@@ -174,7 +261,7 @@ function DataGridComponent<T extends Record<string, unknown> = Record<string, un
       setFilter,
       handleSorting,
       selectedRows.length,
-      filteredData.length,
+      totalDataCount,
     ],
   )
 
@@ -184,48 +271,45 @@ function DataGridComponent<T extends Record<string, unknown> = Record<string, un
         id={`grid-${name}`}
         className={cn(
           'DataGrid',
-          'w-full overflow-x-auto rounded-md focus-visible:outline-1 focus-visible:outline-offset-1',
+          'grid w-full overflow-x-auto rounded-md',
           !hideShadow && variant === 'contained' && 'shadow-button',
           className,
         )}
         role="grid"
-        tabIndex={0}
         aria-label={name}
-        aria-multiselectable={Boolean(onSelectionChange)}
-        aria-rowcount={filteredData.length + maxDepth}
+        aria-multiselectable={onSelectionChange ? true : undefined}
+        aria-rowcount={totalDataCount + maxDepth}
         aria-colcount={columnsInRow.length + (onSelectionChange ? 1 : 0)}
         aria-busy={isLoading}
         ref={componentRef}
       >
-        <div className={cn('GridInnerWrap', 'min-w-max overflow-x-hidden')}>
-          <GridHeader
-            allSelected={allSelected}
-            isIndeterminate={isIndeterminate}
-            handleAll={onSelectionChange ? handleAll : undefined}
-            gridTemplateColumns={gridTemplateColumns}
-          />
-          <GridBody
-            pagedData={pagedData}
-            selectedRowIds={selectedRowIds}
-            getRowId={handleRowId}
-            multiselect={Boolean(onSelectionChange)}
-            isLoading={isLoading}
-            rowsPerPage={selectedRowsPerPage}
-            maxHeight={maxHeight}
-            headerDepth={maxDepth}
-            gridTemplateColumns={gridTemplateColumns}
-            handleRowClick={onRowClick || onSelectionChange ? handleRowClick : undefined}
-          />
-          <GridFooter
-            filteredData={filteredData}
-            selectedRowsPerPage={selectedRowsPerPage}
-            pages={pages}
-            selectedPage={selectedPage}
-            isLoading={isLoading}
-            setSelectedPage={setSelectedPage}
-            setSelectedRowsPerPage={setSelectedRowsPerPage}
-          />
-        </div>
+        <GridHeader
+          allSelected={allSelected}
+          isIndeterminate={isIndeterminate}
+          handleAll={onSelectionChange ? handleAll : undefined}
+          gridTemplateColumns={gridTemplateColumns}
+        />
+        <GridBody
+          pagedData={pagedData}
+          selectedRowIds={selectedRowIds}
+          getRowId={handleRowId}
+          multiselect={Boolean(onSelectionChange)}
+          isLoading={isLoading}
+          rowsPerPage={selectedRowsPerPage}
+          maxHeight={maxHeight}
+          headerDepth={maxDepth}
+          gridTemplateColumns={gridTemplateColumns}
+          handleRowClick={onRowClick || onSelectionChange ? handleRowClick : undefined}
+        />
+        <GridFooter
+          filteredData={selectableData}
+          selectedRowsPerPage={selectedRowsPerPage}
+          pages={pages}
+          selectedPage={selectedPage}
+          isLoading={isLoading}
+          setSelectedPage={setSelectedPage}
+          setSelectedRowsPerPage={handleRowsPerPage}
+        />
       </div>
     </DataGridProvider>
   )

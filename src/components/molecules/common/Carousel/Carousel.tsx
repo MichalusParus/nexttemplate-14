@@ -124,7 +124,7 @@ export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<Caro
 
     return (
       <div
-        className={cn('Carousel', 'group relative flex items-center overflow-hidden', className)}
+        className={cn('Carousel', 'group relative flex items-center overflow-hidden', width, className)}
         ref={componentRef}
         role="region"
         aria-roledescription="carousel"
@@ -132,7 +132,7 @@ export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<Caro
         data-testid="Carousel"
       >
         <div
-          className={cn('CarouselRatioWrap', 'relative', width, ratio)}
+          className={cn('CarouselRatioWrap', 'relative w-full', ratio)}
           data-testid="CarouselRatioWrap"
         >
           <div

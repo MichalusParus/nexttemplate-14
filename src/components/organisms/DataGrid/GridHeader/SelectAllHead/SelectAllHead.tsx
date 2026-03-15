@@ -37,13 +37,17 @@ export const SelectAllHead = ({
 
   return (
     <div
-      className={cn('SelectAllHeader', className)}
+      className={cn(
+        'SelectAllHeader focus-visible:outline-2 focus-visible:outline-offset-2',
+        className,
+      )}
       style={{
         ...(gridColumn && { gridColumn }),
         ...(gridRow && { gridRow }),
       }}
       role="columnheader"
       aria-label={t('selectAll')}
+      tabIndex={-1}
     >
       <Tooltip title={t('selectAll')} placement="top" offset={[0, 15]}>
         <Button
@@ -53,6 +57,7 @@ export const SelectAllHead = ({
           size={size}
           hideShadow
           aria-label={t('selectAll')}
+          tabIndex={-1}
           startIcon={
             <Checkbox
               name={`${name}All`}
@@ -64,6 +69,7 @@ export const SelectAllHead = ({
               isChecked={isChecked || false}
               isIndeterminate={isIndeterminate}
               fake
+              tabIndex={-1}
               onChange={() => {}}
             />
           }

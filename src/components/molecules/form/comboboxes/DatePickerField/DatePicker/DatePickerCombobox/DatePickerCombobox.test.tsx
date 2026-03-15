@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+window.HTMLElement.prototype.scrollIntoView = jest.fn()
+
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { act, createRef } from 'react'
 

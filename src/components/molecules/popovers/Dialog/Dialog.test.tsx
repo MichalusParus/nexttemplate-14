@@ -16,7 +16,7 @@ describe('Dialog', () => {
         className="className"
         name="test"
         label="label"
-        padding="p-0"
+        paddingX="px-4" paddingY="py-4"
         width="w-64"
         isOpen
         setIsOpen={spy}
@@ -26,6 +26,7 @@ describe('Dialog', () => {
     )
     const dialogRole = screen.getByRole('dialog')
     const paperTestId = screen.getByTestId('Paper')
+    const contentWrapTestId = screen.getByTestId('ContentWrap')
     const XButtonTestId = screen.getByTestId('XButton')
 
     expect(dialogRole).toBeInTheDocument()
@@ -35,7 +36,8 @@ describe('Dialog', () => {
     expect(dialogRole).toHaveAttribute('aria-modal', 'true')
     expect(dialogRole).toHaveAttribute('aria-label', 'label')
     expect(dialogRole).toHaveClass('w-64')
-    expect(paperTestId).toHaveClass('p-0')
+    expect(paperTestId).toHaveClass('py-4')
+    expect(contentWrapTestId).toHaveClass('px-4')
     expect(XButtonTestId).toBeInTheDocument()
 
     fireEvent.click(XButtonTestId)

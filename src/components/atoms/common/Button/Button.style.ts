@@ -10,7 +10,7 @@ import {
 import { cn } from '@/utils/utils'
 
 export const buttonClass = cn(
-  'focus:outline-hidden relative cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border font-semibold transition-activity focus-visible:ring-1',
+  'focus:outline-hidden relative cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border font-semibold transition-activity focus-visible:ring-1 focus-visible:z-10',
   errorStateClass,
 )
 

@@ -1,10 +1,11 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, useCallback, useMemo } from 'react'
+import { forwardRef, useCallback, useMemo, useRef } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import { ChevronIcon } from '@/components/atoms/icons'
+import { useFocus } from '@/components/utils/hooks/useFocus'
 import { cn } from '@/utils/utils'
 
 import { MobilePaginationProps } from '../MobilePagination/MobilePagination'
@@ -43,12 +44,19 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
     ref,
   ) => {
     const t = useTranslations('Components')
+    const componentRef = useRef<HTMLDivElement>(null)
     const { className: buttonClassName, ...restButtonProps } = buttonProps
     const { className: loadMoreButtonClassName, ...restLoadMoreButtonProps } = loadMoreButtonProps
     const Element = hideNav ? 'div' : 'nav'
     const pages = useMemo(() => Array.from({ length: count }, (_, i) => i + 1), [count])
     const showEllipsis = count > ((pageSpread - 5) / 2) * 2 + 6
     const sidePagesCount = (pageSpread - 5) / 2
+
+    useFocus(true, componentRef, {
+      triggerRef: { current: null },
+      selectors: ['.PageButton'],
+      value: pageSpread,
+    })
 
     const loadingPages = useMemo(() => {
       const skeletonCount = Math.min(5, pageSpread)
@@ -73,8 +81,8 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
       return pages.filter(p => p >= page - sidePagesCount && p <= page + sidePagesCount)
     }, [isLoading, loadingPages, pages, count, page, sidePagesCount])
 
-    const getSelectedClass = useCallback(
-      (pageNum: number) => pageNum >= page && pageNum <= page + loadMoreCount && 'selected',
+    const isSelected = useCallback(
+      (pageNum: number) => pageNum >= page && pageNum <= page + loadMoreCount,
       [page, loadMoreCount],
     )
 
@@ -106,6 +114,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
           )}
           {...(Element === 'nav' && { 'aria-label': t('pagination') })}
           data-testid="ScreenPagination"
+          ref={componentRef}
         >
           {(page !== 1 || isLoading) && (
             <Button
@@ -120,6 +129,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               startIcon={<ChevronIcon />}
               disabled={isLoading}
               onClick={() => onChange(page - 1)}
+              tabIndex={-1}
               aria-label={t('previousPage', { page: page - 1 })}
               {...restButtonProps}
             />
@@ -129,7 +139,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               className={cn(
                 'PageButton',
                 pageButtonSize[size],
-                getSelectedClass(pages[0]),
+                isSelected(pages[0]) && 'selected',
                 buttonClassName,
               )}
               variant={variant}
@@ -138,7 +148,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               startIcon={String(pages[0])}
               disabled={isLoading}
               onClick={() => onChange(pages[0])}
-              tabIndex={-1}
+              tabIndex={isSelected(pages[0]) ? 0 : -1}
               aria-label={t('page', { page: pages[0] })}
               aria-current={pages[0] === page ? 'page' : undefined}
               {...restButtonProps}
@@ -162,7 +172,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               className={cn(
                 'PageButton',
                 pageButtonSize[size],
-                getSelectedClass(pageNum),
+                isSelected(pageNum) && 'selected',
                 buttonClassName,
               )}
               variant={variant}
@@ -171,7 +181,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               startIcon={String(pageNum)}
               disabled={isLoading}
               onClick={() => onChange(pageNum)}
-              tabIndex={-1}
+              tabIndex={isSelected(pageNum) ? 0 : -1}
               aria-label={t('page', { page: pageNum })}
               aria-current={pageNum === page ? 'page' : undefined}
               {...restButtonProps}
@@ -194,7 +204,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               className={cn(
                 'PageButton',
                 pageButtonSize[size],
-                getSelectedClass(pages[count - 1]),
+                isSelected(pages[count - 1]) && 'selected',
                 buttonClassName,
               )}
               variant={variant}
@@ -203,7 +213,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               startIcon={String(pages[count - 1])}
               disabled={isLoading}
               onClick={() => onChange(pages[count - 1])}
-              tabIndex={-1}
+              tabIndex={isSelected(pages[count - 1]) ? 0 : -1}
               aria-label={t('page', { page: pages[count - 1] })}
               aria-current={pages[count - 1] === page ? 'page' : undefined}
               {...restButtonProps}
@@ -222,6 +232,7 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               startIcon={<ChevronIcon />}
               disabled={isLoading}
               onClick={() => onChange(page + loadMoreCount + 1)}
+              tabIndex={-1}
               aria-label={t('nextPage', {
                 page: page + loadMoreCount + 1,
               })}

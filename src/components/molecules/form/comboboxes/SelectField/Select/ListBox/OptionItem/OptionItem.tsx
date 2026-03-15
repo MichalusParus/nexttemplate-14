@@ -11,6 +11,8 @@ import { cn } from '@/utils/utils'
 
 
 export type OptionItemProps<T = string> = StyleProps & {
+  /** unique id for option element */
+  id?: string
   /** string label of option */
   label: string
   /** value of option */
@@ -32,6 +34,7 @@ export type OptionItemProps<T = string> = StyleProps & {
 /** optionItem Ul with selectable options. USE CLIENT */
 function OptionItemComponent<T = string>(
   {
+    id,
     label,
     value,
     isSelected,
@@ -82,6 +85,7 @@ function OptionItemComponent<T = string>(
             />
           )
         }
+        id={id}
         role="option"
         tabIndex={-1}
         hideShadow

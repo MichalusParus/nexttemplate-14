@@ -63,7 +63,7 @@ describe('DayPicker', () => {
     expect(cellRoles[0]).toHaveClass('selected')
     expect(cellRoles[0]).toHaveAttribute('aria-selected')
     expect(cellRoles[1]).toHaveAttribute('aria-selected', 'false')
-    expect(cellRoles[5]).toHaveAttribute('disabled')
+    expect(cellRoles[5]).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('weekStart', () => {

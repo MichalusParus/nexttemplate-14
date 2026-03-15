@@ -174,21 +174,48 @@ const sortComparator = <T>(key: string, direction: 'asc' | 'desc') => {
   }
 }
 
-/** useFilterData is hook for client side filtering and sorting. Supports dott notations on keys. */
-export const useFilterData = <T extends Record<string, unknown>>(data: T[]) => {
+export type UseFilterDataOptions = {
+  skipFiltering?: boolean
+  skipSorting?: boolean
+  onFilterChange?: (filter: FilterDef) => void
+  onSortingChange?: (sorting: SortingState) => void
+}
+
+/** useFilterData is hook for client side filtering and sorting. Supports dott notations on keys. Accepts optional options for server-side mode. */
+export const useFilterData = <T extends Record<string, unknown>>(
+  data: T[],
+  options?: UseFilterDataOptions,
+) => {
+  const { skipFiltering, skipSorting, onFilterChange, onSortingChange } = options ?? {}
+
   const [filter, setFilter] = useState<FilterDef>({})
   const [sorting, setSorting] = useState<SortingState>({ key: null, value: 'none' })
 
-  const handleSorting = useCallback((key: string) => {
-    setSorting(prev => {
-      if (prev.key === key) {
-        if (prev.value === 'none') return { key, value: 'asc' }
-        if (prev.value === 'asc') return { key, value: 'desc' }
-        return { key: null, value: 'none' }
-      }
-      return { key, value: 'asc' }
-    })
-  }, [])
+  const handleFilter = useCallback(
+    (newFilter: FilterDef) => {
+      setFilter(newFilter)
+      onFilterChange?.(newFilter)
+    },
+    [onFilterChange],
+  )
+
+  const handleSorting = useCallback(
+    (key: string) => {
+      setSorting(prev => {
+        let next: SortingState
+        if (prev.key === key) {
+          if (prev.value === 'none') next = { key, value: 'asc' }
+          else if (prev.value === 'asc') next = { key, value: 'desc' }
+          else next = { key: null, value: 'none' }
+        } else {
+          next = { key, value: 'asc' }
+        }
+        onSortingChange?.(next)
+        return next
+      })
+    },
+    [onSortingChange],
+  )
 
   const reset = useCallback(() => {
     setSorting({ key: null, value: 'none' })
@@ -196,6 +223,7 @@ export const useFilterData = <T extends Record<string, unknown>>(data: T[]) => {
   }, [])
 
   const filteredData = useMemo(() => {
+    if (skipFiltering) return data
     if (Object.keys(filter).length === 0) return data
 
     const activeCriteria = Object.entries(filter).filter(([, criteria]) => {
@@ -221,20 +249,21 @@ export const useFilterData = <T extends Record<string, unknown>>(data: T[]) => {
         return filterOperator(value, criteria)
       })
     })
-  }, [data, filter])
+  }, [data, filter, skipFiltering])
 
   const sortedData = useMemo(() => {
+    if (skipSorting) return filteredData
     if (!sorting.key || sorting.value === 'none') return filteredData
 
     return [...filteredData].sort(sortComparator<T>(sorting.key, sorting.value))
-  }, [filteredData, sorting])
+  }, [filteredData, sorting, skipSorting])
 
   return {
     filteredData: sortedData,
     filter,
     sorting,
     reset,
-    setFilter,
+    setFilter: handleFilter,
     handleSorting,
   }
 }

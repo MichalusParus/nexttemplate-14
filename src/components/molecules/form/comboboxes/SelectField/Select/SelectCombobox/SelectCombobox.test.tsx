@@ -20,7 +20,7 @@ describe('SelectCombobox', () => {
         selectedOptions={[]}
         name="selectComboboxTest"
         placeholder="placeholder"
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
       />,
     )
@@ -46,7 +46,7 @@ describe('SelectCombobox', () => {
         isOpen={true}
         selectedOptions={[]}
         name="selectComboboxTest"
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
       />,
     )
@@ -62,7 +62,7 @@ describe('SelectCombobox', () => {
         isOpen={false}
         selectedOptions={[options[0]]}
         name="selectComboboxTest"
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
       />,
     )
@@ -79,7 +79,7 @@ describe('SelectCombobox', () => {
         isOpen={false}
         selectedOptions={[options[0], options[1]]}
         displayChips
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={spy}
       />,
     )
@@ -103,7 +103,7 @@ describe('SelectCombobox', () => {
         selectedOptions={[]}
         name="selectComboboxTest"
         error="error"
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
       />,
     )
@@ -119,7 +119,7 @@ describe('SelectCombobox', () => {
         selectedOptions={[options[0], options[1]]}
         name="selectComboboxTest"
         displayChips
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
         chipProps={{ className: 'chipClass' }}
       />,
@@ -138,7 +138,7 @@ describe('SelectCombobox', () => {
         name="selectComboboxTest"
         displayChips
         onClear={spy}
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
       />,
     )
@@ -149,14 +149,14 @@ describe('SelectCombobox', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it('handleOpen', () => {
+  it('handleToggle', () => {
     const spy = jest.fn()
     render(
       <SelectCombobox
         isOpen={false}
         selectedOptions={[]}
         name="selectComboboxTest"
-        handleOpen={spy}
+        handleToggle={spy}
         handleOnChange={() => {}}
       />,
     )
@@ -173,7 +173,7 @@ describe('SelectCombobox', () => {
         selectedOptions={[]}
         name="selectComboboxTest"
         disabled
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
       />,
     )
@@ -190,7 +190,7 @@ describe('SelectCombobox', () => {
         isOpen={false}
         selectedOptions={[]}
         name="selectComboboxTest"
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
       />,
     )
@@ -212,7 +212,7 @@ describe('SelectCombobox', () => {
         name="selectComboboxTest"
         selectedOptions={[]}
         placeholder="placeholder"
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
         title="title"
       />,

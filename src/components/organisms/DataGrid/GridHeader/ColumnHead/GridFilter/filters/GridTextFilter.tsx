@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { SearchInput } from '@/components/molecules/form/inputs/SearchField/SearchInput'
 import { useDataGridContext } from '@/components/organisms/DataGrid/utils/DataGridContext'
 import { ColumnDef } from '@/components/organisms/DataGrid/utils/types'
-import { removeColumnFilter } from '@/components/organisms/DataGrid/utils/utils'
+import { removeColumnFilter, updateColumnFilter } from '@/components/organisms/DataGrid/utils/utils'
 import { FilterOperator } from '@/utils/hooks/useFilterData'
 
 export type GridTextFilterProps = {
@@ -37,10 +37,7 @@ export const GridTextFilter = ({ className, column }: GridTextFilterProps) => {
       onClick={e => e.stopPropagation()}
       onClear={() => setFilter(removeColumnFilter(filter, column.name))}
       onChange={value => {
-        setFilter({
-          ...filter,
-          [column.name]: { value, operator },
-        })
+        setFilter(updateColumnFilter(filter, column.name, value, operator))
       }}
     />
   )

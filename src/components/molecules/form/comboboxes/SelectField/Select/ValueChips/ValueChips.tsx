@@ -43,7 +43,7 @@ export const ValueChips = <T,>({
           size={size}
           endIcon={
             <ClearButton
-              className={cn(!multiValue && 'hidden')}
+              className={cn('ChipClearButton', !multiValue && 'hidden')}
               label={`${t('delete', { label: option.label })}`}
               onClick={() => handleOnChange(option.value)}
             />

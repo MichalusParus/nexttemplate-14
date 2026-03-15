@@ -31,8 +31,8 @@ export type SelectComboboxProps<T = string> = PartialButtonProps &
     chipProps?: Partial<ChipProps>
     /** optional onClear function that render clear button when value is defined */
     onClear?: () => void
-    /** handle onOpen function */
-    handleOpen: () => void
+    /** handle toggle function */
+    handleToggle: (open?: boolean) => void
     /** handle onChange function */
     handleOnChange: (value: T) => void
   }
@@ -54,7 +54,7 @@ function SelectComboboxComponent<T = string>(
     error,
     chipProps = {},
     onClear,
-    handleOpen,
+    handleToggle,
     handleOnChange,
     ...rest
   }: SelectComboboxProps<T>,
@@ -99,7 +99,7 @@ function SelectComboboxComponent<T = string>(
       aria-haspopup="listbox"
       aria-controls={`${name}-listbox`}
       aria-owns={`${name}-listbox`}
-      onClick={handleOpen}
+      onClick={() => handleToggle()}
       ref={ref}
       {...rest}
     >
@@ -111,6 +111,9 @@ function SelectComboboxComponent<T = string>(
         <ValueChips
           selectedOptions={selectedOptions}
           multiValue={multiValue}
+          variant={variant}
+          color={color}
+          size={size}
           chipProps={chipProps}
           handleOnChange={handleOnChange}
         />

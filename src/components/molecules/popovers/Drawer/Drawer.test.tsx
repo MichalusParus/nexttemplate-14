@@ -17,7 +17,8 @@ describe('Drawer', () => {
         name="drawerTest"
         label="drawerTest"
         width="w-1/3"
-        padding="p-8"
+        paddingX="px-4"
+        paddingY="p-8"
         offsetY="top-0 bottom-0"
         isOpen={true}
         anchorRef={anchorRef}
@@ -29,6 +30,7 @@ describe('Drawer', () => {
     const drawerTestId = screen.getByTestId('Drawer')
     const paperTestId = screen.getByTestId('Paper')
     const scrollShadowTestId = screen.getByTestId('ScrollShadow')
+    const contentWrapTestId = screen.getByTestId('ContentWrap')
 
     expect(drawerTestId).toBeInTheDocument()
     expect(drawerTestId).toHaveClass('className')
@@ -40,8 +42,8 @@ describe('Drawer', () => {
     expect(drawerTestId).toHaveAttribute('id', 'drawerTest')
     expect(drawerTestId).toHaveAttribute('aria-label', 'drawerTest')
     expect(drawerTestId).toHaveAttribute('aria-modal', 'false')
-    expect(paperTestId).toBeInTheDocument()
     expect(paperTestId).toHaveClass('p-8')
+    expect(contentWrapTestId).toHaveClass('px-4')
     expect(scrollShadowTestId).toBeInTheDocument()
   })
 

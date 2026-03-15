@@ -20,7 +20,7 @@ describe('AutocompleteCombobox', () => {
         isOpen={false}
         value={undefined}
         placeholder="placeholder"
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
         onInputChange={() => {}}
       />,
@@ -52,7 +52,7 @@ describe('AutocompleteCombobox', () => {
         name="autocompleteComboboxTest"
         isOpen={true}
         value=""
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
         onInputChange={() => {}}
       />,
@@ -70,7 +70,7 @@ describe('AutocompleteCombobox', () => {
         isOpen={true}
         value=""
         inputValue="test"
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
         onInputChange={() => {}}
       />,
@@ -88,7 +88,7 @@ describe('AutocompleteCombobox', () => {
         value=""
         multiValue={options.map(v => v.value)}
         selectedOptions={options}
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
         onInputChange={() => {}}
       />,
@@ -110,7 +110,7 @@ describe('AutocompleteCombobox', () => {
         multiValue={options.map(v => v.value)}
         selectedOptions={options}
         displayChips
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={spy}
         onInputChange={() => {}}
       />,
@@ -135,7 +135,7 @@ describe('AutocompleteCombobox', () => {
         isOpen={true}
         value=""
         error="error"
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
         onInputChange={() => {}}
       />,
@@ -156,7 +156,7 @@ describe('AutocompleteCombobox', () => {
         displayChips
         inputProps={{ className: 'inputClass' }}
         chipProps={{ className: 'chipClass' }}
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
         onInputChange={() => {}}
       />,
@@ -176,7 +176,7 @@ describe('AutocompleteCombobox', () => {
         isOpen={true}
         value="value"
         onClear={spy}
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
         onInputChange={() => {}}
       />,
@@ -190,14 +190,14 @@ describe('AutocompleteCombobox', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it('handleOpen', () => {
+  it('handleToggle', () => {
     const spy = jest.fn()
     render(
       <AutocompleteCombobox
         name="autocompleteComboboxTest"
         isOpen={true}
         value=""
-        handleOpen={spy}
+        handleToggle={spy}
         handleOnChange={() => {}}
         onInputChange={() => {}}
       />,
@@ -216,7 +216,7 @@ describe('AutocompleteCombobox', () => {
         name="autocompleteComboboxTest"
         isOpen={true}
         value=""
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
         onInputChange={spy}
       />,
@@ -236,7 +236,7 @@ describe('AutocompleteCombobox', () => {
         isOpen={true}
         value=""
         disabled
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
         onInputChange={() => {}}
       />,
@@ -257,7 +257,7 @@ describe('AutocompleteCombobox', () => {
         name="autocompleteComboboxTest"
         isOpen={true}
         value=""
-        handleOpen={() => {}}
+        handleToggle={() => {}}
         handleOnChange={() => {}}
         onInputChange={() => {}}
         ref={ref}
@@ -278,7 +278,7 @@ describe('AutocompleteCombobox', () => {
           name="autocompleteComboboxTest"
           isOpen={true}
           value=""
-          handleOpen={() => {}}
+          handleToggle={() => {}}
           handleOnChange={() => {}}
           onInputChange={() => {}}
         />

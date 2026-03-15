@@ -1,8 +1,9 @@
 'use client'
-import { FieldsetHTMLAttributes, forwardRef } from 'react'
+import { FieldsetHTMLAttributes, forwardRef, useImperativeHandle, useRef } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { disabledClassVariant } from '@/components/utils/common.style'
+import { useFocus } from '@/components/utils/hooks/useFocus'
 import { InputProps, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -57,6 +58,16 @@ export const ToggleGroup = forwardRef<HTMLDivElement | null, ToggleGroupProps>(
     ref,
   ) => {
     const { className: buttonClassName, ...restButtonProps } = buttonProps
+    const componentRef = useRef<HTMLDivElement>(null)
+    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
+      ref,
+      () => componentRef.current,
+    )
+
+    useFocus(true, componentRef, {
+      triggerRef: { current: null },
+      selectors: ['.ToggleButton'],
+    })
 
     const handleToggleClick = (toggleValue: string) => {
       if (multiValue) {
@@ -87,35 +98,40 @@ export const ToggleGroup = forwardRef<HTMLDivElement | null, ToggleGroupProps>(
         )}
         role="group"
         aria-disabled={disabled}
-        ref={ref}
+        ref={componentRef}
         {...rest}
       >
-        {options.map(({ value: toggleValue, label: radioLabel, content, isDisabled }, index) => (
-          <Button
-            key={toggleValue}
-            className={cn(
-              'ToggleButton',
-              'flex-1 rounded-none border-none focus-visible:z-10',
-              index === 0 && !column && 'rounded-l-md',
-              index === options.length - 1 && !column && 'rounded-r-md',
-              index === 0 && column && 'rounded-t-md',
-              index === options.length - 1 && column && 'rounded-b-md',
-              (multiValue ? multiValue?.includes(toggleValue) : value === toggleValue) &&
-                'selected',
-              buttonClassName,
-            )}
-            variant={variant}
-            color={color}
-            size={size}
-            hideShadow
-            disabled={disabled || isDisabled}
-            aria-pressed={multiValue ? multiValue?.includes(toggleValue) : value === toggleValue}
-            onClick={() => handleToggleClick(toggleValue)}
-            {...restButtonProps}
-          >
-            {content || radioLabel}
-          </Button>
-        ))}
+        {options.map(({ value: toggleValue, label: radioLabel, content, isDisabled }, index) => {
+          const isSelected = multiValue ? multiValue?.includes(toggleValue) : value === toggleValue
+          const hasSelected = multiValue ? multiValue && multiValue.length > 0 : !!value
+          const isFirstNonDisabled = !hasSelected && index === 0 && !isDisabled
+          return (
+            <Button
+              key={toggleValue}
+              className={cn(
+                'ToggleButton',
+                'flex-1 rounded-none border-none focus-visible:z-10',
+                index === 0 && !column && 'rounded-l-md',
+                index === options.length - 1 && !column && 'rounded-r-md',
+                index === 0 && column && 'rounded-t-md',
+                index === options.length - 1 && column && 'rounded-b-md',
+                isSelected && 'selected',
+                buttonClassName,
+              )}
+              variant={variant}
+              color={color}
+              size={size}
+              hideShadow
+              tabIndex={isSelected || isFirstNonDisabled ? 0 : -1}
+              disabled={disabled || isDisabled}
+              aria-pressed={isSelected}
+              onClick={() => handleToggleClick(toggleValue)}
+              {...restButtonProps}
+            >
+              {content || radioLabel}
+            </Button>
+          )
+        })}
       </div>
     )
   },

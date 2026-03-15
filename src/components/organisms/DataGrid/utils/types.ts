@@ -5,8 +5,8 @@ import { MultiDatePickerProps } from '@/components/molecules/form/comboboxes/Mul
 import { MultiSelectProps } from '@/components/molecules/form/comboboxes/MultiSelectField/MultiSelect'
 import { RangeDatePickerProps } from '@/components/molecules/form/comboboxes/RangeDatePickerField/RangeDatePicker'
 import { SelectProps } from '@/components/molecules/form/comboboxes/SelectField/Select'
-import { MultiToggleGroupProps } from '@/components/molecules/form/toggles/MultiToggleGroupField/MultiToggleGroup'
 import { TextInputProps } from '@/components/molecules/form/inputs/TextField/TextInput'
+import { MultiToggleGroupProps } from '@/components/molecules/form/toggles/MultiToggleGroupField/MultiToggleGroup'
 import { ToggleGroupProps } from '@/components/molecules/form/toggles/ToggleGroupField/ToggleGroup'
 import { OptionType } from '@/components/utils/types'
 import { FilterOperator } from '@/utils/hooks/useFilterData'
@@ -25,10 +25,6 @@ export type ColDef<T = Record<string, unknown>> = {
 
 export type ColumnDef<T = Record<string, unknown>> = ColDef<T> & {
   columns?: ColumnDef<T>[]
-}
-
-export type RowDef = {
-  [key: string]: string | number
 }
 
 export type FilterConfig =

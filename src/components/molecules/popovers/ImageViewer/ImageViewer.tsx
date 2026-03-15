@@ -1,11 +1,12 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, PropsWithChildren, useEffect, useId, useState } from 'react'
+import { forwardRef, PropsWithChildren, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { XIcon } from '@/components/atoms/icons'
 import { useInternalOpenState } from '@/components/utils/hooks/useInternalOpenState'
+import { useFocus } from '@/components/utils/hooks/useFocus'
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { cn } from '@/utils/utils'
 
@@ -40,9 +41,17 @@ export const ImageViewer = forwardRef<
   const t = useTranslations('Components')
   const id = useId().replace(/:/g, '')
   const nameId = name || id
+  const [dialogEl, setDialogEl] = useState<HTMLDivElement | null>(null)
   const [isVisible, setIsVisible] = useState(false)
   const container = usePortalContainer(portalContainerId)
   const { openState, handleOpen } = useInternalOpenState(isOpen, setIsOpen)
+
+  const containerRef = useRef<HTMLElement | null>(null)
+  useFocus(openState, containerRef, {
+    portalEl: dialogEl,
+    dismiss: 'modal',
+    onToggle: handleOpen,
+  })
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -93,6 +102,7 @@ export const ImageViewer = forwardRef<
               role="dialog"
               aria-modal="true"
               aria-label={label || t('imageViewer')}
+              ref={setDialogEl}
             >
               <div className={cn('ViewerInnerWrap', viewerInnerWrapClass)}>{children}</div>
               <Button
