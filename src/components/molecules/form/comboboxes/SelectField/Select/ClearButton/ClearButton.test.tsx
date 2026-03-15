@@ -17,7 +17,7 @@ describe('ClearButton', () => {
     expect(buttonRole).toHaveClass('className')
     expect(buttonRole.tagName).toBe('SPAN')
     expect(buttonRole).toHaveAttribute('aria-label')
-    expect(buttonRole).toHaveAttribute('tabIndex', '0')
+    expect(buttonRole).toHaveAttribute('tabIndex', '-1')
     expect(iconTestId).toBeInTheDocument()
     expect(iconTestId).toHaveAttribute('aria-hidden')
   })

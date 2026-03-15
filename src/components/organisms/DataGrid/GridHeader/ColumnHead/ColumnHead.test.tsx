@@ -33,7 +33,7 @@ describe('ColumnHead', () => {
     const columnHeader = screen.getByTestId('ColumnHeader')
     const ellipsis = screen.getByTestId('Ellipsis')
     const sortButton = columnHeader.querySelector('button')
-    const filterButton = screen.getByTestId('MenuButton')
+    const filterButton = screen.getByTestId('FilterButton')
 
     expect(columnHeader).toBeInTheDocument()
     expect(columnHeader).toHaveClass('className')
@@ -56,7 +56,7 @@ describe('ColumnHead', () => {
     const columnHeader = screen.getByTestId('ColumnHeader')
     const chevron = columnHeader.querySelector('svg')
     const sortButtonTestId = screen.queryByTestId('ColumnHeadSortButton')
-    const filterButton = screen.queryByTestId('MenuButton')
+    const filterButton = screen.queryByTestId('FilterButton')
 
     expect(filterButton).not.toBeInTheDocument()
     expect(sortButtonTestId).toBeNull()
@@ -126,7 +126,7 @@ describe('ColumnHead', () => {
         <ColumnHead column={gridCleanColsDef[0]} />
       </JestDataGridProvider>,
     )
-    const filterButton = screen.queryByTestId('MenuButton')
+    const filterButton = screen.queryByTestId('FilterButton')
 
     expect(filterButton).not.toBeInTheDocument()
   })
@@ -137,15 +137,15 @@ describe('ColumnHead', () => {
         <ColumnHead column={gridColsDef[0]} canFilter />
       </JestDataGridProvider>,
     )
-    const filterButton = screen.getByTestId('MenuButton')
+    const filterButton = screen.getByTestId('FilterButton')
 
-    expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('Dropdown')).not.toBeInTheDocument()
 
     await act(async () => {
       fireEvent.click(filterButton)
     })
 
-    expect(screen.getByRole('menu')).toBeInTheDocument()
+    expect(screen.getByTestId('Dropdown')).toBeInTheDocument()
   })
 
   it('axe', async () => {

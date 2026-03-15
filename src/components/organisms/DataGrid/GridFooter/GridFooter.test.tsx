@@ -11,7 +11,7 @@ expect.extend(toHaveNoViolations)
 describe('GridFooter', () => {
   it('default', () => {
     render(
-      <JestDataGridProvider>
+      <JestDataGridProvider filteredDataCount={25}>
         <GridFooter
           filteredData={gridData.slice(0, 25)}
           selectedRowsPerPage={20}
@@ -22,18 +22,13 @@ describe('GridFooter', () => {
         />
       </JestDataGridProvider>,
     )
-    const rowgroup = screen.getByRole('rowgroup')
-    const row = screen.getByRole('row')
-    const gridcell = screen.getByRole('gridcell')
+    const toolbar = screen.getByRole('toolbar')
     const paginationTestId = screen.getByTestId('MobilePagination')
     const comboboxRole = screen.getByRole('combobox')
     const exportTestId = screen.getByTestId('GridExportButton')
 
-    expect(rowgroup).toBeInTheDocument()
-    expect(rowgroup).toHaveClass('GridFooter')
-    expect(row).toBeInTheDocument()
-    expect(gridcell).toBeInTheDocument()
-    expect(gridcell).toHaveAttribute('aria-colspan', '6')
+    expect(toolbar).toBeInTheDocument()
+    expect(toolbar).toHaveClass('GridFooter')
     expect(paginationTestId).toBeInTheDocument()
     expect(comboboxRole).toBeInTheDocument()
     expect(exportTestId).toBeInTheDocument()
@@ -136,7 +131,7 @@ describe('GridFooter', () => {
     const setSelectedRowsPerPage = jest.fn()
 
     render(
-      <JestDataGridProvider>
+      <JestDataGridProvider filteredDataCount={25}>
         <GridFooter
           filteredData={gridData.slice(0, 25)}
           selectedRowsPerPage={20}
@@ -162,7 +157,7 @@ describe('GridFooter', () => {
     const setSelectedPage = jest.fn()
 
     render(
-      <JestDataGridProvider>
+      <JestDataGridProvider filteredDataCount={50}>
         <GridFooter
           filteredData={gridData.slice(0, 50)}
           selectedRowsPerPage={20}

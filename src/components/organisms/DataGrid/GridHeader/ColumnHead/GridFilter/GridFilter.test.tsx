@@ -28,25 +28,25 @@ describe('GridFilter', () => {
         <GridFilter className="className" column={gridColsDef[0]} />
       </JestDataGridProvider>,
     )
-    const menuWrapTestId = screen.getByTestId('MenuWrap')
-    const menuButtonTestId = screen.getByTestId('MenuButton')
+    const gridFilter = screen.getByText('', { selector: '.GridFilter' })
+    const filterButton = screen.getByTestId('FilterButton')
 
-    expect(menuWrapTestId).toBeInTheDocument()
-    expect(menuWrapTestId).toHaveClass('className')
-    expect(menuButtonTestId).toBeInTheDocument()
-    expect(menuButtonTestId).toHaveAttribute('aria-haspopup', 'menu')
-    expect(menuButtonTestId).toHaveAttribute('aria-expanded', 'false')
+    expect(gridFilter).toBeInTheDocument()
+    expect(gridFilter).toHaveClass('className')
+    expect(filterButton).toBeInTheDocument()
+    expect(filterButton).toHaveAttribute('aria-haspopup', 'dialog')
+    expect(filterButton).toHaveAttribute('aria-expanded', 'false')
 
     await act(async () => {
-      fireEvent.click(menuButtonTestId)
+      fireEvent.click(filterButton)
     })
 
-    const menuRole = screen.getByRole('menu')
+    const dropdown = screen.getByTestId('Dropdown')
     const filterTitle = screen.getByText(`Filter in ${gridColsDef[0].label}`)
 
-    expect(menuButtonTestId).toHaveAttribute('aria-expanded', 'true')
-    expect(menuButtonTestId).toHaveClass('selected')
-    expect(menuRole).toBeInTheDocument()
+    expect(filterButton).toHaveAttribute('aria-expanded', 'true')
+    expect(filterButton).toHaveClass('selected')
+    expect(dropdown).toBeInTheDocument()
     expect(filterTitle).toBeInTheDocument()
   })
 
@@ -56,17 +56,17 @@ describe('GridFilter', () => {
         <GridFilter column={gridColsDef[0]} />
       </JestDataGridProvider>,
     )
-    const menuButtonTestId = screen.getByTestId('MenuButton')
+    const filterButton = screen.getByTestId('FilterButton')
 
-    expect(menuButtonTestId).toHaveAttribute('aria-expanded', 'false')
-    expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+    expect(filterButton).toHaveAttribute('aria-expanded', 'false')
+    expect(screen.queryByTestId('Dropdown')).not.toBeInTheDocument()
 
     await act(async () => {
-      fireEvent.click(menuButtonTestId)
+      fireEvent.click(filterButton)
     })
 
-    expect(menuButtonTestId).toHaveAttribute('aria-expanded', 'true')
-    expect(screen.getByRole('menu')).toBeInTheDocument()
+    expect(filterButton).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByTestId('Dropdown')).toBeInTheDocument()
 
     await act(async () => {
       const overlay = screen.getByTestId('Overlay')
@@ -75,7 +75,7 @@ describe('GridFilter', () => {
 
     await waitFor(
       () => {
-        expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+        expect(screen.queryByTestId('Dropdown')).not.toBeInTheDocument()
       },
       { timeout: 500 },
     )
@@ -88,10 +88,10 @@ describe('GridFilter', () => {
         <GridFilter column={textColumn} />
       </JestDataGridProvider>,
     )
-    const menuButtonTestId = screen.getByTestId('MenuButton')
+    const filterButton = screen.getByTestId('FilterButton')
 
     await act(async () => {
-      fireEvent.click(menuButtonTestId)
+      fireEvent.click(filterButton)
     })
 
     const textInput = screen.getByPlaceholderText(`search in ${textColumn.label}`)
@@ -106,10 +106,10 @@ describe('GridFilter', () => {
         <GridFilter column={numberColumn} />
       </JestDataGridProvider>,
     )
-    const menuButtonTestId = screen.getByTestId('MenuButton')
+    const filterButton = screen.getByTestId('FilterButton')
 
     await act(async () => {
-      fireEvent.click(menuButtonTestId)
+      fireEvent.click(filterButton)
     })
 
     const numberInput = screen.getByPlaceholderText(numberColumn.label)
@@ -125,10 +125,10 @@ describe('GridFilter', () => {
         <GridFilter column={dateColumn} />
       </JestDataGridProvider>,
     )
-    const menuButtonTestId = screen.getByTestId('MenuButton')
+    const filterButton = screen.getByTestId('FilterButton')
 
     await act(async () => {
-      fireEvent.click(menuButtonTestId)
+      fireEvent.click(filterButton)
     })
 
     const datePicker = screen.getByTestId('DatePicker')
@@ -145,10 +145,10 @@ describe('GridFilter', () => {
         <GridFilter column={selectColumn} />
       </JestDataGridProvider>,
     )
-    const menuButtonTestId = screen.getByTestId('MenuButton')
+    const filterButton = screen.getByTestId('FilterButton')
 
     await act(async () => {
-      fireEvent.click(menuButtonTestId)
+      fireEvent.click(filterButton)
     })
 
     const selects = screen.getAllByTestId('Select')
@@ -173,10 +173,10 @@ describe('GridFilter', () => {
         <GridFilter column={toggleColumn} />
       </JestDataGridProvider>,
     )
-    const menuButtonTestId = screen.getByTestId('MenuButton')
+    const filterButton = screen.getByTestId('FilterButton')
 
     await act(async () => {
-      fireEvent.click(menuButtonTestId)
+      fireEvent.click(filterButton)
     })
 
     const toggleButtons = screen
@@ -186,38 +186,24 @@ describe('GridFilter', () => {
   })
 
   it('visibility', async () => {
-    const setFilterMock = jest.fn()
-
-    const { rerender } = render(
+    render(
       <JestDataGridProvider>
         <GridFilter column={gridColsDef[0]} />
       </JestDataGridProvider>,
     )
-    expect(screen.getByTestId('MenuButton')).toHaveClass('opacity-0')
+    const filterButton = screen.getByTestId('FilterButton')
+    const filterIcon = filterButton.querySelector('svg')
+    expect(filterIcon).toHaveClass('opacity-0')
 
-    rerender(
+    const { rerender } = render(
       <JestDataGridProvider
         filter={{ [gridColsDef[0].name]: { operator: FilterOperator.EQUALS, value: 'test' } }}
-        setFilter={setFilterMock}
       >
         <GridFilter column={gridColsDef[0]} />
       </JestDataGridProvider>,
     )
-    expect(screen.getByTestId('MenuButton')).toHaveClass('opacity-100')
-
-    rerender(
-      <JestDataGridProvider>
-        <GridFilter column={gridColsDef[0]} />
-      </JestDataGridProvider>,
-    )
-    const menuButton = screen.getByTestId('MenuButton')
-
-    await act(async () => {
-      fireEvent.click(menuButton)
-    })
-
-    expect(menuButton).toHaveClass('selected')
-    expect(menuButton.className).toContain('[&.selected]:opacity-100')
+    const activeIcon = screen.getAllByTestId('FilterButton')[1].querySelector('svg')
+    expect(activeIcon).toHaveClass('opacity-100')
   })
 
   it('axe', async () => {

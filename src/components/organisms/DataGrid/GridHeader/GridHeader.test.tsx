@@ -108,7 +108,7 @@ describe('GridHeader', () => {
       </JestDataGridProvider>,
     )
     const sortButtons = screen.getAllByTestId('ColumnHeadSortButton')
-    const filterButtons = screen.getAllByTestId('MenuButton')
+    const filterButtons = screen.getAllByTestId('FilterButton')
 
     expect(sortButtons.length).toBe(6)
     expect(filterButtons.length).toBe(6)

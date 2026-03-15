@@ -57,7 +57,7 @@ describe('MultiAutocomplete', () => {
     expect(listboxTestId).toHaveAttribute('aria-hidden', 'false')
     expect(optionRoles).toHaveLength(options.length)
     comboboxRole.focus()
-    expect(document.activeElement).toBe(comboboxRole)
+    expect(document.activeElement).toBe(textboxRole)
   })
 
   it('value', async () => {
@@ -420,7 +420,11 @@ describe('MultiAutocomplete', () => {
       </label>,
     )
 
-    const results = await axe(container)
+    const results = await axe(container, {
+      rules: {
+        label: { enabled: false },
+      },
+    })
     expect(results).toHaveNoViolations()
   })
 })

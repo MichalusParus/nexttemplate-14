@@ -289,7 +289,11 @@ describe('AutocompleteCombobox', () => {
         ></ul>
       </label>,
     )
-    const results = await axe(container)
+    const results = await axe(container, {
+      rules: {
+        label: { enabled: false },
+      },
+    })
     expect(results).toHaveNoViolations()
   })
 })

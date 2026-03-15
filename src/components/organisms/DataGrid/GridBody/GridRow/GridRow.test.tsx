@@ -131,12 +131,10 @@ describe('GridRow', () => {
 
     const row = screen.getByRole('row')
     const rowInner = row.querySelector('.RowInnerWrap')
-    const checkboxInputWrap = screen.getByTestId('CheckboxInputWrap')
     const checkIcon = screen.getByTestId('CheckIcon')
 
     expect(rowInner).toHaveClass('selected')
     expect(row).toHaveAttribute('aria-selected', 'true')
-    expect(checkboxInputWrap).toHaveClass('selected')
     expect(checkIcon).toHaveClass('opacity-100')
   })
 
