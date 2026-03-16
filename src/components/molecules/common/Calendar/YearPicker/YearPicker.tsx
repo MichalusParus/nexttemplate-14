@@ -16,7 +16,7 @@ import { MutableRefObject, useCallback, useEffect, useMemo, useRef } from 'react
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
-import { disabledClassVariant } from '@/components/utils/common.style'
+import { disabledVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -119,7 +119,7 @@ export const YearPicker = ({
                     'DateButton',
                     'w-full border-none font-normal',
                     isDisabled && 'disabled',
-                    disabledClassVariant[variant],
+                    disabledVariant[variant],
                     isSameYear(y, year) && 'selected shadow-ring',
                     buttonClassName,
                   )}

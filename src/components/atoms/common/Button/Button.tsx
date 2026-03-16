@@ -2,6 +2,7 @@
 import { ButtonHTMLAttributes, Children, forwardRef, ReactNode } from 'react'
 
 import { childrenIconSize, disabledVariant } from '@/components/utils/common.style'
+import { devWarning } from '@/components/utils/devWarning'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -54,7 +55,7 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(
     ref,
   ) => {
     const buttonFlex = size === 'inline' ? 'inline-flex' : 'flex'
-    const iconOnly = (startIcon || endIcon) && Children.count(children) === 0
+    const iconOnly = (startIcon || endIcon) && Children.toArray(children).length === 0
 
     const renderLoadingState = () => (
       <>
@@ -67,9 +68,10 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(
       </>
     )
 
-    if (iconOnly && !rest['aria-label'] && !rest['aria-labelledby']) {
-      console.warn('Icon-only buttons should have an aria-label for accessibility.')
-    }
+    devWarning(
+      !!(iconOnly && !rest['aria-label'] && !rest['aria-labelledby']),
+      'Icon-only buttons should have an aria-label for accessibility.',
+    )
 
     return (
       <button
@@ -80,20 +82,26 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(
           buttonVariant[variant][color],
           iconOnly ? iconOnlySize[size] : buttonSize[size],
           childrenIconSize[size],
+          disabled && 'disabled',
           disabledVariant[variant],
           isLoading && 'selected cursor-progress opacity-80',
           variant === 'contained' && !hideShadow && 'shadow-button active:shadow-none',
           className,
         )}
-        type={type}
-        disabled={disabled}
+        type={disabled ? 'button' : type}
         aria-busy={isLoading}
         aria-disabled={disabled}
-        onClick={!isLoading ? onClick : undefined}
+        onClick={!isLoading && !disabled ? onClick : undefined}
+        onKeyDown={e => {
+          if (disabled && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault()
+          }
+          rest.onKeyDown?.(e)
+        }}
         ref={ref}
         {...rest}
       >
-        {isLoading && !iconOnly ? (
+        {isLoading && !iconOnly && size !== 'inline' ? (
           renderLoadingState()
         ) : (
           <>

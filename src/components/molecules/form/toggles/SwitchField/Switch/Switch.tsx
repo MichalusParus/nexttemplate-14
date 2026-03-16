@@ -2,7 +2,7 @@
 import { forwardRef, ReactNode } from 'react'
 
 import {
-  disabledClassVariant,
+  disabledVariant,
   textSize,
   textVariant,
 } from '@/components/utils/common.style'
@@ -75,7 +75,7 @@ export const Switch = forwardRef<HTMLInputElement | null, SwitchProps>(
             switchSize[size],
             checkboxVariant[variant][color],
             error && 'error',
-            disabled && 'disabled ' + disabledClassVariant[variant],
+            disabled && 'disabled ' + disabledVariant[variant],
           )}
           aria-disabled={disabled}
           data-testid="SwitchInputWrap"

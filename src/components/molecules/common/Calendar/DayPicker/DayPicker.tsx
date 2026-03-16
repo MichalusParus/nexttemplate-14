@@ -5,7 +5,7 @@ import { MutableRefObject, useMemo } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { P } from '@/components/atoms/typography/P'
-import { disabledClassVariant } from '@/components/utils/common.style'
+import { disabledVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -76,7 +76,7 @@ export const DayPicker = ({
                 'DateButton',
                 'w-full border-none font-normal',
                 isDisabled && 'disabled',
-                disabledClassVariant[variant],
+                disabledVariant[variant],
                 isSelected && 'selected shadow-ring',
                 !isCurrent && 'opacity-50',
                 buttonClassName,

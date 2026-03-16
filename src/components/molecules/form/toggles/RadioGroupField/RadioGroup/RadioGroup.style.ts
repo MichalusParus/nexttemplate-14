@@ -10,6 +10,7 @@ import { cn } from '@/utils/utils'
 
 export const radioClass = cn(
   'border relative mr-2 shrink-0 cursor-pointer appearance-none rounded-full transition-activity focus:outline-hidden focus-visible:ring',
+  'disabled:cursor-not-allowed disabled:opacity-50 disabled:focus-visible:ring-0',
   errorStateClass,
 )
 
@@ -96,8 +97,22 @@ export const radioVariant = {
 
 export const afterClass = cn(
   'after:invisible after:absolute after:left-[50%] after:top-[50%] after:translate-x-[-50%] after:translate-y-[-50%] after:rounded-full',
-  'after:opacity-0 after:transition-opacity after:content-[""] checked:after:visible checked:after:opacity-100 disabled:after:bg-dark-500',
+  'after:opacity-0 after:transition-opacity after:content-[""] checked:after:visible checked:after:opacity-100',
 )
+
+export const radioDisabledVariant = {
+  text: cn(
+    'disabled:bg-dark-200 disabled:text-dark-500 disabled:hover:bg-dark-200 disabled:after:bg-dark-400',
+    'dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:hover:bg-dark-200',
+  ),
+  outlined: cn(
+    'disabled:border-dark-500 disabled:bg-dark-200 disabled:text-dark-500 disabled:hover:bg-dark-200 disabled:after:bg-dark-400',
+    'dark:disabled:border-dark-500 dark:disabled:bg-dark-200 dark:disabled:text-dark-500 dark:disabled:hover:bg-dark-200',
+  ),
+  contained: cn(
+    'disabled:border-dark-500 disabled:bg-dark-500 disabled:text-dark-300 disabled:hover:bg-dark-500 disabled:after:bg-dark-200',
+  ),
+}
 
 export const radioSize = {
   sm: cn(

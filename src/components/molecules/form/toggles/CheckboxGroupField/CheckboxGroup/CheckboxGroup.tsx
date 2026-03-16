@@ -7,8 +7,8 @@ import { cn } from '@/utils/utils'
 import { Checkbox, CheckboxProps } from '../../CheckboxField/Checkbox/Checkbox'
 import { Switch } from '../../SwitchField/Switch'
 
-export type CheckboxGroupProps = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'onChange'> &
-  InputProps &
+export type CheckboxGroupProps = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className' | 'color' | 'name' | 'onChange'> &
+  Omit<InputProps, 'placeholder'> &
   StyleProps & {
     /** checkboxGroup value */
     value: string[]

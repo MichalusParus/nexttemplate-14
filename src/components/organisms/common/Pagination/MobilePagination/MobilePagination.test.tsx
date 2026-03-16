@@ -28,7 +28,7 @@ describe('MobilePagination', () => {
 
     expect(buttonRoles).toHaveLength(2)
     buttonRoles.forEach(button => {
-      expect(button).toBeDisabled()
+      expect(button).toHaveAttribute('aria-disabled', 'true')
     })
     expect(statusRole).toBeInTheDocument()
   })
@@ -64,8 +64,8 @@ describe('MobilePagination', () => {
 
     expect(buttonRoles[0]).toHaveClass('customButtonClass')
     expect(buttonRoles[1]).toHaveClass('customButtonClass')
-    expect(buttonRoles[0]).toBeDisabled()
-    expect(buttonRoles[1]).toBeDisabled()
+    expect(buttonRoles[0]).toHaveAttribute('aria-disabled', 'true')
+    expect(buttonRoles[1]).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('onChange', () => {

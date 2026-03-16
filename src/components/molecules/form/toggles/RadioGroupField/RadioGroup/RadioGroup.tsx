@@ -1,14 +1,13 @@
 'use client'
 import { FieldsetHTMLAttributes, forwardRef } from 'react'
 
-import { disabledVariant } from '@/components/utils/common.style'
 import { InputProps, NativeInputProps, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { afterClass, radioClass, radioSize, radioVariant } from './RadioGroup.style'
+import { afterClass, radioClass, radioDisabledVariant, radioSize, radioVariant } from './RadioGroup.style'
 
-export type RadioGroupProps = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'onChange'> &
-  InputProps &
+export type RadioGroupProps = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className' | 'color' | 'name' | 'onChange'> &
+  Omit<InputProps, 'placeholder'> &
   StyleProps & {
     /** value of radiogroup */
     value?: string
@@ -54,7 +53,7 @@ export const RadioGroup = forwardRef<HTMLFieldSetElement | null, RadioGroupProps
         {options.map(({ value: radioValue, label: radioLabel, content }) => (
           <div
             key={radioValue}
-            className={cn('Radio', 'relative flex items-center', radioSize[size])}
+            className={cn('Radio', 'relative flex items-center', radioSize[size], disabled && 'cursor-not-allowed [&_label]:text-dark-500')}
             data-testid="Radio"
           >
             <input
@@ -62,7 +61,7 @@ export const RadioGroup = forwardRef<HTMLFieldSetElement | null, RadioGroupProps
               className={cn(
                 radioClass,
                 radioVariant[variant][color],
-                disabledVariant[variant],
+                radioDisabledVariant[variant],
                 afterClass,
                 error && 'error',
                 radioClassName,
@@ -73,7 +72,6 @@ export const RadioGroup = forwardRef<HTMLFieldSetElement | null, RadioGroupProps
               onChange={e => onChange(e.target.value)}
               checked={Boolean(value === radioValue)}
               disabled={disabled}
-              aria-disabled={disabled}
               {...restRadioProps}
             />
             <label

@@ -90,7 +90,7 @@ function OptionItemComponent<T = string>(
         tabIndex={-1}
         hideShadow
         aria-selected={isSelected}
-        aria-disabled={isLoading}
+        disabled={isLoading}
         onClick={() => (!isLoading ? onClick(value) : undefined)}
         ref={ref}
         {...restButtonProps}

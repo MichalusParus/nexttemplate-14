@@ -264,7 +264,7 @@ describe('Select', () => {
     render(<Select name="selectTest" value="" options={options} disabled onChange={() => {}} />)
     const comboboxRole = screen.getByRole('combobox')
 
-    expect(comboboxRole).toHaveAttribute('disabled')
+    expect(comboboxRole).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('ref', () => {

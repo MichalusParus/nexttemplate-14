@@ -161,7 +161,10 @@ describe('RadioGroup', () => {
 
     radioRoles.forEach(radio => {
       expect(radio).toHaveAttribute('disabled')
-      expect(radio).toHaveAttribute('aria-disabled', 'true')
+    })
+    const radioWraps = screen.getAllByTestId('Radio')
+    radioWraps.forEach(wrap => {
+      expect(wrap).toHaveClass('cursor-not-allowed')
     })
   })
 

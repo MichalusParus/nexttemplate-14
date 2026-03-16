@@ -182,39 +182,20 @@ export const interactiveVariant = {
 
 export const disabledVariant = {
   text: cn(
-    'disabled-native:cursor-not-allowed disabled-native:bg-dark-200 disabled-native:text-dark-500 disabled-native:opacity-50 disabled-native:shadow-none',
-    'disabled-native:hover:bg-dark-200 disabled-native:focus:bg-dark-200 disabled-native:focus-visible:bg-dark-200',
-    'dark:disabled-native:bg-dark-200 dark:disabled-native:text-dark-500',
-    'dark:disabled-native:hover:bg-dark-200 dark:disabled-native:focus:bg-dark-200',
-  ),
-  outlined: cn(
-    'disabled-native:cursor-not-allowed disabled-native:border-dark-500 disabled-native:bg-dark-200 disabled-native:text-dark-500 disabled-native:opacity-50 disabled-native:shadow-none',
-    'disabled-native:hover:bg-dark-200 disabled-native:focus:bg-dark-200 disabled-native:focus-visible:bg-dark-200',
-    'dark:disabled-native:border-dark-500 dark:disabled-native:bg-dark-200 dark:disabled-native:text-dark-500',
-    'dark:disabled-native:hover:bg-dark-200 dark:disabled-native:focus:bg-dark-200',
-  ),
-  contained: cn(
-    'disabled-native:cursor-not-allowed disabled-native:border-dark-500 disabled-native:bg-dark-500 disabled-native:text-dark-300 disabled-native:opacity-50 disabled-native:shadow-none',
-    'disabled-native:hover:bg-dark-500 disabled-native:focus:bg-dark-500 disabled-native:focus-visible:bg-dark-500',
-  ),
-}
-
-export const disabledClassVariant = {
-  text: cn(
     'disabled-aria:cursor-not-allowed disabled-aria:bg-dark-200 disabled-aria:text-dark-500 disabled-aria:opacity-50 disabled-aria:shadow-none',
-    'disabled-aria:hover:bg-dark-200 disabled-aria:focus-within:bg-dark-200 disabled-aria:group-hover:bg-dark-200',
+    'disabled-aria:hover:bg-dark-200 disabled-aria:focus-within:bg-dark-200 disabled-aria:focus-within:ring-0 disabled-aria:focus-visible:bg-dark-200 disabled-aria:focus-visible:ring-0 disabled-aria:group-hover:bg-dark-200',
     'dark:disabled-aria:bg-dark-200 dark:disabled-aria:text-dark-500',
-    'dark:disabled-aria:hover:bg-dark-200 dark:disabled-aria:focus-within:bg-dark-200 dark:disabled-aria:group-hover:bg-dark-200',
+    'dark:disabled-aria:hover:bg-dark-200 dark:disabled-aria:focus-within:bg-dark-200 dark:disabled-aria:focus-visible:bg-dark-200 dark:disabled-aria:group-hover:bg-dark-200',
   ),
   outlined: cn(
     'disabled-aria:cursor-not-allowed disabled-aria:border-dark-500 disabled-aria:bg-dark-200 disabled-aria:text-dark-500 disabled-aria:opacity-50 disabled-aria:shadow-none',
-    'disabled-aria:hover:bg-dark-200 disabled-aria:focus-within:bg-dark-200 disabled-aria:group-hover:bg-dark-200',
+    'disabled-aria:hover:bg-dark-200 disabled-aria:focus-within:bg-dark-200 disabled-aria:focus-within:ring-0 disabled-aria:focus-visible:bg-dark-200 disabled-aria:focus-visible:ring-0 disabled-aria:group-hover:bg-dark-200',
     'dark:disabled-aria:border-dark-500 dark:disabled-aria:bg-dark-200 dark:disabled-aria:text-dark-500',
-    'dark:disabled-aria:hover:bg-dark-200 dark:disabled-aria:focus-within:bg-dark-200 dark:disabled-aria:group-hover:bg-dark-200',
+    'dark:disabled-aria:hover:bg-dark-200 dark:disabled-aria:focus-within:bg-dark-200 dark:disabled-aria:focus-visible:bg-dark-200 dark:disabled-aria:group-hover:bg-dark-200',
   ),
   contained: cn(
     'disabled-aria:cursor-not-allowed disabled-aria:border-dark-500 disabled-aria:bg-dark-500 disabled-aria:text-dark-300 disabled-aria:opacity-50 disabled-aria:shadow-none',
-    'disabled-aria:hover:bg-dark-500 disabled-aria:focus-within:bg-dark-500 disabled-aria:group-hover:bg-dark-500',
+    'disabled-aria:hover:bg-dark-500 disabled-aria:focus-within:bg-dark-500 disabled-aria:focus-within:ring-0 disabled-aria:focus-visible:bg-dark-500 disabled-aria:focus-visible:ring-0 disabled-aria:group-hover:bg-dark-500',
   ),
 }
 

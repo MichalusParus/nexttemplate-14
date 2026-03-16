@@ -1,7 +1,7 @@
 'use client'
 import { forwardRef, TextareaHTMLAttributes } from 'react'
 
-import { disabledClassVariant } from '@/components/utils/common.style'
+import { disabledVariant } from '@/components/utils/common.style'
 import { InputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -50,7 +50,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement | null, TextAreaProps>(
           inputWrapClass,
           inputVariant[variant][color],
           error && 'error',
-          disabled && 'disabled ' + disabledClassVariant[variant],
+          disabled && 'disabled ' + disabledVariant[variant],
           className,
         )}
         aria-disabled={disabled}

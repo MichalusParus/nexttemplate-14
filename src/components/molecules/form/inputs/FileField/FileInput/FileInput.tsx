@@ -6,7 +6,7 @@ import { FileRejection, useDropzone } from 'react-dropzone'
 import { SignOutIcon } from '@/components/atoms/icons'
 import { Span } from '@/components/atoms/typography/Span'
 import { useToast } from '@/components/molecules/popovers/ToastProvider'
-import { childrenIconSize, disabledClassVariant } from '@/components/utils/common.style'
+import { childrenIconSize, disabledVariant } from '@/components/utils/common.style'
 import { InputProps, NativeInputProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -178,7 +178,7 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
               fileInputVariant[variant][color],
               inputSize[size],
               error && 'error',
-              disabled && 'disabled ' + disabledClassVariant[variant],
+              disabled && 'disabled ' + disabledVariant[variant],
               childrenIconSize[size],
               className,
             ),

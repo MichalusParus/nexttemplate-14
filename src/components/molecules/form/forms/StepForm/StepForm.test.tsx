@@ -39,7 +39,7 @@ describe('StepForm', () => {
     expect(tabRoles[2]).toHaveTextContent(tabsOptions[2].label)
     expect(tabRoles[0]).toHaveAttribute('aria-controls', tabPanelRoles[0].getAttribute('id'))
     expect(tabRoles[0]).toHaveClass('selected')
-    expect(tabRoles[1]).toHaveAttribute('disabled')
+    expect(tabRoles[1]).toHaveAttribute('aria-disabled', 'true')
     expect(tabRoles[0]).toHaveAttribute('aria-selected', 'true')
     expect(tabPanelRoles).toHaveLength(1)
     expect(tabPanelRoles[0]).toHaveAttribute('id', tabRoles[0].getAttribute('aria-controls'))

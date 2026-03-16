@@ -145,9 +145,9 @@ describe('Calendar', () => {
 
     expect(cellRoles[1]).toHaveAttribute('aria-disabled', 'true')
     expect(cellRoles[34]).toHaveAttribute('aria-disabled', 'true')
-    expect(buttonRoles[0]).toHaveAttribute('disabled')
-    expect(buttonRoles[1]).toHaveAttribute('disabled')
-    expect(buttonRoles[2]).toHaveAttribute('disabled')
+    expect(buttonRoles[0]).toHaveAttribute('aria-disabled', 'true')
+    expect(buttonRoles[1]).toHaveAttribute('aria-disabled', 'true')
+    expect(buttonRoles[2]).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('buttonProps/paperProps', () => {

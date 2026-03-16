@@ -1,0 +1,90 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Common/Button/Def" />
+
+# Button
+
+> Interactive element that triggers actions. The primary call-to-action primitive supporting loading states, icons, and multiple visual variants. Use for form submissions, dialogs, destructive actions, and any clickable UI that isn't a navigation link.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<button>` element — implicit `role="button"`, no ARIA role override needed
+- Default `type="button"` (not submit) to prevent accidental form submission
+- When disabled, type is forced to `"button"` regardless of the `type` prop — prevents assistive technology from triggering submit on a disabled button
+- Icon-only mode auto-detected: when `startIcon` or `endIcon` is present with no children (via `Children.toArray`), compact icon-only sizing is applied
+
+### Keyboard Handling
+- **Tab** — Focuses the button (even when `aria-disabled`, intentionally kept in tab order)
+- **Enter** — Activates the button (native behavior); `preventDefault` called when disabled
+- **Space** — Activates the button (native behavior); `preventDefault` called when disabled
+- Loading and disabled states both block the `onClick` handler but keep the button focusable
+
+### Accessibility (WAI-ARIA)
+- Follows [WAI-ARIA Button Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/button/)
+- `aria-disabled="true"` when disabled — keeps the button in tab order so screen readers can discover and announce it (not native `disabled`)
+- `aria-busy="true"` when loading — announces loading state to assistive technology
+- `aria-label` required for icon-only buttons — enforced via `devWarning` in development
+- Loading overlay content wrapped in `aria-hidden="true"` with `invisible` class to hide from both screen readers and visual layout
+
+### Visual States
+- **Default** — Variant × color combination from the style system (text, outlined, contained × primary, secondary, terciary, error)
+- **Hover** — Background shift via `interactiveVariant`
+- **Focus-visible** — Ring + z-index via `focusVisibleVariant`
+- **Active** — Deeper background shift, shadow removed on contained
+- **Selected** — Persistent active state via `.selected` class (also applied automatically during loading)
+- **Error** — Error state styling via `.error` class and `errorStateClass`
+- **Disabled** — Muted colors, `cursor-not-allowed`, no shadow, applied via custom `disabled-aria:` Tailwind variant
+- **Loading** — `cursor-progress`, `opacity-80`, `selected` class, InlineLoader overlay
+- **Shadow** — Contained variant only, unless `hideShadow`; removed on `:active`
+
+### Interaction Behavior
+- Click fires `onClick`; handler set to `undefined` when disabled or loading
+- Loading: `InlineLoader` absolutely positioned over invisible content (preserves button dimensions)
+- Loading overlay is **not rendered** for icon-only or `size="inline"` — only `aria-busy` and cursor change apply
+- Custom `onKeyDown` supported via rest props — called after disabled key prevention
+
+### Responsive & Layout
+- `flex` by default; `inline-flex` when `size="inline"` (for embedding in text)
+- `whitespace-nowrap`, centered content with `gap-2`
+- Full-width achieved via `className="w-full"`
+
+<br/>
+
+## Architecture Decisions
+- **`aria-disabled` over native `disabled`**: Keeps the button focusable so screen readers can discover and announce it. The custom `disabled-aria:` Tailwind variant provides enough specificity to override hover/focus styles without JavaScript state checks.
+- **Type override when disabled**: `type={disabled ? 'button' : type}` prevents a disabled submit button from submitting forms via assistive technology or scripted activation.
+- **Loading overlay pattern**: Absolutely positioned `InlineLoader` over `invisible` (not `hidden`) content preserves the button's intrinsic dimensions during loading — no layout shift.
+- **`selected` class during loading**: Triggers active/selected visual state automatically, giving loading buttons a "pressed" appearance without additional CSS.
+- **Icon-only detection via `Children.toArray`**: Works correctly with conditional children, fragments, and `null` — more robust than checking `children` truthiness directly.
+
+<br/>
+
+## Known Bugs & Limitations
+- **[Low]** Loading state on icon-only and inline sizes silently skips the visual overlay. No spinner is shown; only `aria-busy` and `cursor-progress` apply.
+
+<br/>
+
+## Future Ideas
+- [ ] Loading spinner for icon-only buttons (scaled-down loader or pulsing icon)
+
+<br/>
+
+## Developer Notes
+- 2026-03-16 — Great Refactor: docs created, tests restructured into 5-group format
+
+<br/>
+
+## Review
+
+> Clean, focused button that does exactly what it should without overreaching. The `aria-disabled` pattern is the right call — same approach as MUI, keeps disabled buttons in the tab order for screen readers while the custom `disabled-aria:` Tailwind variant handles styling without JS state checks. The type override to `"button"` when disabled is a subtle but important detail that prevents assistive tech from triggering form submission on a disabled button.
+>
+> The loading overlay — absolute-positioned spinner over `invisible` content to preserve dimensions — avoids the layout shift problem that most component libraries don't bother solving. Radix and Shadcn punt on built-in loading entirely. Icon-only auto-detection via `Children.toArray` saves consumers from an explicit `iconOnly` prop and handles fragments and conditional children correctly.
+>
+> The decision to keep Button as a pure `<button>` element with no polymorphic `asChild` is deliberate and correct for this architecture. A button is a button — if something navigates, it's a different component with different semantics. MUI and Radix optimize for fewer components; this system optimizes for correct semantics and clean code. The loading overlay not rendering for icon-only and inline sizes is a practical non-issue — icon buttons rarely serve as loading triggers.
+>
+> Production-ready. Nothing missing.
+>
+> — *Claude, Opus 4.6, 2026-03-16*

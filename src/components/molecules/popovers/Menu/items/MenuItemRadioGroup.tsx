@@ -53,6 +53,8 @@ export const MenuItemRadioGroup = forwardRef<HTMLInputElement | null, MenuItemRa
                 'relative mb-0 mr-0 flex items-center',
                 buttonVariant[variant][color],
                 buttonSize[size],
+                disabled && 'disabled',
+                disabledVariant[variant],
               )}
               role="presentation"
             >
@@ -61,7 +63,6 @@ export const MenuItemRadioGroup = forwardRef<HTMLInputElement | null, MenuItemRa
                 className={cn(
                   radioClass,
                   radioVariant[variant][color],
-                  disabledVariant[variant],
                   afterClass,
                 )}
                 name={name}

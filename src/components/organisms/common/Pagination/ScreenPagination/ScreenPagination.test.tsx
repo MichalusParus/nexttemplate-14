@@ -34,7 +34,7 @@ describe('ScreenPagination', () => {
     const buttonRoles = screen.getAllByRole('button')
 
     buttonRoles.forEach(button => {
-      expect(button).toBeDisabled()
+      expect(button).toHaveAttribute('aria-disabled', 'true')
     })
   })
 
@@ -90,8 +90,8 @@ describe('ScreenPagination', () => {
 
     expect(buttonRoles[0]).toHaveClass('customButtonClass')
     expect(buttonRoles[1]).toHaveClass('customButtonClass')
-    expect(buttonRoles[0]).toBeDisabled()
-    expect(buttonRoles[1]).toBeDisabled()
+    expect(buttonRoles[0]).toHaveAttribute('aria-disabled', 'true')
+    expect(buttonRoles[1]).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('buttonProps/loadMoreButtonProps', () => {
@@ -112,9 +112,9 @@ describe('ScreenPagination', () => {
 
     expect(loadMoreButton).toBeInTheDocument()
     expect(loadMoreButton).toHaveClass('customLoadMoreClass')
-    expect(loadMoreButton).toBeDisabled()
+    expect(loadMoreButton).toHaveAttribute('aria-disabled', 'true')
     expect(buttonRoles[1]).toHaveClass('customButtonClass')
-    expect(buttonRoles[1]).toBeDisabled()
+    expect(buttonRoles[1]).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('onLoadMore', () => {

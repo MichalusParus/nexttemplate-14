@@ -12,7 +12,7 @@ import { ChevronIcon } from '@/components/atoms/icons'
 import { Ellipsis } from '@/components/atoms/typography/Ellipsis'
 import { ClearButton } from '@/components/molecules/form/comboboxes/SelectField/Select/ClearButton'
 import { TextInput, TextInputProps } from '@/components/molecules/form/inputs/TextField/TextInput'
-import { disabledClassVariant,focusWithinVariant } from '@/components/utils/common.style'
+import { disabledVariant,focusWithinVariant } from '@/components/utils/common.style'
 import { FOCUS_SELECTORS } from '@/components/utils/hooks/useFocus'
 import { InputProps, NativeDivProps, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
@@ -132,7 +132,7 @@ function AutocompleteComboboxComponent<T = string>(
         buttonVariant[variant][color],
         focusWithinVariant[variant][color],
         buttonSize[size],
-        disabled && 'disabled ' + disabledClassVariant[variant],
+        disabled && 'disabled ' + disabledVariant[variant],
         className,
       )}
       aria-disabled={disabled}

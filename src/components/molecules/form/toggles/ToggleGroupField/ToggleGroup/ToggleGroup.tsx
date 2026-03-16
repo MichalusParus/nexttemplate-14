@@ -2,7 +2,7 @@
 import { FieldsetHTMLAttributes, forwardRef, useImperativeHandle, useRef } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
-import { disabledClassVariant } from '@/components/utils/common.style'
+import { disabledVariant } from '@/components/utils/common.style'
 import { useFocus } from '@/components/utils/hooks/useFocus'
 import { InputProps, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
@@ -13,8 +13,8 @@ type ToggleOption = OptionType & {
   isDisabled?: boolean
 }
 
-export type ToggleGroupProps = Omit<FieldsetHTMLAttributes<HTMLDivElement>, 'value' | 'onChange'> &
-  InputProps &
+export type ToggleGroupProps = Omit<FieldsetHTMLAttributes<HTMLDivElement>, 'className' | 'color' | 'name' | 'onChange' | 'value'> &
+  Omit<InputProps, 'placeholder'> &
   StyleProps & {
     /** value of toggleGroup */
     value?: string
@@ -93,7 +93,7 @@ export const ToggleGroup = forwardRef<HTMLDivElement | null, ToggleGroupProps>(
           toggleVariant[variant][color],
           column && 'flex-col',
           error && 'error',
-          disabled && 'disabled ' + disabledClassVariant[variant],
+          disabled && 'disabled ' + disabledVariant[variant],
           className,
         )}
         role="group"

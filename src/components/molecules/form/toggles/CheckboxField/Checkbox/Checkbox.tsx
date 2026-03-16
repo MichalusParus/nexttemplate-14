@@ -2,7 +2,7 @@
 import { forwardRef, ReactNode } from 'react'
 
 import { CheckIcon, MinusIcon } from '@/components/atoms/icons'
-import { disabledClassVariant, textSize, textVariant } from '@/components/utils/common.style'
+import { disabledVariant, textSize, textVariant } from '@/components/utils/common.style'
 import { FieldProps, InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -75,7 +75,7 @@ export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
             checkboxVariant[variant][color],
             checkboxIconSize[size],
             error && 'error',
-            disabled && 'disabled ' + disabledClassVariant[variant],
+            disabled && 'disabled ' + disabledVariant[variant],
           )}
           aria-disabled={disabled}
           data-testid="CheckboxInputWrap"

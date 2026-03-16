@@ -1,0 +1,93 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Templates/Common/ComponentTemplate/Def" />
+
+# ComponentTemplate — AI Doc Creation Guide
+
+> Instructions for AI to create `Component.docs.mdx` documentation for any component. Follow the checklist, use the template below, and reference `Button.docs.mdx` as the completed example.
+
+<br/>
+
+## Checklist
+
+1. **Read** — Study component source, styles, tests, stories
+2. **Research** — Study best practices, WAI-ARIA patterns, and keyboard specs for this component type
+3. **Compare** — Audit our implementation against the research: what's missing, what's standard, and what smart details we've built beyond the baseline (document all of these)
+4. **Write Review** — While research & comparisons are fresh, write the honest AI Review section comparing to major UI libraries
+5. **Write docs** — Create `Component.docs.mdx` specification based on findings, including known bugs and gaps discovered in step 3
+6. **Deep review** — Re-read component with fresh eyes, validate all findings, update Known Bugs & Limitations
+
+<br/>
+
+## Docs Template — `Component.docs.mdx`
+
+Pure specification document. Sidebar entry named "Def" (sorts first alphabetically). Autodocs stays as "Docs" for interactive playground via `tags: ['autodocs']` in stories. Component description goes in the Def page blockquote only — JSDoc on component export stays short/technical for IDE IntelliSense.
+
+### File header
+
+```mdx
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Category/ComponentName/Def" />
+```
+
+### Sections
+
+**# ComponentName**
+
+> What this component IS — its role in UI, when to use it.
+
+**## Component Definition**
+
+**### Semantics & HTML**
+- Native element and why
+- Semantic meaning
+
+**### Keyboard Handling**
+- **Key** — Behavior description
+- Note any disabled/loading blocking behavior
+
+**### Accessibility (WAI-ARIA)**
+- Roles, states, properties
+- WAI-ARIA pattern link
+- Screen reader expectations
+
+**### Visual States**
+- **State** — How it's applied, what triggers it
+- List only states that exist for this component
+
+**### Interaction Behavior**
+- Click, focus, loading, disabled behavior
+- Edge cases
+
+**### Responsive & Layout**
+- Block vs inline
+- Overflow rules
+
+**## Architecture Decisions**
+- Design choices and trade-offs
+
+**## Known Bugs & Limitations**
+- Issues with severity tag: [Low], [Medium], [High]
+
+**## Future Ideas**
+- [ ] Potential improvements
+
+**## Developer Notes**
+- date — note
+
+<br/>
+
+## Review Section Instructions
+
+AI acts as an independent reviewer — an outside senior dev reading this component for the first time. Write in first person as the reviewer, but refer to the component in third person (not "we" or "our"). This is a short, opinionated foreword — not a comparison chart or checklist.
+
+**Structure:** Start with the component itself — what it does well, what's interesting, what could be better. Then bring in a benchmark comparison (MUI, Radix, Shadcn, Headless UI, Ark UI, etc.) as part of the review — not as the opening or the main frame. The comparison supports the review, it doesn't drive it. Close with a natural summarization — no "Verdict:" label, just a closing thought that ties the review together.
+
+**Watch for blind spots:** Don't just review what's there — also consider what the benchmark does that this component doesn't attempt at all. Missing features and absent patterns are as important as implementation quality.
+
+**Tone:** Honest, direct, brief. Written with respect for the code and mild sass. No bullet points — flowing prose in a blockquote.
+
+**When:** Written during step 4 (research phase), while comparisons are fresh.
+
+> — *Claude, model, date*

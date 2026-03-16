@@ -15,7 +15,7 @@ import { useTranslations } from 'next-intl'
 import { MutableRefObject, useCallback, useMemo } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
-import { disabledClassVariant } from '@/components/utils/common.style'
+import { disabledVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -88,7 +88,7 @@ export const MonthPicker = ({
                   'DateButton',
                   'w-full border-none font-normal',
                   isDisabled && 'disabled',
-                  disabledClassVariant[variant],
+                  disabledVariant[variant],
                   isSameMonth(m, month) && 'selected shadow-ring',
                   buttonClassName,
                 )}

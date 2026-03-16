@@ -1,7 +1,7 @@
 'use client'
 import { forwardRef, ReactNode } from 'react'
 
-import { childrenIconSize, disabledClassVariant } from '@/components/utils/common.style'
+import { childrenIconSize, disabledVariant } from '@/components/utils/common.style'
 import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -54,7 +54,7 @@ export const TextInput = forwardRef<HTMLInputElement | null, TextInputProps>(
           inputWrapClass,
           inputVariant[variant][color],
           error && 'error',
-          disabled && 'disabled ' + disabledClassVariant[variant],
+          disabled && 'disabled ' + disabledVariant[variant],
           childrenIconSize[size],
           className,
         )}

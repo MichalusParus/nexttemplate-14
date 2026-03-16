@@ -439,7 +439,7 @@ Components have unified hover, focus, active, disabled, and selected states.
 Selected is a custom "persistent active" state, enabled by passing the `selected` class to a component.
 Style classes for these states are in the [common.style.ts](src/components/utils/common.style.ts) file.
 
-For disabled styling, use custom `disabled-native:` (native elements) or `disabled-aria:` (custom elements) variants due to specificity conflicts with other states.
+For disabled styling, use the custom `disabled-aria:` variant (`.disabled[aria-disabled="true"]`) which provides enough specificity to override interactive states like hover and focus.
 
 **Common Styles**
 

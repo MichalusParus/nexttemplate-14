@@ -188,7 +188,6 @@ describe('ToggleGroup', () => {
 
     expect(toggleGroupRole).toHaveAttribute('aria-disabled', 'true')
     buttonRoles.forEach(button => {
-      expect(button).toHaveAttribute('disabled')
       expect(button).toHaveAttribute('aria-disabled', 'true')
     })
   })

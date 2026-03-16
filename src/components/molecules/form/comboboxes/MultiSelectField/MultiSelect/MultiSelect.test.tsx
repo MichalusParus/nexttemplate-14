@@ -311,7 +311,7 @@ describe('MultiSelect', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    expect(comboboxRole).toHaveAttribute('disabled')
+    expect(comboboxRole).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('children', async () => {

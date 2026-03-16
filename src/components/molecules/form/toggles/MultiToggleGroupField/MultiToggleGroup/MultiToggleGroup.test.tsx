@@ -177,7 +177,7 @@ describe('MultiToggleGroup', () => {
     )
     const buttonRoles = screen.getAllByRole('button')
 
-    expect(buttonRoles[0]).toHaveAttribute('disabled')
+    expect(buttonRoles[0]).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('ref', () => {
