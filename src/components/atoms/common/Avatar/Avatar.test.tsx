@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { createRef, forwardRef } from 'react'
 
-import { render, screen } from '../../../../../.jest/customRender'
+import { fireEvent, render, screen } from '../../../../../.jest/customRender'
 import { Avatar } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -23,58 +23,131 @@ jest.mock('next/image', () => {
 })
 
 describe('Avatar', () => {
-  it('default', () => {
-    render(<Avatar className="className" />)
-    const avatarTestId = screen.getByTestId('Avatar')
-    const profileIconRole = screen.getByRole('img')
+  describe('Semantics', () => {
+    it('renders fallback profile icon', () => {
+      render(<Avatar />)
+      const icon = screen.getByRole('img')
 
-    expect(avatarTestId).toBeInTheDocument()
-    expect(avatarTestId).toHaveClass('className')
-    expect(avatarTestId).toHaveTextContent('')
-    expect(profileIconRole).toBeInTheDocument()
+      expect(icon).toBeInTheDocument()
+      expect(icon).toHaveAttribute('aria-label', 'profile')
+    })
+
+    it('forwards className', () => {
+      render(<Avatar className="className" />)
+      const avatar = screen.getByTestId('Avatar')
+
+      expect(avatar).toHaveClass('className')
+    })
+
+    it('multi-word username shows initials', () => {
+      render(<Avatar username="First Second Third" />)
+      const initials = screen.getByText('FT')
+
+      expect(initials).toHaveAttribute('aria-hidden', 'true')
+    })
+
+    it('single-word username shows one initial', () => {
+      render(<Avatar username="First" />)
+      const avatar = screen.getByTestId('Avatar')
+
+      expect(avatar).toHaveTextContent('F')
+    })
+
+    it('initials sr-only text', () => {
+      render(<Avatar username="First Third" />)
+      const srOnly = screen.getByText('initials FT')
+
+      expect(srOnly).toHaveClass('sr-only')
+    })
+
+    it('image renders with src', () => {
+      render(<Avatar username="User Name" src="/src" />)
+      const img = screen.getByRole('img')
+
+      expect(img).toBeInTheDocument()
+      expect(img).toHaveAttribute('src')
+    })
+
+    it('image alt includes username', () => {
+      render(<Avatar username="User Name" src="/src" />)
+      const img = screen.getByRole('img')
+
+      expect(img).toHaveAttribute('alt', 'profile User Name')
+    })
+
+    it('image alt generic without username', () => {
+      render(<Avatar src="/src" />)
+      const img = screen.getByRole('img')
+
+      expect(img).toHaveAttribute('alt', 'profile')
+    })
+
+    it('extra spaces in username filtered', () => {
+      render(<Avatar username="First  Third" />)
+      const initials = screen.getByText('FT')
+
+      expect(initials).toBeInTheDocument()
+    })
+
+    it('lowercase username uppercased', () => {
+      render(<Avatar username="john doe" />)
+      const initials = screen.getByText('JD')
+
+      expect(initials).toBeInTheDocument()
+    })
+
+    it('outer div has no role', () => {
+      render(<Avatar />)
+      const avatar = screen.getByTestId('Avatar')
+
+      expect(avatar).not.toHaveAttribute('role')
+    })
+
+    it('image error falls back to initials', () => {
+      render(<Avatar username="User Name" src="/broken" />)
+      const img = screen.getByRole('img')
+
+      fireEvent.error(img)
+      const initials = screen.getByText('UN')
+
+      expect(initials).toBeInTheDocument()
+    })
+
+    it('image error falls back to icon without username', () => {
+      render(<Avatar src="/broken" />)
+      const img = screen.getByRole('img')
+
+      fireEvent.error(img)
+      const icon = screen.getByRole('img')
+
+      expect(icon).toHaveAttribute('aria-label', 'profile')
+    })
+
+    it('render priority src over username', () => {
+      render(<Avatar username="User" src="/src" />)
+      const img = screen.getByRole('img')
+      const initials = screen.queryByText('U')
+
+      expect(img).toBeInTheDocument()
+      expect(initials).not.toBeInTheDocument()
+    })
   })
 
-  it('username', () => {
-    render(<Avatar username="First Second Third" />)
-    const avatarTestId = screen.getByTestId('Avatar')
-    const initialsText = screen.getByText('FT')
+  describe('Ref', () => {
+    it('forwards ref', () => {
+      const ref = createRef<HTMLDivElement>()
+      render(<Avatar ref={ref} />)
 
-    expect(avatarTestId).toHaveTextContent('FT')
-    expect(initialsText).toHaveAttribute('aria-hidden', 'true')
+      expect(ref.current).toBeInstanceOf(HTMLDivElement)
+    })
   })
 
-  it('single username', () => {
-    render(<Avatar username="First" />)
-    const avatarTestId = screen.getByTestId('Avatar')
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<Avatar username="Accessibility Test" src="/src" />)
 
-    expect(avatarTestId).toHaveTextContent('F')
-  })
-
-  it('src', () => {
-    render(<Avatar username="User Name" src="/src" />)
-    const profileImgRole = screen.getByRole('img')
-
-    expect(profileImgRole).toBeInTheDocument()
-    expect(profileImgRole).toHaveAttribute('src')
-  })
-
-  it('ref', () => {
-    const ref = createRef<HTMLDivElement>()
-    render(<Avatar ref={ref} />)
-
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
-  })
-
-  it('axe', async () => {
-    const { container } = render(<Avatar username="Accessibility Test" src="/src" />)
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

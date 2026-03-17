@@ -3,6 +3,7 @@ import NextLink from 'next/link'
 import { Children, forwardRef, LinkHTMLAttributes, ReactNode } from 'react'
 
 import { childrenIconSize } from '@/components/utils/common.style'
+import { devWarning } from '@/components/utils/devWarning'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -44,12 +45,13 @@ export const Link = forwardRef<HTMLAnchorElement | null, LinkProps>(
     },
     ref,
   ) => {
-    const iconOnly = (startIcon || endIcon) && Children.count(children) === 0
+    const iconOnly = (startIcon || endIcon) && Children.toArray(children).length === 0
     const linkFlex = size === 'inline' ? 'inline-flex' : 'flex'
 
-    if (iconOnly && !rest['aria-label'] && !rest['aria-labelledby']) {
-      console.warn('Icon-only links should have an aria-label for accessibility.')
-    }
+    devWarning(
+      !!(iconOnly && !rest['aria-label'] && !rest['aria-labelledby']),
+      'Icon-only links should have an aria-label for accessibility.',
+    )
 
     return (
       <NextLink

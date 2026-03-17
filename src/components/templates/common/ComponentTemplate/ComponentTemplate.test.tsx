@@ -1,3 +1,8 @@
+// WHY: This is a copy-paste library — developers modify components freely.
+// Tests protect the behavioral contract (ARIA, roles, a11y, ref, className)
+// so changes don't silently break what matters. Each test should catch a real
+// mistake a developer could make. Test the contract, not implementation details.
+//
 // Test Creation Guide
 //
 // 5 Describe Groups:
@@ -22,6 +27,9 @@
 //   - Every test must have a meaningful expect(). "Runs without error" is not valid
 //   - Test combined states when multiple blocking states exist (disabled + loading)
 //   - Keyboard tests must spy on preventDefault or assert callback was not called
+//   - Test all conditional branches for roles/ARIA (all values, not just one)
+//   - Test defensive guards with edge-case inputs (.filter, .toUpperCase, .trim)
+//   - Assert absence of role on presentational (non-interactive) elements
 //
 // Keyboard Tiers:
 //   T1 Focusable atoms (Button, Link, Chip) — Focus, Enter/Space activates

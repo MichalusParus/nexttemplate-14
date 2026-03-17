@@ -40,7 +40,7 @@ export const MultiToggleGroupField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size} error={errorMessage} {...labelProps} legend>
+        <Label name={name} label={label} size={size} error={errorMessage} {...labelProps} variant="legend">
           <MultiToggleGroup
             className={className}
             variant={variant || formVariant}

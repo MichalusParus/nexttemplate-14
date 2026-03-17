@@ -1,0 +1,74 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Common/Label/Def" />
+
+# Label
+
+> Form label wrapper that pairs a labeling element with its input and an error/description Alert below. Renders as `<label>`, `<div>`, or `<legend>` via the `variant` prop — native inputs, custom widgets, and fieldset groups all covered by a single component.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- **Stacked layout**: outer wrapper is a `<div>` (`LabelWrap`) with `flex flex-col items-start gap-0.5` — label text above, input (children) in the middle, error/description Alert below. No inline or floating label mode — contrast with MUI's floating/shrinking label which sits inside the input and animates on focus. Checkbox and Switch components handle their own inline labels internally
+- Three rendering modes via `variant` prop (`'label' | 'div' | 'legend'`, default `'label'`):
+  - **`'label'`** (default): native `<label>` element with `htmlFor={name}` — associates with the input via native label/input binding
+  - **`'div'`**: renders a `<div>` with `id={name}-label` — for custom widgets where native `<label>` association doesn't work (comboboxes, non-native inputs)
+  - **`'legend'`**: renders a `<legend>` with `id={name}-label` — for use inside `<fieldset>` groups (radio groups, checkbox groups)
+- Children (the form input) rendered between the labeling element and the Alert
+- Alert component always rendered below children — `opacity-0` and `aria-hidden="true"` when empty, `opacity-100` when error or description is present
+- `error` takes priority over `description` — when both provided, error is displayed
+- Alert gets `id={name}-description` for `aria-describedby` association from the input
+- Alert uses `status="error"` (renders `role="alert"`) for errors, `status="info"` for descriptions
+- Native `LabelHTMLAttributes` via `...rest` spread onto `<label>` only — `div` and `legend` variants are different element types with their own attribute semantics
+
+### Accessibility (WAI-ARIA)
+- `<label htmlFor={name}>` provides native label association — screen readers announce the label text when the paired input receives focus
+- `div` and `legend` variants use `id={name}-label` — consumer must add `aria-labelledby={name}-label` on the input manually
+- Alert with `id={name}-description` — consumer adds `aria-describedby={name}-description` on the input for error/description announcement
+- `hideLabel` applies `sr-only` — visually hidden but remains in the accessibility tree for screen readers, preserving label association
+- `hideError` applies CSS `hidden` on the Alert — removes it from both visual rendering and the accessibility tree (intentional — when error space is unwanted, there's no error to announce)
+- Follows [WAI-ARIA labeling practices](https://www.w3.org/WAI/tutorials/forms/labels/)
+
+### Responsive & Layout
+- `width` prop defaults to `w-full`, applied to outer wrapper via className
+- `className` applies to outer wrapper (`LabelWrap`), not to the label element itself
+- `size` prop controls text size of the labeling element via `textSize` utility map (sm/md/lg/none)
+- `text-inherit` on the labeling element — color comes from parent context
+
+<br/>
+
+## Architecture Decisions
+- **Stacked-only layout**: Label is a vertical column wrapper (`flex-col`). No inline or floating mode. Inline labels (Checkbox, Switch) handle their own layout internally with horizontal flex. Floating labels (MUI-style) are a fundamentally different pattern — the label lives inside the input, requires input-aware CSS transitions and focus state coordination. Not attempted here by design; this is a structural wrapper for the label-input-error column
+- **Three rendering modes via `variant` prop**: Label is a form-level layout primitive, not just a `<label>` tag. Radio groups need `<legend>` inside `<fieldset>`, custom comboboxes need a non-`<label>` element referenced via `aria-labelledby`. Rather than three separate components, the mode is selected via a single `variant` prop (`'label' | 'div' | 'legend'`) — matches Title/Span pattern in the codebase, and the surrounding layout (wrapper, Alert, children slot) is identical across all three
+- **Alert always in DOM**: The Alert is rendered even when empty (with `opacity-0` and `aria-hidden="true"`). This avoids layout shift when an error appears — the space is always reserved. The `hideError` prop adds `hidden` for minimalistic form components where even the reserved space is unwanted
+- **Ref only forwards to `<label>`**: The `div` and `legend` variants do not receive the forwarded ref. The ref type is `HTMLLabelElement` — forwarding it to a `<div>` or `<legend>` would be a type lie. Using ref is already an edge case; combining it with non-label variants is extremely rare in practice
+- **className on wrapper, not label element**: The outer `LabelWrap` div is the layout container consumers need to control (width, margin, spacing). The inner labeling element is styled internally via `size` prop and `text-inherit`
+
+<br/>
+
+## Known Bugs & Limitations
+- **[Low]** Stacked-only layout — no inline (label beside input) or floating (label inside input) variant. Consumer must build custom layout for non-stacked label patterns
+
+<br/>
+
+## Future Ideas
+- [ ] Inline layout variant — label left, input+alert stacked right
+- [ ] Floating label variant — MUI-style label inside input, shrinks on focus. Would give the existing `<label>` ref a practical use case (measuring label width for outline notch cutout)
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Label solves the boring-but-important layout problem: label above, input in the middle, error below, all in a consistent flex column. It's a structural wrapper, not a visual label treatment — no floating labels, no shrink-on-focus animations. MUI's TextField bundles a floating label with input-aware transitions; this component deliberately stays out of that territory. The input is a child slot — Label doesn't know or care what goes inside it.
+>
+> The `variant` prop (`'label' | 'div' | 'legend'`) handles real form patterns cleanly — a single enum replacing what used to be two boolean props. Native inputs get `<label htmlFor>`, custom widgets get a div with `id` for `aria-labelledby`, fieldset groups get `<legend>`. MUI splits this across FormLabel, FormHelperText, and FormControl — three components to do what this does in one. Radix Label is just a `<label>` with no opinion on error messaging or layout.
+>
+> The always-present Alert with `opacity-0`/`opacity-100` toggling is a practical touch — no layout shift when validation fires. Error-over-description priority is the right default. The `sr-only` approach for `hideLabel` keeps the label accessible to screen readers while removing it visually — the right trade-off for minimalistic form designs where the input's placeholder or context makes the label redundant for sighted users.
+>
+> — *Claude, Opus 4.6, 2026-03-17*

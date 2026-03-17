@@ -1,6 +1,6 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { ButtonHTMLAttributes, forwardRef, useEffect } from 'react'
+import { ButtonHTMLAttributes, forwardRef, useEffect, useRef } from 'react'
 
 import { cn } from '@/utils/utils'
 
@@ -9,38 +9,41 @@ import { overlayClass } from './Overlay.style'
 export type OverlayProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> & {
   /** for passing custom tailwind classes */
   className?: string
-  /** bolean value for open state */
+  /** boolean value for open state */
   isOpen: boolean
-  /** boolean for darkr overlay, default is transparentn */
+  /** boolean for darker overlay, default is transparent */
   dark?: boolean
   /** onClick for closing function */
   onClose: () => void
 }
 
-// Reference counter for nested modals
-let modalCount = 0
+export const APP_ROOT_ID = '__next'
+
+// Set-based tracking for nested modals — idempotent add/delete prevents desync
+const openOverlays = new Set<symbol>()
 
 /** Overlay is used in popover components for closing popover on click outside. USE CLIENT */
 export const Overlay = forwardRef<HTMLButtonElement | null, OverlayProps>(
   ({ className, isOpen, dark, onClose, ...rest }, ref) => {
     const t = useTranslations('Components')
+    const id = useRef(Symbol()).current
 
     // Set inert on app root when modal overlay is open
     useEffect(() => {
       if (!isOpen) return
-      const appRoot = document.getElementById('__next')
+      const appRoot = document.getElementById(APP_ROOT_ID)
       if (!appRoot) return
 
-      modalCount++
+      openOverlays.add(id)
       appRoot.inert = true
 
       return () => {
-        modalCount--
-        if (modalCount === 0) {
+        openOverlays.delete(id)
+        if (openOverlays.size === 0) {
           appRoot.inert = false
         }
       }
-    }, [isOpen])
+    }, [isOpen, id])
 
     return (
       <button
@@ -53,7 +56,7 @@ export const Overlay = forwardRef<HTMLButtonElement | null, OverlayProps>(
         )}
         type="button"
         tabIndex={-1}
-        aria-label={t('close')}
+        aria-label={isOpen ? t('close') : undefined}
         aria-hidden={!isOpen}
         ref={ref}
         onClick={onClose}

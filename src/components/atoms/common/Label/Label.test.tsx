@@ -9,110 +9,148 @@ import { Label } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('Label', () => {
-  it('default', () => {
-    render(<Label name="labelTest" label="label" className="className" width="w-96" />)
-    const labelWrapTestId = screen.getByTestId('LabelWrap')
-    const labelTestId = screen.getByTestId('Label')
-    const alertTestId = screen.getByTestId('Alert')
+  describe('Semantics', () => {
+    it('renders as label with htmlFor', () => {
+      render(<Label name="labelTest" label="label" />)
+      const label = screen.getByTestId('Label')
 
-    expect(labelWrapTestId).toBeInTheDocument()
-    expect(labelWrapTestId).toHaveClass('className')
-    expect(labelWrapTestId).toHaveClass('w-96')
-    expect(labelTestId).toBeInTheDocument()
-    expect(labelTestId).toHaveTextContent('label')
-    expect(labelTestId).toHaveAttribute('for', 'labelTest')
-    expect(labelTestId).toHaveAttribute('id', 'labelTest-label')
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveAttribute('aria-hidden', 'true')
-    expect(alertTestId).toHaveClass('opacity-0')
+      expect(label).toBeInTheDocument()
+      expect(label).toHaveTextContent('label')
+      expect(label).toHaveAttribute('for', 'labelTest')
+      expect(label).toHaveAttribute('id', 'labelTest-label')
+    })
+
+    it('forwards className to wrapper', () => {
+      render(<Label name="labelTest" label="label" className="className" />)
+      const wrapper = screen.getByTestId('LabelWrap')
+
+      expect(wrapper).toHaveClass('className')
+    })
+
+    it('forwards width to wrapper', () => {
+      render(<Label name="labelTest" label="label" width="w-96" />)
+      const wrapper = screen.getByTestId('LabelWrap')
+
+      expect(wrapper).toHaveClass('w-96')
+    })
+
+    it('default width is w-full', () => {
+      render(<Label name="labelTest" label="label" />)
+      const wrapper = screen.getByTestId('LabelWrap')
+
+      expect(wrapper).toHaveClass('w-full')
+    })
+
+    it('Alert hidden when no error or description', () => {
+      render(<Label name="labelTest" label="label" />)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toBeInTheDocument()
+      expect(alert).toHaveAttribute('aria-hidden', 'true')
+      expect(alert).toHaveClass('opacity-0')
+    })
+
+    it('error shown with role alert', () => {
+      render(<Label name="labelTest" label="label" error="error" />)
+      const alert = screen.getByRole('alert')
+
+      expect(alert).toBeInTheDocument()
+      expect(alert).toHaveTextContent('error')
+      expect(alert).toHaveAttribute('id', 'labelTest-description')
+    })
+
+    it('error takes priority over description', () => {
+      render(
+        <Label
+          name="labelTest"
+          label="label"
+          error="error"
+          description="description"
+        />,
+      )
+      const alert = screen.getByRole('alert')
+
+      expect(alert).toHaveTextContent('error')
+    })
+
+    it('description shown in Alert', () => {
+      render(<Label name="labelTest" label="label" description="description" />)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toBeInTheDocument()
+      expect(alert).toHaveTextContent('description')
+      expect(alert).toHaveAttribute('id', 'labelTest-description')
+    })
+
+    it('variant div renders div', () => {
+      render(<Label name="labelTest" label="label" variant="div" />)
+      const label = screen.queryByTestId('Label')
+      const fakeLabel = screen.getByTestId('FakeLabel')
+
+      expect(label).toBeNull()
+      expect(fakeLabel).toBeInTheDocument()
+      expect(fakeLabel).toHaveTextContent('label')
+      expect(fakeLabel).toHaveAttribute('id', 'labelTest-label')
+      expect(fakeLabel.tagName).toBe('DIV')
+    })
+
+    it('variant legend renders legend', () => {
+      render(<Label name="labelTest" label="label" variant="legend" />)
+      const label = screen.queryByTestId('Label')
+      const legendElement = screen.getByTestId('FakeLabel')
+
+      expect(label).toBeNull()
+      expect(legendElement).toBeInTheDocument()
+      expect(legendElement).toHaveTextContent('label')
+      expect(legendElement).toHaveAttribute('id', 'labelTest-label')
+      expect(legendElement.tagName).toBe('LEGEND')
+    })
+
+    it('hideLabel adds sr-only class', () => {
+      render(<Label name="labelTest" label="label" hideLabel />)
+      const label = screen.getByTestId('Label')
+
+      expect(label).toBeInTheDocument()
+      expect(label).toHaveTextContent('label')
+      expect(label).toHaveClass('sr-only')
+    })
+
+    it('hideError adds hidden class', () => {
+      render(<Label name="labelTest" label="label" error="error" hideError />)
+      const alert = screen.getByRole('alert')
+
+      expect(alert).toBeInTheDocument()
+      expect(alert).toHaveTextContent('error')
+      expect(alert).toHaveClass('hidden')
+    })
+
+    it('renders children', () => {
+      render(
+        <Label name="labelTest" label="label">
+          <input id="labelTest" data-testid="child-input" />
+        </Label>,
+      )
+      const child = screen.getByTestId('child-input')
+
+      expect(child).toBeInTheDocument()
+    })
   })
 
-  it('error', () => {
-    render(
-      <Label
-        name="labelTest"
-        label="label"
-        className="className"
-        error="error"
-        description="description"
-      />,
-    )
-    const alertRole = screen.getByRole('alert')
+  describe('Ref', () => {
+    it('forwards ref', () => {
+      const ref = createRef<HTMLLabelElement>()
+      render(<Label ref={ref} name="labelTest" label="label" />)
 
-    expect(alertRole).toBeInTheDocument()
-    expect(alertRole).toHaveTextContent('error')
-    expect(alertRole).toHaveAttribute('id', 'labelTest-description')
+      expect(ref.current).toBeInstanceOf(HTMLLabelElement)
+    })
   })
 
-  it('description', () => {
-    render(<Label name="labelTest" label="label" className="className" description="description" />)
-    const alertTestId = screen.getByTestId('Alert')
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<Label name="labelTest" label="label" />)
 
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveTextContent('description')
-    expect(alertTestId).toHaveAttribute('id', 'labelTest-description')
-  })
-
-  it('fake', () => {
-    render(<Label name="labelTest" label="label" fakeLabel />)
-    const labelQuery = screen.queryByTestId('Label')
-    const fakeLabelTestId = screen.getByTestId('FakeLabel')
-
-    expect(labelQuery).toBeNull()
-    expect(fakeLabelTestId).toBeInTheDocument()
-    expect(fakeLabelTestId).toHaveTextContent('label')
-    expect(fakeLabelTestId).toHaveAttribute('id', 'labelTest-label')
-    expect(fakeLabelTestId.tagName).toBe('DIV')
-  })
-
-  it('legend', () => {
-    render(<Label name="labelTest" label="label" legend />)
-    const labelQuery = screen.queryByTestId('Label')
-    const fakeLabelTestId = screen.getByTestId('FakeLabel')
-
-    expect(labelQuery).toBeNull()
-    expect(fakeLabelTestId).toBeInTheDocument()
-    expect(fakeLabelTestId).toHaveTextContent('label')
-    expect(fakeLabelTestId).toHaveAttribute('id', 'labelTest-label')
-    expect(fakeLabelTestId.tagName).toBe('LEGEND')
-  })
-
-  it('hideLabel', () => {
-    render(<Label name="labelTest" label="label" hideLabel />)
-    const labelTestId = screen.getByTestId('Label')
-
-    expect(labelTestId).toBeInTheDocument()
-    expect(labelTestId).toHaveTextContent('label')
-    expect(labelTestId).toHaveClass('hidden')
-  })
-
-  it('hideError', () => {
-    render(<Label name="labelTest" label="label" error="error" hideError />)
-    const alertRole = screen.getByRole('alert')
-
-    expect(alertRole).toBeInTheDocument()
-    expect(alertRole).toHaveTextContent('error')
-    expect(alertRole).toHaveClass('hidden')
-  })
-
-  it('ref', () => {
-    const ref = createRef<HTMLLabelElement>()
-    render(<Label ref={ref} name="labelTest" label="label" />)
-
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
-  })
-
-  it('axe', async () => {
-    const { container } = render(<Label name="labelTest" label="label" />)
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

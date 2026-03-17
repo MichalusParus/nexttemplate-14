@@ -87,6 +87,16 @@ describe('Button', () => {
       expect(button).toHaveTextContent('button')
     })
 
+    it('endIcon-only renders icon', () => {
+      render(<Button endIcon={<svg role="img" />} aria-label="label" />)
+      const button = screen.getByRole('button')
+      const img = screen.getByRole('img')
+
+      expect(img).toBeInTheDocument()
+      expect(button).toHaveTextContent('')
+      expect(button).toHaveAttribute('aria-label', 'label')
+    })
+
     it('loading with icon-only skips overlay', () => {
       render(<Button isLoading startIcon={<svg role="img" />} aria-label="icon" />)
       const loader = screen.queryByRole('status')

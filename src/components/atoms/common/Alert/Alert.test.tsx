@@ -9,75 +9,122 @@ import { Alert } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('Alert', () => {
-  it('default', () => {
-    render(<Alert className="className">Alert</Alert>)
-    const alertTestId = screen.getByTestId('Alert')
+  describe('Semantics', () => {
+    it('renders as div', () => {
+      render(<Alert>Alert</Alert>)
+      const alert = screen.getByTestId('Alert')
 
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveClass('className')
-    expect(alertTestId).toHaveTextContent('Alert')
+      expect(alert).toBeInTheDocument()
+      expect(alert).toHaveTextContent('Alert')
+    })
+
+    it('forwards className', () => {
+      render(<Alert className="className">Alert</Alert>)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toHaveClass('className')
+    })
+
+    it('error status sets role alert', () => {
+      render(<Alert status="error">Alert</Alert>)
+      const alert = screen.getByRole('alert')
+
+      expect(alert).toBeInTheDocument()
+    })
+
+    it('success status has no role', () => {
+      render(<Alert>Alert</Alert>)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).not.toHaveAttribute('role')
+    })
+
+    it('info status has no role', () => {
+      render(<Alert status="info">Alert</Alert>)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).not.toHaveAttribute('role')
+    })
+
+    it('warning status has no role', () => {
+      render(<Alert status="warning">Alert</Alert>)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).not.toHaveAttribute('role')
+    })
+
+    it('renders title and children', () => {
+      render(<Alert title="Alert title">Alert info</Alert>)
+      const title = screen.getByText('Alert title')
+      const info = screen.getByText('Alert info')
+
+      expect(title).toBeInTheDocument()
+      expect(info).toBeInTheDocument()
+    })
+
+    it('renders title only', () => {
+      render(<Alert title="Alert title" />)
+      const title = screen.getByText('Alert title')
+
+      expect(title).toBeInTheDocument()
+    })
+
+    it('startIcon renders when status none', () => {
+      render(
+        <Alert status="none" startIcon={<svg role="img" />}>
+          Alert
+        </Alert>,
+      )
+      const icon = screen.getByRole('img')
+
+      expect(icon).toBeInTheDocument()
+    })
+
+    it('startIcon hidden when status set', () => {
+      render(
+        <Alert status="success" startIcon={<svg data-testid="custom-icon" />}>
+          Alert
+        </Alert>,
+      )
+      const customIcon = screen.queryByTestId('custom-icon')
+
+      expect(customIcon).not.toBeInTheDocument()
+    })
+
+    it('endIcon renders', () => {
+      render(
+        <Alert endIcon={<svg role="img" />}>
+          Alert
+        </Alert>,
+      )
+      const icon = screen.getByRole('img')
+
+      expect(icon).toBeInTheDocument()
+    })
+
+    it('status icons are aria-hidden', () => {
+      const { container } = render(<Alert status="error">Alert</Alert>)
+      const svg = container.querySelector('svg')
+
+      expect(svg).toHaveAttribute('aria-hidden', 'true')
+    })
   })
 
-  it('error', () => {
-    render(
-      <Alert status="error" title="Alert title">
-        Alert
-      </Alert>,
-    )
-    const alertRole = screen.getByRole('alert')
+  describe('Ref', () => {
+    it('forwards ref', () => {
+      const ref = createRef<HTMLDivElement>()
+      render(<Alert ref={ref}>Alert</Alert>)
 
-    expect(alertRole).toBeInTheDocument()
+      expect(ref.current).toBeInstanceOf(HTMLDivElement)
+    })
   })
 
-  it('title', () => {
-    render(<Alert title="Alert title">Alert info</Alert>)
-    const titleText = screen.getByText('Alert title')
-    const infoText = screen.getByText('Alert info')
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<Alert>Alert</Alert>)
 
-    expect(titleText).toBeInTheDocument()
-    expect(infoText).toBeInTheDocument()
-  })
-
-  it('startIcon', () => {
-    render(
-      <Alert status="none" title="Alert title" startIcon={<svg role="img" />}>
-        Alert
-      </Alert>,
-    )
-    const imgRole = screen.getByRole('img')
-
-    expect(imgRole).toBeInTheDocument()
-  })
-
-  it('endIcon', () => {
-    render(
-      <Alert status="none" title="Alert title" endIcon={<svg role="img" />}>
-        Alert
-      </Alert>,
-    )
-    const imgRole = screen.getByRole('img')
-
-    expect(imgRole).toBeInTheDocument()
-  })
-
-  it('ref', () => {
-    const ref = createRef<HTMLDivElement>()
-    render(<Alert ref={ref}>Alert</Alert>)
-
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
-  })
-
-  it('axe', async () => {
-    const { container } = render(<Alert className="className">Alert</Alert>)
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

@@ -5,8 +5,8 @@ import { createPortal } from 'react-dom'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { XIcon } from '@/components/atoms/icons'
-import { useInternalOpenState } from '@/components/utils/hooks/useInternalOpenState'
 import { useFocus } from '@/components/utils/hooks/useFocus'
+import { useInternalOpenState } from '@/components/utils/hooks/useInternalOpenState'
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { cn } from '@/utils/utils'
 

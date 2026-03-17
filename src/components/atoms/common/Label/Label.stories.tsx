@@ -34,8 +34,7 @@ export const Default: Story = {
     width: 'w-full',
     error: undefined,
     description: '',
-    fakeLabel: false,
-    legend: false,
+    variant: 'label',
     hideLabel: false,
     hideError: false,
     children: (

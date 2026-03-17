@@ -1,0 +1,84 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Common/Overlay/Def" />
+
+# Overlay
+
+> Full-screen backdrop for popover dismissal. Covers the viewport as an invisible or dark-tinted click target that closes the parent popover — Dialog, Drawer, Dropdown. Manages `inert` on the app root for nested modal layering.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<button>` element with `type="button"` — semantically clickable without adding `role="button"` or keyboard handling to a `<div>`
+- `tabIndex={-1}` — intentionally removed from tab order; the overlay is a click target, not a keyboard target
+- `aria-hidden={!isOpen}` — hidden from assistive technology when closed (element remains in DOM for CSS transition)
+- `aria-label` set to translated "close" when open, `undefined` when closed — announces purpose to screen readers when visible
+- `data-testid="Overlay"` for test targeting
+- Extends `ButtonHTMLAttributes<HTMLButtonElement>` with rest spread — consumers can pass native button attributes
+
+### Keyboard Handling
+- **Not in tab order** (`tabIndex={-1}`) — intentional. The overlay is a visual click target for pointer/touch dismissal
+- **Escape key handling is the parent's responsibility** — Dialog, Drawer, and Dropdown each implement their own Escape listener. The overlay does not duplicate this concern
+- No keyboard interaction on the overlay itself — correct per WAI-ARIA, since the overlay is a supporting backdrop, not a standalone interactive widget
+
+### Accessibility (WAI-ARIA)
+- No specific WAI-ARIA pattern for backdrop/overlay — this is a supporting element, not a standalone widget
+- `aria-hidden="true"` when closed — prevents screen readers from discovering the invisible overlay
+- `aria-hidden="false"` when open — allows screen reader to encounter it (though `tabIndex={-1}` keeps it out of tab order)
+- `aria-label` with translated "close" when open — if a screen reader user encounters it via touch exploration on mobile, they know what it does
+- `inert` attribute set on `#__next` app root when overlay is open — the modern replacement for `aria-hidden` on sibling containers. Prevents all interaction (focus, click, screen reader) with content behind the modal
+
+### Visual States
+- **Closed**: `invisible opacity-0` — CSS invisible, no pointer events, no layout impact
+- **Open**: `opacity-100` — visible, full-screen click target, transparent background
+- **Open + dark**: `opacity-100 bg-dark-950/25` — semi-transparent dark tint, used by Dialog
+- Transition via `transition-colors` from the base style class
+
+### Interaction Behavior
+- Click fires `onClose` — the single interaction this component supports
+- Click fires regardless of `isOpen` state (no guard) — the parent controls whether the overlay is rendered/visible
+- `inert` management via `useEffect`:
+  - On open: adds a unique `Symbol` to the module-level `openOverlays` Set, sets `appRoot.inert = true`
+  - On cleanup (close or unmount): removes the Symbol, only clears `inert` when `openOverlays.size === 0`
+  - This handles nested modals correctly — inner overlay unmounts, outer overlay keeps inert active
+
+### Responsive & Layout
+- `fixed left-0 top-0 z-overlay h-full w-full` — full viewport coverage, fixed positioning
+- `cursor-default` — no pointer cursor despite being a button (intentional — looks like empty space, not a clickable widget)
+
+<br/>
+
+## Architecture Decisions
+- **`<button>` over `<div>`**: A `<div>` with `onClick` requires `role="button"` and keyboard handling to be accessible. A `<button>` gets click semantics for free. Since keyboard interaction is intentionally excluded (`tabIndex={-1}`), the button element provides correct click handling without ARIA overhead. MUI's Backdrop uses a `<div>` with `onClick` — technically incomplete without role and keyboard support.
+- **Set-based nested modal tracking**: A module-level `Set<symbol>` tracks which overlays are currently open. Each overlay instance creates a stable `Symbol` via `useRef`. This is more robust than a counter — idempotent add/delete prevents desync from React strict mode double-effects or unexpected re-renders. The Set pattern ensures `inert` is only removed when the last overlay unmounts.
+- **`inert` on `#__next` app root**: The `inert` attribute is the modern standard for trapping interaction within a modal. It replaces the older pattern of manually setting `aria-hidden="true"` on sibling containers. One attribute on one element handles focus trapping, click blocking, and screen reader isolation. The `APP_ROOT_ID` constant is exported for test access.
+- **Parent owns Escape handling**: The overlay is a click target only. Keyboard dismissal (Escape) is always handled by the parent popover component (Dialog, Drawer, Dropdown) because those components also need to manage focus restoration, animation timing, and other close-related logic. Duplicating Escape handling here would create race conditions and double-fires.
+- **`aria-label` only when open**: When closed, the overlay is `aria-hidden="true"` and invisible — no aria-label needed. When open, the translated "close" label serves mobile screen reader users who might encounter the overlay via touch exploration.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> The `<button>` choice is the standout decision here. MUI's Backdrop uses a `<div>` with `onClick`, which is technically incomplete — no `role="button"`, no keyboard handling, just a clickable div. This component gets click semantics for free from the native element, and then correctly opts out of keyboard interaction with `tabIndex={-1}`. The HTML is honest about what this thing is: a clickable surface that shouldn't be focused.
+>
+> The Set-based inert tracking is elegant. Radix handles nested modals through context and portal stacking; Headless UI uses a similar layered approach. This achieves the same result with a simpler mechanism — a module-level Set with Symbol keys. No context provider, no wrapper components, just a Set that counts. The Symbol-per-instance via `useRef` is the right choice over a counter — idempotent against React strict mode double-effects.
+>
+> `inert` on the app root is the modern approach. Radix still uses `aria-hidden` on siblings in some cases; Headless UI has adopted `inert`. This component is on the right side of that transition. One attribute, one element, complete interaction blocking — cleaner than the old dance of aria-hidden on every sibling.
+>
+> The scope is deliberately narrow — click to close, inert management, visual state. No Escape handling, no focus trapping, no animation orchestration. Those concerns live in the parent popover components where they belong. Composition over configuration, and it keeps the overlay atom-sized. Clean, minimal, correct for its role.
+>
+> — *Claude, Opus 4.6, 2026-03-17*

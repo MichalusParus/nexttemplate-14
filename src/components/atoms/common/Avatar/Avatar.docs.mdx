@@ -1,0 +1,70 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Common/Avatar/Def" />
+
+# Avatar
+
+> Visual representation of a user identity. Displays a profile image, user initials, or a generic profile icon as fallback. Used in headers, comments, user lists, and anywhere a user's visual identity appears.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<div>` wrapper — presentational container, no implicit role, no `role="img"` on outer element
+- Three render modes with priority chain: `src` > `username` > fallback icon
+- **Image mode** (`src` provided): Next.js `<Image>` inside a ratio wrapper div. `alt` combines translated "profile" + `username` when available, otherwise just "profile". `object-cover` fills the circular container. On load error, `imgError` state triggers fallback to next mode
+- **Initials mode** (`username` without valid `src`): `<span aria-hidden="true">` with visible initials + `<span className="sr-only">` with "initials XY" for screen readers. Algorithm: first char of first word + first char of last word, uppercased. Single-word names get one initial. Multiple spaces filtered
+- **Fallback mode** (neither `src` nor `username`): `<div role="img" aria-label="profile">` wrapping `<ProfileIcon />`
+- Uses `next-intl` `useTranslations('Components')` for "profile" and "initials" strings — `'use client'` required for `useTranslations` and `useState`
+
+### Accessibility (WAI-ARIA)
+- **Image mode**: `alt` on `<img>` provides accessible name — "profile User Name" when username available
+- **Initials mode**: Dual-span pattern prevents screen readers from spelling out individual letters. AT hears "initials FT" via `sr-only` span, visible initials hidden via `aria-hidden="true"`
+- **Fallback mode**: `role="img"` + `aria-label="profile"` on inner wrapper — follows [WAI-ARIA img pattern](https://www.w3.org/WAI/ARIA/apg/patterns/images/)
+- Outer `<div>` has no role — accessible content lives on inner elements where it's semantically correct
+
+### Responsive & Layout
+- Circular clip via `overflow-hidden` + `rounded-full` with `border`
+- Fixed dimensions per size with `min-w-*` to prevent flex shrinking
+- `flex items-center justify-center` centers all content modes
+- Image fills container via `min-h-full min-w-full` + `object-cover` + `aspect-square`
+- `font-bold` on initials text
+
+<br/>
+
+## Architecture Decisions
+- **Render priority `src` > `username` > fallback with error recovery**: Image always wins when available. On load error, `imgError` state triggers re-render that falls through to initials or icon — same branches, no duplication
+- **`sr-only` pattern over `aria-label` on container**: `aria-label` on a generic `<div>` without a role is ignored by most screen readers. The dual-span approach keeps accessible text co-located with visual content on elements that support it
+- **`object-cover` for images**: Profile photos should fill the circular container without letterboxing. Non-square images are cropped rather than showing background gaps
+- **`'use client'` for translations**: `useTranslations` requires a client component. Two short strings — minimal overhead
+- **Initials edge cases**: `.filter(name => name)` handles multiple spaces, `.toUpperCase()` normalizes casing, three-word names take first + last only
+
+<br/>
+
+## Known Bugs & Limitations
+- **[Low]** Initials algorithm assumes Western "First Last" name order — not suitable for all cultures (CJK family-name-first, single-name cultures). Consumer should provide pre-computed initials for non-Western name formats
+- **[Low]** No online/offline status indicator dot
+- **[Low]** No AvatarGroup component for stacked avatar display
+
+<br/>
+
+## Future Ideas
+- [ ] Online/offline status indicator dot
+- [ ] AvatarGroup component for stacked avatar display
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> The three-mode render chain — image, initials, icon — is the right abstraction for avatars, and the error fallback via `imgError` state completes it cleanly. When the image fails, the component falls through the same branches it already has for initials and icon. No duplication, no separate fallback component. Radix Avatar does this with a compound `<Avatar.Image>` + `<Avatar.Fallback>` pattern that's more explicit but heavier. MUI does it internally with a similar state approach. This implementation lands in the right spot — automatic fallback without consumer boilerplate.
+>
+> The initials accessibility is genuinely thoughtful. MUI dumps raw letters into the DOM and lets screen readers spell them out — "F", "T". Here, the `sr-only` span announces "initials FT" as a phrase while `aria-hidden` hides the visual letters from AT. It's a small detail that most libraries skip. The algorithm handles the common edge cases — multiple spaces, case normalization, three-word names taking first and last — without overcomplicating for cultural variations it can't solve at the component level.
+>
+> The `object-cover` on images is correct for avatars — profile photos should fill the circle, not letterbox. The `'use client'` directive for two translated strings is a reasonable trade-off. Solid component with no gaps in its scope.
+>
+> — *Claude, Opus 4.6, 2026-03-17*

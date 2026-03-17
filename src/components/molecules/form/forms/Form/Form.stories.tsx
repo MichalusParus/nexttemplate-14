@@ -16,17 +16,17 @@ import { MultiDatePickerField } from '../../comboboxes/MultiDatePickerField'
 import { MultiSelectField } from '../../comboboxes/MultiSelectField'
 import { RangeDatePickerField } from '../../comboboxes/RangeDatePickerField'
 import { SelectField } from '../../comboboxes/SelectField'
-import { CheckboxField } from '../../toggles/CheckboxField'
-import { CheckboxGroupField } from '../../toggles/CheckboxGroupField'
 import { FileField } from '../../inputs/FileField'
-import { MultiToggleGroupField } from '../../toggles/MultiToggleGroupField'
 import { NumberField } from '../../inputs/NumberField'
 import { PasswordField } from '../../inputs/PasswordField'
-import { RadioGroupField } from '../../toggles/RadioGroupField'
 import { RangeField } from '../../inputs/RangeField'
 import { SearchField } from '../../inputs/SearchField'
 import { TextAreaField } from '../../inputs/TextAreaField'
 import { TextField } from '../../inputs/TextField'
+import { CheckboxField } from '../../toggles/CheckboxField'
+import { CheckboxGroupField } from '../../toggles/CheckboxGroupField'
+import { MultiToggleGroupField } from '../../toggles/MultiToggleGroupField'
+import { RadioGroupField } from '../../toggles/RadioGroupField'
 import { ToggleGroupField } from '../../toggles/ToggleGroupField'
 import { Form } from '.'
 import { FormProps } from './Form'
@@ -95,7 +95,7 @@ const FormWithHooks = (args: FormProps<object>) => {
           max={200}
           onChange={v => console.log(v)}
         />
-        <Label name="checkboxStory" label="Fake label:" fakeLabel>
+        <Label name="checkboxStory" label="Fake label:" variant="div">
           <CheckboxField name="checkboxStory" label="checkbox" />
         </Label>
         <CheckboxGroupField

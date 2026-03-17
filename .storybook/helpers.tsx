@@ -676,7 +676,7 @@ export const InputFields = ({
 export const RadioFields = () => {
   return (
     <>
-      <Label name="checkboxStory" label="Fake label:" fakeLabel>
+      <Label name="checkboxStory" label="Fake label:" variant='div'>
         <CheckboxField name="checkboxStory" label="checkbox" />
       </Label>
       <CheckboxGroupField

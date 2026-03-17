@@ -195,7 +195,7 @@ describe('GridFilter', () => {
     const filterIcon = filterButton.querySelector('svg')
     expect(filterIcon).toHaveClass('opacity-0')
 
-    const { rerender } = render(
+    render(
       <JestDataGridProvider
         filter={{ [gridColsDef[0].name]: { operator: FilterOperator.EQUALS, value: 'test' } }}
       >

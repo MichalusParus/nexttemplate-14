@@ -1,0 +1,76 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Common/Link/Def" />
+
+# Link
+
+> Navigation element that routes to a destination. Built on Next.js `<Link>` with the same visual style system as Button — use for any clickable UI that navigates rather than performs an action.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<a>` element via Next.js `<Link>` — implicit `role="link"`, no ARIA role override needed
+- Default `variant="text"` (unlike Button's `"contained"`) — text links are the most common inline navigation pattern
+- Icon-only mode auto-detected: when `startIcon` or `endIcon` is present with no children (via `Children.toArray`), compact icon-only sizing is applied
+
+### Keyboard Handling
+- **Tab** — Focuses the link (native browser behavior)
+- **Enter** — Activates the link (native browser behavior)
+- Space does **not** activate links — this is correct per the WAI-ARIA Link Pattern (only buttons respond to Space)
+
+### Accessibility (WAI-ARIA)
+- Follows [WAI-ARIA Link Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/link/)
+- `aria-label` required for icon-only links — enforced via `devWarning` in development
+
+
+### Visual States
+- **Default** — Variant × color combination from the style system (text, outlined, contained × primary, secondary, terciary, error)
+- **Hover** — Background shift via `interactiveVariant`
+- **Focus-visible** — Ring + z-index via `focusVisibleVariant`
+- **Active** — Deeper background shift, shadow removed on contained
+- **Selected** — Persistent active state via `.selected` class
+- **Error** — Error state styling via `.error` class and `errorStateClass`
+- **Shadow** — Contained variant only, unless `hideShadow`; removed on `:active`
+
+### Interaction Behavior
+- Click navigates via Next.js router (client-side navigation)
+- All Next.js `<Link>` props supported (prefetch, replace, scroll, etc.)
+
+### Responsive & Layout
+- `flex` by default; `inline-flex` when `size="inline"` (for embedding in text)
+- `whitespace-nowrap`, centered content with `gap-2`
+- Full-width achieved via `className="w-full"`
+
+<br/>
+
+## Architecture Decisions
+- **Shares variant/size style maps with Button** (`buttonVariant`, `buttonSize`, `iconOnlySize`) for visual consistency — links and buttons should look identical when styled the same
+- **Separate `linkClass` base** (not shared with `buttonClass`) — classes are aligned but kept in separate files for simplicity
+- **Default `variant="text"`** vs Button's `variant="contained"` — text links are the navigation convention; contained links are the exception (call-to-action buttons that navigate)
+- **`devWarning` for icon-only** — same pattern as Button; warns in development, tree-shaken from production
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> A clean navigation primitive that correctly separates itself from Button at the semantic level — a link navigates, a button acts. MUI blurs this line with their polymorphic `component="a"` prop on Button, and Radix/Shadcn punt entirely by not shipping a Link component. This system gets the semantics right while sharing the full visual style system via `buttonVariant`, `buttonSize`, and `iconOnlySize` imports — identical appearance, distinct behavior.
+>
+> The shared style architecture is pragmatic. Link reuses Button's entire variant/size/color system without duplicating a single line of CSS — just imports the maps. The base class (`linkClass`) mirrors `buttonClass` structurally but stays in a separate file. The right level of coupling: visual consistency without semantic confusion.
+>
+> Nothing missing. Does exactly what a link should.
+>
+> — *Claude, Opus 4.6, 2026-03-17*

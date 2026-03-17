@@ -1,0 +1,66 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Common/Image/Def" />
+
+# Image
+
+> Ratio-constrained image container wrapping Next.js Image in fill mode. Used for content images, hero banners, card thumbnails — anywhere an image needs consistent aspect ratio and object-fit control via Tailwind classes.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Outer `<div>` wrapper — presentational container providing `position: relative`, `overflow: hidden`, and aspect ratio constraint via Tailwind class
+- Inner element is Next.js `<Image>` in `fill` mode — renders an absolutely positioned `<img>` that fills the wrapper, with `sizes="100%"` for responsive srcset selection
+- `className` forwarded to the `<img>` element, not the wrapper — consumer styles the image directly
+- `ref` forwarded to the `<img>` element (`HTMLImageElement`)
+- `alt` required by TypeScript — no decorative image shortcut, consumer must provide meaningful alt text or explicit `alt=""`
+- Wrapper has `data-testid="ImageRatioWrap"` for testing access (no semantic role to query by)
+
+### Accessibility (WAI-ARIA)
+- `<img>` has implicit `role="img"` — no additional ARIA attributes needed
+- `alt` text is the only accessibility contract, enforced at the type level
+- Follows [WAI-ARIA Images Tutorial](https://www.w3.org/WAI/tutorials/images/) implicitly via native `<img>` semantics
+- `bg-dark-950/25` background visible during load provides visual placeholder but no semantic loading state
+
+### Responsive & Layout
+- `ratio` prop (default `aspect-video`) — Tailwind aspect ratio class on wrapper
+- `width` prop (default `w-full`) — Tailwind width class on wrapper
+- `objectFit` prop (default `object-contain`) — applied to `<img>`, options: `object-cover`, `object-contain`, `object-fill`, `object-none`, `object-scale-down`
+- `objectPosition` prop (default `object-center`) — applied to `<img>`, 9 positions including corners (`object-top-left`, etc.)
+- Wrapper has `max-h-full overflow-hidden` — clips to parent height constraint, prevents image bleed
+- `fill` mode means `<img>` is absolutely positioned inside wrapper — wrapper dimensions are the sole size control
+
+<br/>
+
+## Architecture Decisions
+- **`objectFit`/`objectPosition` as typed props**: Next.js 13+ removed these as native Image props. Re-exposed here as typed Tailwind class props with defaults, applied via `cn()`. Follows library convention of Tailwind classes as prop values — `width` and `ratio` use the same pattern.
+- **Wrapper div for ratio**: `fill` mode requires a positioned parent. The wrapper provides `relative` positioning and aspect ratio in one element — boilerplate this component exists to eliminate.
+- **Fill + ratio use case**: This component is built for ratio-constrained images using Next.js `fill` mode. For fixed pixel dimensions, use Next.js `<Image>` directly with `width`/`height` props.
+- **`className` targets `<img>`, not wrapper**: Wrapper styling goes through `width` and `ratio` props. Consumer classes (`rounded-xl`, `grayscale`, `border`) land on the image element directly.
+- **Server-renderable, all Next.js props exposed via rest**: No internal state, no `'use client'`. Error handling (`onError`), blur placeholder (`placeholder`, `blurDataURL`), loading callbacks (`onLoad`), and priority (`priority`) all pass through to Next.js Image. Consumer owns the state when needed — Avatar demonstrates this pattern with `onError` + `useState` in the parent.
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Fifteen lines of code that do exactly one thing: wrap Next.js Image in a ratio-constrained, positioned container. No state, no effects, no `'use client'` — server-renderable out of the box. That restraint is the defining quality.
+>
+> The two-element split works cleanly. Wrapper handles layout (`ratio`, `width`), `className` lands on the `<img>` for visual styling. Next.js 13+ dropped `objectFit`/`objectPosition` as native props — re-exposing them as typed Tailwind classes with defaults is a practical fix that gives Storybook controls and IDE autocomplete for free.
+>
+> Everything else passes through via rest. `placeholder="blur"` with `blurDataURL` gives you loading state. `onError` with consumer-side `useState` gives you error recovery — the same pattern Avatar uses for its fallback chain. `priority`, `quality`, `loading` — all there. The component doesn't hide or reinterpret any Next.js Image behavior, it just adds the ratio wrapper on top.
+>
+> Benchmark context: MUI, Radix, Headless UI, and Ark UI don't ship an Image component. Chakra does, with built-in `fallbackSrc` and `onError` recovery — but that forces every image into a client component and locks consumers into one fallback pattern. Keeping this stateless means the wrapper div is the only runtime cost. Consumers who need behavior compose it themselves; consumers who don't pay nothing.
+>
+> — *Claude, Opus 4.6, 2026-03-17*

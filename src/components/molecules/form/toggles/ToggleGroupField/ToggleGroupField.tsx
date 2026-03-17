@@ -37,7 +37,7 @@ export const ToggleGroupField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size} error={errorMessage} {...labelProps} legend>
+        <Label name={name} label={label} size={size} error={errorMessage} {...labelProps} variant="legend">
           <ToggleGroup
             className={className}
             variant={variant || formVariant}

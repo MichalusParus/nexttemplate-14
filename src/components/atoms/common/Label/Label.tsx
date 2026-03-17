@@ -13,16 +13,14 @@ type NativeLabelProps = Omit<
 export type LabelProps = NativeLabelProps &
   Omit<FieldProps, 'labelProps'> &
   Omit<InputProps, 'placeholder'> & {
+    /** rendering variant: label (default), div for custom widgets, legend for fieldset groups */
+    variant?: 'label' | 'div' | 'legend'
     /** size of component, none disable sizes for custom styling via className */
     size?: StyleProps['size']
     /** for setting width than default value as tailwind class */
     width?: string
     /** optional form component description */
     description?: string
-    /** optional for legend instead of label */
-    legend?: boolean
-    /** change label for div FakeLabel */
-    fakeLabel?: boolean
     /** hide visually label for minimalitic form components */
     hideLabel?: boolean
     /** hide visually error for minimalitic form components */
@@ -36,12 +34,11 @@ export const Label = forwardRef<HTMLLabelElement | null, LabelProps>(
       className,
       name,
       label,
+      variant = 'label',
       size = 'md',
       width = 'w-full',
       error,
       description,
-      legend,
-      fakeLabel,
       hideLabel,
       hideError,
       children,
@@ -49,15 +46,15 @@ export const Label = forwardRef<HTMLLabelElement | null, LabelProps>(
     },
     ref,
   ) => {
-    const labelVisibility = hideLabel && 'hidden'
-    const Element = legend ? 'legend' : 'div'
+    const labelVisibility = hideLabel && 'sr-only'
+    const Element = variant === 'legend' ? 'legend' : 'div'
 
     return (
       <div
         className={cn('LabelWrap', 'relative flex flex-col items-start gap-0.5', width, className)}
         data-testid="LabelWrap"
       >
-        {fakeLabel || legend ? (
+        {variant !== 'label' ? (
           <Element
             id={`${name}-label`}
             className={cn('FakeLabel', 'text-inherit', textSize[size], labelVisibility)}

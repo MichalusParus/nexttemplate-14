@@ -1,6 +1,6 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef } from 'react'
+import { forwardRef, useState } from 'react'
 
 import { childrenIconSize, paperVariant, textVariant } from '@/components/utils/common.style'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
@@ -27,6 +27,7 @@ export const Avatar = forwardRef<HTMLDivElement | null, AvatarProps>(
     ref,
   ) => {
     const t = useTranslations('Components')
+    const [imgError, setImgError] = useState(false)
     const userInitials = username
       ?.split(' ')
       .filter(name => name)
@@ -39,13 +40,15 @@ export const Avatar = forwardRef<HTMLDivElement | null, AvatarProps>(
       .join('')
 
     const renderAvatarContent = () => {
-      if (src) {
+      if (src && !imgError) {
         return (
           <Image
             className="min-h-full min-w-full"
             src={src}
             alt={username ? `${t('profile')} ${username}` : t('profile')}
             ratio="aspect-square"
+            objectFit="object-cover"
+            onError={() => setImgError(true)}
           />
         )
       } else if (userInitials) {

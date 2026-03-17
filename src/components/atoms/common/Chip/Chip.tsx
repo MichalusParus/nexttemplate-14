@@ -1,6 +1,6 @@
 import { forwardRef, ReactNode } from 'react'
 
-import { childrenIconSize, paperVariant, textVariant } from '@/components/utils/common.style'
+import { paperVariant, textVariant } from '@/components/utils/common.style'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -43,7 +43,6 @@ export const Chip = forwardRef<HTMLDivElement | null, ChipProps>(
           paperVariant[variant][color],
           textVariant[variant][color],
           chipSize[size],
-          childrenIconSize[size],
           className,
         )}
         data-testid="Chip"
@@ -53,7 +52,7 @@ export const Chip = forwardRef<HTMLDivElement | null, ChipProps>(
         {startIcon && startIcon}
         <div className="ChipInnerWrap flex flex-col">
           {title && <Span variant="bold">{title}</Span>}
-          <Span className="whitespace-nowrap" variant="none">
+          <Span className="overflow-hidden text-ellipsis whitespace-nowrap" variant="none">
             {children}
           </Span>
         </div>

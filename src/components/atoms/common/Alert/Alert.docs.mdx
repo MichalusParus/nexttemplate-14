@@ -1,0 +1,67 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Common/Alert/Def" />
+
+# Alert
+
+> Static feedback container for success, info, warning, and error messages. Used for form validation summaries, system notifications, and contextual status feedback within page content.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<div>` element — no implicit ARIA role on the generic container
+- `role="alert"` applied only for `status="error"` — maps to WAI-ARIA alert (assertive live region), screen readers will interrupt and announce the full content
+- Non-error statuses (`success`, `info`, `warning`) have no role — treated as static inline content
+- Status icons (`SuccessIcon`, `InfoIcon`, `WarningIcon`, `ErrorIcon`) rendered with `aria-hidden="true"` — purely decorative, status is conveyed through color and context
+- Custom `startIcon` allowed only when `status="none"` — prevents conflict with built-in status icons
+- `endIcon` rendered unconditionally with no `aria-hidden` — left to the consumer because it could be decorative or actionable (e.g., close button)
+- Title rendered via `<Span variant="bold">` inside an inner wrapper div
+
+### Accessibility (WAI-ARIA)
+- Follows [WAI-ARIA Alert Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/alert/) for error status only
+- `role="alert"` implies `aria-live="assertive"` and `aria-atomic="true"` — screen readers interrupt current speech to announce the alert content
+- Non-error statuses intentionally have no live region semantics — they are static content that does not require announcement
+- Status icons are `aria-hidden="true"` so screen readers do not announce redundant icon labels
+
+### Responsive & Layout
+- `flex items-start` — icon and content side-by-side, icon top-aligned
+- Inner content wraps in a flex column for title + children stacking
+- `rounded-md border` base styling
+- Width fills parent container; constrain via `className` (e.g., `max-w-96`)
+
+<br/>
+
+## Architecture Decisions
+- **`role="alert"` only on error**: WAI-ARIA `role="alert"` is assertive and interrupts screen reader flow. For success/info/warning messages that appear as inline static feedback (not dynamically injected), no role avoids unnecessary interruptions. If the component were used for live toast-style notifications, `role="status"` (polite) would be appropriate for non-error statuses — but that's a different usage pattern.
+- **`startIcon` gated behind `status="none"`**: Prevents consumers from accidentally overriding the built-in status icon, which would create a visual/semantic mismatch between the status color and the displayed icon.
+- **`endIcon` has no `aria-hidden`**: Left to the consumer because the icon could be decorative (should have `aria-hidden="true"`) or actionable (close button, should have accessible label). Adding `aria-hidden` by default would break actionable use cases.
+- **No `role="status"` for non-error statuses**: `role="status"` implies `aria-live="polite"`, which only announces *changes* to content. If the alert renders on mount (the common case), nothing gets announced. If dynamically injected, every re-render or content change triggers a polite announcement, which is noisy. For this component's static inline usage, neither behavior is useful.
+- **No built-in `onClose`**: The `endIcon` slot already accepts any ReactNode — a Button with custom icon, handler, and styling, or a plain decorative icon. A hardcoded `onClose` prop would be less flexible (locked to one button pattern) for minimal code savings. Composition over configuration.
+- **`items-start` alignment**: Optimized for the common multi-line case (title + description) where the status icon should align to the top of the content block. Single-line alerts with endIcon may need `items-center` via className — changing the default to `items-center` would break multi-line layout where the icon would float to the vertical center of the whole block.
+
+## Known Bugs & Limitations
+- **[Low]** `items-start` alignment means endIcon sits at the top on single-line alerts — override with `items-center` via className when endIcon needs vertical centering.
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Straightforward alert that makes one important decision correctly: reserving `role="alert"` for error status only. MUI and Chakra both slap `role="alert"` on every severity level, which means a polite info message gets the same assertive treatment as a form validation error — technically a misuse of the WAI-ARIA alert pattern. This component is more conservative and more correct.
+>
+> The implementation is deliberately minimal. No close button, no action slot, no onClose callback — just a status container with icons and an `endIcon` slot for composition. MUI and Chakra bake in `onClose` and `isClosable`, but that locks consumers into one button pattern. The slot approach here is more flexible — pass any Button, any icon, any handler, or skip it entirely. Composition over configuration, and it works.
+>
+> The `startIcon` gating behind `status="none"` is a smart guard — prevents the confusing state where someone passes a custom icon alongside a status that already renders its own. The `endIcon` without `aria-hidden` is the right call since it could be a close button.
+>
+> Clean, focused, and correctly scoped for static inline feedback.
+>
+> — *Claude, Opus 4.6, 2026-03-16*

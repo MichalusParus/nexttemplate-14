@@ -23,50 +23,88 @@ jest.mock('next/image', () => {
 })
 
 describe('Image', () => {
-  it('default', () => {
-    render(<Image className="className" src="/#" alt="image" />)
-    const imageRole = screen.getByRole('img')
+  describe('Semantics', () => {
+    it('renders as img', () => {
+      render(<Image src="/#" alt="image" />)
+      const image = screen.getByRole('img')
 
-    expect(imageRole).toBeInTheDocument()
-    expect(imageRole).toHaveClass('className')
-    expect(imageRole).toHaveAttribute('alt', 'image')
+      expect(image).toBeInTheDocument()
+    })
+
+    it('forwards className to img', () => {
+      render(<Image className="className" src="/#" alt="image" />)
+      const image = screen.getByRole('img')
+
+      expect(image).toHaveClass('className')
+    })
+
+    it('forwards alt attribute', () => {
+      render(<Image src="/#" alt="image" />)
+      const image = screen.getByRole('img')
+
+      expect(image).toHaveAttribute('alt', 'image')
+    })
+
+    it('default ratio and width on wrapper', () => {
+      render(<Image src="/#" alt="image" />)
+      const wrapper = screen.getByTestId('ImageRatioWrap')
+
+      expect(wrapper).toHaveClass('aspect-video')
+      expect(wrapper).toHaveClass('w-full')
+    })
+
+    it('custom ratio on wrapper', () => {
+      render(<Image src="/#" alt="image" ratio="aspect-square" />)
+      const wrapper = screen.getByTestId('ImageRatioWrap')
+
+      expect(wrapper).toHaveClass('aspect-square')
+    })
+
+    it('custom width on wrapper', () => {
+      render(<Image src="/#" alt="image" width="w-96" />)
+      const wrapper = screen.getByTestId('ImageRatioWrap')
+
+      expect(wrapper).toHaveClass('w-96')
+    })
+
+    it('default objectFit and objectPosition', () => {
+      render(<Image src="/#" alt="image" />)
+      const image = screen.getByRole('img')
+
+      expect(image).toHaveClass('object-contain')
+      expect(image).toHaveClass('object-center')
+    })
+
+    it('custom objectFit', () => {
+      render(<Image src="/#" alt="image" objectFit="object-cover" />)
+      const image = screen.getByRole('img')
+
+      expect(image).toHaveClass('object-cover')
+    })
+
+    it('custom objectPosition', () => {
+      render(<Image src="/#" alt="image" objectPosition="object-top" />)
+      const image = screen.getByRole('img')
+
+      expect(image).toHaveClass('object-top')
+    })
   })
 
-  it('ratio/width', () => {
-    render(<Image alt="ddc" src="/#" ratio="aspect-video" width="w-96" />)
-    const ratioWrapTestId = screen.getByTestId('ImageRatioWrap')
+  describe('Ref', () => {
+    it('forwards ref', () => {
+      const ref = createRef<HTMLImageElement>()
+      render(<Image ref={ref} src="/#" alt="image" />)
 
-    expect(ratioWrapTestId).toBeInTheDocument()
-    expect(ratioWrapTestId).toHaveClass('aspect-video')
-    expect(ratioWrapTestId).toHaveClass('w-96')
+      expect(ref.current).toBeInstanceOf(HTMLImageElement)
+    })
   })
 
-  it('object', () => {
-    render(<Image alt="ddc" src="/#" objectFit="object-cover" objectPosition="object-center" />)
-    const imageRole = screen.getByRole('img')
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<Image src="/#" alt="image" />)
 
-    expect(imageRole).toHaveClass('object-cover')
-    expect(imageRole).toHaveClass('object-center')
-  })
-
-  it('ref', () => {
-    const ref = createRef<HTMLImageElement>()
-    render(<Image ref={ref} src="/#" alt="image" />)
-
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
-  })
-
-  it('axe', async () => {
-    const { container } = render(<Image src="/#" alt="image" />)
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })
