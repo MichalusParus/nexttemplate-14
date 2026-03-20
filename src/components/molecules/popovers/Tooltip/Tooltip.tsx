@@ -1,12 +1,12 @@
 'use client'
 import { Placement } from '@popperjs/core'
 import {
-  FocusEvent,
+  Children,
+  cloneElement,
   forwardRef,
-  MouseEvent,
+  isValidElement,
   PropsWithChildren,
   ReactNode,
-  TouchEvent,
   useCallback,
   useEffect,
   useId,
@@ -26,11 +26,6 @@ import { tooltipClass, tooltipPointer, tooltipVisibility } from './Tooltip.style
 
 export const defaultDelay = 500
 
-type TooltipEventType =
-  | MouseEvent<HTMLDivElement>
-  | TouchEvent<HTMLDivElement>
-  | FocusEvent<HTMLDivElement>
-
 export type TooltipProps = NativeDivProps & {
   /** for passing custom tailwind classes */
   className?: string
@@ -48,6 +43,10 @@ export type TooltipProps = NativeDivProps & {
   hidePointer?: boolean
   /** optional id for portal container */
   portalContainerId?: string
+  /** no wrapper div — attaches events directly to child via cloneElement. Use when wrapper breaks layout (flex, grid) */
+  lazy?: boolean
+  /** called before showing tooltip — return false to cancel. Useful for conditional tooltips (e.g. show only when text overflows) */
+  beforeShow?: () => boolean
 }
 
 /** Small popover for displaying aditional information on children hover, focus or touch. Native HTMLDivElement props supported. USE CLIENT */
@@ -62,6 +61,8 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
       touchDelay = delay,
       hidePointer,
       portalContainerId,
+      lazy,
+      beforeShow,
       children,
       ...rest
     },
@@ -72,32 +73,34 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
     const [isOpen, setIsOpen] = useState(false)
     const [isVisible, setIsVisible] = useState(false)
     const container = usePortalContainer(portalContainerId)
+    const lazyRef = useRef<HTMLElement | null>(null)
     const { componentRef, isTouchDevice } = useTouch({
+      ref: lazy ? lazyRef : undefined,
       onTouch: () => setIsOpen(true),
       onTouchOutside: () => setIsOpen(false),
       touchDelay,
     })
+    const anchorRef = lazy ? lazyRef : componentRef
     const { adjustedPlacement, popoverEl, setPopoverEl } = usePopper(
-      componentRef,
+      anchorRef as React.RefObject<HTMLElement | null>,
       placement,
       offset,
     )
     useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => popoverEl)
 
     const handleShow = useCallback(
-      (e: TooltipEventType) => {
+      () => {
         if (isTouchDevice) return
-        if (componentRef.current?.querySelector('[aria-expanded="true"]')) return
-        e.stopPropagation()
+        if (beforeShow && !beforeShow()) return
+        if (anchorRef.current?.querySelector('[aria-expanded="true"]')) return
         clearTimeout(timeoutRef.current)
         timeoutRef.current = setTimeout(() => setIsOpen(true), delay)
       },
-      [delay, isTouchDevice, componentRef],
+      [delay, isTouchDevice, anchorRef, beforeShow],
     )
 
     const handleHide = useCallback(
-      (e?: TooltipEventType | Event | UIEvent) => {
-        e?.stopPropagation()
+      () => {
         clearTimeout(timeoutRef.current)
         setIsOpen(false)
       },
@@ -106,24 +109,23 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
 
     const handleClickOutside = useCallback(
       (e: globalThis.MouseEvent | KeyboardEvent) => {
-        e.stopPropagation()
         if ('code' in e && e.code === 'Escape') {
           return handleHide()
         }
         const target = e.target as HTMLDivElement
         if (
-          isOpen &&
           popoverEl &&
-          ![popoverEl, componentRef.current].some(el => el?.contains(target))
+          ![popoverEl, anchorRef.current].some(el => el?.contains(target))
         ) {
           handleHide()
         }
       },
-      [isOpen, componentRef, popoverEl, handleHide],
+      [anchorRef, popoverEl, handleHide],
     )
 
     useEffect(() => {
-      if (typeof window !== 'undefined' && componentRef.current) {
+      if (!isOpen) return
+      if (typeof window !== 'undefined' && anchorRef.current) {
         const controller = new AbortController()
         const { signal } = controller
 
@@ -136,7 +138,7 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
           clearTimeout(timeoutRef.current)
         }
       }
-    }, [componentRef, handleHide, handleClickOutside])
+    }, [isOpen, anchorRef, handleHide, handleClickOutside])
 
     useEffect(() => {
       if (isOpen) setIsVisible(true)
@@ -146,6 +148,60 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
       }
     }, [isOpen])
 
+    const portal =
+      !isOpen && !isVisible || !container
+        ? null
+        : createPortal(
+            <div
+              id={`${id}-tooltip`}
+              className={cn(
+                'Tooltip',
+                tooltipClass,
+                !hidePointer && tooltipPointer[adjustedPlacement],
+                tooltipVisibility,
+                isVisible && isOpen && 'opacity-100',
+                className,
+              )}
+              role="tooltip"
+              aria-hidden={!isOpen}
+              aria-live="polite"
+              data-testid="Tooltip"
+              ref={setPopoverEl}
+              {...rest}
+            >
+              {title}
+            </div>,
+            container,
+          )
+
+    if (lazy) {
+      const child = Children.only(children)
+      if (!isValidElement(child)) return <>{children}</>
+
+      return (
+        <>
+          {cloneElement(child as React.ReactElement<Record<string, unknown>>, {
+            onMouseEnter: (e: React.MouseEvent) => { (child.props as Record<string, (e: React.MouseEvent) => void>).onMouseEnter?.(e); handleShow() },
+            onMouseLeave: (e: React.MouseEvent) => { (child.props as Record<string, (e: React.MouseEvent) => void>).onMouseLeave?.(e); handleHide() },
+            onFocus: (e: React.FocusEvent) => { (child.props as Record<string, (e: React.FocusEvent) => void>).onFocus?.(e); handleShow() },
+            onBlur: (e: React.FocusEvent) => { (child.props as Record<string, (e: React.FocusEvent) => void>).onBlur?.(e); handleHide() },
+            'aria-describedby': isOpen ? `${id}-tooltip` : undefined,
+            ref: (node: HTMLElement | null) => {
+              lazyRef.current = node
+              const childRef =
+                (child as React.ReactElement & { ref?: React.Ref<HTMLElement> }).ref ??
+                (child.props as { ref?: React.Ref<HTMLElement> }).ref
+              if (typeof childRef === 'function') childRef(node)
+              else if (childRef && typeof childRef === 'object') {
+                ;(childRef as React.MutableRefObject<HTMLElement | null>).current = node
+              }
+            },
+          })}
+          {portal}
+        </>
+      )
+    }
+
     return (
       <div
         className={cn('TooltipWrap', 'group/tooltip relative max-w-max text-left')}
@@ -153,35 +209,12 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
         onMouseLeave={handleHide}
         onFocus={handleShow}
         onBlur={handleHide}
-        aria-describedby={`${id}-tooltip`}
+        aria-describedby={isOpen ? `${id}-tooltip` : undefined}
         data-testid="TooltipWrap"
         ref={componentRef}
         aria-owns={isOpen ? `${id}-tooltip` : undefined}
       >
-        {!isOpen && !isVisible || !container
-          ? null
-          : createPortal(
-              <div
-                id={`${id}-tooltip`}
-                className={cn(
-                  'Tooltip',
-                  tooltipClass,
-                  !hidePointer && tooltipPointer[adjustedPlacement],
-                  tooltipVisibility,
-                  isVisible && isOpen && 'opacity-100',
-                  className,
-                )}
-                role="tooltip"
-                aria-hidden={!isOpen}
-                aria-live="polite"
-                data-testid="Tooltip"
-                ref={setPopoverEl}
-                {...rest}
-              >
-                {title}
-              </div>,
-              container,
-            )}
+        {portal}
         {children}
       </div>
     )

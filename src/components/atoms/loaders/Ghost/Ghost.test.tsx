@@ -9,32 +9,61 @@ import { Ghost } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('Ghost', () => {
-  it('default', () => {
-    render(<Ghost className="className" />)
-    const statusRole = screen.getByRole('status')
+  describe('Semantics', () => {
+    it('renders with role status', () => {
+      render(<Ghost />)
+      const ghost = screen.getByRole('status')
 
-    expect(statusRole).toBeInTheDocument()
-    expect(statusRole).toHaveClass('className')
+      expect(ghost).toBeInTheDocument()
+    })
+
+    it('forwards className', () => {
+      render(<Ghost className="className" />)
+      const ghost = screen.getByRole('status')
+
+      expect(ghost).toHaveClass('className')
+    })
+
+
+    it('aria-busy is true', () => {
+      render(<Ghost />)
+      const ghost = screen.getByRole('status')
+
+      expect(ghost).toHaveAttribute('aria-busy', 'true')
+    })
+
+    it('aria-label defaults to Loading', () => {
+      render(<Ghost />)
+      const ghost = screen.getByRole('status')
+
+      expect(ghost).toHaveAttribute('aria-label', 'Loading')
+    })
+
+    it('hideStatus removes role and aria attributes', () => {
+      const { container } = render(<Ghost hideStatus />)
+      const ghost = container.querySelector('.Ghost')!
+
+      expect(ghost).not.toHaveAttribute('role')
+      expect(ghost).not.toHaveAttribute('aria-label')
+      expect(ghost).not.toHaveAttribute('aria-busy')
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLDivElement>()
-    render(<Ghost ref={ref} />)
+  describe('Ref', () => {
+    it('forwards ref', () => {
+      const ref = createRef<HTMLSpanElement>()
+      render(<Ghost ref={ref} />)
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
+      expect(ref.current).toBeInstanceOf(HTMLSpanElement)
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(<Ghost />)
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<Ghost />)
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

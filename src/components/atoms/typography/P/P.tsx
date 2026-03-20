@@ -4,7 +4,7 @@ import { textSize } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { Ghost } from '../../loaders/Ghost'
+import { Ghost, GhostProps } from '../../loaders/Ghost'
 import { GhostAlign, PColor } from './P.style'
 
 type NativePProps = Omit<HTMLAttributes<HTMLParagraphElement>, 'color' | 'className'>
@@ -21,6 +21,8 @@ export type PProps = NativePProps &
     isLoading?: boolean
     /** expected lines for ghost template */
     expectedLines?: number
+    /** optional ghost props for loading skeleton customization */
+    ghostProps?: Partial<GhostProps>
   }
 
 /** Basic paragraph component with ghost loading. Native HTMLAttributes props supported. */
@@ -33,6 +35,7 @@ export const P = forwardRef<HTMLParagraphElement | null, PropsWithChildren<PProp
       align = 'text-left',
       isLoading,
       expectedLines = 1,
+      ghostProps = {},
       children,
       ...rest
     },
@@ -57,7 +60,7 @@ export const P = forwardRef<HTMLParagraphElement | null, PropsWithChildren<PProp
         {isLoading
           ? expectedArray.map((_, index) => {
               const skeletonWidth = `${80 + Math.floor(Math.abs(Math.sin(index) * 10000) % 20)}%`
-              return <Ghost key={'pGhost' + index} style={{ width: skeletonWidth }} size={size} />
+              return <Ghost key={'pGhost' + index} style={{ width: skeletonWidth }} size={size} hideStatus {...ghostProps} />
             })
           : children}
       </p>

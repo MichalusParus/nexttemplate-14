@@ -88,6 +88,21 @@ describe('Image', () => {
 
       expect(image).toHaveClass('object-top')
     })
+
+    it('sizes default is 100vw', () => {
+      render(<Image src="/#" alt="image" />)
+      const image = screen.getByRole('img')
+
+      expect(image).toHaveAttribute('sizes', '100vw')
+    })
+
+    it('custom sizes', () => {
+      render(<Image src="/#" alt="image" sizes="(max-width: 768px) 100vw, 50vw" />)
+      const image = screen.getByRole('img')
+
+      expect(image).toHaveAttribute('sizes', '(max-width: 768px) 100vw, 50vw')
+    })
+
   })
 
   describe('Ref', () => {

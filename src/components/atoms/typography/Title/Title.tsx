@@ -4,7 +4,7 @@ import { textSize } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { Ghost } from '../../loaders/Ghost'
+import { Ghost, GhostProps } from '../../loaders/Ghost'
 import { ghostAligment, titleColor } from './Title.style'
 
 type NativeHeadingProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'color' | 'className'>
@@ -22,6 +22,8 @@ export type TitleProps = NativeHeadingProps & {
   align?: 'text-left' | 'text-center' | 'text-right'
   /** ghost loading state for heading */
   isLoading?: boolean
+  /** optional ghost props for loading skeleton customization */
+  ghostProps?: Partial<GhostProps>
 }
 
 /** Heading component H1-6 with ghost loading. Native HTMLAttributes props supported. */
@@ -34,12 +36,13 @@ export const Title = forwardRef<HTMLHeadingElement | null, TitleProps>(
       size = 'lg',
       align = 'text-left',
       isLoading,
+      ghostProps = {},
       children,
       ...rest
     },
     ref,
   ) => {
-    const ghostAlign = align?.split('-')[1] as 'left' | 'center' | 'right'
+    const { className: ghostClassName, ...restGhostProps } = ghostProps
 
     const Element = variant
 
@@ -50,7 +53,7 @@ export const Title = forwardRef<HTMLHeadingElement | null, TitleProps>(
         {...rest}
       >
         {isLoading ? (
-          <Ghost className={`${ghostAligment[ghostAlign]} w-40`} size={size} />
+          <Ghost className={cn(ghostAligment[align], 'w-2/3 max-w-40', ghostClassName)} size={size} {...restGhostProps} />
         ) : (
           children
         )}

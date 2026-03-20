@@ -51,3 +51,12 @@ export const Element: Story = {
     ) as ReactNode,
   },
 }
+
+export const Lazy: Story = {
+  args: {
+    ...Default.args,
+    lazy: true,
+    title: 'Lazy tooltip — no wrapper div',
+    children: <Button startIcon={<PlusIcon />} />,
+  },
+}

@@ -1,5 +1,3 @@
-'use client'
-import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes } from 'react'
 
 import { StyleProps } from '@/components/utils/types'
@@ -14,19 +12,21 @@ export type GhostProps = NativeGhostProps & {
   className?: string
   /** inline ghost size */
   size?: StyleProps['size'] | 'xl' | '2xl' | '3xl' | 'none'
+  /** hides role="status", aria-label, aria-busy — use when parent owns the status role (e.g. multiple Ghosts inside P) */
+  hideStatus?: boolean
 }
 
-/** Ghost is loading template for text, images, boxes and sections. Height and width must be set through className, for inline use size prop. Native HTMLAttributes props supported. USE CLIENT */
+/** Ghost is loading template for text, images, boxes and sections. Height and width must be set through className, for inline use size prop. Native HTMLAttributes props supported. */
 export const Ghost = forwardRef<HTMLSpanElement | null, GhostProps>(
-  ({ className, size = 'none', ...rest }, ref) => {
-    const t = useTranslations('Components')
-
+  ({ className, size = 'none', hideStatus, ...rest }, ref) => {
     return (
       <span
         className={cn('Ghost', ghostStyle, ghostSize[size], className)}
-        role="status"
-        aria-label={t('loading')}
-        aria-busy="true"
+        {...(!hideStatus && {
+          role: 'status',
+          'aria-label': 'Loading',
+          'aria-busy': 'true',
+        })}
         ref={ref}
         {...rest}
       />

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs'
 
-import { getOptions, textContent, titleSizeVariants } from '../../../../../.storybook/helpers'
+import { getOptions, titleSizeVariants } from '../../../../../.storybook/helpers'
 import { CheckIcon } from '../../icons'
 import { Li } from './Li/Li'
 import { List } from './List'
@@ -36,13 +36,10 @@ export const Default: Story = {
     color: 'none',
     size: 'md',
     content: listContent.slice(0, 6),
-    title: undefined,
-    description: undefined,
     icon: undefined,
     isLoading: false,
     expectedLines: 3,
-    titleProps: {},
-    pProps: {},
+    ghostProps: {},
   },
 }
 
@@ -58,25 +55,11 @@ export const CustomIcon: Story = {
   args: { ...Default.args, icon: <CheckIcon /> },
 }
 
-export const Title: Story = {
-  args: { ...Default.args, listStyleType: 'list-none', title: 'List Title', icon: <CheckIcon /> },
-}
-
-export const Description: Story = {
-  args: {
-    ...Default.args,
-    title: 'List Title',
-    description: textContent.slice(0, 57),
-    icon: <CheckIcon />,
-  },
-}
-
 export const Children: Story = {
   args: {
     ...Default.args,
     content: [],
     listStyleType: 'list-decimal',
-    title: 'Pass Li as Children and customize each one.',
     isLoading: false,
     expectedLines: 0,
   },
@@ -96,7 +79,7 @@ export const Children: Story = {
 }
 
 export const AllSizesAndLoading: Story = {
-  args: { ...Default.args, title: 'List title', description: 'List description' },
+  args: Default.args,
   render: args => (
     <div className="flex flex-col gap-10">
       {titleSizeVariants.slice(0, 3).map(variant => (
@@ -105,13 +88,7 @@ export const AllSizesAndLoading: Story = {
             <List {...args} size={variant as 'sm' | 'md' | 'lg'} />
           </div>
           <div>
-            <List
-              {...args}
-              titleProps={{ isLoading: true }}
-              pProps={{ isLoading: true }}
-              isLoading
-              size={variant as 'sm' | 'md' | 'lg'}
-            />
+            <List {...args} isLoading size={variant as 'sm' | 'md' | 'lg'} />
           </div>
         </div>
       ))}

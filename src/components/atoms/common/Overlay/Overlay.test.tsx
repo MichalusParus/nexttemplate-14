@@ -53,12 +53,20 @@ describe('Overlay', () => {
       expect(overlay).not.toHaveAttribute('aria-label')
     })
 
-    it('dark adds background', () => {
+    it('dark prop adds background class', () => {
       render(<Overlay isOpen dark onClose={() => {}} />)
       const overlay = screen.getByRole('button')
 
       expect(overlay).toHaveClass('bg-dark-950/25')
     })
+
+    it('no dark class by default', () => {
+      render(<Overlay isOpen onClose={() => {}} />)
+      const overlay = screen.getByRole('button')
+
+      expect(overlay).not.toHaveClass('bg-dark-950/25')
+    })
+
   })
 
   describe('Keyboard', () => {
@@ -90,6 +98,20 @@ describe('Overlay', () => {
 
       rerender(<Overlay isOpen={false} onClose={() => {}} />)
       expect(appRoot.inert).toBe(false)
+
+      document.body.removeChild(appRoot)
+    })
+
+    it('locks body scroll when open', () => {
+      const appRoot = document.createElement('div')
+      appRoot.id = APP_ROOT_ID
+      document.body.appendChild(appRoot)
+
+      const { rerender } = render(<Overlay isOpen onClose={() => {}} />)
+      expect(document.body.style.overflow).toBe('hidden')
+
+      rerender(<Overlay isOpen={false} onClose={() => {}} />)
+      expect(document.body.style.overflow).toBe('')
 
       document.body.removeChild(appRoot)
     })

@@ -24,6 +24,7 @@ export const Default: Story = {
     height: 'max-h-96',
     color: 'from-bg',
     padding: undefined,
+    shadowSize: '1.5rem',
     gutter: false,
     disableHorizontal: false,
     children: textContent,

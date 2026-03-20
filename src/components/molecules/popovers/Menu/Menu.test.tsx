@@ -107,8 +107,11 @@ describe('Menu', () => {
       fireEvent.click(menuButton)
     })
 
+    const hoverSubmenu2 = screen.getByText('HoverSubmenu2')
+    const hoverSubmenuWrap2 = hoverSubmenu2.closest('.MenuWrap')
+
     await act(async () => {
-      fireEvent.mouseEnter(hoverSubmenuWrap!)
+      fireEvent.mouseEnter(hoverSubmenuWrap2!)
     })
 
     await waitFor(() => {

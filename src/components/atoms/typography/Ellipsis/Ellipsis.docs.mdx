@@ -1,0 +1,68 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Typography/Ellipsis/Def" />
+
+# Ellipsis
+
+> Text wrapper that applies CSS ellipsis truncation and shows a styled Tooltip on hover when content overflows. Extends Span for variant/color support. Use for single-line labels, table cells, card titles, combobox values — any text that may need truncation with a hover reveal. Works in flex, grid, and block contexts.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Renders via `Span` component — defaults to `variant='none'` (`<span>`). Supports `bold` (`<strong>`), `italic` (`<em>`), `underline` (`<span>`)
+- `data-testid="Ellipsis"` — no semantic role (presentational inline text)
+- Always wrapped in `Tooltip lazy` — no wrapper div, events cloned directly onto Span via `cloneElement`
+- `aria-describedby` set on the Span when tooltip is visible
+- `'use client'` — Tooltip uses hooks internally
+- Accepts all `SpanProps` and native `HTMLSpanElement` attributes via rest spread
+
+### Accessibility (WAI-ARIA)
+- No ARIA attributes on the Ellipsis element when tooltip is hidden
+- On hover with overflow: `aria-describedby` links to tooltip, `role="tooltip"` on the popover
+- Keyboard accessible: Tooltip shows on focus (via `onFocus` cloned onto Span)
+
+### Responsive & Layout
+- Base classes: `min-w-0 overflow-hidden text-ellipsis text-left line-clamp-1`
+- `min-w-0` allows element to shrink in flex contexts (overrides default `min-width: auto`)
+- `lineClamp` prop overrides default single-line clamp with a custom Tailwind class (e.g., `line-clamp-3`)
+- No continuous overflow monitoring — overflow checked lazily on hover via `beforeShow`
+
+<br/>
+
+## Architecture Decisions
+- **Extends Span rather than raw `<span>`**: Inherits variant-based element switching (`bold` → `<strong>`, `italic` → `<em>`) and color theming from the typography system
+- **`Tooltip lazy` — no wrapper div**: Uses Tooltip's `lazy` prop which attaches events via `cloneElement` instead of rendering a wrapper `<div>`. This means the Span is always a direct child in the DOM — no layout interference in flex/grid contexts. Previous implementation conditionally wrapped in Tooltip, which added a `<div class="max-w-max">` that broke flex layout and caused oscillation
+- **`beforeShow` for lazy overflow check**: Overflow is NOT monitored continuously. Instead, `beforeShow` callback runs `scrollHeight > clientHeight || scrollWidth > clientWidth` on hover. This means zero overhead at rest — no `useLayoutEffect`, no `useEffect`, no `ResizeObserver`, no window resize listener. The check happens once per hover interaction
+- **Dual overflow check (`scrollHeight` + `scrollWidth`)**: Catches both vertical overflow (multi-line clamp) and horizontal overflow (flex truncation without text wrapping)
+- **`min-w-0` in base classes**: Flex children default to `min-width: auto`, preventing shrinking below content width. Without `min-w-0`, the element expands to full text width in flex — CSS truncation appears (parent clips) but overflow detection fails because `scrollWidth === clientWidth`. Safe for non-flex contexts (no effect)
+- **`useImperativeHandle` for ref**: Internal `componentRef` needed for overflow measurement. `useImperativeHandle` exposes it to consumers
+- **CSS `line-clamp-1` default**: Single-line truncation out of the box. Multi-line via `lineClamp` prop which adds a Tailwind `line-clamp-*` class that overrides the default via `cn` (twMerge)
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Fifty lines. No state, no effects, no listeners. Just a Span wrapped in a lazy Tooltip with a `beforeShow` that checks overflow on hover. That's it. After watching this component go through conditional wrapping, ResizeObserver, useLayoutEffect chains, and oscillation bugs — landing here feels like the answer was always this simple.
+>
+> MUI's Tooltip uses `cloneElement` too, but you still have to wire up overflow detection yourself. Here, `beforeShow` + `scrollWidth > clientWidth || scrollHeight > clientHeight` handles everything — flex, grid, block, single-line, multi-line. The `min-w-0` in the base classes is the kind of detail that saves hours of debugging when someone drops this into a DataGrid cell.
+>
+> The `lazy` prop on Tooltip is the real win. It's not Ellipsis-specific — any component that needs a tooltip without a wrapper div can use it. That's a reusable primitive, not a one-off hack.
+>
+> Clean, zero-overhead, works everywhere. This is what the component should have been from the start.
+>
+> — *Claude, Opus 4.6, 2026-03-20*

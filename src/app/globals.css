@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 
 @theme {
+  /* Scrollbar */
+  --scrollbar-size: 0.5rem;
+
   /* Breakpoints */
   --breakpoint-xs: 30rem; /* 480px */
   --breakpoint-sm: 40rem; /* 640px */
@@ -163,6 +166,7 @@
   --animate-ghost: ghostAnim 1500ms infinite;
   --animate-inline-loader: inlineLoaderAnim 1400ms infinite;
   --animate-circular-loader: circularLoaderAnim1 800ms infinite linear alternate, circularLoaderAnim2 1600ms infinite linear;
+  --animate-progress-bar: progressBarAnim 1500ms infinite ease-in-out;
 
   /* Keyframe definitions */
   @keyframes inlineLoaderAnim {
@@ -191,6 +195,15 @@
     100%   { transform: scaleY(-1) rotate(-135deg); }
   }
 
+  @keyframes progressBarAnim {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(300%);
+    }
+  }
+
   @keyframes ghostAnim {
     0% {
       transform: translateX(-100%);
@@ -201,10 +214,30 @@
   }
 }
 
+/* Accessibility — disable all animations for reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  [class*='animate-'] {
+    animation: none !important;
+  }
+}
+
 /* Utility variants configuration */
 @variant dark (.dark &);
 @variant autofill (&:-webkit-autofill);
-@variant hover-supported (@media (hover: hover));
+@custom-variant hoverable {
+  @media (hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+@custom-variant group-hoverable {
+  @media (hover: hover) {
+    :merge(.group):hover & {
+      @slot;
+    }
+  }
+}
 @variant disabled-aria (&.disabled[aria-disabled="true"]);
 
 /* Custom utilities - transition properties */
@@ -246,7 +279,7 @@
 /* Scrollbar */
 
 *::-webkit-scrollbar {
-  width: 0.5rem;
+  width: var(--scrollbar-size);
   border: 0;
   background: transparent;
 }
@@ -254,13 +287,13 @@
   background: rgba(0, 0, 0, 0);
 }
 *::-webkit-scrollbar-thumb {
-  width: 0.5rem;
+  width: var(--scrollbar-size);
   border: 0;
   background: rgba(0, 0, 0, 0.3);
-  border-radius: 0.5rem;
+  border-radius: var(--scrollbar-size);
 }
 *::-webkit-scrollbar:horizontal {
-  height: 0.5rem;
+  height: var(--scrollbar-size);
 }
 *::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.6);

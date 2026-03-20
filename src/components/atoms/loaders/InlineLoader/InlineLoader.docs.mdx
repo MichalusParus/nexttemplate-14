@@ -1,0 +1,59 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Loaders/InlineLoader/Def" />
+
+# InlineLoader
+
+> Animated three-dot loading indicator for inline contexts. Takes current text color via `bg-current`. Primary use case is Button's loading state.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<span>` wrapper with `role="status"`, `aria-busy="true"`, `aria-label="Loading"`
+- `hideStatus` removes `role`, `aria-label`, `aria-busy` — for use when parent owns the status role (e.g. Button's loading state)
+- Contains 3 child `<span>` elements (dots) — purely presentational, no text content, no ARIA roles
+- `inline-flex items-center` layout on wrapper
+- Accepts all native `HTMLSpanElement` attributes via rest props spread
+- No `data-testid` — queryable by `role="status"` (without `hideStatus`)
+
+### Accessibility (WAI-ARIA)
+- `role="status"` creates an implicit `aria-live="polite"` region — screen readers announce loading state
+- `aria-label="Loading"` provides accessible name
+- Animations respect `prefers-reduced-motion: reduce` — dots stop entirely for users with reduced motion enabled (global CSS rule)
+- [WAI-ARIA status role](https://www.w3.org/WAI/ARIA/apd/#status)
+
+<br/>
+
+## Architecture Decisions
+- **`bg-current` color strategy**: Instead of accepting a color prop, dots use `currentColor`. The loader automatically matches its context — inside a contained Button it's light, inside text it matches the text color. Zero configuration.
+- **Staggered CSS animation over JS**: Pure CSS `animationDelay` on each dot. No requestAnimationFrame, no intervals, no state — runs entirely on the compositor thread.
+- **`hideStatus`**: Default ARIA is correct for standalone usage. Consumers that own their own status semantics (Button) pass `hideStatus` to avoid duplicate `role="status"` announcements.
+- **Hardcoded `aria-label`**: Supports server components — no `'use client'` needed.
+- **`aria-busy` on spinner, not container**: Spinner owns its `role="status"` region. Loading containers manage their own `aria-busy`.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Three dots, zero JavaScript animation frames, zero client directives. That's a strong opening. The `bg-current` trick is the kind of detail that separates a loader you drop in and forget from one you fight every time the background changes — it just inherits, whether it's sitting inside a dark button or inline with body text. The `hideStatus` prop is a nice touch too; most inline loaders either always announce or never do, forcing the parent into awkward `aria-hidden` gymnastics.
+>
+> Chakra UI's `Spinner` takes a similar minimalist stance but commits to a single spinning circle, which means it can never read as "typing" or "processing" the way bouncing dots do. More importantly, Chakra's spinner is always a standalone status region — there's no escape hatch for composite widgets that already own that role. `hideStatus` solves a real accessibility double-announcement bug that Chakra punts on entirely.
+>
+> Clean, minimal, solves the right problems.
+>
+> — *Claude, Opus 4.6, 2026-03-20*

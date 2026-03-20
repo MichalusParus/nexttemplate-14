@@ -9,32 +9,73 @@ import { CircularLoader } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('CircularLoader', () => {
-  it('default', () => {
-    render(<CircularLoader className="className" />)
-    const statusRole = screen.getByRole('status')
+  describe('Semantics', () => {
+    it('renders with role status', () => {
+      render(<CircularLoader />)
+      const loader = screen.getByRole('status')
 
-    expect(statusRole).toBeInTheDocument()
-    expect(statusRole).toHaveClass('className')
+      expect(loader).toBeInTheDocument()
+    })
+
+    it('forwards className', () => {
+      render(<CircularLoader className="className" />)
+      const loader = screen.getByRole('status')
+
+      expect(loader).toHaveClass('className')
+    })
+
+    it('aria-busy is true', () => {
+      render(<CircularLoader />)
+      const loader = screen.getByRole('status')
+
+      expect(loader).toHaveAttribute('aria-busy', 'true')
+    })
+
+    it('aria-label is Loading', () => {
+      render(<CircularLoader />)
+      const loader = screen.getByRole('status')
+
+      expect(loader).toHaveAttribute('aria-label', 'Loading')
+    })
+
+    it('renders label text by default', () => {
+      render(<CircularLoader />)
+      const loader = screen.getByRole('status')
+
+      expect(loader).toHaveTextContent('Loading...')
+    })
+
+    it('renders custom label text', () => {
+      render(<CircularLoader label="Please wait..." />)
+      const loader = screen.getByRole('status')
+
+      expect(loader).toHaveTextContent('Please wait...')
+    })
+
+    it('hideLabel hides label text', () => {
+      render(<CircularLoader hideLabel />)
+      const loader = screen.getByRole('status')
+
+      expect(loader).not.toHaveTextContent('Loading...')
+    })
+
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLDivElement>()
-    render(<CircularLoader ref={ref} />)
+  describe('Ref', () => {
+    it('forwards ref', () => {
+      const ref = createRef<HTMLSpanElement>()
+      render(<CircularLoader ref={ref} />)
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
+      expect(ref.current).toBeInstanceOf(HTMLSpanElement)
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(<CircularLoader />)
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<CircularLoader />)
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

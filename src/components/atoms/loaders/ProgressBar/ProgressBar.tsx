@@ -10,7 +10,7 @@ import { progressClass, progressColor } from './ProgressBar.style'
 export type ProgressBarProps = NativeDivProps & {
   /** for passing custom tailwind classes */
   className?: string
-  /** progress number 0 to 100 */
+  /** progress number 0 to 100, undefined renders indeterminate animation */
   progress?: number
   /** theme color of component, none disable styles for custom styling via className */
   color?: StyleProps['color']
@@ -20,26 +20,27 @@ export type ProgressBarProps = NativeDivProps & {
 
 /** Progress bar for displaying loading state or visual representation of data. Native HTMLAttributes props supported. USE CLIENT */
 export const ProgressBar = forwardRef<HTMLDivElement | null, ProgressBarProps>(
-  ({ className, progress = 0, color = 'primary', height = 'h-3', ...rest }, ref) => {
+  ({ className, progress, color = 'primary', height = 'h-3', ...rest }, ref) => {
     const t = useTranslations('Components')
+    const isDeterminate = progress !== undefined
     const min = 0
     const max = 100
-    const progressValue = Math.min(max, Math.max(min, progress))
+    const progressValue = isDeterminate ? Math.min(max, Math.max(min, progress)) : undefined
 
     return (
       <div
         className={cn('ProgressBar', progressClass, progressColor[color], className)}
         role="progressbar"
-        aria-valuemin={min}
-        aria-valuemax={max}
+        aria-valuemin={isDeterminate ? min : undefined}
+        aria-valuemax={isDeterminate ? max : undefined}
         aria-valuenow={progressValue}
         aria-label={t('loading')}
         ref={ref}
         {...rest}
       >
         <div
-          className={cn('Progress', 'rounded-xs', height)}
-          style={{ width: `${progressValue}%`, transition: '200ms width linear' }}
+          className={cn('Progress', 'rounded-xs', height, !isDeterminate && 'w-1/3 animate-progress-bar')}
+          style={isDeterminate ? { width: `${progressValue}%`, transition: '200ms width linear' } : undefined}
         />
       </div>
     )

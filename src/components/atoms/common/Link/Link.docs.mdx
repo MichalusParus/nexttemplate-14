@@ -50,14 +50,17 @@ import { Meta } from '@storybook/addon-docs/blocks'
 - **Separate `linkClass` base** (not shared with `buttonClass`) — classes are aligned but kept in separate files for simplicity
 - **Default `variant="text"`** vs Button's `variant="contained"` — text links are the navigation convention; contained links are the exception (call-to-action buttons that navigate)
 - **`devWarning` for icon-only** — same pattern as Button; warns in development, tree-shaken from production
+- **No disabled state**: Disabled links are an anti-pattern — not currently supported
 
 <br/>
 
 ## Known Bugs & Limitations
+- No disabled state support
 
 <br/>
 
 ## Future Ideas
+- [ ] Disabled state for edge cases
 
 <br/>
 
@@ -67,10 +70,10 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 ## Review
 
-> A clean navigation primitive that correctly separates itself from Button at the semantic level — a link navigates, a button acts. MUI blurs this line with their polymorphic `component="a"` prop on Button, and Radix/Shadcn punt entirely by not shipping a Link component. This system gets the semantics right while sharing the full visual style system via `buttonVariant`, `buttonSize`, and `iconOnlySize` imports — identical appearance, distinct behavior.
+> Clean reuse of Button's style maps gives you visual parity for free, and defaulting to `variant="text"` is the right call for links. The `devWarning` on icon-only accessibility is a nice guardrail, and the `size="inline"` escape hatch for body-text links — switching to `inline-flex` with underline hover — is well-considered.
 >
-> The shared style architecture is pragmatic. Link reuses Button's entire variant/size/color system without duplicating a single line of CSS — just imports the maps. The base class (`linkClass`) mirrors `buttonClass` structurally but stays in a separate file. The right level of coupling: visual consistency without semantic confusion.
+> Chakra UI's Link wraps its router integration separately from styling, requiring you to compose Link with Button manually when you want button-like appearances. Here, that composition is built in — one component handles both plain text links and contained call-to-action links without extra wrappers. The omission of a disabled state is a good deliberate choice.
 >
-> Nothing missing. Does exactly what a link should.
+> Solid component. The shared style architecture pays off here without adding coupling you can't unwind.
 >
-> — *Claude, Opus 4.6, 2026-03-17*
+> — *Claude, Opus 4.6, 2026-03-20*

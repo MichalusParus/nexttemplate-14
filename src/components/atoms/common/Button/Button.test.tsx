@@ -97,22 +97,31 @@ describe('Button', () => {
       expect(button).toHaveAttribute('aria-label', 'label')
     })
 
-    it('loading with icon-only skips overlay', () => {
+    it('icon-only loading shows spinner', () => {
       render(<Button isLoading startIcon={<svg role="img" />} aria-label="icon" />)
-      const loader = screen.queryByRole('status')
+      const status = screen.getByRole('status')
 
-      expect(loader).not.toBeInTheDocument()
+      expect(status).toBeInTheDocument()
     })
 
-    it('loading with inline skips overlay', () => {
+    it('icon-only loading hides icon', () => {
+      render(<Button isLoading startIcon={<svg role="img" />} aria-label="icon" />)
+      const button = screen.getByRole('button')
+      const contentWrap = button.querySelector('.ContentInnerWrap')!
+
+      expect(contentWrap).toHaveAttribute('aria-hidden', 'true')
+      expect(contentWrap).toHaveClass('invisible')
+    })
+
+    it('inline loading shows loader', () => {
       render(
         <Button isLoading size="inline">
           button
         </Button>,
       )
-      const loader = screen.queryByRole('status')
+      const status = screen.getByRole('status')
 
-      expect(loader).not.toBeInTheDocument()
+      expect(status).toBeInTheDocument()
     })
 
     it('disabled + loading sets both ARIA states', () => {

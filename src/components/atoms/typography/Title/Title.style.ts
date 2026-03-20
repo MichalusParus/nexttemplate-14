@@ -8,7 +8,7 @@ export const titleColor = {
 }
 
 export const ghostAligment = {
-  left: cn(''),
-  center: cn('ml-auto mr-auto'),
-  right: cn('ml-auto'),
+  'text-left': cn(''),
+  'text-center': cn('ml-auto mr-auto'),
+  'text-right': cn('ml-auto'),
 }

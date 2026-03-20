@@ -1,0 +1,53 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Typography/P/Def" />
+
+# P
+
+> Basic paragraph component with ghost loading placeholders. Wraps native `<p>` with color theming, size tokens, text alignment, and a skeleton loading state that renders deterministic-width Ghost lines. Use for body text, descriptions, and any multi-line content that needs a loading skeleton.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<p>` element — implicit paragraph semantics, no ARIA role override needed
+- `whitespace-pre-wrap` base class — preserves whitespace and line breaks in text content
+
+### Accessibility (WAI-ARIA)
+- Native `<p>` element has no required ARIA roles or attributes
+- Text content replaced entirely during loading — no stale text in the accessibility tree
+
+### Responsive & Layout
+- Block element, inherits parent width
+- Loading state switches to vertical flex layout — ghost alignment follows the `align` prop
+- Ghost skeletons render with varied but consistent widths across lines — natural-looking without layout shift between renders
+
+<br/>
+
+## Architecture Decisions
+- **Deterministic ghost widths**: Ghost lines use a deterministic formula per index instead of random widths — avoids layout shift between renders and SSR hydration mismatches while producing natural-looking variation
+- **Silent ghosts**: No `role="status"` on ghost lines — a page with multiple loading P's would flood screen readers with duplicate announcements. If a specific section needs a loading announcement, add `role="status"` to the `<p>` via native props
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Solid paragraph component — the loading skeleton is genuinely clever. Deterministic widths via `Math.sin` dodge both layout shift and hydration mismatches, which is the kind of detail that saves you a bug report six months from now. Silent ghosts are the right call too; letting the consumer control `role="status"` at the `<p>` level keeps screen readers sane when you've got multiple paragraphs loading at once.
+>
+> Clean component. Does one thing, handles its loading state without leaking accessibility concerns, and the API surface stays small. I'd ship it.
+>
+> — *Claude, Opus 4.6, 2026-03-20*

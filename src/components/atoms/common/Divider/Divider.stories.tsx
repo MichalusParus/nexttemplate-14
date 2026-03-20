@@ -22,6 +22,8 @@ export const PrimaryDefault: Story = {
     color: 'primary',
     width: 2,
     vertical: false,
+    decorative: false,
+    spanProps: {},
   },
   render: args => (
     <div className="w-full">

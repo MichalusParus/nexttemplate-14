@@ -15,5 +15,5 @@ export default meta
 type Story = StoryObj<typeof InlineLoader>
 
 export const Default: Story = {
-  args: { className: '', size: 'md' },
+  args: { className: '', size: 'md', hideStatus: false },
 }

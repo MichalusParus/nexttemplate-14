@@ -61,7 +61,7 @@ export const Avatar = forwardRef<HTMLDivElement | null, AvatarProps>(
       } else {
         return (
           <div className={childrenIconSize[size]} role="img" aria-label={t('profile')}>
-            <ProfileIcon />
+            <ProfileIcon aria-hidden="true" />
           </div>
         )
       }

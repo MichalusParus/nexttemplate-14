@@ -21,6 +21,8 @@ export type LabelProps = NativeLabelProps &
     width?: string
     /** optional form component description */
     description?: string
+    /** show required asterisk after label */
+    required?: boolean
     /** hide visually label for minimalitic form components */
     hideLabel?: boolean
     /** hide visually error for minimalitic form components */
@@ -39,6 +41,7 @@ export const Label = forwardRef<HTMLLabelElement | null, LabelProps>(
       width = 'w-full',
       error,
       description,
+      required,
       hideLabel,
       hideError,
       children,
@@ -61,6 +64,7 @@ export const Label = forwardRef<HTMLLabelElement | null, LabelProps>(
             data-testid="FakeLabel"
           >
             {label}
+            {required && <span aria-hidden="true"> *</span>}
           </Element>
         ) : (
           <label
@@ -72,6 +76,7 @@ export const Label = forwardRef<HTMLLabelElement | null, LabelProps>(
             {...rest}
           >
             {label}
+            {required && <span aria-hidden="true"> *</span>}
           </label>
         )}
         {children}

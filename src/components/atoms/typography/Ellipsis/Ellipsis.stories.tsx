@@ -41,7 +41,7 @@ export const Default: Story = {
 export const MultiLine: Story = {
   args: {
     ...Default.args,
-    className: 'line-clamp-3',
+    lineClamp: 'line-clamp-3',
     children: textContent.slice(0, 500),
   },
 }

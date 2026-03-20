@@ -9,54 +9,73 @@ import { Span } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('Span', () => {
-  it('default', () => {
-    render(<Span className="className">Span Text</Span>)
-    const spanText = screen.getByText('Span Text')
+  describe('Semantics', () => {
+    it('renders with text content', () => {
+      render(<Span>Span Text</Span>)
+      const span = screen.getByTestId('Span')
 
-    expect(spanText).toBeInTheDocument()
-    expect(spanText).toHaveClass('className')
-    expect(spanText).toHaveTextContent('Span Text')
+      expect(span).toBeInTheDocument()
+      expect(span).toHaveTextContent('Span Text')
+    })
+
+    it('forwards className', () => {
+      render(<Span className="className">Span Text</Span>)
+      const span = screen.getByTestId('Span')
+
+      expect(span).toHaveClass('className')
+    })
+
+    it('bold renders as STRONG', () => {
+      render(<Span variant="bold">Span Text</Span>)
+      const span = screen.getByText('Span Text')
+
+      expect(span.tagName).toBe('STRONG')
+    })
+
+    it('italic renders as EM', () => {
+      render(<Span variant="italic">Span Text</Span>)
+      const span = screen.getByText('Span Text')
+
+      expect(span.tagName).toBe('EM')
+    })
+
+    it('underline renders as SPAN', () => {
+      render(<Span variant="underline">Span Text</Span>)
+      const span = screen.getByText('Span Text')
+
+      expect(span.tagName).toBe('SPAN')
+    })
+
+    it('none renders as SPAN', () => {
+      render(<Span variant="none">Span Text</Span>)
+      const span = screen.getByText('Span Text')
+
+      expect(span.tagName).toBe('SPAN')
+    })
+
+    it('text-inherit base class', () => {
+      render(<Span>Span Text</Span>)
+      const span = screen.getByTestId('Span')
+
+      expect(span).toHaveClass('text-inherit')
+    })
   })
 
-  it('bold', () => {
-    render(<Span variant="bold">Span Text</Span>)
-    const spanText = screen.getByText('Span Text')
+  describe('Ref', () => {
+    it('forwards ref', () => {
+      const ref = createRef<HTMLSpanElement>()
+      render(<Span ref={ref}>Span Text</Span>)
 
-    expect(spanText.tagName).toBe('STRONG')
+      expect(ref.current).toBeInstanceOf(HTMLElement)
+    })
   })
 
-  it('italic', () => {
-    render(<Span variant="italic">Span Text</Span>)
-    const spanText = screen.getByText('Span Text')
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<Span>Span Text</Span>)
 
-    expect(spanText.tagName).toBe('EM')
-  })
-
-  it('underline', () => {
-    render(<Span variant="underline">Span Text</Span>)
-    const spanText = screen.getByText('Span Text')
-
-    expect(spanText.tagName).toBe('SPAN')
-  })
-
-  it('ref', () => {
-    const ref = createRef<HTMLSpanElement>()
-    render(<Span ref={ref}>Span Text</Span>)
-
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
-  })
-
-  it('axe', async () => {
-    const { container } = render(<Span>Span Text</Span>)
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

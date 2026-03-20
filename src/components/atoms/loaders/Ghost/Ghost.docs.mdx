@@ -1,0 +1,63 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Loaders/Ghost/Def" />
+
+# Ghost
+
+> Skeleton loading placeholder that mimics content shape with a shimmer animation. Use for text lines, images, boxes, and page sections. Set dimensions via `className`; for inline text use the `size` prop which provides matched height and vertical margin.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<span>` element — made block-level via CSS (`display: block`)
+- `role="status"`, `aria-label="Loading"`, `aria-busy="true"` — announces loading state to screen readers
+- `hideStatus` removes `role`, `aria-label`, `aria-busy` — for use when multiple Ghosts render together (e.g. P, List) to prevent N separate screen reader announcements. If needed, add `role="status"` to the loading container instead
+- Accepts all native `HTMLSpanElement` attributes via rest props spread
+- No `data-testid` — queryable by `role="status"`
+
+### Accessibility (WAI-ARIA)
+- `role="status"` creates an implicit `aria-live="polite"` region — screen readers announce loading state
+- `aria-label="Loading"` provides accessible name
+- Animations respect `prefers-reduced-motion: reduce` — shimmer stops entirely for users with reduced motion enabled (global CSS rule)
+- [WAI-ARIA status role](https://www.w3.org/WAI/ARIA/apd/#status)
+
+### Responsive & Layout
+- `display: block` — fills parent width, height set via `size` prop or `className`
+- Width must be set via `className` — the component has no intrinsic width
+
+<br/>
+
+## Architecture Decisions
+- **`<span>` instead of `<div>`**: Allows inline usage inside `<p>`, `<li>`, and other inline contexts without violating HTML nesting rules. Made block-level via CSS.
+- **Typography-tied sizing**: `ghostSize` presets use `h-sm` through `h-3xl` which resolve to `--spacing-sm` through `--spacing-3xl`, themselves bound to `var(--text-sm)` through `var(--text-3xl)` in globals.css. This means Ghost heights track theme font sizes automatically. The `my-*` margins are hand-tuned to fill the remaining line-height gap.
+- **Shimmer via `::after` pseudo-element**: Single element, no extra DOM nodes. The skewed gradient creates a natural diagonal shine effect.
+- **`hideStatus`**: Default ARIA is correct for single-instance usage (`loading.tsx`). Multi-instance consumers (P, List) pass `hideStatus` — if the consumer needs a status announcement, they add `role="status"` to their loading wrapper.
+- **Hardcoded `aria-label`**: Supports server components — no `'use client'` needed.
+- **`aria-busy` on spinner, not container**: Spinner owns its `role="status"` region. Loading containers manage their own `aria-busy`.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> This is one of those components where the interesting work is invisible. The span choice is a quiet win — you can drop this inside a `<p>` or `<li>` without breaking anything, which is exactly where skeleton loaders need to go. The typography-tied sizing through CSS vars is genuinely clever; ghost heights tracking font sizes means you get realistic placeholders without manual tuning per context.
+>
+> The conditional accessibility spread is clean. Spreading `role`, `aria-label`, and `aria-busy` together behind `hideStatus` means you can compose multiple ghosts without screenreaders announcing "Loading" twelve times. That's a real consideration most skeleton implementations skip entirely.
+>
+> Solid. The kind of component you forget exists because it never causes problems.
+>
+> — *Claude, Opus 4.6, 2026-03-20*

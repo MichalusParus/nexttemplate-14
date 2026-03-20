@@ -68,6 +68,14 @@ describe('Divider', () => {
       expect(lines).toHaveLength(2)
     })
 
+    it('decorative renders role none', () => {
+      render(<Divider decorative />)
+      const divider = screen.getByRole('none')
+
+      expect(divider).toBeInTheDocument()
+      expect(divider).not.toHaveAttribute('aria-orientation')
+    })
+
     it('spanProps forwarded to label', () => {
       render(<Divider label="label" spanProps={{ className: 'spanClass' }} />)
       const span = screen.getByTestId('DividerSpan')

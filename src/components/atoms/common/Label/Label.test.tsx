@@ -20,6 +20,13 @@ describe('Label', () => {
       expect(label).toHaveAttribute('id', 'labelTest-label')
     })
 
+    it('required renders asterisk', () => {
+      render(<Label name="labelTest" label="label" required />)
+      const label = screen.getByTestId('Label')
+
+      expect(label).toHaveTextContent('label *')
+    })
+
     it('forwards className to wrapper', () => {
       render(<Label name="labelTest" label="label" className="className" />)
       const wrapper = screen.getByTestId('LabelWrap')
@@ -133,6 +140,44 @@ describe('Label', () => {
       const child = screen.getByTestId('child-input')
 
       expect(child).toBeInTheDocument()
+    })
+
+    it('hideLabel + hideError combined', () => {
+      render(<Label name="labelTest" label="label" hideLabel hideError error="error" />)
+      const label = screen.getByTestId('Label')
+      const alert = screen.getByRole('alert')
+
+      expect(label).toHaveClass('sr-only')
+      expect(alert).toHaveClass('hidden')
+    })
+
+    it('variant div has id consistency', () => {
+      render(<Label name="test" label="label" variant="div" />)
+      const fakeLabel = screen.getByTestId('FakeLabel')
+
+      expect(fakeLabel).toHaveAttribute('id', 'test-label')
+    })
+
+    it('variant legend has id consistency', () => {
+      render(<Label name="test" label="label" variant="legend" />)
+      const fakeLabel = screen.getByTestId('FakeLabel')
+
+      expect(fakeLabel).toHaveAttribute('id', 'test-label')
+      expect(fakeLabel.tagName).toBe('LEGEND')
+    })
+
+    it('Alert has description id', () => {
+      render(<Label name="test" label="label" description="desc" />)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toHaveAttribute('id', 'test-description')
+    })
+
+    it('variant div + hideLabel applies sr-only', () => {
+      render(<Label name="test" label="label" variant="div" hideLabel />)
+      const fakeLabel = screen.getByTestId('FakeLabel')
+
+      expect(fakeLabel).toHaveClass('sr-only')
     })
   })
 

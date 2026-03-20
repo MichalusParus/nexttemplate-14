@@ -13,9 +13,9 @@ import { Meta } from '@storybook/addon-docs/blocks'
 1. **Read** — Study component source, styles, tests, stories
 2. **Research** — Study best practices, WAI-ARIA patterns, and keyboard specs for this component type
 3. **Compare** — Audit our implementation against the research: what's missing, what's standard, and what smart details we've built beyond the baseline (document all of these)
-4. **Write Review** — While research & comparisons are fresh, write the honest AI Review section comparing to major UI libraries
-5. **Write docs** — Create `Component.docs.mdx` specification based on findings, including known bugs and gaps discovered in step 3
-6. **Deep review** — Re-read component with fresh eyes, validate all findings, update Known Bugs & Limitations
+4. **Write docs** — Create `Component.docs.mdx` specification based on findings, including known bugs and gaps discovered in step 3
+5. **Deep review** — Re-read component with fresh eyes, validate all findings, update Known Bugs & Limitations
+6. **Write Review** — Run as a **separate isolated agent** (see Review Section Instructions below). Do NOT write the review in the same session as docs — the agent must see the code fresh.
 
 <br/>
 
@@ -79,14 +79,54 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 ## Review Section Instructions
 
-AI acts as an independent reviewer — an outside senior dev reading this component for the first time. Write in first person as the reviewer, but refer to the component in third person (not "we" or "our"). This is a short, opinionated foreword — not a comparison chart or checklist.
+> **Library context:** Copy-paste Tailwind library — developers own and modify the code. Components accept `className` for overrides. Factor this into your judgment silently — don't mention "copy-paste library" or "className override" in the review text unless it's directly relevant. Just let it shape how you evaluate missing features.
 
-**Structure:** Start with the component itself — what it does well, what's interesting, what could be better. Then bring in a benchmark comparison (MUI, Radix, Shadcn, Headless UI, Ark UI, etc.) as part of the review — not as the opening or the main frame. The comparison supports the review, it doesn't drive it. Close with a natural summarization — no "Verdict:" label, just a closing thought that ties the review together.
+**Isolation:** Review runs as a **separate isolated agent** in a clean context. The orchestrating agent reads `Component.tsx`, `Component.style.ts` (if exists), and ONLY the `## Architecture Decisions` section from `.docs.mdx`. These are pasted into the review agent's prompt. The review agent does NOT access the filesystem — it cannot read the old review or other docs sections. Comparisons come from training knowledge, not real-time research.
 
-**Watch for blind spots:** Don't just review what's there — also consider what the benchmark does that this component doesn't attempt at all. Missing features and absent patterns are as important as implementation quality.
+**Steps (IN ORDER):**
+1. **Study source** — Read the pasted code twice. Verify prop names, conditions, behaviors. Architecture Decisions explain controversial choices — don't flag intentional decisions as bugs.
+2. **Write impression (paragraphs 1 and 3)** — Start with a one-sentence hook (overall take, NOT a technical detail). React to what matters. Skip forced criticism — only real negatives with concrete break scenarios. Write BEFORE thinking about libraries.
+3. **Pick ONE comparison library** — from training knowledge (MUI, Radix, Chakra, React Aria, Headless UI, Mantine, Ant Design).
+4. **Write comparison (paragraph 2)** — Judge which approach is better and WHY. No prop inventories. Write judgments.
+5. **Write verdict (paragraph 4)** — One sentence.
+6. **Assemble** — p1 (impression) → p2 (comparison) → p3 (good/missing/change) → p4 (verdict). Shorter is fine for simple components. Do not pad.
 
-**Tone:** Honest, direct, brief. Written with respect for the code and mild sass. No bullet points — flowing prose in a blockquote.
+**Format:** 2-4 short paragraphs in a blockquote. Up to 200 words — shorter is fine. No bullet points, no headers.
 
-**When:** Written during step 4 (research phase), while comparisons are fresh.
+**Rules (5 — all counter-default):**
+- Do NOT restate docs sections or architecture decisions — repeating them makes the review feel like a summary
+- Do NOT survey multiple libraries — pick the one that matters most
+- Do NOT mention test suite details (jest-axe, test counts, test structure)
+- Do NOT flag `forwardRef<Type | null>` as redundant — intentional codebase convention
+- Do NOT fill space with minor code style nitpicks (map vs conditionals, redundant expressions, variable naming) — only mention things that affect API, behavior, or DX at a meaningful level
 
-> — *Claude, model, date*
+**Golden example** (Button review — target quality and voice):
+
+> Clean, well-rounded button that handles its own complexity. The `aria-disabled` approach over native `disabled` keeps the button in the tab order for screen readers, and the code follows through — `onKeyDown` blocks Enter/Space, `onClick` is nullified, and `type` gets forced to `"button"` to prevent AT-triggered form submissions. That type override alone is defensive engineering most teams skip.
+>
+> MUI is the natural comparison. They kept loading in a separate `LoadingButton` for years before merging it into core in v6.4, and `IconButton` is still its own component. Here, `Children.toArray` detects icon-only at render time and picks between `CircularLoader` and `InlineLoader` automatically — one component, no consumer configuration.
+>
+> The style variant maps are shared with Link — same visual identity, no duplication. The `devWarning` for icon-only buttons missing `aria-label` catches real accessibility gaps at dev time.
+>
+> A button that self-configures and defends against the edge cases most teams don't think about.
+
+**Bad example — AVOID:**
+
+> The Button component supports multiple variants including solid, outline, and ghost styles. It accepts size, color, and loading props. The component uses forwardRef for ref forwarding and implements aria-disabled for accessibility. It compares favorably to MUI's Button component which has similar features. Overall this is a well-implemented button component.
+
+Why this fails: lists features instead of reacting. No surprise, no opinion, no specific code details. Comparison is shallow.
+
+**Bad comparison** (prop inventory): "MUI ships severity plus a separate variant axis, a dedicated AlertTitle subcomponent, an onClose callback with a built-in dismiss button, and slots/slotProps for icon overrides."
+
+**Good comparison** (judgment): "MUI ships a heavier contract that handles dismissal and icon customization out of the box. This trades all of that for simplicity — the right call for a design system where alerts are informational, not interactive."
+
+**Self-check (after writing):**
+- [ ] Did I react to the code, or summarize documentation?
+- [ ] Are all prop names, conditions, and behaviors actually in the code?
+- [ ] Does my comparison judge which approach is better, or just list props?
+- [ ] Does my comparison library actually ship this component type?
+- [ ] Would this review sound different for a different component, or could it be copy-pasted?
+- [ ] Did I pad with code style nitpicks or forced criticism?
+- [ ] For each negative: can I describe a concrete, realistic break scenario?
+
+> — *Claude, Opus 4.6, {date}*

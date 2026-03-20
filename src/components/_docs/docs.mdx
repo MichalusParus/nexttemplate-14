@@ -1,0 +1,578 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { ComponentCard, ComponentGrid, ComponentSection } from '../../../.storybook/helpers';
+
+<Meta title="ParusUI" />
+
+# ParusUI
+<br/>
+
+## Vision
+
+What started as a hobby challenge — can you build a full component library without any UI dependencies? — became a real project after too many bad experiences with external UI libraries. Every compromise, every workaround, every "just override the theme provider" pushed toward the same conclusion: own the code or fight it forever.
+
+The goal is a balance between simplicity and robustness. Components are as simple as they can be while still being bulletproof — correct semantics, full keyboard navigation, screen reader support, and enough test coverage that you can customize with confidence. Deep focus on three things most libraries treat as afterthoughts: accessibility, documentation, and testing.
+
+Built on TailwindCSS, React Hook Form, Zod, and Popper — nothing else. No MUI, no Radix, no Chakra. Composed through props and children, never inheritance. Every element uses correct semantic HTML: Button is `<button>`, Link is `<a>` — no polymorphic shortcuts. You own every line.
+
+<br/>
+
+## Why ParusUI
+
+**Complete Component System**
+- **58 Production Components** — from buttons and inputs to data grids, date pickers, and multi-step forms. Everything you need to build a real application, not a demo
+- **Zero UI Library Dependencies** — no MUI, no Radix, no Chakra. Every component, every style, every behavior is yours to read, modify, and own
+- **Connected, Not Scattered** — components share a unified style system, consistent accessibility patterns, and a single focus management hook. This is a designed system, not a collection of copy-pasted primitives
+
+**Built to Customize**
+- **Three-Layer Style Architecture** — CSS tokens → shared style maps → component styles. Change a color token and the whole system updates. Change a style map and every component updates. Change one component without touching anything else
+- **TailwindCSS v4 with OKLCH** — perceptually uniform color palettes that scale naturally. 8 palettes × 11 shades. Dark mode via a single class. No runtime CSS, no theme providers
+- **3 Variants × 3 Sizes × Any Color** — `text`, `outlined`, `contained` with full dark mode, interactive states, and disabled handling built in. `className` overrides resolve automatically via tailwind-merge
+
+**Serious Accessibility**
+- **WAI-ARIA on Every Component** — semantic HTML, correct roles, proper ARIA attributes. Not bolted on — built into how each component works
+- **Custom Focus System** — one composable hook handles keyboard navigation for lists, menus, comboboxes, grids, modals, and calendars. Module-level scope tree coordinates nested components without React Context — no providers, no re-renders
+- **Touch Optimized** — custom `hoverable` variant prevents stuck hover states on touchscreens. Swipe gestures on Carousel and Gallery. Responsive alternatives for mobile screens
+
+**921 Tests as Contracts**
+- **5-Category Test Structure** — Semantics, Keyboard, Interaction, Ref, Accessibility. Every component follows the same structure. Tests double as a readable specification of what each component guarantees
+- **100% jest-axe Coverage** — automated accessibility audits on every single component. No exceptions
+- **Zero Snapshot Tests** — every assertion is explicit. Tests break when behavior changes, not when markup shifts
+
+**Full Documentation**
+- **Storybook Coverage** — every component has rich stories with all props connected to controls. Working examples for every implementation pattern
+- **Per-Component Definition** — structured specification covering semantics, keyboard, ARIA, visual states, architecture decisions, known limitations, and review
+- **25 Custom SVG Icons** — auto-sized, color-inheriting, `className`-customizable. No icon library dependency
+
+**Integrated Form System**
+- **React Hook Form + Zod** — fully wired. Every input has a standalone version and a form-integrated Field version with automatic error wiring, Label, and `aria-describedby`
+- **Style Inheritance** — set variant, color, or size once on the Form, every field inside inherits it. Individual fields can override
+- **TypeScript Strict Mode** — generics (`Select<T>`, `DataGrid<T>`), ref forwarding on all components, full IntelliSense
+
+**Ready to Ship**
+- **next-intl Integration** — translation JSON files for all component strings. Multi-language from day one
+- **6 App-Level Hooks** — client-side filtering with 13 operators, pagination, URL-synced filters, navigation blocking, touch handling, popover positioning
+- **Co-located File Structure** — component, styles, tests, stories, and docs in one folder. Atomic design hierarchy with scope-based placement
+
+<br/>
+
+## Getting Started
+
+Two ways to use ParusUI today, with a monorepo package planned for the future.
+
+**Template Starter** — Clone or fork the repository and build on top. You get the full component system intact — components, styles, tests, stories, and docs. Strip what you don't need, rebrand the colors, restyle the templates. This is the intended path for new projects. The library is designed as a connected system, not isolated primitives — starting from the full template gives you everything wired correctly out of the box.
+
+**Copy to Existing Project** — Copy `src/components/`, `src/utils/`, and `globals.css` into your existing Next.js project. Install the dependencies from `package.json`. The component system is self-contained — it doesn't import from the app layer, so it drops in cleanly. Currently Next.js only — a clean React version is planned.
+
+**Future: Monorepo Package** — The long-term plan is to ship the component library as an internal package in a monorepo. The codebase is already cleanly separated — no components import from the app layer, styling is framework-agnostic, tests and Storybook run independently. Extraction to a monorepo workspace requires minimal work.
+
+<br/>
+
+## Component List
+<br/>
+
+<ComponentSection title="Atoms" count={20} subtitle="Basic building blocks for your UI">
+
+### Common (9)
+
+<ComponentGrid>
+  <ComponentCard
+    name="Alert"
+    path="atoms-common-alert"
+    description="Basic alert component"
+  />
+  <ComponentCard
+    name="Avatar"
+    path="atoms-common-avatar"
+    description="User profile images with fallback support"
+  />
+  <ComponentCard
+    name="Button"
+    path="atoms-common-button"
+    description="Basic button with loading and icon support"
+  />
+  <ComponentCard
+    name="Chip"
+    path="atoms-common-chip"
+    description="Styled badge component"
+  />
+  <ComponentCard
+    name="Divider"
+    path="atoms-common-divider"
+    description="Visual separator with optional label"
+  />
+  <ComponentCard
+    name="Image"
+    path="atoms-common-image"
+    description="Next image component"
+  />
+  <ComponentCard
+    name="Label"
+    path="atoms-common-label"
+    description="Form label"
+  />
+  <ComponentCard
+    name="Link"
+    path="atoms-common-link"
+    description="Next Link with button styles"
+  />
+  <ComponentCard
+    name="Overlay"
+    path="atoms-common-overlay"
+    description="Background overlay for modal popovers"
+  />
+</ComponentGrid>
+
+### Containers (2)
+
+<ComponentGrid>
+  <ComponentCard
+    name="Paper"
+    path="atoms-containers-paper"
+    description="Basic styled wrapper"
+  />
+  <ComponentCard
+    name="ScrollShadow"
+    path="atoms-containers-scrollshadow"
+    description="Scroll shadow for both Axis scrolling"
+  />
+</ComponentGrid>
+
+### Loaders (4)
+
+<ComponentGrid>
+  <ComponentCard
+    name="Ghost"
+    path="atoms-loaders-ghost"
+    description="Skeleton placeholder for loading content"
+  />
+  <ComponentCard
+    name="InlineLoader"
+    path="atoms-loaders-inlineloader"
+    description="Small inline loading spinner"
+  />
+  <ComponentCard
+    name="ProgressBar"
+    path="atoms-loaders-progressbar"
+    description="Linear progress indicator with percentage"
+  />
+  <ComponentCard
+    name="CircularLoader"
+    path="atoms-loaders-circularloader"
+    description="Circular loading spinner animation"
+  />
+</ComponentGrid>
+
+### Typography (5)
+
+<ComponentGrid>
+  <ComponentCard
+    name="Ellipsis"
+    path="atoms-typography-ellipsis"
+    description="Text truncation"
+  />
+  <ComponentCard
+    name="List"
+    path="atoms-typography-list"
+    description="Ordered and unordered list elements"
+  />
+  <ComponentCard
+    name="P"
+    path="atoms-typography-p"
+    description="Paragraph with loading"
+  />
+  <ComponentCard
+    name="Span"
+    path="atoms-typography-span"
+    description="Inline text with color and size variants"
+  />
+  <ComponentCard
+    name="Title"
+    path="atoms-typography-title"
+    description="Heading with loading"
+  />
+</ComponentGrid>
+
+</ComponentSection>
+<br/>
+
+<ComponentSection title="Molecules" count={34}>
+
+### Common (5)
+
+<ComponentGrid>
+  <ComponentCard
+    name="Accordion"
+    path="molecules-common-accordion"
+    description="Set of disclosures"
+  />
+  <ComponentCard
+    name="Breadcrumb"
+    path="molecules-common-breadcrumb"
+    description="Navigation page hierarchy"
+  />
+  <ComponentCard
+    name="Calendar"
+    path="molecules-common-calendar"
+    description="Interactive date calendar component"
+  />
+  <ComponentCard
+    name="Carousel"
+    path="molecules-common-carousel"
+    description="Slideshow component"
+  />
+  <ComponentCard
+    name="Disclosure"
+    path="molecules-common-disclosure"
+    description="Expandable content"
+  />
+</ComponentGrid>
+
+### Form - Forms (2)
+
+<ComponentGrid>
+  <ComponentCard
+    name="Form"
+    path="molecules-form-forms-form"
+    description="Comprehensive form wrapper with validation"
+  />
+  <ComponentCard
+    name="StepForm"
+    path="molecules-form-forms-stepform"
+    description="Multi-step form with tabs"
+  />
+</ComponentGrid>
+
+### Form - Inputs (7)
+
+<ComponentGrid>
+  <ComponentCard
+    name="TextInput"
+    path="molecules-form-inputs-textinput"
+    description="Single-line text input"
+  />
+  <ComponentCard
+    name="NumberInput"
+    path="molecules-form-inputs-numberinput"
+    description="String based formatted number input"
+  />
+  <ComponentCard
+    name="PasswordInput"
+    path="molecules-form-inputs-passwordinput"
+    description="Password input with visibility toggle"
+  />
+  <ComponentCard
+    name="SearchInput"
+    path="molecules-form-inputs-searchinput"
+    description="Search field with icon and clear button"
+  />
+  <ComponentCard
+    name="TextArea"
+    path="molecules-form-inputs-textarea"
+    description="Multi-line text input"
+  />
+  <ComponentCard
+    name="RangeInput"
+    path="molecules-form-inputs-rangeinput"
+    description="Slider input for numeric ranges"
+  />
+  <ComponentCard
+    name="FileInput"
+    path="molecules-form-inputs-fileinput"
+    description="File upload with drag-and-drop support"
+  />
+</ComponentGrid>
+
+### Form - Toggles (6)
+
+<ComponentGrid>
+  <ComponentCard
+    name="Checkbox"
+    path="molecules-form-toggles-checkbox"
+    description="Single checkbox with label"
+  />
+  <ComponentCard
+    name="Switch"
+    path="molecules-form-toggles-switch"
+    description="Toggle switch with label"
+  />
+  <ComponentCard
+    name="CheckboxGroup"
+    path="molecules-form-toggles-checkboxgroup"
+    description="Group of Checkboxes or Switches"
+  />
+  <ComponentCard
+    name="RadioGroup"
+    path="molecules-form-toggles-radiogroup"
+    description="Radio input group"
+  />
+  <ComponentCard
+    name="ToggleGroup"
+    path="molecules-form-toggles-togglegroup"
+    description="Toggle group for single value"
+  />
+  <ComponentCard
+    name="MultiToggleGroup"
+    path="molecules-form-toggles-multitogglegroup"
+    description="Toggle group for multi value"
+  />
+</ComponentGrid>
+
+### Form - Comboboxes (7)
+
+<ComponentGrid>
+  <ComponentCard
+    name="Select"
+    path="molecules-form-comboboxes-select"
+    description="Dropdown select"
+  />
+  <ComponentCard
+    name="MultiSelect"
+    path="molecules-form-comboboxes-multiselect"
+    description="Multi-selection dropdown"
+  />
+  <ComponentCard
+    name="Autocomplete"
+    path="molecules-form-comboboxes-autocomplete"
+    description="Searchable combobox for single value"
+  />
+  <ComponentCard
+    name="MultiAutocomplete"
+    path="molecules-form-comboboxes-multiautocomplete"
+    description="Searchable combobox for multi value"
+  />
+  <ComponentCard
+    name="DatePicker"
+    path="molecules-form-comboboxes-datepicker"
+    description="Date input with calendar dropdown"
+  />
+  <ComponentCard
+    name="RangeDatePicker"
+    path="molecules-form-comboboxes-rangedatepicker"
+    description="Date input for range dates"
+  />
+  <ComponentCard
+    name="MultiDatePicker"
+    path="molecules-form-comboboxes-multidatepicker"
+    description="Date input for multi selection"
+  />
+</ComponentGrid>
+
+### Popovers (7)
+
+<ComponentGrid>
+  <ComponentCard
+    name="Drawer"
+    path="molecules-popovers-drawer"
+    description="Slide-in panel from screen edges"
+  />
+  <ComponentCard
+    name="Dropdown"
+    path="molecules-popovers-dropdown"
+    description="Customizable basic dropdown"
+  />
+  <ComponentCard
+    name="ImageViewer"
+    path="molecules-popovers-imageviewer"
+    description="Full-screen image preview modal"
+  />
+  <ComponentCard
+    name="Menu"
+    path="molecules-popovers-menu"
+    description="Menu dropdown with submenu support"
+  />
+  <ComponentCard
+    name="Dialog"
+    path="molecules-popovers-dialog"
+    description="Modal dialog with backdrop overlay"
+  />
+  <ComponentCard
+    name="ToastProvider"
+    path="molecules-popovers-toast-provider"
+    description="Notification toast messages provider"
+    badge="Provider"
+  />
+  <ComponentCard
+    name="Tooltip"
+    path="molecules-popovers-tooltip"
+    description="Hover information tooltips"
+  />
+</ComponentGrid>
+
+</ComponentSection>
+<br/>
+
+<ComponentSection title="Organisms" count={4}>
+
+### Data & Navigation (4)
+
+<ComponentGrid>
+  <ComponentCard
+    name="Pagination"
+    path="organisms-pagination-pagination"
+    description="Responsive pagination"
+  />
+  <ComponentCard
+    name="Tabs"
+    path="organisms-common-tabs"
+    description="Tabbed content navigation"
+  />
+  <ComponentCard
+    name="Gallery"
+    path="organisms-common-gallery"
+    description="Image gallery viewer"
+  />
+  <ComponentCard
+    name="DataGrid"
+    path="organisms-datagrid"
+    description="Data grid with sorting and filtering"
+  />
+</ComponentGrid>
+
+</ComponentSection>
+
+<br/>
+
+## Styling & Theming
+
+Designed to be rewritten. The entire style system is built so you can copy these components into your project and reshape them without friction. No runtime CSS, no theme providers, no abstractions to learn — just TailwindCSS utility strings organized in plain TypeScript objects. Every design decision optimizes for one thing: making changes easy and predictable.
+
+### Architecture
+
+Three layers, each independently editable:
+
+- **globals.css** — Design tokens. Colors, spacing, shadows, z-index, animations, custom variants. Change a variable here, the entire system updates.
+- **common.style.ts** — Shared style maps. Plain `variant × color` lookup objects that return Tailwind class strings. One map controls how every button hovers, every input focuses, every surface renders. Change one entry, all components update.
+- **Component `.style.ts` files** — Component-specific classes. Import from shared maps, add only what's unique to that component.
+
+No functions to trace, no conditional chains, no class inheritance. Every style is a string in an object — edit it, see the result. The three-layer split means you always know where to look: tokens for brand identity, shared maps for design patterns, component files for individual tweaks.
+
+Every component also accepts `className` on its root element, merged via `cn()` (tailwind-merge) — conflicts resolve automatically, no specificity fights. Composite components expose inner parts through typed props (`buttonProps`, `paperProps`, `labelProps`, `scrollShadowProps`), each accepting the full prop interface including `className`, `variant`, `color`, and `size`. `color="none"` and `size="none"` strip style-map classes for a blank canvas. Tailwind child selectors (`[&_input]:pl-8`, `[&_svg]:text-red-500`) reach nested elements directly.
+
+### Color System
+
+**OKLCH color space** — perceptually uniform, meaning equal numeric steps produce equal visual steps across all hues. No manual shade tuning needed. Adding a new color palette is one step: copy an existing palette in `globals.css` and change the hue angle. It will be visually consistent with everything else automatically.
+
+**8 palettes × 11 shades** (50–950). Three brand palettes (Primary, Secondary, Terciary) fully wired into all style maps. Four semantic palettes (Info, Success, Warning, Error) for feedback. One neutral palette (Dark) for text, backgrounds, and borders with semantic aliases (`--color-text`, `--color-bg`, `--color-contrast`). Tailwind opacity modifiers work natively (`bg-primary-500/50`). For the full palette reference, see [Colors](?path=/story/colors--docs).
+
+### Variants & Sizes
+
+**3 variants** — `text`, `outlined`, `contained`. The same pattern used by MUI and other major component libraries, because it works: three levels of visual emphasis cover virtually every UI need in a single application. `text` for low-emphasis actions, `outlined` for medium (default for form inputs), `contained` for primary actions with a filled surface. All three include dark mode via class-based strategy — add the `dark` class to any ancestor element and all components inside adapt automatically. `contained` uses the same dark shades in both modes since its surface is already dark. Every variant is just a set of Tailwind class strings per color in `common.style.ts` — adding a fourth variant means adding one more entry to each map.
+
+**3 component sizes** — `sm`, `md`, `lg`. Padding, font size, and icon dimensions are linked through spacing tokens so proportions stay consistent as size changes. Padding is asymmetric (`sm-y`/`sm-x`) — more horizontal breathing room by design. Typography has its own extended scale (`sm` through `3xl`) for finer control over text sizing independently from component dimensions.
+
+`size="none"` strips all size-related classes, giving you a blank canvas for fully custom sizing via `className`.
+
+All variants include full interactive state coverage — hover, active, focus, selected, and disabled — handled through shared style maps. Hover uses the custom `hoverable` Tailwind variant (`@media (hover: hover)`) instead of standard `hover:`, preventing stuck hover states on touchscreens. Disabled strips brand color entirely so the disabled state looks the same regardless of color — universally recognizable.
+
+### Icons
+
+25 custom SVG icons — the most common set (chevrons, check, close, search, edit, plus, minus, status icons, etc.). No icon library dependency. Most are used internally by components (ChevronIcon in Select, Calendar, Menu; CheckIcon in Checkbox; status icons in Alert), so if you rebrand you'll want to replace them. Adding more follows the same pattern — an SVG component with `currentColor` stroke and a barrel export.
+
+Icons inherit color from their parent via `currentColor` and are auto-sized by the parent component through CSS selectors (`[&_svg]`), so they scale with `sm`/`md`/`lg` without any size prop. Direct `className` customization works on every icon. For the full icon set, see [Iconography](?path=/story/iconography--docs).
+
+<br/>
+
+## Accessibility
+
+Built with accessibility in mind. Components follow [WAI-ARIA](https://www.w3.org/WAI/ARIA/apg/) patterns — semantic HTML, ARIA attributes, keyboard navigation, and screen reader support are part of how each component works, not an afterthought.
+
+**Unbreakable** — Every component's documentation includes its ARIA specification, and every component has extensive tests verifying correct ARIA attributes, roles, and keyboard behavior. Safe to customize — the docs show you what to maintain, the tests tell you if you broke it.
+
+**Dev-Time Warnings** — `devWarning` utility fires console warnings during development for common accessibility mistakes — like an icon-only button without an `aria-label`. Tree-shaken from production builds, zero runtime cost.
+
+**Touch & Mobile** — The `hoverable` Tailwind variant prevents stuck hover states on touchscreens — a subtle but common issue that standard `hover:` doesn't solve. Carousel and Gallery support swipe gestures. Smaller screens get responsive alternatives like MobilePagination and TabListSelect.
+
+For keyboard navigation details, see Focus & Keyboard below.
+
+<br/>
+
+## Focus & Keyboard
+
+Custom focus management system built around one composable hook — `useFocus`. Lists, menus, comboboxes, grids, modals, calendars — all handled through configuration options on the same hook. One API to learn, consistent behavior everywhere.
+
+**One Hook to Rule Them All** — `useFocus` composes 7 sub-hooks internally (element discovery, trigger tracking, type-ahead search, keyboard routing, modal dismiss, non-modal dismiss, scope management) but exposes a single configuration interface. A combobox, a modal dialog, and a data grid all use the same hook — just different options.
+
+**Roving Tabindex** — Focused items receive real DOM focus, not a visual fake via `aria-activedescendant`. More reliable for screen readers, works correctly with portal-rendered content and interactive children inside options.
+
+**Scope Tree** — A module-level scope system that coordinates keyboard events across nested components without React Context — no providers, no re-renders, no props drilling. Components self-register on mount, parent-child relationships are detected via DOM containment, and the tree automatically tracks which scope is active. Built with `useSyncExternalStore` for targeted notifications. Sibling branches stay independent, closing a parent recursively closes all children.
+
+**Extensible via Key Handlers** — Component-specific keyboard behavior added through `keyHandlers` without touching the core hook. Calendar adds 2D grid navigation with month boundary crossing. DataGrid adds a two-mode interaction model — grid navigation vs cell interaction. Menu adds hierarchical submenu navigation. Custom handlers run first and decide whether to consume the event or fall through to defaults.
+
+**Type-Ahead Search** — Typing characters in any list or menu searches by text content — 500ms keystroke buffer, circular search from current position, case-insensitive. One option to enable on any component.
+
+For detailed hook documentation, see [useFocus](?path=/story/hooks-usefocus--docs).
+
+<br/>
+
+## Testing
+
+921 unit tests designed as component contracts. When you customize a component, these tests tell you exactly what behavior you need to preserve — and catch you when you don't. This isn't test coverage for the sake of metrics. It's a safety net built for a library meant to be rewritten.
+
+**5-Category Structure** — Every component's test suite is organized into the same five describe blocks: Semantics (correct HTML elements, roles, attributes), Keyboard (Enter, Space, Escape, arrow keys), Interaction (click handlers, state changes, callbacks), Ref (forwarding works via `createRef`), and Accessibility (ARIA attributes, jest-axe audit). This mirrors the documentation structure — tests double as a readable specification of what each component guarantees.
+
+**100% Axe Coverage** — Every single component has a jest-axe accessibility audit via `toHaveNoViolations`. No exceptions, no skips.
+
+**Behavioral, Not Snapshots** — Zero snapshot tests. Every assertion is explicit and intentional. Queries use semantic selectors (`getByRole`, `getByLabelText`) — tests break when behavior changes, not when markup shifts.
+
+**Realistic Context** — Form fields are tested inside a custom render with `NextIntlClientProvider` (i18n) and `JestFormProvider` (react-hook-form + Zod validation). Tests run in the same context components will actually live in.
+
+<br/>
+
+## Form Integration
+
+Fully integrated with React Hook Form and Zod validation. Every input has a matching Field version that connects it to the form — Label, error messages, and description are wired automatically with `aria-invalid` and `aria-describedby`. Two contexts run through every form: a hook form context for state and validation, and a style context that lets the Form component theme all its fields at once — set `variant`, `color`, or `size` once on the Form, every field inside inherits it.
+
+**Field Pattern** — Each input exists as both a standalone component (TextInput, Select, Checkbox) and a form-integrated field (TextField, SelectField, CheckboxField). The field wraps the input with React Hook Form Controller, adds Label with error/description display, and pulls styling from the form context. Consistent pattern across all 22 form components.
+
+**Form Component** — Pass your React Hook Form definition to Form and start adding fields. The wrapper handles FormProvider, Zod validation, error distribution, and style context in one component. No boilerplate setup per form.
+
+**StepForm** — Multi-step form built on top of Tabs with per-step validation. Future steps are disabled until reached. Parent controls routing, StepForm handles the step UI.
+
+<br/>
+
+## Documentation
+
+Full Storybook coverage. Every component has a rich stories file with all props connected to controls — variants, sizes, colors, states, edge cases. Stories cover most implementation patterns so you have working examples for every use case. Fastest way to understand what a component can do.
+
+**Per-Component Definition** — On top of stories, every component has its own definition page (Def) with a structured specification — semantics and HTML structure, keyboard requirements, full ARIA specification, all visual states, interaction behavior, architecture decisions behind the implementation, known limitations with severity levels, and a review.
+
+**Reference Pages** — [Colors](?path=/story/colors--docs) for the full palette with CSS variables, [Iconography](?path=/story/iconography--docs) for the icon gallery.
+
+<br/>
+
+## File Organization
+
+Components organized in atomic design hierarchy. The classification follows a simple rule — a component's level matches the native element it enhances. Button enhances `<button>`, so it's an atom, even though it uses InlineLoader and icons internally. Disclosure composes Button and Paper, so it's a molecule. DataGrid composes molecules into a full feature, so it's an organism.
+
+**Co-located Structure** — Component, styles, tests, stories, and docs all live in the same folder with a barrel export. Subcomponents nest inside:
+
+```
+ComponentName/
+├── ComponentName.tsx
+├── ComponentName.style.ts
+├── ComponentName.test.tsx
+├── ComponentName.stories.tsx
+├── ComponentName.docs.mdx
+└── index.ts
+
+```
+
+**Scope-Based Placement** — Code lives at the narrowest scope that covers all its consumers. A hook used by one component stays in that component's folder (`useMenuFocus.ts` in Menu/). A hook shared across components goes in `src/components/utils/` (`useFocus`, `common.style.ts`). App-level utilities for the developer go in `src/utils/` (`cn()`, `usePopper`).
+
+<br/>
+
+## Hooks
+
+App-level hooks for common development patterns — used by components internally and available for your own pages and features.
+
+**useFilterData** — Client-side filtering and sorting for any data array. 13 filter operators (equals, contains, between, in, etc.), dot-notation key access, automatic date normalization. General-purpose building block for any filtering logic. Optional server-side mode skips client filtering and exposes filter/sort state changes via callbacks.
+
+**usePagination** — Client-side data pagination with load-more support. Resets automatically on URL search param changes.
+
+**useSearchParamsFilter** — URL search params as typed filter state. Preserves types across serialization — arrays, numbers, booleans, dates. Default values are auto-cleaned from the URL.
+
+**useNavigationBlocker** — Blocks navigation and shows a custom confirmation modal. Handles router.push, browser back button, and page reload. Returns `isOpen`, `proceedNavigation`, and `cancelNavigation` for your own Dialog.
+
+**usePopper** — Popper.js positioning for portal-rendered popovers. Pre-paint positioning via `useLayoutEffect`, automatic recalculation for nested poppers.
+
+**useTouch** — Touch device detection, long-press with configurable delay, swipe vector detection, and touch-outside handling.

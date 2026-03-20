@@ -1,6 +1,6 @@
 import { cn } from '@/utils/utils'
 
-export const alertClass = cn('flex items-start rounded-md border')
+export const alertClass = cn('flex items-start gap-1.5 rounded-md border')
 
 export const alertVariant = {
   text: {

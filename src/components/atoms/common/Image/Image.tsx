@@ -35,6 +35,8 @@ export type ImageProps = NativeImgProps &
       | 'object-bottom-right'
       | 'object-bottom-left'
       | 'object-top-right'
+    /** sizes attribute for responsive image optimization */
+    sizes?: string
   }
 
 /** Next Image component with ratio wrap. Native ImgHTMLAttributes & ImageProps supported. */
@@ -46,6 +48,7 @@ export const Image = forwardRef<HTMLImageElement | null, ImageProps>(
       width = 'w-full',
       objectFit = 'object-contain',
       objectPosition = 'object-center',
+      sizes = '100vw',
       ...rest
     },
     ref,
@@ -57,7 +60,7 @@ export const Image = forwardRef<HTMLImageElement | null, ImageProps>(
       >
         <NextImage
           className={cn('bg-dark-950/25', objectFit, objectPosition, className)}
-          sizes="100%"
+          sizes={sizes}
           fill
           ref={ref}
           {...rest}

@@ -15,7 +15,7 @@ export default meta
 type Story = StoryObj<typeof Ghost>
 
 export const Default: Story = {
-  args: { className: 'h-8 w-20', size: 'none' },
+  args: { className: 'h-8 w-20', size: 'none', hideStatus: false },
 }
 
 export const Inline: Story = {

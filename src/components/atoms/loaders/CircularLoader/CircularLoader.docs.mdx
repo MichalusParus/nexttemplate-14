@@ -1,0 +1,58 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Loaders/CircularLoader/Def" />
+
+# CircularLoader
+
+> Spinning circular loading indicator for indeterminate loading state. Renders a centered spinner with visible label. `hideLabel` hides the label for spinner-only use (e.g. Button icon-only loading). `color="none"` inherits parent text color via `currentColor`.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- `<span>` wrapper with `flex flex-col items-center gap-2`
+- `role="status"` with `aria-label="Loading"` and `aria-busy="true"`
+- Contains `.SpinnerWrap` `<span>` (relative positioned border ring) and inner `.Spinner` `<span>` (absolute positioned, animated via `animate-circular-loader`)
+- Visible `label` text after the spinner (hideable via `hideLabel`)
+- Accepts native `HTMLSpanElement` attributes via rest props spread
+- No `data-testid` — queryable by `role="status"`
+
+### Accessibility (WAI-ARIA)
+- `role="status"` creates an implicit `aria-live="polite"` region — screen readers announce loading state
+- `aria-label="Loading"` provides accessible name
+- Animations respect `prefers-reduced-motion: reduce` — spinner stops entirely for users with reduced motion enabled (global CSS rule)
+- [WAI-ARIA status role](https://www.w3.org/WAI/ARIA/apd/#status)
+
+### Responsive & Layout
+- `flex flex-col items-center gap-2` — centers spinner and label vertically
+
+<br/>
+
+## Architecture Decisions
+- **`color="none"` inherits parent color**: Uses `border-current/30` for track and `border-current` for spinner — automatically matches surrounding text color. Button uses this for icon-only loading state.
+- **Hardcoded `aria-label`**: Supports server components — no `'use client'` needed.
+- **`aria-busy` on spinner, not container**: Spinner owns its `role="status"` region. Loading containers manage their own `aria-busy`.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Clean loader with a smart `color="none"` escape hatch — inheriting via `border-current` so a Button can just drop this in without color coordination is the kind of thing that saves real headaches downstream. The `hideLabel` boolean keeping the label in DOM by default is good for accessibility, and `aria-label` deriving from the `label` prop means screen readers and sighted users stay in sync.
+>
+> Solid utility component. The `none` variant is the standout idea here.
+>
+> — *Claude, Opus 4.6, 2026-03-20*

@@ -1,3 +1,4 @@
+// TODO: Enhance to match @nuqs/adapters feature set (debouncing, history mode, serialization)
 import { isSameDay } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'

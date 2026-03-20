@@ -6,6 +6,8 @@ type SwipeVector = {
 }
 
 type TouchOptions = {
+  /** external ref to attach touch listeners to — when provided, useTouch skips creating its own ref */
+  ref?: React.RefObject<HTMLElement | null>
   onTouch?: (e: TouchEvent) => void
   onTouchOutside?: () => void
   onSwipe?: (value: SwipeVector) => void
@@ -20,12 +22,14 @@ type useTouchReturn = {
 
 /** useTouch hook is used for checking if touch device is used and handling touch and swipe behaviour. Passed onTouch function is called after touch delay. Passed onSwipe function is called with value {x,y}. Negative or positive values indicates swipe vector. */
 export const useTouch = ({
+  ref: externalRef,
   onTouch,
   onTouchOutside,
   onSwipe,
   touchDelay = 500,
 }: TouchOptions): useTouchReturn => {
-  const componentRef = useRef<HTMLDivElement | null>(null)
+  const internalRef = useRef<HTMLDivElement | null>(null)
+  const componentRef = (externalRef ?? internalRef) as React.RefObject<HTMLDivElement>
   const isTouchDevice = useRef(false)
   const touchStartTimeRef = useRef(0)
   const touchEndTimeRef = useRef(0)
@@ -70,7 +74,7 @@ export const useTouch = ({
         }
       }
     },
-    [onTouch, onSwipe, touchDelay],
+    [componentRef, onTouch, onSwipe, touchDelay],
   )
 
   const handleTouchOutside = useCallback(
@@ -103,7 +107,7 @@ export const useTouch = ({
       controller.abort()
       clearTimeout(timeoutRef.current)
     }
-  }, [handleTouch])
+  }, [componentRef, handleTouch])
 
   useEffect(() => {
     if (isTouchDevice.current && onTouchOutside) {

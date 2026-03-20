@@ -30,11 +30,12 @@ export const Default: Story = {
     className: '',
     name: 'labelStory',
     label: 'Label:',
+    variant: 'label',
     size: 'md',
     width: 'w-full',
     error: undefined,
     description: '',
-    variant: 'label',
+    required: false,
     hideLabel: false,
     hideError: false,
     children: (

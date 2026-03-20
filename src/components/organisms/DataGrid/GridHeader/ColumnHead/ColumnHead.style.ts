@@ -5,11 +5,11 @@ export const cellOverflow = cn(
 )
 
 export const closeIconState = cn(
-  'opacity-0 transition-colors group-hover:opacity-50 group-focus-visible:opacity-50',
+  'opacity-0 transition-colors group-hoverable:opacity-50 group-focus-visible:opacity-50',
 )
 
 export const filterMenuVisibility = cn(
-  'border-transparent opacity-0 transition-colors focus-visible:opacity-100 group-hover:bg-transparent group-hover:opacity-50 group-focus-visible:opacity-50',
+  'border-transparent opacity-0 transition-colors focus-visible:opacity-100 group-hoverable:bg-transparent group-hoverable:opacity-50 group-focus-visible:opacity-50',
 )
 
 export const alignColumn = {

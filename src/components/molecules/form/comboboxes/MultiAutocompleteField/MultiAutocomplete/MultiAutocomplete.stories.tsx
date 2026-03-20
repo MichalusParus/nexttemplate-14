@@ -67,7 +67,7 @@ const MultiAutocompleteWithFetch = (args: MultiAutocompleteProps) => {
         options={options}
         isLoading={isLoading || args.isLoading}
         value={value}
-        onOpen={() => getOptions('')}
+        onOpen={() => { if (!options.length) getOptions('') }}
         onInputChange={debouncedFn}
         onChange={setValue}
       />

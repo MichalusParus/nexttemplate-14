@@ -28,6 +28,7 @@ export const Default: Story = {
     align: 'text-left',
     isLoading: false,
     expectedLines: 4,
+    ghostProps: {},
     children: textContent.slice(0, 420),
   },
 }

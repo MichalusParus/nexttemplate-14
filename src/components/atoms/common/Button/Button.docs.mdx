@@ -35,15 +35,15 @@ import { Meta } from '@storybook/addon-docs/blocks'
 - **Focus-visible** — Ring + z-index via `focusVisibleVariant`
 - **Active** — Deeper background shift, shadow removed on contained
 - **Selected** — Persistent active state via `.selected` class (also applied automatically during loading)
-- **Error** — Error state styling via `.error` class and `errorStateClass`
+- **Error** — `.error` class (applied externally, not via props) adds error border and shadow via `errorStateClass`. Used by form components (comboboxes, selects) to signal validation errors on their trigger button — distinct from `color="error"` which is a destructive color variant
 - **Disabled** — Muted colors, `cursor-not-allowed`, no shadow, applied via custom `disabled-aria:` Tailwind variant
-- **Loading** — `cursor-progress`, `opacity-80`, `selected` class, InlineLoader overlay
+- **Loading** — `cursor-progress`, `opacity-80`, `selected` class, InlineLoader overlay (text buttons including inline) or CircularLoader spinner (icon-only)
 - **Shadow** — Contained variant only, unless `hideShadow`; removed on `:active`
 
 ### Interaction Behavior
 - Click fires `onClick`; handler set to `undefined` when disabled or loading
-- Loading: `InlineLoader` absolutely positioned over invisible content (preserves button dimensions)
-- Loading overlay is **not rendered** for icon-only or `size="inline"` — only `aria-busy` and cursor change apply
+- Loading: loader absolutely positioned over invisible content (preserves button dimensions) — `InlineLoader` (dots) for text buttons including inline, `CircularLoader` (spinner) for icon-only
+- Loading overlay is rendered for all sizes including icon-only and `size="inline"`
 - Custom `onKeyDown` supported via rest props — called after disabled key prevention
 
 ### Responsive & Layout
@@ -54,21 +54,22 @@ import { Meta } from '@storybook/addon-docs/blocks'
 <br/>
 
 ## Architecture Decisions
+- **Button and Link — separate components, shared styles**: `<button>` for actions, `<a>` for navigation. Different keyboard behavior (Space scrolls on links), different screen reader treatment. Link imports `buttonVariant`, `buttonSize`, and `iconOnlySize` from `Button.style.ts` — same visual system, no duplication.
 - **`aria-disabled` over native `disabled`**: Keeps the button focusable so screen readers can discover and announce it. The custom `disabled-aria:` Tailwind variant provides enough specificity to override hover/focus styles without JavaScript state checks.
 - **Type override when disabled**: `type={disabled ? 'button' : type}` prevents a disabled submit button from submitting forms via assistive technology or scripted activation.
-- **Loading overlay pattern**: Absolutely positioned `InlineLoader` over `invisible` (not `hidden`) content preserves the button's intrinsic dimensions during loading — no layout shift.
+- **Loading overlay pattern**: Absolutely positioned loader over `invisible` (not `hidden`) content preserves the button's intrinsic dimensions during loading — no layout shift. Icon-only buttons use `CircularLoader` (spinner matches icon shape), text buttons including inline use `InlineLoader` (dots match text rhythm).
 - **`selected` class during loading**: Triggers active/selected visual state automatically, giving loading buttons a "pressed" appearance without additional CSS.
 - **Icon-only detection via `Children.toArray`**: Works correctly with conditional children, fragments, and `null` — more robust than checking `children` truthiness directly.
+- **`aria-busy` for loading state**: `aria-busy="true"` is the correct WAI-ARIA attribute — screen readers announce it when the user re-queries the button. No additional live region needed.
 
 <br/>
 
 ## Known Bugs & Limitations
-- **[Low]** Loading state on icon-only and inline sizes silently skips the visual overlay. No spinner is shown; only `aria-busy` and `cursor-progress` apply.
+- None
 
 <br/>
 
 ## Future Ideas
-- [ ] Loading spinner for icon-only buttons (scaled-down loader or pulsing icon)
 
 <br/>
 
@@ -78,12 +79,12 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 ## Review
 
-> Clean, focused button that does exactly what it should without overreaching. The `aria-disabled` pattern is the right call — same approach as MUI, keeps disabled buttons in the tab order for screen readers while the custom `disabled-aria:` Tailwind variant handles styling without JS state checks. The type override to `"button"` when disabled is a subtle but important detail that prevents assistive tech from triggering form submission on a disabled button.
+> Clean, well-rounded button that handles its own complexity. The `aria-disabled` approach over native `disabled` keeps the button in the tab order for screen readers, and the code follows through — `onKeyDown` blocks Enter/Space, `onClick` is nullified, and `type` gets forced to `"button"` to prevent AT-triggered form submissions. That type override alone is defensive engineering most teams skip.
 >
-> The loading overlay — absolute-positioned spinner over `invisible` content to preserve dimensions — avoids the layout shift problem that most component libraries don't bother solving. Radix and Shadcn punt on built-in loading entirely. Icon-only auto-detection via `Children.toArray` saves consumers from an explicit `iconOnly` prop and handles fragments and conditional children correctly.
+> MUI is the natural comparison. They kept loading in a separate `LoadingButton` for years before merging it into core in v6.4, and `IconButton` is still its own component. Here, `Children.toArray` detects icon-only at render time and picks between `CircularLoader` and `InlineLoader` automatically — one component, no consumer configuration. The invisible content wrapper during loading preserves button dimensions without layout shift.
 >
-> The decision to keep Button as a pure `<button>` element with no polymorphic `asChild` is deliberate and correct for this architecture. A button is a button — if something navigates, it's a different component with different semantics. MUI and Radix optimize for fewer components; this system optimizes for correct semantics and clean code. The loading overlay not rendering for icon-only and inline sizes is a practical non-issue — icon buttons rarely serve as loading triggers.
+> The style variant maps are shared with Link — same visual identity, no duplication, no inheritance chain. The `devWarning` for icon-only buttons missing `aria-label` catches real accessibility gaps at dev time. The `size="inline"` variant with `inline-flex` and underline hover turns a button into something that sits inside a paragraph naturally.
 >
-> Production-ready. Nothing missing.
+> A button that self-configures and defends against the edge cases most teams don't think about.
 >
-> — *Claude, Opus 4.6, 2026-03-16*
+> — *Claude, Opus 4.6, 2026-03-19*

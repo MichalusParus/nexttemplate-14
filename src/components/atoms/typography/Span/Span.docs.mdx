@@ -1,0 +1,57 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Typography/Span/Def" />
+
+# Span
+
+> Inline text styling component rendering as `<strong>`, `<em>`, or `<span>` based on variant. Inherits font size from parent, adds semantic weight (bold/italic) or visual decoration (underline). Use inside paragraphs, headings, or any text block for emphasis, importance, or inline highlighting with optional color theming.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Variant maps to semantic HTML element: `bold` renders `<strong>` (importance), `italic` renders `<em>` (emphasis), `underline`/`none` render `<span>` (no additional semantics)
+- `text-inherit` base class — font size always inherits from parent, never sets its own size
+- Default variant is `bold` — renders as `<strong>` when no variant prop is provided
+
+### Accessibility (WAI-ARIA)
+- `<strong>` and `<em>` carry implicit semantic meaning — screen readers may announce emphasis or importance depending on verbosity settings
+- No ARIA attributes needed — semantic HTML handles the role
+- `underline` and `none` variants use `<span>` — no semantic meaning added, purely visual
+
+### Responsive & Layout
+- Inline element — flows within text, no block layout
+- Inherits font size, line height, and font family from parent — no breakpoint-specific behavior
+
+<br/>
+
+## Architecture Decisions
+- **Variant-to-element IIFE switch**: An IIFE with a switch statement picks the rendered element at render time. The `default` case catches both `underline` and `none` without listing them — clean for a 4-variant component
+- **`text-inherit` base class**: Ensures Span never overrides parent typography — it only adds weight, style, or decoration. Span is a modifier, not a standalone text element
+- **Color system matches P and Title**: Same color map pattern with dark mode variants — consistent across the typography atom family
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Semantic element mapping from variant is the kind of detail that makes me trust a component immediately — `bold` renders `strong`, `italic` renders `em`, so you get correct HTML semantics for free without thinking about it. The `text-inherit` base is a smart default that signals this is a modifier living inside a parent typographic context, not a standalone text element. Clean design.
+>
+> Defaulting to `bold` is the right call — Span exists for text emphasis, and bold is the most common use case. The `underline` variant correctly renders a plain `span` since underline is purely decorative with no semantic weight.
+>
+> Solid utility component — earns its place in the system.
+>
+> — *Claude, Opus 4.6, 2026-03-20*

@@ -23,6 +23,7 @@ export const Default: Story = {
     size: 'lg',
     align: 'text-left',
     isLoading: false,
+    ghostProps: {},
     children: 'Title',
   },
 }

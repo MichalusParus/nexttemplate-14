@@ -1,0 +1,74 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Containers/ScrollShadow/Def" />
+
+# ScrollShadow
+
+> Scroll container with gradient shadow overlays that fade in and out on edges where content overflows. Detects vertical and horizontal overflow dynamically via ResizeObserver. Shadows inherit gradient color from the parent — inside Paper this works automatically. For custom wrappers, set a `from-*` class on the parent or pass the `color` prop directly.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<div>` wrapper — no implicit ARIA role, purely presentational
+- Two nested divs: outer container (relative positioning + gradient color) and content wrapper (scrollable area with rounded clipping)
+- Up to 4 shadow `<div>` elements conditionally rendered based on overflow detection — all `aria-hidden` and `pointer-events-none`
+- Content wrapper has `tabIndex={-1}` — focusable programmatically but not in tab order
+- `data-testid="ScrollShadow"` on root, `data-testid="ContentWrap"` on scrollable area
+- Accepts all native `HTMLDivElement` attributes via rest props spread on root
+
+### Accessibility (WAI-ARIA)
+- No ARIA roles or properties needed — shadows are purely visual decoration
+- Shadow elements are `aria-hidden="true"` — invisible to screen readers
+- Content within the scroll area remains fully accessible to assistive technology
+- `tabIndex={-1}` on content wrapper excludes it from keyboard navigation — prevents the scroll container from intercepting focus in components that use roving tabindex (Dropdown, Menu, Select)
+
+### Interaction Behavior
+- Shadow opacity transitions smoothly — fades in gradually based on scroll position
+- Shadow opacity updates on every scroll event via direct DOM style mutation (no React re-renders)
+- ResizeObserver watches both the scroll container and its first child element for size changes, recalculating overflow and shadow state
+- Overflow state change (content grows/shrinks past container) triggers conditional rendering of shadow elements via React state
+
+### Responsive & Layout
+- Default `h-full` height — fills parent container. Override with `height` prop (e.g., `max-h-96`)
+- Scrollbar-aware shadow sizing: shadows use `calc(100% - var(--scrollbar-size))` to avoid covering the scrollbar track
+- Bottom shadow shifts up by `--scrollbar-size` when horizontal scrollbar is present (and vice versa for right shadow with vertical scrollbar)
+- `scrollPadding` set to `shadowSize` so keyboard-focused elements scroll into view clear of the shadow overlay
+- `scrollbarGutter: stable` when `gutter` prop is true — reserves scrollbar space to prevent layout shift when content changes
+- `rounded-md` on content wrapper with matching rounded corners on shadow gradients
+
+<br/>
+
+## Architecture Decisions
+- **Direct DOM opacity manipulation instead of React state** — shadow opacity changes on every scroll event. Using state would cause re-renders on every scroll frame. Direct ref-based `style.opacity` mutation keeps it performant.
+- **`from-inherit` color system** — shadows inherit gradient color from the nearest parent with a `from-*` class. Paper variants already include these classes, so ScrollShadow works out of the box inside Paper. For standalone use, pass the `color` prop (e.g., `from-bg`) or add a `from-*` class to the wrapper. The outer div receives the `from-*` class, and shadow elements pick it up via `from-inherit` in the shared `shadowClass`.
+- **Separate `useScrollShadow` hook** — keeps the component file focused on markup. The hook owns all scroll detection logic, shadow refs, overflow state, and ResizeObserver lifecycle.
+- **Conditional rendering over hidden shadows** — shadow divs are only mounted when overflow is detected, not permanently rendered and hidden with opacity/display. Cleaner DOM when content doesn't overflow.
+- **`tabIndex={-1}` on content wrapper** — Dropdown (used by Menu, Select, Autocomplete, DatePicker) wraps ScrollShadow internally. The `useFocus` roving tabindex system excludes `[tabindex="-1"]` elements from keyboard navigation. Without this, the scroll container would become a focus stop during arrow key navigation — intercepting focus that should land on menu items and options.
+
+<br/>
+
+## Known Bugs & Limitations
+- **`--scrollbar-size` CSS variable dependency** — shadow sizing uses `calc(100% - var(--scrollbar-size))` to avoid covering the scrollbar track. The variable is declared in the component library's global styles — a deliberate design choice over hardcoded values. If the variable is missing (e.g., library styles not loaded), shadows will extend over the scrollbar area.
+- **`from-*` color dependency** — shadows render transparent without a `from-*` gradient color source. Inside Paper this is automatic, but standalone usage silently fails if neither a parent `from-*` class nor the `color` prop is set — no visible error, just invisible shadows. Not bulletproof — relies on the developer knowing the color system.
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> This is one of those components where the real engineering is invisible. The direct DOM opacity writes on scroll, the ResizeObserver + MutationObserver combo for dynamic content, the `from-inherit` trick that lets shadow color cascade from parent context without a prop — these are decisions that save every consumer from thinking about scroll UX at all. The `scrollbarInset` calculation and the conditional width/height adjustments when both axes overflow is the kind of detail that only shows up after real-world debugging. Clean separation into the hook, too.
+>
+> Radix's `ScrollArea` is the closest comparison, but it solves a different problem — replacing native scrollbars with custom JS-driven ones. This component keeps native scrolling, which is a feature: platform-correct touch behavior, built-in accessibility, and zero cross-browser surprises. On top of that, it adds the part Radix skips entirely — proportional fade shadows that respond to scroll position in real time. That's the harder problem, and CSS alone can't solve it.
+>
+> Better than the alternative. Solves the harder problem.
+>
+> — *Claude, Opus 4.6, 2026-03-20*

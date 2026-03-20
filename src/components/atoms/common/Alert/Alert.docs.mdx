@@ -38,6 +38,7 @@ import { Meta } from '@storybook/addon-docs/blocks'
 - **`startIcon` gated behind `status="none"`**: Prevents consumers from accidentally overriding the built-in status icon, which would create a visual/semantic mismatch between the status color and the displayed icon.
 - **`endIcon` has no `aria-hidden`**: Left to the consumer because the icon could be decorative (should have `aria-hidden="true"`) or actionable (close button, should have accessible label). Adding `aria-hidden` by default would break actionable use cases.
 - **No `role="status"` for non-error statuses**: `role="status"` implies `aria-live="polite"`, which only announces *changes* to content. If the alert renders on mount (the common case), nothing gets announced. If dynamically injected, every re-render or content change triggers a polite announcement, which is noisy. For this component's static inline usage, neither behavior is useful.
+- **Live-region responsibility belongs to the consuming context**: Alert is a static display component — it doesn't know whether it was in the DOM on page load or dynamically injected. When alerts are used as toast notifications, the consuming component (ToastProvider) wraps them in a live region (`role="status"` or `aria-live="polite"`). This keeps Alert focused on presentation and avoids double-announcing when both Alert and its wrapper have live-region roles.
 - **No built-in `onClose`**: The `endIcon` slot already accepts any ReactNode — a Button with custom icon, handler, and styling, or a plain decorative icon. A hardcoded `onClose` prop would be less flexible (locked to one button pattern) for minimal code savings. Composition over configuration.
 - **`items-start` alignment**: Optimized for the common multi-line case (title + description) where the status icon should align to the top of the content block. Single-line alerts with endIcon may need `items-center` via className — changing the default to `items-center` would break multi-line layout where the icon would float to the vertical center of the whole block.
 
@@ -56,12 +57,10 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 ## Review
 
-> Straightforward alert that makes one important decision correctly: reserving `role="alert"` for error status only. MUI and Chakra both slap `role="alert"` on every severity level, which means a polite info message gets the same assertive treatment as a form validation error — technically a misuse of the WAI-ARIA alert pattern. This component is more conservative and more correct.
+> The `status="none"` escape hatch is the detail that sold me — it turns a rigid status alert into a general-purpose callout without bloating the API. Most alert components force you to pick a semantic status even when you just want a highlighted block with a custom icon, and gating `startIcon` behind `none` keeps the happy path clean while still offering full control.
 >
-> The implementation is deliberately minimal. No close button, no action slot, no onClose callback — just a status container with icons and an `endIcon` slot for composition. MUI and Chakra bake in `onClose` and `isClosable`, but that locks consumers into one button pattern. The slot approach here is more flexible — pass any Button, any icon, any handler, or skip it entirely. Composition over configuration, and it works.
+> Chakra UI's Alert takes a different approach: status drives the icon automatically (like here), but there's no opt-out — you either use their five statuses or you're fighting the component. This design is strictly more flexible. Chakra also ships a dedicated `CloseButton` composite, but the `endIcon` slot here achieves the same thing with less API surface, and leaving `aria-hidden` to the consumer is the right call since a close button needs to be focusable, not hidden.
 >
-> The `startIcon` gating behind `status="none"` is a smart guard — prevents the confusing state where someone passes a custom icon alongside a status that already renders its own. The `endIcon` without `aria-hidden` is the right call since it could be a close button.
+> Solid alert with a smart API — the `none` status and composition-first `endIcon` slot outperform most libraries I've used.
 >
-> Clean, focused, and correctly scoped for static inline feedback.
->
-> — *Claude, Opus 4.6, 2026-03-16*
+> — *Claude, Opus 4.6, 2026-03-20*

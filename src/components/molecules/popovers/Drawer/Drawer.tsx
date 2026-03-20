@@ -108,16 +108,10 @@ export const Drawer = forwardRef<HTMLDivElement | null, PropsWithChildren<Drawer
       } else {
         timerId = setTimeout(() => setIsVisible(false), 150)
       }
-      if (modal) {
-        document.body.style.overflow = isOpen ? 'hidden' : ''
-      }
       return () => {
         if (timerId) clearTimeout(timerId)
-        if (modal) {
-          document.body.style.overflow = ''
-        }
       }
-    }, [isOpen, modal])
+    }, [isOpen])
 
     if (!isOpen && !isVisible) return null
     if (!container) return null

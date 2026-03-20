@@ -40,6 +40,14 @@ export const Alert = forwardRef<HTMLDivElement | null, AlertProps>(
     },
     ref,
   ) => {
+    const statusIcon: Record<AlertStatusType, ReactNode> = {
+      success: <SuccessIcon aria-hidden="true" />,
+      info: <InfoIcon aria-hidden="true" />,
+      warning: <WarningIcon aria-hidden="true" />,
+      error: <ErrorIcon aria-hidden="true" />,
+      none: startIcon ?? null,
+    }
+
     return (
       <div
         className={cn(
@@ -55,12 +63,8 @@ export const Alert = forwardRef<HTMLDivElement | null, AlertProps>(
         data-testid="Alert"
         {...rest}
       >
-        {status === 'success' && <SuccessIcon aria-hidden="true" />}
-        {status === 'info' && <InfoIcon aria-hidden="true" />}
-        {status === 'warning' && <WarningIcon aria-hidden="true" />}
-        {status === 'error' && <ErrorIcon aria-hidden="true" />}
-        {startIcon && status === 'none' && startIcon}
-        <div className={cn('AlertInnerWrap', 'flex flex-col px-1.5')}>
+        {statusIcon[status]}
+        <div className={cn('AlertInnerWrap', 'flex flex-col')}>
           {title && <Span variant="bold">{title}</Span>}
           {children}
         </div>

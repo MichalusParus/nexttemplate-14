@@ -22,6 +22,12 @@ const preview: Preview = {
   },
 
   parameters: {
+    docs: {
+      toc: {
+        headingSelector: 'h2',
+        title: 'Contents',
+      },
+    },
     backgrounds: {
       options: {
         bg: {

@@ -195,7 +195,7 @@ export const ComponentSection = ({ title, subtitle, count, children }: Component
   return (
     <div style={{ marginBottom: '3rem' }}>
       <div style={{ marginBottom: '1rem' }}>
-        <h2
+        <h3
           style={{
             fontSize: '1.5rem',
             fontWeight: 700,
@@ -217,7 +217,7 @@ export const ComponentSection = ({ title, subtitle, count, children }: Component
               ({count})
             </span>
           )}
-        </h2>
+        </h3>
         {subtitle && (
           <p style={{ margin: 0, color: 'var(--color-text-secondary, #6b7280)', fontSize: '0.875rem' }}>
             {subtitle}

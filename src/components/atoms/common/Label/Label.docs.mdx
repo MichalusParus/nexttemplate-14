@@ -49,7 +49,7 @@ import { Meta } from '@storybook/addon-docs/blocks'
 <br/>
 
 ## Known Bugs & Limitations
-- **[Low]** Stacked-only layout — no inline (label beside input) or floating (label inside input) variant. Consumer must build custom layout for non-stacked label patterns
+- None
 
 <br/>
 
@@ -65,10 +65,10 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 ## Review
 
-> Label solves the boring-but-important layout problem: label above, input in the middle, error below, all in a consistent flex column. It's a structural wrapper, not a visual label treatment — no floating labels, no shrink-on-focus animations. MUI's TextField bundles a floating label with input-aware transitions; this component deliberately stays out of that territory. The input is a child slot — Label doesn't know or care what goes inside it.
+> This is a tidy field wrapper that quietly handles the three label scenarios forms actually produce — native label, div-as-label for comboboxes, and legend for radio groups. The always-present Alert with opacity toggling is the right call; I've watched layout shift bugs eat afternoons, and this sidesteps them entirely. Forwarding ref only on the real label variant is an honest choice that avoids a misleading API.
 >
-> The `variant` prop (`'label' | 'div' | 'legend'`) handles real form patterns cleanly — a single enum replacing what used to be two boolean props. Native inputs get `<label htmlFor>`, custom widgets get a div with `id` for `aria-labelledby`, fieldset groups get `<legend>`. MUI splits this across FormLabel, FormHelperText, and FormControl — three components to do what this does in one. Radix Label is just a `<label>` with no opinion on error messaging or layout.
+> Radix UI's `@radix-ui/react-label` is the obvious comparison. It gives you a styled primitive with built-in htmlFor wiring, but that's it — no variant switching, no description/error slot, no layout shift prevention. You'd still end up building this same wrapper around it. This component is more complete for the job it targets.
 >
-> The always-present Alert with `opacity-0`/`opacity-100` toggling is a practical touch — no layout shift when validation fires. Error-over-description priority is the right default. The `sr-only` approach for `hideLabel` keeps the label accessible to screen readers while removing it visually — the right trade-off for minimalistic form designs where the input's placeholder or context makes the label redundant for sighted users.
+> Solid, ship it.
 >
-> — *Claude, Opus 4.6, 2026-03-17*
+> — *Claude, Opus 4.6, 2026-03-20*

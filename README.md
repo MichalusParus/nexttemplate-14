@@ -99,6 +99,16 @@ ParusUI Components are built with focus on minimal size, reusability and customi
 
 Run Storybook for ParusUI documentation and presentation
 
+### Documentation
+
+- [Components Overview](src/components/_docs/Components.mdx) - Full component directory with descriptions
+- [Colors](src/components/_docs/Colors.mdx) - Color palette reference
+- [Iconography](src/components/_docs/Iconography.mdx) - Icon system documentation
+
+Detailed component definitions (semantics, accessibility, keyboard handling) are available in each component's folder as `.docs.mdx` files, for example:
+- [Button](src/components/atoms/common/Button/Button.docs.mdx)
+- [Alert](src/components/atoms/common/Alert/Alert.docs.mdx)
+
 ## Credits
 
 - [MichalusParus](github.com/MichalusParus)

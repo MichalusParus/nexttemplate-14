@@ -39,13 +39,14 @@ import { Meta } from '@storybook/addon-docs/blocks'
 - **`object-cover` for images**: Profile photos should fill the circular container without letterboxing. Non-square images are cropped rather than showing background gaps
 - **`'use client'` for translations**: `useTranslations` requires a client component. Two short strings — minimal overhead
 - **Initials edge cases**: `.filter(name => name)` handles multiple spaces, `.toUpperCase()` normalizes casing, three-word names take first + last only
+- **Standalone atom — no group/stack**: Avatar is a single-element primitive. Grouping, stacking, and overlap layout are the parent AvatarGroup component's responsibility — all props pass through, no avatar-level changes needed for group contexts
+- **No `onClick` or interactive behavior**: Avatar is a display primitive. When a clickable avatar is needed (profile menus, user selection), wrap it in a `<Button>`
 
 <br/>
 
 ## Known Bugs & Limitations
 - **[Low]** Initials algorithm assumes Western "First Last" name order — not suitable for all cultures (CJK family-name-first, single-name cultures). Consumer should provide pre-computed initials for non-Western name formats
 - **[Low]** No online/offline status indicator dot
-- **[Low]** No AvatarGroup component for stacked avatar display
 
 <br/>
 
@@ -61,10 +62,10 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 ## Review
 
-> The three-mode render chain — image, initials, icon — is the right abstraction for avatars, and the error fallback via `imgError` state completes it cleanly. When the image fails, the component falls through the same branches it already has for initials and icon. No duplication, no separate fallback component. Radix Avatar does this with a compound `<Avatar.Image>` + `<Avatar.Fallback>` pattern that's more explicit but heavier. MUI does it internally with a similar state approach. This implementation lands in the right spot — automatic fallback without consumer boilerplate.
+> The three-tier fallback is the headline feature here — image, initials, icon — and the error recovery via `onError` means a broken CDN URL degrades gracefully instead of showing a blank circle. The initials logic is smarter than it looks: filtering empty strings from split handles double spaces, and the first+last reduction for three-word names ("Mary Jane Watson" → "MW") matches what users actually expect.
 >
-> The initials accessibility is genuinely thoughtful. MUI dumps raw letters into the DOM and lets screen readers spell them out — "F", "T". Here, the `sr-only` span announces "initials FT" as a phrase while `aria-hidden` hides the visual letters from AT. It's a small detail that most libraries skip. The algorithm handles the common edge cases — multiple spaces, case normalization, three-word names taking first and last — without overcomplicating for cultural variations it can't solve at the component level.
+> Radix's Avatar takes a different approach — dedicated `<Image>` and `<Fallback>` sub-components with a `delayMs` prop that holds the fallback until the image has had time to load, avoiding a flash of initials. That's a nice touch this version skips, jumping straight to fallback on error. But Radix punts on initials entirely — you wire that yourself. This component ships a more complete out-of-the-box experience with the sr-only pattern and i18n baked in, which matters more in practice than delayed fallback.
 >
-> The `object-cover` on images is correct for avatars — profile photos should fill the circle, not letterbox. The `'use client'` directive for two translated strings is a reasonable trade-off. Solid component with no gaps in its scope.
+> Solid display primitive that handles edge cases most avatar implementations miss.
 >
-> — *Claude, Opus 4.6, 2026-03-17*
+> — *Claude, Opus 4.6, 2026-03-20*

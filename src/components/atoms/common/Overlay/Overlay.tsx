@@ -36,11 +36,13 @@ export const Overlay = forwardRef<HTMLButtonElement | null, OverlayProps>(
 
       openOverlays.add(id)
       appRoot.inert = true
+      document.body.style.overflow = 'hidden'
 
       return () => {
         openOverlays.delete(id)
         if (openOverlays.size === 0) {
           appRoot.inert = false
+          document.body.style.overflow = ''
         }
       }
     }, [isOpen, id])

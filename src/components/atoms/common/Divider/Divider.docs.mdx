@@ -12,7 +12,8 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 ### Semantics & HTML
 - Native `<div>` wrapper element with `role="separator"` — WAI-ARIA separator, not an `<hr>` (allows flex layout and label composition)
-- `aria-orientation="horizontal"` (default) or `"vertical"` based on the `vertical` prop
+- `decorative` prop switches to `role="none"` and drops `aria-orientation` — use for purely visual dividers that should not be announced by screen readers
+- `aria-orientation="horizontal"` (default) or `"vertical"` based on the `vertical` prop (omitted when `decorative`)
 - Divider line rendered as inner `<div>` with `rounded-full` and color-mapped background class
 - When `label` is provided, two divider lines rendered with a `<Span>` between them — the separator becomes a labeled divider
 - `width` prop controls thickness (height for horizontal, width for vertical) — accepts number (px) or string CSS value, defaults to `2`
@@ -41,10 +42,13 @@ import { Meta } from '@storybook/addon-docs/blocks'
 <br/>
 
 ## Known Bugs & Limitations
+- None
 
 <br/>
 
 ## Future Ideas
+- [ ] Label alignment — `textAlign` prop for left/center/right positioning (MUI supports this)
+- [ ] ReactNode label — accept `ReactNode` instead of `string` for icons/badges between lines
 
 <br/>
 
@@ -54,10 +58,10 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 ## Review
 
-> A clean, minimal separator that gets the semantics right. `role="separator"` with `aria-orientation` is exactly what WAI-ARIA specifies for a non-focusable divider, and the choice to use a `<div>` over `<hr>` pays off immediately — it enables the labeled variant without CSS pseudo-element gymnastics. MUI's Divider uses `<hr>` and has to fight the void element constraint with `::before`/`::after` for text alignment and `flexItem` for vertical mode. This component just flexes.
+> Clean divider with a nice labeled variant — the dual-line-with-span approach handles the "text in the middle" pattern well. The inline `style` for thickness is the right call since Tailwind can't do arbitrary runtime widths, and the separator role with conditional aria-orientation is correct. The `decorative` prop stripping the role entirely is a thoughtful touch for purely visual dividers.
 >
-> The labeled mode — two lines flanking a `<Span>` — is the kind of thing Radix Separator doesn't attempt at all. Radix gives you `<div role="separator">` and stops there; label support is left to the consumer. Chakra's Divider is similarly bare — `<hr>` with no label variant. Shadcn wraps Radix and inherits the same limitation. This component fills the gap without overcomplicating the API: pass a `label` string and it just works.
+> Compared to Chakra UI's Divider, this does more — Chakra doesn't support an inline label at all, so you'd need a custom composite. The vertical mode here is also cleaner since it just flips flex direction and swaps the style dimension. Chakra's version requires more manual sizing for vertical use. The tradeoff is Chakra gives you theme tokens out of the box, but in a copy-paste library that's moot since you own the style maps already.
 >
-> The `width` prop naming is a deliberate choice — a divider's only adjustable dimension is its thickness, so `width` is contextually unambiguous despite the CSS axis swap. Four color variants, orientation toggle, spanProps passthrough for label customization. No interactive behavior, no focus management, no ARIA value properties. It's a line, optionally with a word in it. That's all it should be.
+> Solid component. Ship it.
 >
-> — *Claude, Opus 4.6, 2026-03-17*
+> — *Claude, Opus 4.6, 2026-03-20*

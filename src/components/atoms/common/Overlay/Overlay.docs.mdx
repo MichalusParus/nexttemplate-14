@@ -56,10 +56,12 @@ import { Meta } from '@storybook/addon-docs/blocks'
 - **`inert` on `#__next` app root**: The `inert` attribute is the modern standard for trapping interaction within a modal. It replaces the older pattern of manually setting `aria-hidden="true"` on sibling containers. One attribute on one element handles focus trapping, click blocking, and screen reader isolation. The `APP_ROOT_ID` constant is exported for test access.
 - **Parent owns Escape handling**: The overlay is a click target only. Keyboard dismissal (Escape) is always handled by the parent popover component (Dialog, Drawer, Dropdown) because those components also need to manage focus restoration, animation timing, and other close-related logic. Duplicating Escape handling here would create race conditions and double-fires.
 - **`aria-label` only when open**: When closed, the overlay is `aria-hidden="true"` and invisible — no aria-label needed. When open, the translated "close" label serves mobile screen reader users who might encounter the overlay via touch exploration.
+- **Body scroll lock**: `document.body.style.overflow = 'hidden'` is set alongside `inert` when an overlay opens, and restored when the last overlay closes (nested-modal safe via `openOverlays` Set).
 
 <br/>
 
 ## Known Bugs & Limitations
+- None
 
 <br/>
 
@@ -73,12 +75,10 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 ## Review
 
-> The `<button>` choice is the standout decision here. MUI's Backdrop uses a `<div>` with `onClick`, which is technically incomplete — no `role="button"`, no keyboard handling, just a clickable div. This component gets click semantics for free from the native element, and then correctly opts out of keyboard interaction with `tabIndex={-1}`. The HTML is honest about what this thing is: a clickable surface that shouldn't be focused.
+> The nested overlay tracking is the standout here — a module-level `Set<symbol>` that only removes `inert` and scroll lock when the last overlay unmounts. That's a problem most overlay implementations punt on entirely, and it's solved in about ten lines. Using a `<button>` for free click semantics while pulling it out of tab order with `tabIndex={-1}` is a clean trade that avoids the `div`-with-`onClick` accessibility trap.
 >
-> The Set-based inert tracking is elegant. Radix handles nested modals through context and portal stacking; Headless UI uses a similar layered approach. This achieves the same result with a simpler mechanism — a module-level Set with Symbol keys. No context provider, no wrapper components, just a Set that counts. The Symbol-per-instance via `useRef` is the right choice over a counter — idempotent against React strict mode double-effects.
+> Radix's `Dialog.Overlay` handles the same scroll-lock and backdrop concerns but leans on a context-heavy compound component model with focus trapping baked in. That architecture makes sense for a sealed library, but here the parent-owns-escape split is the better call — it keeps Overlay single-purpose and lets Dialog, Drawer, and Menu each handle dismiss logic their own way without fighting a built-in trap. The `inert` attribute on the app root also replaces the `aria-hidden` sibling walk that Radix still does for broader browser support, which is a reasonable modern bet.
 >
-> `inert` on the app root is the modern approach. Radix still uses `aria-hidden` on siblings in some cases; Headless UI has adopted `inert`. This component is on the right side of that transition. One attribute, one element, complete interaction blocking — cleaner than the old dance of aria-hidden on every sibling.
+> A focused, well-reasoned overlay that earns its simplicity.
 >
-> The scope is deliberately narrow — click to close, inert management, visual state. No Escape handling, no focus trapping, no animation orchestration. Those concerns live in the parent popover components where they belong. Composition over configuration, and it keeps the overlay atom-sized. Clean, minimal, correct for its role.
->
-> — *Claude, Opus 4.6, 2026-03-17*
+> — *Claude, Opus 4.6, 2026-03-20*

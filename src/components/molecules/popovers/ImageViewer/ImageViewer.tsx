@@ -59,14 +59,11 @@ export const ImageViewer = forwardRef<
     let timerId: NodeJS.Timeout
     if (openState) {
       setIsVisible(true)
-      document.body.style.overflow = 'hidden'
     } else {
       timerId = setTimeout(() => setIsVisible(false), 150)
-      document.body.style.overflow = ''
     }
     return () => {
       if (timerId) clearTimeout(timerId)
-      document.body.style.overflow = ''
     }
   }, [openState])
 

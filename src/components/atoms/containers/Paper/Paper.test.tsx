@@ -9,46 +9,80 @@ import { Paper } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('Paper', () => {
-  it('default', () => {
-    render(<Paper className="className">Paper</Paper>)
-    const paperTestId = screen.getByTestId('Paper')
-    const paperText = screen.getByText('Paper')
+  describe('Semantics', () => {
+    it('renders as div', () => {
+      render(<Paper>Paper</Paper>)
+      const paper = screen.getByTestId('Paper')
 
-    expect(paperTestId).toBeInTheDocument()
-    expect(paperTestId).toHaveClass('className')
-    expect(paperText).toBeInTheDocument()
+      expect(paper).toBeInTheDocument()
+      expect(paper).toHaveTextContent('Paper')
+    })
+
+    it('forwards className', () => {
+      render(<Paper className="className">Paper</Paper>)
+      const paper = screen.getByTestId('Paper')
+
+      expect(paper).toHaveClass('className')
+    })
+
+    it('default padding and rounded', () => {
+      render(<Paper>Paper</Paper>)
+      const paper = screen.getByTestId('Paper')
+
+      expect(paper).toHaveClass('py-2')
+      expect(paper).toHaveClass('px-2')
+      expect(paper).toHaveClass('rounded-md')
+    })
+
+    it('custom padding and rounded', () => {
+      render(
+        <Paper padding="p-6" rounded="rounded-lg">
+          Paper
+        </Paper>,
+      )
+      const paper = screen.getByTestId('Paper')
+
+      expect(paper).toHaveClass('p-6')
+      expect(paper).toHaveClass('rounded-lg')
+    })
+
+    it('shadow-paper applied by default', () => {
+      render(<Paper>Paper</Paper>)
+      const paper = screen.getByTestId('Paper')
+
+      expect(paper).toHaveClass('shadow-paper')
+    })
+
+    it('hideShadow removes shadow-paper', () => {
+      render(<Paper hideShadow>Paper</Paper>)
+      const paper = screen.getByTestId('Paper')
+
+      expect(paper).not.toHaveClass('shadow-paper')
+    })
+
+    it('no role attribute', () => {
+      render(<Paper>Paper</Paper>)
+      const paper = screen.getByTestId('Paper')
+
+      expect(paper).not.toHaveAttribute('role')
+    })
   })
 
-  it('props', () => {
-    render(
-      <Paper padding="p-6" rounded="rounded-lg">
-        Paper
-      </Paper>,
-    )
-    const paperTestId = screen.getByTestId('Paper')
+  describe('Ref', () => {
+    it('forwards ref', () => {
+      const ref = createRef<HTMLDivElement>()
+      render(<Paper ref={ref}>Paper</Paper>)
 
-    expect(paperTestId).toHaveClass('p-6')
-    expect(paperTestId).toHaveClass('rounded-lg')
+      expect(ref.current).toBeInstanceOf(HTMLDivElement)
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLDivElement>()
-    render(<Paper ref={ref}>Paper</Paper>)
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<Paper>Paper</Paper>)
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
-  })
-
-  it('axe', async () => {
-    const { container } = render(<Paper>Paper</Paper>)
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

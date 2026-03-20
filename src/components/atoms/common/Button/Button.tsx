@@ -6,6 +6,7 @@ import { devWarning } from '@/components/utils/devWarning'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
+import { CircularLoader } from '../../loaders/CircularLoader'
 import { InlineLoader } from '../../loaders/InlineLoader'
 import { buttonClass, buttonSize, buttonVariant, iconOnlySize } from './Button.style'
 
@@ -59,12 +60,16 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(
 
     const renderLoadingState = () => (
       <>
-        <InlineLoader className="absolute inset-0 justify-center" size={size} />
-        <div className={cn('ContentInnerWrap', 'invisible flex')} aria-hidden={true}>
+        {iconOnly ? (
+          <CircularLoader color="none" size={size === 'inline' ? 'sm' : size} hideLabel className="absolute inset-0 justify-center" />
+        ) : (
+          <InlineLoader hideStatus className="absolute inset-0 justify-center" size={size} />
+        )}
+        <span className={cn('ContentInnerWrap', 'invisible flex gap-2 items-center')} aria-hidden={true}>
           {startIcon && startIcon}
           {children}
           {endIcon && endIcon}
-        </div>
+        </span>
       </>
     )
 
@@ -101,7 +106,7 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(
         ref={ref}
         {...rest}
       >
-        {isLoading && !iconOnly && size !== 'inline' ? (
+        {isLoading ? (
           renderLoadingState()
         ) : (
           <>

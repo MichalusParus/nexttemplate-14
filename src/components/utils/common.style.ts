@@ -93,85 +93,86 @@ export const paperVariant = {
 
 export const toggleBaseBg = 'bg-dark-500/10 dark:bg-dark-950/20'
 
+// Use hoverable: instead of hover: — prevents stuck hover on touchscreens
 export const interactiveVariant = {
   text: {
     primary: cn(
-      'hover:bg-primary-100 dark:hover:bg-primary-900',
+      'hoverable:bg-primary-100 dark:hoverable:bg-primary-900',
       'active:bg-primary-200 dark:active:bg-primary-800',
       '[&.selected]:bg-primary-100 dark:[&.selected]:bg-primary-900',
-      '[&.selected]:hover:bg-primary-200 dark:[&.selected]:hover:bg-primary-800',
+      'hoverable:[&.selected]:bg-primary-200 dark:hoverable:[&.selected]:bg-primary-800',
       '[&.selected]:active:bg-primary-300 dark:[&.selected]:active:bg-primary-700',
     ),
     secondary: cn(
-      'hover:bg-secondary-100 dark:hover:bg-secondary-900',
+      'hoverable:bg-secondary-100 dark:hoverable:bg-secondary-900',
       'active:bg-secondary-200 dark:active:bg-secondary-800',
       '[&.selected]:bg-secondary-100 dark:[&.selected]:bg-secondary-900',
-      '[&.selected]:hover:bg-secondary-200 dark:[&.selected]:hover:bg-secondary-800',
+      'hoverable:[&.selected]:bg-secondary-200 dark:hoverable:[&.selected]:bg-secondary-800',
       '[&.selected]:active:bg-secondary-300 dark:[&.selected]:active:bg-secondary-700',
     ),
     terciary: cn(
-      'hover:bg-terciary-100 dark:hover:bg-terciary-900',
+      'hoverable:bg-terciary-100 dark:hoverable:bg-terciary-900',
       'active:bg-terciary-200 dark:active:bg-terciary-800',
       '[&.selected]:bg-terciary-100 dark:[&.selected]:bg-terciary-900',
-      '[&.selected]:hover:bg-terciary-200 dark:[&.selected]:hover:bg-terciary-800',
+      'hoverable:[&.selected]:bg-terciary-200 dark:hoverable:[&.selected]:bg-terciary-800',
       '[&.selected]:active:bg-terciary-300 dark:[&.selected]:active:bg-terciary-700',
     ),
     error: cn(
-      'hover:bg-error-100 dark:hover:bg-error-900',
+      'hoverable:bg-error-100 dark:hoverable:bg-error-900',
       'active:bg-error-200 dark:active:bg-error-800',
       '[&.selected]:bg-error-100 dark:[&.selected]:bg-error-900',
-      '[&.selected]:hover:bg-error-200 dark:[&.selected]:hover:bg-error-800',
+      'hoverable:[&.selected]:bg-error-200 dark:hoverable:[&.selected]:bg-error-800',
       '[&.selected]:active:bg-error-300 dark:[&.selected]:active:bg-error-700',
     ),
     none: '',
   },
   outlined: {
     primary: cn(
-      'hover:bg-primary-100 dark:hover:bg-primary-900',
+      'hoverable:bg-primary-100 dark:hoverable:bg-primary-900',
       'active:bg-primary-200 dark:active:bg-primary-800',
       '[&.selected]:bg-primary-100 dark:[&.selected]:bg-primary-900',
-      '[&.selected]:hover:bg-primary-200 dark:[&.selected]:hover:bg-primary-800',
+      'hoverable:[&.selected]:bg-primary-200 dark:hoverable:[&.selected]:bg-primary-800',
       '[&.selected]:active:bg-primary-300 dark:[&.selected]:active:bg-primary-700',
     ),
     secondary: cn(
-      'hover:bg-secondary-100 dark:hover:bg-secondary-900',
+      'hoverable:bg-secondary-100 dark:hoverable:bg-secondary-900',
       'active:bg-secondary-200 dark:active:bg-secondary-800',
       '[&.selected]:bg-secondary-100 dark:[&.selected]:bg-secondary-900',
-      '[&.selected]:hover:bg-secondary-200 dark:[&.selected]:hover:bg-secondary-800',
+      'hoverable:[&.selected]:bg-secondary-200 dark:hoverable:[&.selected]:bg-secondary-800',
       '[&.selected]:active:bg-secondary-300 dark:[&.selected]:active:bg-secondary-700',
     ),
     terciary: cn(
-      'hover:bg-terciary-100 dark:hover:bg-terciary-900',
+      'hoverable:bg-terciary-100 dark:hoverable:bg-terciary-900',
       'active:bg-terciary-200 dark:active:bg-terciary-800',
       '[&.selected]:bg-terciary-100 dark:[&.selected]:bg-terciary-900',
-      '[&.selected]:hover:bg-terciary-200 dark:[&.selected]:hover:bg-terciary-800',
+      'hoverable:[&.selected]:bg-terciary-200 dark:hoverable:[&.selected]:bg-terciary-800',
       '[&.selected]:active:bg-terciary-300 dark:[&.selected]:active:bg-terciary-700',
     ),
     error: cn(
-      'hover:bg-error-100 dark:hover:bg-error-900',
+      'hoverable:bg-error-100 dark:hoverable:bg-error-900',
       'active:bg-error-200 dark:active:bg-error-800',
       '[&.selected]:bg-error-100 dark:[&.selected]:bg-error-900',
-      '[&.selected]:hover:bg-error-200 dark:[&.selected]:hover:bg-error-800',
+      'hoverable:[&.selected]:bg-error-200 dark:hoverable:[&.selected]:bg-error-800',
       '[&.selected]:active:bg-error-300 dark:[&.selected]:active:bg-error-700',
     ),
     none: '',
   },
   contained: {
     primary: cn(
-      'hover:bg-primary-800 active:bg-primary-900',
-      '[&.selected]:bg-primary-800 [&.selected]:hover:bg-primary-900 [&.selected]:active:bg-primary-950',
+      'hoverable:bg-primary-800 active:bg-primary-900',
+      '[&.selected]:bg-primary-800 hoverable:[&.selected]:bg-primary-900 [&.selected]:active:bg-primary-950',
     ),
     secondary: cn(
-      'hover:bg-secondary-800 active:bg-secondary-900',
-      '[&.selected]:bg-secondary-800 [&.selected]:hover:bg-secondary-900 [&.selected]:active:bg-secondary-950',
+      'hoverable:bg-secondary-800 active:bg-secondary-900',
+      '[&.selected]:bg-secondary-800 hoverable:[&.selected]:bg-secondary-900 [&.selected]:active:bg-secondary-950',
     ),
     terciary: cn(
-      'hover:bg-terciary-800 active:bg-terciary-900',
-      '[&.selected]:bg-terciary-800 [&.selected]:hover:bg-terciary-900 [&.selected]:active:bg-terciary-950',
+      'hoverable:bg-terciary-800 active:bg-terciary-900',
+      '[&.selected]:bg-terciary-800 hoverable:[&.selected]:bg-terciary-900 [&.selected]:active:bg-terciary-950',
     ),
     error: cn(
-      'hover:bg-error-800 active:bg-error-900',
-      '[&.selected]:bg-error-800 [&.selected]:hover:bg-error-900 [&.selected]:active:bg-error-950',
+      'hoverable:bg-error-800 active:bg-error-900',
+      '[&.selected]:bg-error-800 hoverable:[&.selected]:bg-error-900 [&.selected]:active:bg-error-950',
     ),
     none: '',
   },
@@ -183,19 +184,19 @@ export const interactiveVariant = {
 export const disabledVariant = {
   text: cn(
     'disabled-aria:cursor-not-allowed disabled-aria:bg-dark-200 disabled-aria:text-dark-500 disabled-aria:opacity-50 disabled-aria:shadow-none',
-    'disabled-aria:hover:bg-dark-200 disabled-aria:focus-within:bg-dark-200 disabled-aria:focus-within:ring-0 disabled-aria:focus-visible:bg-dark-200 disabled-aria:focus-visible:ring-0 disabled-aria:group-hover:bg-dark-200',
+    'disabled-aria:hoverable:bg-dark-200 disabled-aria:focus-within:bg-dark-200 disabled-aria:focus-within:ring-0 disabled-aria:focus-visible:bg-dark-200 disabled-aria:focus-visible:ring-0 disabled-aria:group-hoverable:bg-dark-200',
     'dark:disabled-aria:bg-dark-200 dark:disabled-aria:text-dark-500',
-    'dark:disabled-aria:hover:bg-dark-200 dark:disabled-aria:focus-within:bg-dark-200 dark:disabled-aria:focus-visible:bg-dark-200 dark:disabled-aria:group-hover:bg-dark-200',
+    'dark:disabled-aria:hoverable:bg-dark-200 dark:disabled-aria:focus-within:bg-dark-200 dark:disabled-aria:focus-visible:bg-dark-200 dark:disabled-aria:group-hoverable:bg-dark-200',
   ),
   outlined: cn(
     'disabled-aria:cursor-not-allowed disabled-aria:border-dark-500 disabled-aria:bg-dark-200 disabled-aria:text-dark-500 disabled-aria:opacity-50 disabled-aria:shadow-none',
-    'disabled-aria:hover:bg-dark-200 disabled-aria:focus-within:bg-dark-200 disabled-aria:focus-within:ring-0 disabled-aria:focus-visible:bg-dark-200 disabled-aria:focus-visible:ring-0 disabled-aria:group-hover:bg-dark-200',
+    'disabled-aria:hoverable:bg-dark-200 disabled-aria:focus-within:bg-dark-200 disabled-aria:focus-within:ring-0 disabled-aria:focus-visible:bg-dark-200 disabled-aria:focus-visible:ring-0 disabled-aria:group-hoverable:bg-dark-200',
     'dark:disabled-aria:border-dark-500 dark:disabled-aria:bg-dark-200 dark:disabled-aria:text-dark-500',
-    'dark:disabled-aria:hover:bg-dark-200 dark:disabled-aria:focus-within:bg-dark-200 dark:disabled-aria:focus-visible:bg-dark-200 dark:disabled-aria:group-hover:bg-dark-200',
+    'dark:disabled-aria:hoverable:bg-dark-200 dark:disabled-aria:focus-within:bg-dark-200 dark:disabled-aria:focus-visible:bg-dark-200 dark:disabled-aria:group-hoverable:bg-dark-200',
   ),
   contained: cn(
     'disabled-aria:cursor-not-allowed disabled-aria:border-dark-500 disabled-aria:bg-dark-500 disabled-aria:text-dark-300 disabled-aria:opacity-50 disabled-aria:shadow-none',
-    'disabled-aria:hover:bg-dark-500 disabled-aria:focus-within:bg-dark-500 disabled-aria:focus-within:ring-0 disabled-aria:focus-visible:bg-dark-500 disabled-aria:focus-visible:ring-0 disabled-aria:group-hover:bg-dark-500',
+    'disabled-aria:hoverable:bg-dark-500 disabled-aria:focus-within:bg-dark-500 disabled-aria:focus-within:ring-0 disabled-aria:focus-visible:bg-dark-500 disabled-aria:focus-visible:ring-0 disabled-aria:group-hoverable:bg-dark-500',
   ),
 }
 

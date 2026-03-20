@@ -1,0 +1,60 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Containers/Paper/Def" />
+
+# Paper
+
+> Styled container surface with variant-based theming, border, optional shadow, and configurable padding/rounding. Use as a visual grouping wrapper for cards, panels, and content sections.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<div>` element — no implicit ARIA role, purely presentational container
+- Accepts all native `HTMLDivElement` attributes via rest props spread
+- `data-testid="Paper"` for test targeting (no semantic role to query by)
+
+### Accessibility (WAI-ARIA)
+- No ARIA roles or properties needed — the component is a visual container with no semantic meaning
+- Color contrast of children is the consumer's responsibility
+
+### Responsive & Layout
+- Block-level `<div>` — fills parent width by default
+- `border` always applied regardless of variant
+- Default padding `py-2 px-2 md:pt-2 md:pb-3 md:px-5` — responsive, increases on medium breakpoint
+- Default `rounded-md` border radius
+- `shadow-paper` box shadow applied unless `hideShadow` is true
+- Width constrained via `className` (e.g., `max-w-96`)
+
+<br/>
+
+## Architecture Decisions
+- **Padding, rounded, and shadow as Tailwind strings**: No enums — the developer owns the code and can change defaults directly. `hideShadow` is a convenience toggle for the common case.
+- **`from-*` gradient classes in variants**: Each variant includes dormant `from-*` gradient classes that ScrollShadow inherits for shadow color matching — no prop passing needed between components.
+- **Single elevation (`shadow-paper`)**: One shadow token is sufficient — override via `className` with any Tailwind shadow class. `hideShadow` toggles it off.
+
+<br/>
+
+## Known Bugs & Limitations
+- None identified
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Paper is about as lean as a surface component gets — a styled div with border, shadow, and variant coloring. The `hideShadow` boolean is a nice touch over forcing people to remember the shadow class name to negate it. The default `padding` shipping with responsive values out of the box (`py-2 px-2 md:pt-2 md:pb-3 md:px-5`) is a nice detail — most wrapper components forget about breakpoints entirely and leave that to the consumer every time.
+>
+> Reminds me of Material UI's `Paper` — same idea, less ceremony. MUI locks you into their elevation scale; here you get one shadow token and `className` for anything else, which honestly fits most real layouts better than picking between 24 elevation levels nobody remembers.
+>
+> Clean component that gets its defaults right.
+>
+> — *Claude, Opus 4.6, 2026-03-20*

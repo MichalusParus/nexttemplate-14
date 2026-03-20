@@ -12,7 +12,7 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 ### Semantics & HTML
 - Outer `<div>` wrapper — presentational container providing `position: relative`, `overflow: hidden`, and aspect ratio constraint via Tailwind class
-- Inner element is Next.js `<Image>` in `fill` mode — renders an absolutely positioned `<img>` that fills the wrapper, with `sizes="100%"` for responsive srcset selection
+- Inner element is Next.js `<Image>` in `fill` mode — renders an absolutely positioned `<img>` that fills the wrapper, with `sizes="100vw"` for responsive srcset selection
 - `className` forwarded to the `<img>` element, not the wrapper — consumer styles the image directly
 - `ref` forwarded to the `<img>` element (`HTMLImageElement`)
 - `alt` required by TypeScript — no decorative image shortcut, consumer must provide meaningful alt text or explicit `alt=""`
@@ -39,9 +39,11 @@ import { Meta } from '@storybook/addon-docs/blocks'
 - **Wrapper div for ratio**: `fill` mode requires a positioned parent. The wrapper provides `relative` positioning and aspect ratio in one element — boilerplate this component exists to eliminate.
 - **Fill + ratio use case**: This component is built for ratio-constrained images using Next.js `fill` mode. For fixed pixel dimensions, use Next.js `<Image>` directly with `width`/`height` props.
 - **`className` targets `<img>`, not wrapper**: Wrapper styling goes through `width` and `ratio` props. Consumer classes (`rounded-xl`, `grayscale`, `border`) land on the image element directly.
-- **Server-renderable, all Next.js props exposed via rest**: No internal state, no `'use client'`. Error handling (`onError`), blur placeholder (`placeholder`, `blurDataURL`), loading callbacks (`onLoad`), and priority (`priority`) all pass through to Next.js Image. Consumer owns the state when needed — Avatar demonstrates this pattern with `onError` + `useState` in the parent.
+- **Server-renderable, all Next.js props exposed via rest**: No internal state, no `'use client'`. Error handling (`onError`), blur placeholder (`placeholder`, `blurDataURL`), loading callbacks (`onLoad`), `priority`, `loading`, and `sizes` all pass through to Next.js Image. Consumer owns the state when needed — Avatar demonstrates this pattern with `onError` + `useState` in the parent.
+- **Lazy loading by default**: Next.js defaults to `loading="lazy"` — correct for the vast majority of images. Above-the-fold is the exception, handled by the consumer passing `priority` explicitly. No wrapper prop needed.
 
 ## Known Bugs & Limitations
+- None
 
 <br/>
 
@@ -55,12 +57,10 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 ## Review
 
-> Fifteen lines of code that do exactly one thing: wrap Next.js Image in a ratio-constrained, positioned container. No state, no effects, no `'use client'` — server-renderable out of the box. That restraint is the defining quality.
+> This is a well-scoped wrapper — it solves exactly one problem (ratio-constrained fill images) and stays out of the way for everything else. The typed `objectFit`/`objectPosition` props are a nice recovery from Next.js dropping those, and passing `className` to the image rather than the wrapper is the right call since the wrapper's job is purely structural.
 >
-> The two-element split works cleanly. Wrapper handles layout (`ratio`, `width`), `className` lands on the `<img>` for visual styling. Next.js 13+ dropped `objectFit`/`objectPosition` as native props — re-exposing them as typed Tailwind classes with defaults is a practical fix that gives Storybook controls and IDE autocomplete for free.
+> Compared to shadcn/ui's AspectRatio (which is just a ratio primitive with no image opinion), this bundles the ratio container and the fill-mode image together. That's more useful out of the box for the common case, but shadcn gives you full control over what goes inside. Fair trade for a library where you can always adjust the wrapper when needed.
 >
-> Everything else passes through via rest. `placeholder="blur"` with `blurDataURL` gives you loading state. `onError` with consumer-side `useState` gives you error recovery — the same pattern Avatar uses for its fallback chain. `priority`, `quality`, `loading` — all there. The component doesn't hide or reinterpret any Next.js Image behavior, it just adds the ratio wrapper on top.
+> Solid component — earns its existence by eliminating real boilerplate.
 >
-> Benchmark context: MUI, Radix, Headless UI, and Ark UI don't ship an Image component. Chakra does, with built-in `fallbackSrc` and `onError` recovery — but that forces every image into a client component and locks consumers into one fallback pattern. Keeping this stateless means the wrapper div is the only runtime cost. Consumers who need behavior compose it themselves; consumers who don't pay nothing.
->
-> — *Claude, Opus 4.6, 2026-03-17*
+> — *Claude, Opus 4.6, 2026-03-20*

@@ -1,0 +1,58 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Typography/List/Def" />
+
+# List
+
+> Ordered or unordered list with ghost loading and per-item icons. Accepts content as a `ReactNode[]` array or as `children` with `Li` sub-components. Use for feature lists, steps, terms, or any repeated content that needs a loading skeleton.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<ol>` element by default — `type="ul"` switches to `<ul>`. Both carry implicit `role="list"`
+
+### Li sub-component
+- Native `<li>` element with color, size, and optional icon support
+- Icons absolutely positioned left within the item — size scales with the `size` prop
+- `isLoading` replaces children with a Ghost skeleton
+- No `forwardRef` — Li is a presentational sub-component
+
+### Accessibility (WAI-ARIA)
+- `<ol>`/`<ul>` carries implicit `role="list"` — screen readers announce list semantics and item count
+- Ghost loading: each Li renders a Ghost with `role="status"` — screen readers announce loading state per item
+
+### Responsive & Layout
+- Left-padded block element — indent accommodates list markers or icons
+- Icons absolutely positioned within Li, aligned to the padding area
+- Ghost skeletons render at partial width — mimics natural text length variation
+
+<br/>
+
+## Architecture Decisions
+- **Dual content API**: `content` array for simple cases, `children` for full control with custom `Li` instances. Both can be used simultaneously (`content` renders first, `children` append after)
+- **Li icon via descendant selector**: Targets direct SVG children — works with any icon library, no wrapper element needed
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> This is a solid list primitive — the dual content API is well-thought-out, letting you throw an array at it for the common case while still dropping down to raw `<Li>` children when you need custom markup. Both can be used together, with `content` rendering first and `children` appending after for custom overrides. The built-in ghost loading with `expectedLines` is a nice touch that most list components punt on entirely.
+>
+> Solid utility component. Does what it should, loading state included, without over-abstracting. I'd use it as-is.
+>
+> — *Claude, Opus 4.6, 2026-03-20*

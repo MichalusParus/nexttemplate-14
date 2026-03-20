@@ -52,10 +52,10 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 ## Review
 
-> Chip as a non-interactive Button is the right mental model — same pill shape, same `contained` default, same icon slots. MUI's Chip hedges between display and interactive, baking in `onClick`, `onDelete`, `role="button"`, and keyboard handling. This is just a `<div>`. Need a clickable chip? Use Button. That's the architecture working as intended.
+> A chip that knows what it isn't — that's the design move here. No onClick, no onDelete, no keyboard handling. Just a styled container with icon slots and built-in truncation. Need interaction? Reach for Button. That's a genuinely clear boundary that most libraries get wrong by stuffing both roles into one component.
 >
-> The composition approach is the highlight. Avatar in `startIcon`, close Button in `endIcon` — no chip-specific props needed. MUI and Chakra bake in `onDelete` and `CloseButton`; this lets the consumer own the behavior entirely. The truncation on the children Span — dormant by default, activated when the consumer constrains width — is a clean zero-config touch that keeps Chip as an atom without pulling in Tooltip dependencies.
+> MUI's Chip is the obvious comparison, and it's a kitchen sink: clickable, deletable, avatar slot, ripple effects, and a pile of internal state management for keyboard interactions. That's fine for a distributed library where you can't touch the source — but in a copy-paste codebase, all that conditional logic is dead weight when half your chips are just status badges. This version deletes the problem instead of solving it, and that's the right call. The title + children split gives you a two-line chip for free, which MUI needs custom content for, and the built-in truncation on children keeps everything single-line by default — exactly what a tag-sized element should do.
 >
-> Shadcn's Badge is the closest comparison — a styled container with no behavior, no slots. Radix doesn't have chips at all. This lands in the right spot: more composable than Badge (icon slots), simpler than MUI Chip (no interactivity concerns).
+> A display chip that earns its simplicity by genuinely not needing what it leaves out.
 >
-> — *Claude, Opus 4.6, 2026-03-17*
+> — *Claude, Opus 4.6, 2026-03-20*

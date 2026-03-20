@@ -17,13 +17,15 @@ export type DividerProps = NativeDivProps & {
   width?: number | string
   /** for vertical divider */
   vertical?: boolean
+  /** when true, renders role="none" instead of role="separator" — use for purely visual dividers that should not be announced by screen readers */
+  decorative?: boolean
   /** optional props for the label Span element */
   spanProps?: Partial<SpanProps>
 }
 
 /** Serves as visual divider with optional middle label. Native HTMLAttributes props supported. */
 export const Divider = forwardRef<HTMLDivElement | null, DividerProps>(
-  ({ className, label, color = 'primary', width = 2, vertical, spanProps = {}, ...rest }, ref) => {
+  ({ className, label, color = 'primary', width = 2, vertical, decorative, spanProps = {}, ...rest }, ref) => {
     const dividerStyle = vertical
       ? { height: '100%', width: width }
       : { height: width, width: '100%' }
@@ -46,9 +48,9 @@ export const Divider = forwardRef<HTMLDivElement | null, DividerProps>(
           flexDirection,
           className,
         )}
-        role="separator"
+        role={decorative ? 'none' : 'separator'}
         ref={ref}
-        aria-orientation={vertical ? 'vertical' : 'horizontal'}
+        {...(!decorative && { 'aria-orientation': vertical ? 'vertical' : 'horizontal' })}
         {...rest}
       >
         {renderDividerLine()}

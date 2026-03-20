@@ -1,0 +1,55 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Typography/Title/Def" />
+
+# Title
+
+> Heading component rendering `<h1>`–`<h6>` elements with theme colors, size tokens, and a built-in ghost loading state. Use for page titles, section headings, card headers, and any semantic heading that needs consistent typography and skeleton loading.
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<h1>`–`<h6>` element via `variant` prop — implicit `role="heading"` with correct `aria-level`, no ARIA override needed
+- `variant` is required — no default heading level, forces the consumer to pick the correct document outline level
+
+### Accessibility (WAI-ARIA)
+- Native heading elements provide implicit heading semantics and level — no ARIA attributes needed
+- Single Ghost loader announces `role="status"` when loading — acceptable for one element per heading
+- Text content replaced entirely during loading — no stale text in the accessibility tree
+
+### Responsive & Layout
+- Full-width block element with `font-semibold` base weight — consistent across all heading levels
+- Ghost loader alignment follows the `align` prop
+
+<br/>
+
+## Architecture Decisions
+- **Dynamic element via `variant`**: `const Element = variant` — the string is also a valid HTML tag. No switch, no mapping object, zero overhead. Works because JSX treats lowercase variables as intrinsic elements
+- **Required `variant`, no default**: Forces the consumer to pick the correct heading level — prevents broken document outlines from forgotten overrides
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> This is one of those components where you can tell someone thought carefully about what *not* to build. `const Element = variant` is the kind of line that makes you smile — no mapping object, no switch, just let JSX do what JSX already does. And making variant required with no default is the right call; a heading that silently defaults to h1 is a heading that lies to screen readers.
+>
+> The loading state is nicely integrated — Ghost slots in where children would go, inherits the size, and even respects alignment through ghostAlignment. Spreading ghostProps with className extraction is a clean pattern for letting consumers tweak the skeleton without a second component.
+>
+> Solid, minimal heading component. Does exactly what it should and nothing it shouldn't.
+>
+> — *Claude, Opus 4.6, 2026-03-20*

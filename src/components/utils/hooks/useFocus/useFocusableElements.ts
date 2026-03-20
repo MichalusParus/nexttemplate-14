@@ -42,7 +42,7 @@ export const useFocusableElements = (
 
     const selector = selectors.join(',')
     const trigger = options.triggerRef.current
-    const isVisible = (el: HTMLElement) => getComputedStyle(el).visibility !== 'hidden'
+    const isVisible = (el: HTMLElement) => !el.closest('.invisible')
 
     const containerSelectableElList = container
       ? Array.from(container.querySelectorAll(selector) as NodeListOf<HTMLElement>).filter(isVisible)

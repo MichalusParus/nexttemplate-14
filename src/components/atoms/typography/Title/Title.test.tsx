@@ -9,63 +9,106 @@ import { Title } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('Title', () => {
-  it('default', () => {
-    render(
-      <Title variant="h1" className="className" align="text-center">
-        Title
-      </Title>,
-    )
-    const titleRole = screen.getByRole('heading')
+  describe('Semantics', () => {
+    it('renders as heading with correct text', () => {
+      render(<Title variant="h1">Title</Title>)
+      const heading = screen.getByRole('heading')
 
-    expect(titleRole).toBeInTheDocument()
-    expect(titleRole).toHaveClass('className')
-    expect(titleRole).toHaveClass('text-center')
-    expect(titleRole).toHaveTextContent('Title')
-    expect(titleRole.tagName).toBe('H1')
+      expect(heading).toBeInTheDocument()
+      expect(heading).toHaveTextContent('Title')
+      expect(heading.tagName).toBe('H1')
+    })
+
+    it('renders correct tagname for variant', () => {
+      render(<Title variant="h2">Title</Title>)
+      const heading = screen.getByRole('heading')
+
+      expect(heading.tagName).toBe('H2')
+    })
+
+    it('forwards className', () => {
+      render(
+        <Title variant="h1" className="className">
+          Title
+        </Title>,
+      )
+      const heading = screen.getByRole('heading')
+
+      expect(heading).toHaveClass('className')
+    })
+
+    it('align class applied', () => {
+      render(
+        <Title variant="h1" align="text-center">
+          Title
+        </Title>,
+      )
+      const heading = screen.getByRole('heading')
+
+      expect(heading).toHaveClass('text-center')
+    })
+
+    it('w-full and font-semibold base classes', () => {
+      render(<Title variant="h1">Title</Title>)
+      const heading = screen.getByRole('heading')
+
+      expect(heading).toHaveClass('w-full')
+      expect(heading).toHaveClass('font-semibold')
+    })
+
+    it('loading shows ghost', () => {
+      render(
+        <Title variant="h1" isLoading>
+          Title
+        </Title>,
+      )
+      const statusQuery = screen.queryAllByRole('status')
+
+      expect(statusQuery).toHaveLength(1)
+    })
+
+    it('ghostProps forwarded to ghost', () => {
+      const { container } = render(
+        <Title variant="h1" isLoading ghostProps={{ className: 'w-20' }}>
+          Title
+        </Title>,
+      )
+      const ghost = container.querySelector('.Ghost')
+
+      expect(ghost).toHaveClass('w-20')
+    })
+
+    it('loading hides children', () => {
+      render(
+        <Title variant="h1" isLoading>
+          Title
+        </Title>,
+      )
+      const textQuery = screen.queryByText('Title')
+
+      expect(textQuery).toBeNull()
+    })
   })
 
-  it('tagname', () => {
-    render(<Title variant="h2">Title</Title>)
-    const titleRole = screen.getByRole('heading')
+  describe('Ref', () => {
+    it('forwards ref', () => {
+      const ref = createRef<HTMLHeadingElement>()
+      render(
+        <Title variant="h1" ref={ref}>
+          Title
+        </Title>,
+      )
 
-    expect(titleRole.tagName).toBe('H2')
+      expect(ref.current).toBeInstanceOf(HTMLHeadingElement)
+    })
   })
 
-  it('isLoading', () => {
-    render(
-      <Title variant="h1" isLoading>
-        Title
-      </Title>,
-    )
-    const statusQuery = screen.queryAllByRole('status')
-    const textQuery = screen.queryByText('Title')
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<Title variant="h1">Title</Title>)
 
-    expect(textQuery).toBeNull()
-    expect(statusQuery).toHaveLength(1)
-  })
-
-  it('ref', () => {
-    const ref = createRef<HTMLHeadingElement>()
-    render(
-      <Title variant="h1" ref={ref}>
-        Title
-      </Title>,
-    )
-
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
-  })
-
-  it('axe', async () => {
-    const { container } = render(<Title variant="h1">Title</Title>)
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

@@ -9,32 +9,78 @@ import { InlineLoader } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('InlineLoader', () => {
-  it('default', () => {
-    render(<InlineLoader className="className" />)
-    const statusRole = screen.getByRole('status')
+  describe('Semantics', () => {
+    it('renders with role status', () => {
+      render(<InlineLoader />)
+      const loader = screen.getByRole('status')
 
-    expect(statusRole).toBeInTheDocument()
-    expect(statusRole).toHaveClass('className')
+      expect(loader).toBeInTheDocument()
+    })
+
+    it('forwards className', () => {
+      render(<InlineLoader className="className" />)
+      const loader = screen.getByRole('status')
+
+      expect(loader).toHaveClass('className')
+    })
+
+    it('renders three dots', () => {
+      render(<InlineLoader />)
+      const loader = screen.getByRole('status')
+      const dots = loader.querySelectorAll('.Dott')
+
+      expect(dots).toHaveLength(3)
+    })
+
+    it('dots have staggered animation delays', () => {
+      render(<InlineLoader />)
+      const loader = screen.getByRole('status')
+      const dots = loader.querySelectorAll('.Dott')
+
+      expect(dots[0]).toHaveStyle({ animationDelay: '' })
+      expect(dots[1]).toHaveStyle({ animationDelay: '150ms' })
+      expect(dots[2]).toHaveStyle({ animationDelay: '300ms' })
+    })
+
+    it('aria-busy is true', () => {
+      render(<InlineLoader />)
+      const loader = screen.getByRole('status')
+
+      expect(loader).toHaveAttribute('aria-busy', 'true')
+    })
+
+    it('aria-label defaults to Loading', () => {
+      render(<InlineLoader />)
+      const loader = screen.getByRole('status')
+
+      expect(loader).toHaveAttribute('aria-label', 'Loading')
+    })
+
+    it('hideStatus removes status role and aria attributes', () => {
+      const { container } = render(<InlineLoader hideStatus />)
+      const loader = container.querySelector('.InlineLoaderWrap')!
+
+      expect(loader).not.toHaveAttribute('role')
+      expect(loader).not.toHaveAttribute('aria-label')
+      expect(loader).not.toHaveAttribute('aria-busy')
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLDivElement>()
-    render(<InlineLoader ref={ref} />)
+  describe('Ref', () => {
+    it('forwards ref', () => {
+      const ref = createRef<HTMLSpanElement>()
+      render(<InlineLoader ref={ref} />)
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
+      expect(ref.current).toBeInstanceOf(HTMLSpanElement)
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(<InlineLoader />)
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<InlineLoader />)
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })
