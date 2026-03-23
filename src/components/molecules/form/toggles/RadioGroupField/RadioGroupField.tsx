@@ -37,13 +37,14 @@ export const RadioGroupField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size} error={errorMessage} {...labelProps} variant="legend">
+        <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps} variant="legend">
           <RadioGroup
             className={className}
             variant={variant || formVariant}
             color={color || formColor}
             size={size || formSize}
             error={errorMessage}
+            aria-labelledby={`${name}-label`}
             aria-describedby={
               errorMessage || labelProps.description ? `${name}-description` : undefined
             }

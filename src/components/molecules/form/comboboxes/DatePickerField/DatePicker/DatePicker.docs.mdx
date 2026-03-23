@@ -1,0 +1,110 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/comboboxes/DatePicker/Def" />
+
+# DatePicker
+
+> Combobox-triggered date picker — a button with `role="combobox"` opens a portal-rendered Dropdown containing a Calendar grid. Handles single date selection with auto-close. Also serves as base component for [RangeDatePicker](?path=/docs/molecules-form-comboboxes-rangedatepicker-def--docs) and [MultiDatePicker](?path=/docs/molecules-form-comboboxes-multidatepicker-def--docs). For form integration with validation and labels, use DatePickerField.
+
+<br/>
+
+## Features
+
+- Flexible value input — string, Date, or number
+- Locale-aware formatting via `Intl.DateTimeFormat`
+- Configurable placement
+- Min/max date boundaries via `calendarProps`
+- Unavailable dates via `calendarProps`
+- Week start configuration via `calendarProps`
+- Clear button via `onClear`
+- Value chips display via `displayChips`
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Outer `<div>` wrapper with `data-testid="DatePicker"` and `className="DatePicker relative w-full"`
+- **DatePickerCombobox** — `<Button role="combobox">` with `id={name}`, `name={name}`, `type="button"`
+  - `aria-expanded={isOpen}` — reflects dropdown visibility
+  - `aria-haspopup="true"` — announces popup availability
+  - `aria-controls={name}-calendar` / `aria-owns={name}-calendar` — links to Calendar element
+  - `aria-disabled` — set via Button's disabled handling (not native `disabled`), keeps button in tab order for screen readers
+  - Display: `<Ellipsis>` with locale-formatted date via `Intl.DateTimeFormat` (e.g. "3/4/2023" in en-US) or `placeholder` text. Accepts `locale` and `dateFormatOptions` props for customization. When `displayChips=true` and `multiValue` selected, renders `<ValueChips>` instead
+  - `endIcon` slot: optional ClearButton (visible when `onClear` provided AND value exists) + CalendarIcon (`aria-hidden`)
+- **Dropdown** — portal-rendered, positioned via Popper.js (`placement` prop, default `bottom-start`)
+- **[Calendar](?path=/docs/molecules-common-calendar-def--docs)** — `<div>` with `id={name}-calendar`, `aria-hidden={!isOpen}`, `role="grid"` internally
+  - Receives `date`, `variant`, `color`, `size`, `isActive={isOpen}`, `focusOnOpen`
+  - `onClose` callback returns focus to combobox trigger
+  - `paperProps` with `border-none` to merge visually with Dropdown
+
+### Keyboard Handling
+Tier 3 — combobox trigger with delegated grid navigation.
+- **Enter / Space** — Opens dropdown when combobox is focused, selects date when gridcell is focused
+- **Arrow keys** — Grid navigation within calendar, delegated to [Calendar](?path=/docs/molecules-common-calendar-def--docs)
+- **Escape** — Closes dropdown, returns focus to combobox trigger
+- **Tab** — Natural tab order through calendar header buttons, focused grid cell, and ClearButton
+- Disabled state blocks all keyboard interaction via `aria-disabled` + `tabIndex=-1`
+
+### Accessibility (WAI-ARIA)
+- Follows [Combobox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) with a grid popup
+- Trigger: `role="combobox"` with `aria-expanded`, `aria-haspopup`, `aria-controls`, `aria-owns`
+- [Calendar](?path=/docs/molecules-common-calendar-def--docs) follows WAI-ARIA Grid Pattern — `role="grid"` with `role="gridcell"` children, `aria-selected` on selected dates, roving tabindex
+- Focus on open: selected date → today → first available date
+- Calendar `aria-hidden` toggles with open state — hidden from assistive tech when closed
+
+### Visual States
+- **Default** — outlined button with placeholder text
+- **Open** — combobox shows active styling, dropdown visible with Calendar
+- **Value selected** — formatted date replaces placeholder
+- **Error** — error styling on combobox
+- **Disabled** — `aria-disabled="true"`, removed from tab order
+
+### Interaction Behavior
+- Click combobox toggles dropdown open/close
+- Selecting a date auto-closes dropdown and returns focus to combobox
+- Variant wrappers (RangeDatePicker, MultiDatePicker) override auto-close via `calendarProps`
+- `onOpen` / `onClose` callbacks fire during state transition
+- `onChange` fires with `Date` object (at `startOfDay` — normalized by Calendar)
+- ClearButton visible when `onClear` provided AND value exists
+
+### Responsive & Layout
+- Wrapper: `w-full` — fills container width
+- Dropdown: sizes to Calendar content, not constrained to trigger width
+- Placement configurable via Popper.js `placement` prop (default `bottom-start`)
+
+<br/>
+
+## Architecture Decisions
+- **Callback ref for dual forwarding**: `comboboxRef` stores the button element for internal focus management, while the consumer's `ref` is forwarded simultaneously via a callback ref that handles both function and object ref types.
+- **`handleToggle` with functional setState**: `onOpen`/`onClose` fire inside the `setIsOpen` updater function, making them synchronous with the state transition. This prevents stale-closure bugs where the callback fires but `isOpen` hasn't updated yet.
+- **Auto-close via `calendarProps` inspection**: `handleOnChange` checks `calendarProps.range` and `calendarProps.multiValue` — if either is set, auto-close is skipped, letting variant wrappers control close behavior.
+- **Dual focus systems**: `useFocus` manages the dropdown scope (header buttons, clear buttons, Escape/Tab dismiss) while Calendar's `useCalendarFocus` manages grid-level arrow navigation independently. They coexist without conflict because `useFocus` targets header elements, not gridcells.
+
+<br/>
+
+## Known Bugs & Limitations
+- **Button-based combobox without text input**: Uses `role="combobox"` on a `<Button>` — ARIA 1.2 expects combobox to be a text input element, so screen readers announce "combobox" but the user cannot type a date. Passes automated axe audits (valid role + required attributes) but doesn't match the spec's intended interaction model. Without a text input, dates can only be selected via the calendar grid — navigating to distant dates (birthdates, historical dates) requires many clicks through months/years. Most libraries (MUI, Mantine, Ant Design) use an `<input>` with calendar popup; React Aria uses segmented spinbuttons with `aria-haspopup="dialog"`. A `<button aria-haspopup="dialog">` would be more semantically accurate for a picker-only pattern. This is a library-wide convention shared with Select.
+
+<br/>
+
+## Future Ideas
+- [ ] Text input mode — add an `<input>` for typed date entry (masked or segmented), with calendar as optional popup. Would fix the combobox role mismatch and enable direct keyboard entry for distant dates.
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> A well-structured datepicker that earns its complexity — the dual focus system (scope-level via `useFocus`, grid-level via Calendar's own hook) is the kind of split that's easy to get wrong, but the selector separation makes it clean. The `handleToggle` firing callbacks inside the state updater is a smart detail that most implementations miss.
+>
+> Compared to React Aria's `useDatePicker`, which enforces a structured `DateValue` object and segments the input into individually editable fields, this takes the simpler combobox-button approach. React Aria's segmented input is better for keyboard-heavy data entry (users can type dates without opening the calendar), but it comes with significant complexity. For a copy-paste component where the calendar is the primary input method, the button trigger is the right trade-off — and the `displayChips` mode for multi-select is something React Aria doesn't offer out of the box.
+>
+> The `Intl.DateTimeFormat` integration for locale-aware date display is a good addition — `locale` and `dateFormatOptions` props give full control without forking. The `onOpen`/`onClose` focus logic correctly returns focus to the combobox on close, and the auto-close detection via `calendarProps` inspection is clever reuse that avoids a mode enum.
+>
+> Solid datepicker that self-configures and delegates complexity to the right layers.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

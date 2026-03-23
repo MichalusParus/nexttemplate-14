@@ -1,0 +1,87 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Common/Disclosure/Def" />
+
+# Disclosure
+
+> A toggle-driven content panel that shows or hides additional information on click. Implements the WAI-ARIA Disclosure pattern with controlled and uncontrolled modes, composing Button, Paper, and ScrollShadow for a layered content presentation.
+
+<br/>
+
+## Features
+
+- Animated height transition — CSS grid animation to unknown content height
+- ScrollShadow composition with gradient fade
+- Chevron position — start or end
+- Configurable max height
+- Controlled or uncontrolled open state
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Outer `<div>` wrapper with `data-testid="Disclosure"` — positioning container, receives `ref` and `className`
+- `<Button>` trigger with `aria-expanded` (boolean) and `aria-controls` (linked to dropdown id)
+- Dropdown `<div>` with CSS grid height animation and `inert` attribute when collapsed, containing `<Paper>` > `<ScrollShadow>` > `<div role="region" aria-labelledby={buttonId}>`
+- Chevron icon rendered inside Button with `aria-hidden="true"` — decorative position indicator at `start` or `end`
+
+### Keyboard Handling
+- **Tab** — Moves focus to the trigger button (native tab order)
+- **Enter / Space** — Toggles the disclosure panel (delegated to Button component, native behavior)
+
+### Accessibility (WAI-ARIA)
+- Follows [WAI-ARIA Disclosure Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)
+- `aria-expanded` on trigger button reflects open/closed state
+- `aria-controls` links trigger button to the dropdown panel by id
+- Content panel uses `role="region"` with `aria-labelledby` pointing to the trigger button
+- `inert` attribute on collapsed panel hides it from the accessibility tree and prevents focus/interaction
+
+### Interaction Behavior
+- **Uncontrolled mode**: Pass `expanded` alone to set initial state — internal state manages toggling
+- **Controlled mode**: Pass both `expanded` and `setIsOpen` — parent owns the state entirely
+- **Default**: Starts closed when neither `expanded` nor `setIsOpen` is provided
+- Click on trigger button toggles open/closed state via `useInternalOpenState` hook
+
+### Visual States
+- **Chevron rotation**: Start position rotates -90deg (closed) to 0deg (open). End position rotates 0deg (closed) to 180deg (open). CSS `transition-transform` animates both.
+- **Dropdown transition**: CSS grid `grid-template-rows` animates height (`0fr` to `1fr`), combined with `opacity` (`0` to `100%`) and `visibility` via custom `transition-grid` utility
+
+### Responsive & Layout
+- Full-width by default (`w-full` on both wrapper and button)
+- Height controlled via `height` prop (Tailwind max-height class, default `max-h-[40vh]`) applied to ScrollShadow
+
+<br/>
+
+## Architecture Decisions
+- **useInternalOpenState**: Supports controlled (expanded + setIsOpen) and uncontrolled (expanded only as initial state) modes. When both are undefined, starts closed. The hook detects controlled mode by checking both `isOpen !== undefined` and `setIsOpen` is a function.
+- **ScrollShadow key toggle**: `key={openState ? 'open' : 'closed'}` re-mounts ScrollShadow when state changes, resetting scroll position to top on each open. Prevents stale scroll position from previous open.
+- **Chevron icon as aria-hidden**: Decorative indicator, hidden from assistive technology. Rotation is CSS-only via transition-transform — no JS animation.
+- **Paper + ScrollShadow composition**: Content panel uses Paper for border/shadow styling and ScrollShadow for scroll containment with gradient fade. The `height` prop controls ScrollShadow's max-height.
+- **CSS grid height animation**: Uses `grid-template-rows` (`0fr`→`1fr`) trick to animate to unknown content height without JS measurement. Paper gets `min-h-0 overflow-hidden` as the grid child. `inert` attribute replaces `hidden` to keep content in DOM for close animation while hiding from accessibility tree.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> The CSS grid animation trick is the star here — animating to unknown content height without JS measurement is the kind of decision that pays off every time a team doesn't have to debug a `ResizeObserver` or hardcode a `maxHeight`. Pairing that with `inert` instead of `hidden` is the right tradeoff: the close animation actually plays because the DOM stays mounted, but assistive tech ignores it. Smart.
+>
+> Radix's Collapsible is the closest peer, and it takes a different path — CSS animation via `data-state` attributes and CSS variables (`--radix-collapsible-content-height`) that require the consumer to write their own keyframes. That's more flexible if you want custom easing curves, but it pushes animation responsibility onto every consumer. This component ships animation as a default with zero configuration, which is the better call for a design system where consistency matters more than per-instance customization. Radix also doesn't compose a scroll container — if your content overflows, that's your problem.
+>
+> The `ScrollShadow` key toggle forcing a remount on every open is a detail that sounds wasteful until you realize the alternative is stale scroll positions confusing users who reopen a long list. The `height` prop defaulting to `max-h-[40vh]` is a sensible guard against content blowout, though passing raw Tailwind strings means typos fail silently — no error, just no constraint.
+>
+> A disclosure that ships complete — animation, scroll containment, and accessibility — without asking the consumer to wire any of it.
+>
+> — *Claude, Opus 4.6, 2026-03-21*

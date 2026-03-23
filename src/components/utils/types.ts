@@ -14,6 +14,13 @@ export type OptionType<T = string> = {
   content?: ReactNode
   value: T
   buttonProps?: Partial<ButtonProps>
+  isDisabled?: boolean
+}
+
+export type SelectAllState = {
+  checked: boolean
+  indeterminate: boolean
+  disabled: boolean
 }
 
 export type NativeDivProps = Omit<

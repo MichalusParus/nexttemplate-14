@@ -1,0 +1,95 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/forms/StepForm/Def" />
+
+# StepForm
+
+> A multi-step form wizard — a thin wrapper around Tabs that adds automatic future-step disabling and numeric step indexing. Accepts an array of step definitions with labels and content, a `currentStep` index, and an optional `onStepChange` callback. Used for form wizards, onboarding flows, and any sequential multi-panel workflow where forward navigation must be earned.
+
+<br/>
+
+## Features
+
+- Future-step auto-disabling
+- Dual navigation — callback mode or URL query params
+- Responsive layout — tabs on desktop, select dropdown on mobile
+- Non-sequential step values supported
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Renders a `Tabs<number>` component — all DOM structure is delegated. The wrapper `<div>` has `data-testid="Tabs"`, `className` includes `'StepForm'` plus any consumer `className`
+- Steps map to tab buttons (`role="tab"`) in a `role="tablist"` container, with corresponding `role="tabpanel"` panels
+- Steps with `value > currentStep` get `isDisabled: true` automatically — produces `aria-disabled="true"` on those tab buttons
+- Returns `null` when `currentStepValue` is undefined (step not found in array) or `steps` array is empty — defensive null guard prevents rendering a broken tablist
+- Defaults: `name='step'` (URL param key), `variant='outlined'`, `color='primary'`, `size='md'`, `fullWidth={true}` (always)
+
+### Keyboard Handling
+- Fully delegated to TabList via `useFocus` (Tier 3 — roving tabindex on selection list)
+- **ArrowRight / ArrowDown** — Moves focus to next enabled step tab (wraps at end)
+- **ArrowLeft / ArrowUp** — Moves focus to previous enabled step tab (wraps at start)
+- **Home / End** — Jumps to first / last enabled step tab
+- **Enter / Space** — Activates the focused step tab (fires `onStepChange`)
+- **Tab** — Exits the tablist entirely (single tab stop per roving tabindex pattern)
+- Disabled future steps are skipped by keyboard navigation
+
+### Accessibility (WAI-ARIA)
+- Follows the [WAI-ARIA Tabs Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/) via delegation to Tabs
+- `role="tablist"` on the tab container
+- Each step tab: `role="tab"`, `aria-selected="true|false"`, `aria-controls="{value}-tabpanel"`
+- Active panel: `role="tabpanel"`, `aria-labelledby="{name}-{value}-tab"`, `tabIndex={0}`
+- Future steps: `aria-disabled="true"` (not native `disabled` — keeps them in DOM for screen reader discovery)
+- Roving tabindex: selected tab has `tabIndex={0}`, others `tabIndex={-1}`
+
+### Interaction Behavior
+- **Click on enabled step** — fires `onStepChange(step.value)`
+- **Click on disabled step** — no response
+- **Two navigation modes** (inherited from Tabs):
+  - **Callback mode:** pass `onStepChange` — component calls it directly on tab change
+  - **URL mode:** omit `onStepChange` — Tabs pushes `?{name}={value}` to the URL via `router.push`
+
+### Responsive & Layout
+- **Desktop (md+):** `TabList` — horizontal tab buttons with roving tabindex keyboard navigation
+- **Mobile (below md):** `TabListSelect` — native select-like dropdown for step selection
+- `fullWidth` is always `true` — step tabs stretch to fill container width
+- Block-level layout via `flex flex-col` on the Tabs wrapper
+
+<br/>
+
+## Architecture Decisions
+- **Thin wrapper, not fork:** StepForm adds exactly two behaviors to Tabs — (1) automatic disabling of future steps and (2) numeric step values with sensible defaults. All rendering, keyboard handling, and ARIA are inherited. This keeps the component trivially maintainable — any Tabs improvement flows through automatically.
+- **`aria-disabled` over native `disabled`:** Tabs/TabList use `aria-disabled="true"` rather than the HTML `disabled` attribute. This keeps future steps discoverable by screen readers while preventing activation — the WAI-ARIA recommended approach for tabs.
+- **Null guard for invalid state:** Returns `null` when `currentStepValue` is undefined (step not found in array) or steps are empty. The check uses `steps.find()` rather than array index — step values don't need to be sequential.
+- **Generic `<number>` type parameter:** Forces `Tabs<number>` — step values are always numbers, unlike general Tabs which default to strings. This narrows the API surface for form wizard use cases.
+- **`fullWidth` always true:** Step forms are full-width navigation by convention. Hardcoded rather than defaulted — consumers can't opt out, which is intentional for the form wizard pattern.
+- **Default `name='step'`:** Provides a sensible URL param key for the URL navigation mode. Overridable for pages with multiple step forms.
+
+<br/>
+
+## Known Bugs & Limitations
+- **No direct stepper container styling** — `tabButtonProps` customizes tab buttons and `selectProps` customizes the mobile dropdown, but the TabList container itself (Paper + `<ul>`) has no passthrough prop
+
+<br/>
+
+## Future Ideas
+- [ ] `tabListProps` passthrough for stepper container styling (Paper wrapper + tablist `<ul>`)
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> A smart thin wrapper that turns a general-purpose Tabs into a step wizard by adding exactly two things: future-step disabling and numeric typing. The restraint here is the point — you get keyboard navigation, ARIA roles, URL sync, and every future Tabs improvement for free, with zero duplicated logic.
+>
+> MUI's `Stepper` is the obvious comparison, and it's a heavier commitment — separate `Step`, `StepLabel`, `StepConnector` components, orientation props, and its own completion/error state management. That's useful when you need visual step connectors and non-linear flows, but it's a parallel widget system you maintain independently. StepForm's approach of constraining an existing primitive means there's essentially nothing to maintain and nothing that can drift out of sync. The tradeoff is real — you won't get step icons or connector lines without building them — but for form wizards that's rarely what you need.
+>
+> The `currentStepValue` lookup is a nice defensive touch — if someone passes a `currentStep` that doesn't exist in the `steps` array, the component renders nothing instead of putting Tabs into an impossible state. The `fullSteps` derivation is the entire feature in one line: everything past the current step gets disabled, everything at or before it stays interactive, and that's the whole contract.
+>
+> Does its one job cleanly and stays out of the way.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

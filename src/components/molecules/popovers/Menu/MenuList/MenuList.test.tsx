@@ -9,48 +9,78 @@ import { MenuList } from '.'
 
 expect.extend(toHaveNoViolations)
 
+const options = getMenuOptions()
+
 describe('MenuList', () => {
-  const options = getMenuOptions()
-  it('default', () => {
-    render(<MenuList className="className" name="menuListTest" options={options} />)
-    const listboxRole = screen.getByRole('menu')
-    const optionRoles = screen.getAllByRole('menuitem')
+  describe('Semantics', () => {
+    it('renders as menu role', () => {
+      render(<MenuList name="menuListTest" options={options} />)
+      const menu = screen.getByRole('menu')
 
-    expect(listboxRole).toBeInTheDocument()
-    expect(listboxRole).toHaveClass('className')
-    expect(listboxRole).toHaveAttribute('id', 'menuListTest')
-    expect(listboxRole).toHaveAttribute('aria-labelledby', 'menuListTest-button')
-    expect(optionRoles).toHaveLength(8)
-    expect(optionRoles[0]).toHaveTextContent(options[0].groupedOptions[0].label)
+      expect(menu).toBeInTheDocument()
+    })
+
+    it('forwards className', () => {
+      render(<MenuList className="className" name="menuListTest" options={options} />)
+      const menu = screen.getByRole('menu')
+
+      expect(menu).toHaveClass('className')
+    })
+
+    it('has id from name', () => {
+      render(<MenuList name="menuListTest" options={options} />)
+      const menu = screen.getByRole('menu')
+
+      expect(menu).toHaveAttribute('id', 'menuListTest')
+    })
+
+    it('aria-labelledby links to button', () => {
+      render(<MenuList name="menuListTest" labelId="menuListTest-button" options={options} />)
+      const menu = screen.getByRole('menu')
+
+      expect(menu).toHaveAttribute('aria-labelledby', 'menuListTest-button')
+    })
+
+    it('renders menuitems from options', () => {
+      render(<MenuList name="menuListTest" options={options} />)
+      const menuitems = screen.getAllByRole('menuitem')
+
+      expect(menuitems).toHaveLength(8)
+      expect(menuitems[0]).toHaveTextContent(options[0].groupedOptions[0].label)
+    })
+
+    it('renders children', () => {
+      render(
+        <MenuList name="menuListTest" options={options}>
+          <div data-testid="test">test</div>
+        </MenuList>,
+      )
+      const child = screen.getByTestId('test')
+
+      expect(child).toBeInTheDocument()
+    })
   })
 
-  it('children', () => {
-    render(
-      <MenuList className="className" name="menuListTest" options={options}>
-        <div data-testid="test">test</div>
-      </MenuList>,
-    )
-    const childrenTestId = screen.getByTestId('test')
+  describe('Ref', () => {
+    it('forwards ref', () => {
+      const ref = createRef<HTMLUListElement>()
+      render(<MenuList ref={ref} name="menuListTest" options={options} />)
 
-    expect(childrenTestId).toBeInTheDocument()
+      expect(ref.current).toBeInstanceOf(HTMLUListElement)
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLUListElement>()
-    render(<MenuList ref={ref} name="menuListTest" options={options} />)
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(
+        <>
+          <div id="menuListTest-label">Label</div>
+          <MenuList name="menuListTest" options={options} />
+        </>,
+      )
 
-    expect(ref.current).not.toBeNull()
-  })
-
-  it('axe', async () => {
-    const { container } = render(
-      <>
-        <div id="menuListTest-label">Label</div>
-        <MenuList name="menuListTest" options={options} />
-      </>,
-    )
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

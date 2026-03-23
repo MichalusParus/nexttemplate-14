@@ -1,0 +1,76 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Common/Breadcrumb/Def" />
+
+# Breadcrumb
+
+> Navigation component that shows the user's location within a site hierarchy. Renders a trail of links leading to the current page, with the final item marked as the active page. Use for multi-level page structures where users need to backtrack.
+
+<br/>
+
+## Features
+
+- Options-driven link list
+- Custom content per item via `content` slot
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<nav>` landmark with `aria-label="breadcrumb"` — screen readers announce it as a breadcrumb navigation region
+- `<ol>` with `<li>` for each item — ordered list reflects the hierarchical path
+- Non-last items render as `Link` (`variant="text"`, `size="inline"`) — standard anchor navigation. `linkProps` applies to all links.
+- Last item renders as `Span` with `aria-current="page"` — not a link, since the user is already on that page. `spanProps` applies to the current page span.
+- Each option supports `content?: ReactNode` — rendered via `{content || label}` pattern for custom display (icons, badges). `label` stays as string for keys and fallback.
+- Separator `/` characters live in their own `<li>` elements with `role="presentation"` and `aria-hidden="true"` — hidden from assistive technology
+
+### Keyboard Handling
+- **Tab** — Moves focus between breadcrumb links (native link behavior)
+- Current page (last item) is a `Span`, not focusable — correctly excluded from tab order since it's not actionable
+- No custom keyboard handling — breadcrumbs rely entirely on native link Tab/Enter behavior per the WAI-ARIA spec
+
+### Accessibility (WAI-ARIA)
+- Follows [WAI-ARIA Breadcrumb Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/)
+- `aria-label="breadcrumb"` on the `<nav>` element identifies the landmark
+- `aria-current="page"` on the last item tells screen readers which page is currently active
+- Separators use both `role="presentation"` and `aria-hidden="true"` — belt-and-suspenders approach to AT hiding
+
+### Responsive & Layout
+- `flex-wrap` on the `<ol>` — breadcrumbs wrap naturally on narrow viewports
+- `wrap-break-word` allows long labels to break within words if needed
+- `gap-2.5` between items provides consistent spacing
+
+<br/>
+
+## Architecture Decisions
+- **Current page as Span, not Link**: The WAI-ARIA breadcrumb spec recommends that the current page not be a link — the user is already there, so a link would be redundant. Using `Span` with `cursor-default` and `font-semibold underline` makes it visually distinct while being semantically correct.
+- **Separator in its own `<li>`**: Each `/` gets its own list item rather than being a CSS pseudo-element. This keeps the separator in the DOM for visual consistency while `aria-hidden` removes it from the accessibility tree. Trade-off: more DOM nodes, but more predictable cross-browser rendering.
+- **`content || label` pattern**: Each option has `label: string` for keys/fallback and optional `content?: ReactNode` for custom display. Consistent with `OptionType` pattern used across Select, Menu, and other components.
+- **`linkProps` / `spanProps` pass-through**: Bulk props for all links and the current page span. `linkProps` omits `href` (set per option). className is merged, rest props are spread.
+- **`color` prop pass-through**: Single `color` prop controls both Link and Span colors — ensures visual consistency across the entire breadcrumb trail without per-item configuration.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Clean, well-structured breadcrumb that nails the accessibility basics — proper `nav` landmark, `aria-label`, `aria-current="page"`, and `aria-hidden` separators. There's really not much to get wrong with breadcrumbs, and this doesn't get anything wrong.
+>
+> Most breadcrumb implementations in libraries like Radix or Ark UI are essentially this same pattern — a nav, an ol, links, and a current-page indicator. They don't add meaningful abstraction beyond what you see here. The one feature worth noting that some libraries offer is a customizable separator prop (chevron, arrow, dot), whereas here the `/` is hardcoded in the markup. That's a minor point — you own the code, so changing it is a one-line edit — but a `separator` prop would make it more flexible without adding complexity.
+>
+> Solid component. Does exactly what a breadcrumb should, accessibly and without overengineering it.
+>
+> — *Claude, Opus 4.6, 2026-03-21*

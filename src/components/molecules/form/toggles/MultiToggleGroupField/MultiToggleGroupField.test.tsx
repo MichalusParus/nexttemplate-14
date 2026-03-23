@@ -6,7 +6,7 @@ import { act } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 
-import { fireEvent, render, screen, waitFor } from '../../../../../../.jest/customRender'
+import { fireEvent, render, screen, waitFor, within } from '../../../../../../.jest/customRender'
 import { getOptions } from '../../../../../../.storybook/helpers'
 import { Form } from '../../forms/Form'
 import { MultiToggleGroupField } from './MultiToggleGroupField'
@@ -41,99 +41,130 @@ const FieldWithHooks = (props: any) => {
 }
 
 describe('MultiToggleGroupField', () => {
-  it('default', () => {
-    render(<FieldWithHooks />)
-    const toggleGroupRole = screen.getByRole('group')
-    const buttonRoles = screen.getAllByRole('button')
-    const fakeLabelTestId = screen.getByTestId('FakeLabel')
+  describe('Semantics', () => {
+    it('renders MultiToggleGroup with Label', () => {
+      render(<FieldWithHooks />)
+      const group = screen.getByRole('group')
 
-    expect(toggleGroupRole).toBeInTheDocument()
-    expect(toggleGroupRole).toHaveClass('className')
-    expect(toggleGroupRole).toHaveAttribute('id', 'fieldTest')
-    expect(toggleGroupRole).toHaveAttribute('aria-invalid', 'false')
-    expect(fakeLabelTestId).toBeInTheDocument()
-    expect(fakeLabelTestId).toHaveTextContent('Label')
-    expect(fakeLabelTestId.tagName).toBe('LEGEND')
-    expect(buttonRoles[0]).toHaveTextContent(options[0].label)
-    expect(buttonRoles[0]).not.toHaveAttribute('aria-describedby')
-  })
-
-  it('error', async () => {
-    render(<FieldWithHooks />)
-    const toggleGroupRole = screen.getByRole('group')
-    const alertRole = screen.getByTestId('Alert')
-
-    await act(async () => {
-      fireEvent.submit(screen.getByTestId('submitButton'))
+      expect(group).toBeInTheDocument()
+      expect(within(group).getAllByRole('button')).toHaveLength(5)
     })
 
-    await waitFor(() => {
-      expect(alertRole).toBeInTheDocument()
-      expect(alertRole).toHaveTextContent('select one')
-      expect(alertRole).toHaveAttribute('role', 'alert')
-      expect(toggleGroupRole).toHaveAttribute('aria-describedby', 'fieldTest-description')
-      expect(toggleGroupRole).toHaveAttribute('aria-invalid', 'true')
+    it('forwards className', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('group')).toHaveClass('className')
+    })
+
+    it('id from name prop', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('group')).toHaveAttribute('id', 'fieldTest')
+    })
+
+    it('legend renders as label', () => {
+      render(<FieldWithHooks />)
+      const fakeLabel = screen.getByTestId('FakeLabel')
+
+      expect(fakeLabel).toHaveTextContent('Label')
+      expect(fakeLabel.tagName).toBe('LEGEND')
+    })
+
+    it('button attributes', () => {
+      render(<FieldWithHooks />)
+      const buttons = within(screen.getByRole('group')).getAllByRole('button')
+
+      expect(buttons[0]).toHaveTextContent(options[0].label)
+      expect(buttons[0]).not.toHaveAttribute('aria-describedby')
+    })
+
+    it('aria-labelledby points to label', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('group')).toHaveAttribute('aria-labelledby', 'fieldTest-label')
+    })
+
+    it('aria-invalid false when no error', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('group')).toHaveAttribute('aria-invalid', 'false')
+    })
+
+    it('description', () => {
+      render(<FieldWithHooks labelProps={{ description: 'description' }} />)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toHaveTextContent('description')
+    })
+
+    it('labelProps forwarded', () => {
+      render(<FieldWithHooks labelProps={{ className: 'className' }} />)
+
+      expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
     })
   })
 
-  it('value', async () => {
-    render(<FieldWithHooks />)
-    const buttonRoles = screen.getAllByRole('button')
+  describe('Interaction', () => {
+    it('value change on click', async () => {
+      render(<FieldWithHooks />)
+      const buttons = within(screen.getByRole('group')).getAllByRole('button')
 
-    expect(buttonRoles[0]).not.toHaveClass('selected')
+      expect(buttons[0]).not.toHaveClass('selected')
 
-    await act(async () => {
-      fireEvent.click(buttonRoles[0])
+      await act(async () => {
+        fireEvent.click(buttons[0])
+      })
+
+      expect(buttons[0]).toHaveClass('selected')
     })
 
-    expect(buttonRoles[0]).toHaveClass('selected')
-  })
+    it('onChange fires with value', async () => {
+      const onChange = jest.fn()
+      render(<FieldWithHooks onChange={onChange} />)
 
-  it('description', () => {
-    render(<FieldWithHooks labelProps={{ description: 'description' }} />)
-    const alertTestId = screen.getByTestId('Alert')
+      await act(async () => {
+        fireEvent.click(within(screen.getByRole('group')).getAllByRole('button')[1])
+      })
 
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveTextContent('description')
-  })
-
-  it('onChange', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks onChange={spy} />)
-    const buttonRoles = screen.getAllByRole('button')
-
-    await act(async () => {
-      fireEvent.click(buttonRoles[1])
+      expect(onChange).toHaveBeenCalledWith([options[1].value])
     })
 
-    expect(spy).toHaveBeenCalled()
-    expect(spy).toHaveBeenCalledWith([options[1].value])
-  })
+    it('error shown on invalid submit', async () => {
+      render(<FieldWithHooks />)
+      const group = screen.getByRole('group')
+      const alert = screen.getByTestId('Alert')
 
-  it('labelProps', () => {
-    render(<FieldWithHooks labelProps={{ className: 'className' }} />)
-    const labelWrapTestId = screen.getByTestId('LabelWrap')
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('submitButton'))
+      })
 
-    expect(labelWrapTestId).toHaveClass('className')
-  })
-
-  it('onSubmit', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks />)
-    screen.getByTestId('Form').onsubmit = spy
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('submitButton'))
+      await waitFor(() => {
+        expect(alert).toHaveTextContent('select one')
+        expect(alert).toHaveAttribute('role', 'alert')
+        expect(group).toHaveAttribute('aria-describedby', 'fieldTest-description')
+        expect(group).toHaveAttribute('aria-invalid', 'true')
+      })
     })
 
-    // TODO beenCalledWith, spy return native event and not values
-    expect(spy).toHaveBeenCalled()
+    it('form submit works', async () => {
+      const onSubmit = jest.fn()
+      render(<FieldWithHooks />)
+      screen.getByTestId('Form').onsubmit = onSubmit
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submitButton'))
+      })
+
+      expect(onSubmit).toHaveBeenCalled()
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(<FieldWithHooks />)
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<FieldWithHooks />)
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

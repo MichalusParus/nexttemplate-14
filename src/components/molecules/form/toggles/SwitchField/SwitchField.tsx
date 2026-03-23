@@ -42,9 +42,11 @@ export const SwitchField = ({
           error={errorMessage}
           aria-invalid={!!errorMessage}
           {...field}
+          value={name}
           onChange={() => {
-            field.onChange(field.value === name ? '' : name)
-            onChange?.(field.value === name ? '' : name)
+            const newValue = !field.value
+            field.onChange(newValue)
+            onChange?.(newValue ? name : '')
           }}
           {...rest}
         />

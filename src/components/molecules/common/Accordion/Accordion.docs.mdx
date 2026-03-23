@@ -1,0 +1,88 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Common/Accordion/Def" />
+
+# Accordion
+
+> Composition component that coordinates a set of Disclosure widgets. Supports independent or exclusive (single-open) panel behavior. Delegates all keyboard handling and accessibility to its child Disclosures.
+
+<br/>
+
+## Features
+
+- Options-driven panel composition
+- Exclusive mode — only one panel open at a time
+- Default expanded state per panel
+- `onToggle` callback
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Renders a presentational `<div>` wrapping an array of `Disclosure` components — no ARIA role on the container itself
+- Each child Disclosure provides its own `<button>` trigger with `aria-expanded` and `aria-controls`, and a content panel with `role="region"` and `aria-labelledby`
+- Options array maps to Disclosure instances — `title`, `content`, and optional `defaultExpanded` per item
+- `disclosuresProps` spread onto every Disclosure, allowing bulk configuration of shared props (chevron position, button props, paper props, etc.)
+
+### Keyboard Handling
+- Keyboard behavior is fully delegated to child Disclosure buttons
+- **Tab** — Moves focus between Disclosure header buttons (native tab order)
+- **Enter / Space** — Toggles the focused Disclosure panel (handled by Disclosure's Button)
+- Arrow key navigation between headers and Home/End jumps are not implemented — these are optional per the WAI-ARIA Accordion pattern
+
+### Accessibility (WAI-ARIA)
+- Follows [WAI-ARIA Accordion Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/accordion/) via composition — each Disclosure handles its own ARIA semantics
+- `aria-expanded` on each Disclosure button reflects open/closed state
+- `aria-controls` links each button to its content panel
+- Content panels use `role="region"` with `aria-labelledby` pointing to the trigger button
+- `inert` attribute on collapsed panels removes them from the accessibility tree
+
+### Interaction Behavior
+- Accordion always manages open state centrally via `openIndices` Set — all child Disclosures are controlled
+- **Default mode**: Multiple panels can be open simultaneously
+- **Exclusive mode** (`exclusive` prop): Clicking a header opens that panel and closes all others. If multiple options have `defaultExpanded: true`, only the first is honored
+- `onToggle` callback fires on any panel toggle — receives index and new open state
+- `variant` and `color` props pass through to all child Disclosures for consistent styling
+
+### Responsive & Layout
+- Flex column layout with `gap-4` (configurable via `className`)
+- Full-width Disclosures by default (inherited from Disclosure's `w-full`)
+- Supports nesting — an Accordion can be placed inside a Disclosure's content panel
+
+<br/>
+
+## Architecture Decisions
+- **Composition over reimplementation**: Accordion wraps Disclosure rather than duplicating its internals. All keyboard handling, ARIA attributes, and visual behavior come from Disclosure and its Button — Accordion only adds coordination logic.
+- **Centralized state**: Accordion owns all open/close state via `openIndices` Set, making all child Disclosures controlled. This enables consistent `onToggle` callback in both exclusive and non-exclusive modes, at the cost of re-rendering all Disclosures on each toggle (negligible for typical accordion sizes).
+- **`disclosuresProps` pass-through**: Allows bulk configuration of shared Disclosure props without wrapping each one individually. Spread before explicit props, so Accordion's `title`, `expanded`, and `setIsOpen` always take precedence.
+- **No grouped options**: Grouped accordion layouts are achieved by composing multiple Accordion components with external labels — simpler than a built-in grouping API and gives consumers full layout control.
+- **No controlled mode**: Accordion is a convenience mapper, not a state management layer. When you need programmatic control over which panels are open, compose Disclosures directly — Disclosure already has the full controlled API (`expanded` + `setIsOpen`).
+- **`willBeOpen` in `handleToggle`**: Assigned inside the `setOpenIndices` updater (which runs synchronously) and read after it for `onToggle` — avoids stale-closure bugs from reading `openIndices` directly.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> A smart convenience layer that solves the "wire up N collapsible panels" problem most teams end up solving ad hoc. The exclusive mode implementation is clean — `setOpenIndices` rebuilds the Set from scratch rather than diffing, which is simple and correct. The `willBeOpen` pattern inside the state updater is a subtle but important detail: it captures the next state synchronously before `onToggle` fires, sidestepping the stale-closure trap that plagues most React callback patterns. `disclosuresProps` spread-then-override is the right call for bulk configuration without accidentally clobbering coordination props.
+>
+> No major library ships this component. MUI's Accordion and Radix's Accordion.Root are both single-panel primitives — they're equivalents to Disclosure, not this. This Accordion occupies a layer above: pass an array, get coordinated panels with optional exclusivity. It's a gap in the ecosystem, and filling it with a thin mapper over an already-solid primitive is the right move.
+>
+> The `defaultExpanded` handling in the initializer deserves a nod — it respects per-option defaults but enforces the exclusive constraint immediately, keeping only the first match.
+>
+> A well-scoped coordination layer that knows exactly what it is and doesn't try to be more.
+>
+> — *Claude, Opus 4.6, 2026-03-21*

@@ -15,13 +15,13 @@ const meta: Meta<typeof Switch> = {
 }
 
 const SwitchWithHooks = (args: SwitchProps) => {
-  const [value, setValue] = useState<string>()
+  const [value, setValue] = useState('')
   return (
     <Switch
       {...args}
-      value={value}
+      value={value || args.value}
       isChecked={args.isChecked || Boolean(value)}
-      onChange={v => setValue(prev => (prev ? undefined : v))}
+      onChange={v => setValue(prev => (prev ? '' : v))}
     />
   )
 }

@@ -1,0 +1,92 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Popovers/Toast(Provider)/Def" />
+
+# ToastProvider
+
+> A context-based toast notification system — wraps app content with a provider, exposes a `useToast()` hook for triggering notifications, and renders slide-in Alert components via a portal. Supports auto-dismiss with configurable duration, persistent toasts with manual dismiss, status-based styling, and custom Alert props. Used for success feedback, informational messages, warnings, and error notifications.
+
+<br/>
+
+## Features
+
+- `useToast()` hook API — `addToast(status, message, title?, options?)`
+- Auto-dismiss with configurable duration
+- Persistent toasts with manual dismiss
+- Status-based styling — success, error, warning, info
+- Max 20 toast limit
+- Portal rendering with configurable container
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- `ToastContext.Provider` wraps `children`, exposes `{ addToast }` via `useToast()` hook
+- Container `<div>` — `fixed bottom-4 right-4 z-modal`, `flex flex-col items-end gap-2`, rendered via `createPortal` to `document.body` or custom `portalContainerId`. Always present in DOM as persistent `aria-live` region
+- Each toast is an `<Alert>` component — receives `status`, `title`, `children` (message), `variant` (default `"contained"`), `size` (default `"md"`), and rest `alertProps` via spread
+- `aria-live` set per toast — `"assertive"` for error status, `"polite"` for all others. `aria-atomic="true"` on each toast
+- Error status toasts get `role="alert"` from Alert internals (`status === 'error'`)
+- Persistent toasts render `<ClearButton>` as `endIcon` for manual dismissal
+- `forwardRef` on the container div (not the provider — the portal wrapper)
+
+### Keyboard Handling
+- None. ToastProvider is notification-only output with no keyboard interaction. ClearButton handles its own keyboard behavior as a native `<button>`.
+
+### Accessibility (WAI-ARIA)
+- Each toast has `aria-atomic="true"` — screen readers announce the full toast content
+- Non-error toasts use `aria-live="polite"` — announced without interrupting current speech
+- Error toasts use `aria-live="assertive"` to match their `role="alert"` from Alert — announced immediately
+- Persistent `aria-live` region — container div is always in the DOM when portal container is available, so screen readers can detect new content injected into it
+- ClearButton on persistent toasts provides accessible dismiss control
+- `devWarning` fires when `addToast` is called outside of a `ToastProvider`, catching missing provider bugs at dev time
+
+### Visual States
+- **Entering:** Toast starts with `translate-x-52` (off-screen right), then `requestAnimationFrame` sets `isVisible: true` applying `translate-x-0` with `transition-position` for smooth slide-in
+- **Visible:** `translate-x-0`, `shadow-paper`, `max-w-64`
+- **Dismissing:** `isVisible` set to `false` (slides back out via `translate-x-52` transition), then removed from state after 150ms timeout
+- **Empty:** Container div remains in DOM (persistent `aria-live` region) but has no visible content
+
+### Interaction Behavior
+- **`addToast(status, message, title?, options?)`** — creates a new toast with UUID, animates in via `requestAnimationFrame`
+- **Auto-dismiss:** non-persistent toasts removed after `duration` ms (default 3000) via `setTimeout` chain — calls `handleRemove` which triggers the 2-step dismiss
+- **Persistent dismiss:** `ClearButton` `onClick` calls `handleRemove(id)` — sets `isVisible: false`, then filters from state after 150ms
+- **Max limit:** `TOASTS_MAX = 20` — additional `addToast` calls log `console.warn('Toasts max count reached')` and no-op
+- **`alertProps`** — `className`, `variant`, `size` destructured and applied individually (variant/size have defaults), rest spread onto Alert
+
+### Responsive & Layout
+- Fixed positioning `bottom-4 right-4` — toasts stack vertically from bottom-right with `gap-2`
+- `max-w-64` on each toast
+- No responsive breakpoints — same layout at all screen sizes
+
+<br/>
+
+## Architecture Decisions
+- **Context + hook pattern:** `ToastContext` + `useToast()` decouples toast triggering from rendering. Any component within the provider tree can fire toasts without prop drilling. The provider owns all state and rendering logic.
+- **Portal rendering:** `createPortal` ensures toasts render above all content regardless of component tree depth. Container resolved via `usePortalContainer` hook with optional custom `portalContainerId`.
+- **`isVisible` / state removal dual step:** `handleRemove` sets `isVisible: false` first (triggers CSS slide-out transition via class toggle), then a 150ms `setTimeout` removes the toast from state. The 150ms timeout matches the CSS transition duration — a deliberate convention shared across all popover components.
+- **Alert composition:** Each toast delegates styling to the `Alert` component — status colors, icons, variant, and size are all handled by Alert. ToastProvider only adds positioning, animation, and lifecycle management.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Context-plus-hook for toasts is the right call, and the implementation is tighter than most I've seen. The two-phase dismiss — toggling `isVisible` then cleaning up state after 150ms — is a small detail that makes exit animations actually work without reaching for a transition library. What's genuinely clever is how little this component does itself: it's really just a lifecycle manager that delegates all visual work to Alert, which means toast styling stays consistent with the rest of the design system for free.
+>
+> Sonner (via Radix/shadcn ecosystem) is the toast benchmark right now, and it wins on features this component doesn't attempt: swipe-to-dismiss and automatic stacking with height-aware animations. But Sonner is also a standalone dependency with its own opinion about markup and styling. This component's approach — composing from an existing Alert primitive — means zero new visual concepts to learn and full control over the design system. For teams already using this library, that tradeoff lands well.
+>
+> A focused, well-composed toast system that gets the lifecycle right and wisely avoids reinventing Alert.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

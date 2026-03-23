@@ -1,0 +1,111 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Popovers/ImageViewer/Def" />
+
+# ImageViewer
+
+> A fullscreen image lightbox — a modal overlay that expands an image (or any content) to fill the screen when the trigger button is clicked. The trigger itself is a styled button with a zoom-in cursor that displays the content inline. On click, the content moves into a fixed-position portal with focus trapping, keyboard navigation, and a close button. Used for image detail views, galleries, and any content that benefits from a fullscreen presentation.
+
+<br/>
+
+## Features
+
+- Controlled or uncontrolled open state
+- Fullscreen dialog lightbox
+- Portal rendering with configurable container
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Trigger: `<Button>` — `aria-haspopup="dialog"`, `aria-expanded={openState}`, `aria-controls={nameId}`, receives `className` and native button props via rest spread. `color="none"`, `size="none"`, `hideShadow` — minimal styling, acts as a transparent click target
+- `aria-label` on trigger — from `label` prop or falls back to `useTranslations('Components')('imageViewer')` i18n string
+- Dialog: `<div>` — `role="dialog"`, `aria-modal="true"`, `id={nameId}`, `aria-label` matching trigger's label
+- Inner structure: ViewerInnerWrap `<div>` (dark background, flex centering) > `{children}` + close `<Button>` as sibling
+- Close button: `<Button>` with `startIcon={<XIcon>}`, `aria-label={t('close')}`, styled with `controlClass` from CarouselControls (shared styling for media controls)
+- Children render in trigger when closed, in dialog when open — not duplicated in the DOM
+- `<Overlay>` rendered as a sibling after the dialog div — dark backdrop, sets `inert` on app root and `overflow: hidden` on body, click-to-close
+- Rendered into a React portal (`createPortal` to `document.body` or custom `portalContainerId`)
+
+### Keyboard Handling
+Via `useFocus` with `dismiss: 'modal'`:
+- **Tab / Shift+Tab** — Cycles focus within the dialog (focus trap — focus cannot leave)
+- **ArrowDown / ArrowUp** — Cycles focus through focusable children (wraps at boundaries)
+- **ArrowRight / ArrowLeft** — Cycles focus through focusable children (Cmd+Arrow jumps to end/start)
+- **Home / End** — Jumps to first/last focusable element
+- **Escape** — Closes dialog and restores focus to the trigger button
+- Auto-focuses first focusable element on open via `requestAnimationFrame`
+- Focus is captured on open and restored on close via `useDismissModal`
+
+### Accessibility (WAI-ARIA)
+- Follows the [WAI-ARIA Dialog (Modal) pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
+- `role="dialog"` + `aria-modal="true"` on the dialog div
+- `aria-haspopup="dialog"` on the trigger button — indicates the button opens a dialog
+- `aria-expanded` reflects open state on the trigger
+- `aria-controls` links trigger to dialog via shared `nameId`
+- `aria-label` on both trigger and dialog — explicit via `label` prop or i18n fallback
+- Close button has `aria-label` via i18n `t('close')`
+- Focus scope coordination via `useFocusScope` — nested modals correctly deactivate parent scopes
+
+### Visual States
+- **Closed:** Both `openState` and `isVisible` false — dialog not in DOM, children render inside trigger button
+- **Opening:** `openState` becomes true → `setIsVisible(true)` immediately → dialog mounts with `scale-90 opacity-0` → next render applies `scale-100 opacity-100` (scale up + fade in)
+- **Closing:** `openState` becomes false → CSS transition plays (`opacity-0`) → 150ms `setTimeout` → `isVisible=false` → dialog unmounts
+- Trigger: `cursor-zoom-in`, `overflow-hidden`, `rounded-md`, focus-visible outline
+- Dialog: Fixed fullscreen (`fixed left-0 top-0 h-screen w-screen`) with `z-modal` z-index
+- Inner wrap: Dark background (`bg-dark-800`), flex centering for content
+- Close button: Fixed top-right (`fixed right-0 top-0 z-modal`), dark semi-transparent background
+
+### Interaction Behavior
+- **Dual mode:** Supports both controlled (`isOpen`/`setIsOpen`) and uncontrolled mode via `useInternalOpenState`
+- **Trigger click:** Toggles open state — `handleOpen(!openState)`
+- **Close button:** Calls `handleOpen(false)`
+- **Overlay dismiss:** Clicking the dark overlay calls `handleOpen(false)` — same click-outside-to-close behavior as Dialog
+- **Children swap:** `{!openState && children}` in trigger, `{children}` in dialog — content shows in one place at a time
+- **Close animation timing:** `useEffect` on `openState` — when false, starts 150ms `setTimeout` before setting `isVisible=false`. Cleanup clears the timer on unmount or rapid re-open
+- **Portal container:** Configurable via `portalContainerId` prop, defaults to `document.body`
+
+### Responsive & Layout
+- Trigger: `w-full shrink-0` — takes full width of parent container
+- Dialog: Full viewport (`h-screen w-screen`) — always fullscreen regardless of viewport size
+- Content centering via flexbox in inner wrap — images center both horizontally and vertically
+- No responsive breakpoints — fullscreen is the only layout
+
+<br/>
+
+## Architecture Decisions
+- **Null `containerRef` pattern:** `containerRef` is a `useRef(null)` that stays null. Since ImageViewer's trigger is the `<Button>` with its own `ref`, there's no separate container element. `useFocus` receives this null ref as the container, so the focusable element list comes from the portal only (the dialog's children). Same pattern as Dialog.
+- **`useState` + `setDialogEl` as ref callback, not useRef:** The dialog div's ref is captured via `useState` + `setDialogEl`. This is necessary because `useFocus` needs the portal element (`portalEl: dialogEl`) to attach keyboard listeners, and a ref object change doesn't trigger re-renders — the state setter does, ensuring `useFocus` re-runs when the element mounts.
+- **`controlClass` from CarouselControls:** The close button imports `controlClass` from Carousel's controls — shared hover/focus styling (`hoverable:bg-dark-950/50`, `focus-visible:bg-dark-950/50`, `text-dark-300`) for media control buttons. Ensures visual consistency across image-centric components (Carousel, Gallery, ImageViewer).
+- **Children in trigger XOR dialog:** `{!openState && children}` in trigger prevents the content from being duplicated in the DOM. The trade-off: no shared element transition (View Transitions API) is possible since the element unmounts from one location before mounting in the other.
+- **`ButtonProps` extension:** `ImageViewerProps` extends `ButtonProps` — the trigger inherits all Button props (variant, disabled, etc.) via rest spread, giving consumers full control over the trigger appearance without an explicit trigger prop.
+- **Overlay as sibling, not wrapper:** The `<Overlay>` is rendered after the dialog div (not wrapping it), so clicking the overlay fires `onClose` without event propagation issues through the dialog's content. Same pattern as Dialog.
+- **`openState` / `isVisible` dual state:** `openState` drives the trigger logic, `isVisible` keeps the DOM present during the fade-out transition. The 150ms timeout between `openState=false` and `isVisible=false` matches the CSS transition duration — a deliberate convention shared across all popover components.
+
+<br/>
+
+## Known Bugs & Limitations
+- Issues with severity
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Zoom-to-fullscreen in a single component — that's a strong concept. The trigger *is* the button, the button *is* the preview, and opening swaps the children into a portal dialog. The `children` XOR pattern (`!openState && children` in trigger, always in dialog) is the kind of trade-off that only makes sense once you understand the goal: the thumbnail *becomes* the fullscreen view without DOM duplication. The 150ms timeout on `isVisible` keeps the exit animation smooth without layout thrash — a detail that's easy to get wrong with portal teardown.
+>
+> React Aria's `useDialog` is the closest peer. Their approach separates trigger, overlay, and dialog into distinct hooks and components — maximum flexibility, but the consumer wires everything together. ImageViewer collapses that entire stack into one component with `useFocus` handling trap and dismissal internally. For a single-purpose "click image, see it big" interaction, that's the right trade-off. You lose composability (no custom trigger, no nested dialogs), but those aren't real use cases for an image viewer.
+>
+> The `ButtonProps` extension is doing real work — consumers can pass `disabled`, style variants, or event handlers to the trigger without a separate trigger prop or render-prop pattern.
+>
+> A focused, opinionated component that knows exactly what it is.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

@@ -37,7 +37,7 @@ export const AutocompleteField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size} error={errorMessage} {...labelProps}>
+        <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps}>
           <Autocomplete
             className={className}
             variant={variant || formVariant}

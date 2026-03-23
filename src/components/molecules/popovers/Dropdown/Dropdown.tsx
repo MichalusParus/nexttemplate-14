@@ -121,7 +121,7 @@ export const Dropdown = forwardRef<HTMLDivElement | null, PropsWithChildren<Drop
           <div
             className={cn(
               'Dropdown',
-              'easy-in-out absolute z-modal opacity-0 transition-opacity duration-150',
+              'ease-in-out absolute z-modal opacity-0 transition-opacity duration-150',
               isVisible && isOpen && 'opacity-100',
               className,
             )}
@@ -131,7 +131,7 @@ export const Dropdown = forwardRef<HTMLDivElement | null, PropsWithChildren<Drop
             ref={setPopoverEl}
             role={modal ? 'dialog' : undefined}
             aria-label={label || t('dropdown')}
-            aria-modal={modal}
+            aria-modal={modal || undefined}
             data-testid="Dropdown"
             {...rest}
           >

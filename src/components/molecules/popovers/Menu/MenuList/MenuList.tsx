@@ -1,5 +1,5 @@
 'use client'
-import { forwardRef, OlHTMLAttributes, PropsWithChildren } from 'react'
+import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react'
 
 import { buttonSize } from '@/components/atoms/common/Button/Button.style'
 import { useGroupedOptions } from '@/components/utils/hooks/useGroupedOptions'
@@ -12,7 +12,7 @@ import { MenuItemSwitch } from '../items/MenuItemSwitch'
 import { MenuOptionGroupType, MenuOptionType } from '../types'
 
 type NativeMenuListProps = Omit<
-  OlHTMLAttributes<HTMLUListElement>,
+  HTMLAttributes<HTMLUListElement>,
   'className' | 'onClick' | 'color'
 >
 
@@ -22,6 +22,8 @@ export type MenuListProps<T = string> = NativeMenuListProps &
     className?: string
     /** name of the listbox for aria-controls */
     name: string
+    /** id of the trigger button for aria-labelledby */
+    labelId?: string
     /** options for display */
     options: MenuOptionType<T>[] | MenuOptionGroupType<T>[]
     /** close all menus up to root */
@@ -33,6 +35,7 @@ function MenuListComponent<T = string>(
   {
     className,
     name,
+    labelId,
     options,
     variant = 'outlined',
     color = 'primary',
@@ -133,7 +136,7 @@ function MenuListComponent<T = string>(
     <ul
       id={name}
       className={cn('MenuList', isGrouped && 'flex flex-col gap-3', className)}
-      aria-labelledby={`${name}-button`}
+      aria-labelledby={labelId}
       role="menu"
       data-testid="MenuList"
       ref={ref}

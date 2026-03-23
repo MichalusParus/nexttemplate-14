@@ -15,13 +15,13 @@ const meta: Meta<typeof Checkbox> = {
 }
 
 const CheckboxWithHooks = (args: CheckboxProps) => {
-  const [value, setValue] = useState<string>()
+  const [value, setValue] = useState('')
   return (
     <Checkbox
       {...args}
-      value={value}
+      value={value || args.value}
       isChecked={args.isChecked || Boolean(value)}
-      onChange={v => setValue(prev => (prev ? undefined : v))}
+      onChange={v => setValue(prev => (prev ? '' : v))}
     />
   )
 }

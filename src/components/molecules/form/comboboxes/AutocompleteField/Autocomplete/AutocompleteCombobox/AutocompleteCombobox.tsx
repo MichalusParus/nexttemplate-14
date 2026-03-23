@@ -113,7 +113,7 @@ function AutocompleteComboboxComponent<T = string>(
 
   const handleOpen = useCallback(
     (e: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => {
-      if (disabled || ('key' in e && !['Space', 'Enter'].includes(e.key as string))) return
+      if (disabled || ('key' in e && !['Enter'].includes(e.key as string))) return
       e.stopPropagation()
       handleToggle()
     },
@@ -206,7 +206,7 @@ function AutocompleteComboboxComponent<T = string>(
         />
       </div>
       <div className="relative flex gap-2">
-        {onClear && !!value && <ClearButton onClick={onClear} data-testid="ClearAllButton" />}
+        {onClear && (!!value || !!multiValue?.length) && <ClearButton onClick={onClear} data-testid="ClearAllButton" />}
         <ChevronIcon className={cn('transition-transform', isOpen && 'rotate-180')} />
       </div>
     </div>

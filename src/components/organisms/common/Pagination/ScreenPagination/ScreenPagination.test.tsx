@@ -70,10 +70,10 @@ describe('ScreenPagination', () => {
   it('pageSpread', () => {
     render(<ScreenPagination count={20} page={10} pageSpread={11} onChange={() => {}} />)
     const buttonRoles = screen.getAllByRole('button')
-    const dottWrapQuery = screen.queryAllByTestId('DottWrap')
+    const dotWrapQuery = screen.queryAllByTestId('DotWrap')
 
     expect(buttonRoles).toHaveLength(11)
-    expect(dottWrapQuery).toHaveLength(2)
+    expect(dotWrapQuery).toHaveLength(2)
   })
 
   it('buttonProps', () => {

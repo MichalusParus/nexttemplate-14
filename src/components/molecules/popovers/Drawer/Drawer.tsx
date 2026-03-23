@@ -15,6 +15,7 @@ import { Paper } from '@/components/atoms/containers/Paper'
 import { PaperProps } from '@/components/atoms/containers/Paper/Paper'
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { ScrollShadowProps } from '@/components/atoms/containers/ScrollShadow/ScrollShadow'
+import { devWarning } from '@/components/utils/devWarning'
 import { useFocus } from '@/components/utils/hooks/useFocus'
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
@@ -24,7 +25,7 @@ import { closeClass, drawerClass, openClass } from './Drawer.style'
 
 export type DrawerProps = NativeDivProps &
   Omit<StyleProps, 'size'> & {
-    /** for passing tailwind classes to Paper through props */
+    /** for passing tailwind classes to the drawer container */
     className?: string
     /** name string serves as id for aria purposes and as secondary aria label */
     name: string
@@ -92,6 +93,11 @@ export const Drawer = forwardRef<HTMLDivElement | null, PropsWithChildren<Drawer
       onToggle: (open: boolean) => !open && onClose(),
     })
 
+    devWarning(
+      !label,
+      'Drawer: no label provided — drawer will only have a generic aria-label from i18n fallback. Provide a label prop for screen reader context.',
+    )
+
     const container = usePortalContainer(portalContainerId)
     useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
       ref,
@@ -133,7 +139,7 @@ export const Drawer = forwardRef<HTMLDivElement | null, PropsWithChildren<Drawer
           ref={el => setComponentEl(el as HTMLDivElement | null)}
           role={modal ? 'dialog' : undefined}
           aria-label={label || t('drawer')}
-          aria-modal={modal}
+          aria-modal={modal || undefined}
           data-testid="Drawer"
           {...rest}
         >

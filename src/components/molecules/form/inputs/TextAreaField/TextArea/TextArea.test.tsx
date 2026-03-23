@@ -9,85 +9,115 @@ import { TextArea } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('TextArea', () => {
-  it('default', () => {
-    render(
-      <TextArea
-        className="className"
-        name="textAreaTest"
-        placeholder="placeholder"
-        onChange={() => {}}
-      />,
-    )
-    const textAreaWrapTestId = screen.getByTestId('TextAreaWrap')
-    const textAreaRole = screen.getByRole('textbox')
+  describe('Semantics', () => {
+    it('renders native textarea with textbox role', () => {
+      render(<TextArea name="test" placeholder="placeholder" onChange={() => {}} />)
+      const textarea = screen.getByRole('textbox')
 
-    expect(textAreaWrapTestId).toBeInTheDocument()
-    expect(textAreaWrapTestId).toHaveClass('className')
-    expect(textAreaRole).toHaveAttribute('id', 'textAreaTest')
-    expect(textAreaRole).toHaveAttribute('name', 'textAreaTest')
-    expect(textAreaRole).toHaveAttribute('placeholder', 'placeholder')
-    textAreaRole.focus()
-    expect(document.activeElement).toBe(textAreaRole)
-  })
-
-  it('value', () => {
-    render(<TextArea name="name" value="value" onChange={() => {}} />)
-    const textAreaRole = screen.getByRole('textbox')
-
-    expect(textAreaRole).toHaveValue('value')
-  })
-
-  it('error', () => {
-    render(<TextArea name="name" error="error" onChange={() => {}} />)
-    const textAreaWrapTestId = screen.getByTestId('TextAreaWrap')
-
-    expect(textAreaWrapTestId).toHaveClass('error')
-  })
-
-  it('onChange', () => {
-    const spy = jest.fn()
-    render(<TextArea name="name" value="value" onChange={spy} />)
-    const textAreaRole = screen.getByRole('textbox')
-
-    fireEvent.change(textAreaRole, {
-      target: {
-        value: 'newvalue',
-      },
+      expect(textarea).toBeInTheDocument()
+      expect(textarea.tagName).toBe('TEXTAREA')
     })
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('newvalue')
+
+    it('sets id and name from name prop', () => {
+      render(<TextArea name="bio" onChange={() => {}} />)
+      const textarea = screen.getByRole('textbox')
+
+      expect(textarea).toHaveAttribute('id', 'bio')
+      expect(textarea).toHaveAttribute('name', 'bio')
+    })
+
+    it('className lands on wrapper div', () => {
+      render(<TextArea className="w-96" name="test" onChange={() => {}} />)
+      const wrapper = screen.getByTestId('TextAreaWrap')
+
+      expect(wrapper).toHaveClass('w-96')
+    })
+
+    it('renders placeholder', () => {
+      render(<TextArea name="test" placeholder="Enter text" onChange={() => {}} />)
+      const textarea = screen.getByRole('textbox')
+
+      expect(textarea).toHaveAttribute('placeholder', 'Enter text')
+    })
+
+    it('renders value', () => {
+      render(<TextArea name="test" value="hello" onChange={() => {}} />)
+      const textarea = screen.getByRole('textbox')
+
+      expect(textarea).toHaveValue('hello')
+    })
+
+    it('error adds error class to wrapper', () => {
+      render(<TextArea name="test" error="required" onChange={() => {}} />)
+      const wrapper = screen.getByTestId('TextAreaWrap')
+
+      expect(wrapper).toHaveClass('error')
+    })
+
+    it('disabled sets native disabled and aria-disabled on wrapper', () => {
+      render(<TextArea name="test" disabled onChange={() => {}} />)
+      const textarea = screen.getByRole('textbox')
+      const wrapper = screen.getByTestId('TextAreaWrap')
+
+      expect(textarea).toBeDisabled()
+      expect(wrapper).toHaveAttribute('aria-disabled', 'true')
+      expect(wrapper).toHaveClass('disabled')
+    })
+
+    it('not disabled omits aria-disabled', () => {
+      render(<TextArea name="test" onChange={() => {}} />)
+      const wrapper = screen.getByTestId('TextAreaWrap')
+
+      expect(wrapper).not.toHaveAttribute('aria-disabled')
+    })
   })
 
-  it('disabled', () => {
-    render(<TextArea name="name" value="" disabled onChange={() => {}} />)
-    const textAreaRole = screen.getByRole('textbox')
-    const textAreaWrapTestId = screen.getByTestId('TextAreaWrap')
+  describe('Keyboard', () => {
+    it('Tab focuses the textarea', () => {
+      render(<TextArea name="test" onChange={() => {}} />)
+      const textarea = screen.getByRole('textbox')
 
-    expect(textAreaRole).toHaveAttribute('disabled', '')
-    expect(textAreaWrapTestId).toHaveAttribute('aria-disabled', 'true')
-    expect(textAreaWrapTestId).toHaveClass('disabled')
+      textarea.focus()
+      expect(document.activeElement).toBe(textarea)
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLTextAreaElement>()
-    render(<TextArea ref={ref} name="textAreaTest" placeholder="placeholder" onChange={() => {}} />)
+  describe('Interaction', () => {
+    it('onChange fires with string value', () => {
+      const onChange = jest.fn()
+      render(<TextArea name="test" value="" onChange={onChange} />)
+      const textarea = screen.getByRole('textbox')
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
+      fireEvent.change(textarea, { target: { value: 'hello' } })
+      expect(onChange).toHaveBeenCalledTimes(1)
+      expect(onChange).toHaveBeenCalledWith('hello')
+    })
 
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
+    it('disabled textarea has disabled attribute', () => {
+      render(<TextArea name="test" value="" disabled onChange={() => {}} />)
+      const textarea = screen.getByRole('textbox')
 
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
+      expect(textarea).toBeDisabled()
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(
-      <TextArea name="textAreaTest" placeholder="placeholder" onChange={() => {}} />,
-    )
+  describe('Ref', () => {
+    it('forwards ref to textarea element', () => {
+      const ref = createRef<HTMLTextAreaElement>()
+      render(<TextArea ref={ref} name="test" onChange={() => {}} />)
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      expect(ref.current).toBeInstanceOf(HTMLTextAreaElement)
+    })
+  })
+
+  describe('Accessibility', () => {
+    it('axe', async () => {
+      const { container } = render(
+        <TextArea name="test" placeholder="placeholder" onChange={() => {}} />,
+      )
+      const results = await axe(container)
+
+      expect(results).toHaveNoViolations()
+    })
   })
 })

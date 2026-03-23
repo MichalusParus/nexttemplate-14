@@ -37,6 +37,13 @@ export const useKeyboardNavigation = (
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       const focusable = focusableElRef.current
+
+      // Sync index with actual focus — handles Tab-in where focusIndexRef is stale
+      const activeIndex = focusable.indexOf(document.activeElement as HTMLElement)
+      if (activeIndex !== -1 && activeIndex !== focusIndexRef.current) {
+        focusIndexRef.current = activeIndex
+      }
+
       const { code, metaKey, shiftKey } = e
 
       if (keyHandlers) {

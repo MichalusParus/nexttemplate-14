@@ -4,7 +4,7 @@ import { iconPaddingSize } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { dottClass } from './InlineLoader.style'
+import { dotClass } from './InlineLoader.style'
 
 type NativeInlineLoaderProps = Omit<HTMLAttributes<HTMLSpanElement>, 'className'>
 
@@ -33,13 +33,13 @@ export const InlineLoader = forwardRef<HTMLSpanElement | null, InlineLoaderProps
         ref={ref}
         {...rest}
       >
-        <span className={cn('Dott', dottClass, dotPadding)} />
+        <span className={cn('Dot', dotClass, dotPadding)} />
         <span
-          className={cn('Dott', dottClass, dotPadding)}
+          className={cn('Dot', dotClass, dotPadding)}
           style={{ animationDelay: '150ms' }}
         />
         <span
-          className={cn('Dott', dottClass, dotPadding)}
+          className={cn('Dot', dotClass, dotPadding)}
           style={{ animationDelay: '300ms' }}
         />
       </span>

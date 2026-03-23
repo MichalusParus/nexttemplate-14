@@ -1,0 +1,98 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Common/Carousel/Def" />
+
+# Carousel
+
+> Sliding panel component with CSS-based transitions, autoplay, and touch swipe support. Accepts an items array or manual children with `pagesCount`, controlled by arrow buttons, dot indicators, and an optional autoplay toggle.
+
+<br/>
+
+## Features
+
+- Dual API — items array or manual children with `pagesCount`
+- Touch swipe navigation
+- Autoplay with configurable interval
+- Autoplay auto-pause on user interaction
+- Controlled or uncontrolled page state
+- Configurable controls — hide arrows, hide dots, or custom controls
+- Width and aspect ratio configuration
+- `onPageChange` callback
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Wrapping `<div>` with `role="region"`, `aria-roledescription="carousel"`, `aria-label` (defaults to translated "Carousel")
+- Inner wrap `<div>` slides via `margin-left: calc(-100% * N)` with `width: calc(100% * totalPages)`, animated by `transition-margin` class
+- Each item rendered as a `CarouselItem` with `role="group"`, `aria-roledescription="slide"`, `aria-label` showing "index / total: label"
+- `aria-current="true"` set on the active slide
+- Inactive slides have `aria-hidden="true"` and `inert` attribute
+- `CarouselControls` renders (when `pages > 1`): Previous/Next arrow buttons (absolute positioned), autoplay play/pause toggle, dot indicators (`DotWrap` with one `Button` per page, each `tabIndex={-1}`). All controls hidden for single-page carousels
+- Aspect ratio wrapper div applies ratio class (default `aspect-video`)
+- Empty state: when no items and no children, renders a single `CarouselItem` with `noItemsLabel` or translated fallback
+
+### Keyboard Handling
+No custom keyboard handling — this is a simple carousel where Tab-to-arrows is the intended UX. Previous/Next are standard Button components (focusable, Enter/Space activates). Dot indicators have `tabIndex={-1}` (not keyboard-accessible). Autoplay button is a standard Button. Full keyboard support (arrow keys, roving tabindex) is implemented at the Gallery level instead.
+
+### Accessibility (WAI-ARIA)
+- Follows [WAI-ARIA Carousel Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/carousel/)
+- `aria-roledescription="carousel"` on container, `aria-roledescription="slide"` on items
+- `aria-current="true"` marks the active slide
+- Inactive slides have `aria-hidden="true"` and `inert` — hidden from assistive tech and removed from tab order
+- Active slide's `aria-label` includes position info (e.g., "2 / 5: Slide label") — screen readers read this on navigation
+- Previous/Next buttons have `aria-label` with target page number (e.g., "previous page 3", "next page 2")
+- Autoplay button `aria-label` toggles between "Play" and "Pause"
+- Dot buttons have `aria-label` showing page number (e.g., "page 1")
+
+### Interaction Behavior
+- **Touch swipe**: `useTouch` hook fires on 30px horizontal threshold with a 30px vertical threshold guard (prevents page changes during primarily vertical scrolls), wraps around at boundaries
+- **Autoplay**: Configurable interval (default 3000ms), three states: `'on'` (playing), `'off'` (no autoplay), `'paused'` (paused). User interaction (arrow/dot click) auto-pauses autoplay
+- **Wrap-around navigation**: Page 1 Previous goes to last page, last page Next goes to page 1
+- **Controlled mode**: `currentPage` + `setCurrentPage` props for external state management
+- **`onPageChange` callback**: Fires on every page change (arrows, dots, swipe, autoplay) in both controlled and uncontrolled modes
+- **Empty state**: Shows `noItemsLabel` or translated "No options" fallback when no items and no children
+
+### Responsive & Layout
+- Width controlled by `width` prop (Tailwind class, default `w-full`)
+- Aspect ratio controlled by `ratio` prop (Tailwind class, default `aspect-video`)
+- Controls use `z-modal` for overlay stacking, arrows and dots appear on group-hover/focus-visible
+
+<br/>
+
+## Architecture Decisions
+- **Dual API (items array + children)**: Items array is the convenient default — pass label and content, get CarouselItems automatically. Children with `pagesCount` gives full flexibility for custom slide markup. Both can coexist.
+- **CSS sliding (margin-left transition)**: No scroll-based approach. The inner wrap is sized to `100% * totalPages` width, and sliding is a simple `margin-left` change. Predictable, no scroll snap quirks, works with the `transition-margin` utility class.
+- **Autoplay auto-pause on user interaction**: When a user clicks an arrow or dot, autoplay pauses automatically. This prevents the timer from fighting user intent mid-interaction. The pause is permanent until the user explicitly resumes via the autoplay button.
+- **Portal support for controls**: `CarouselControls` can render into a portal target via `portalTargetId`. This exists for gallery contexts where the carousel is inside a button (e.g., card click handler) — portaling the control buttons out avoids nested interactive element violations.
+- **Dot indicators not keyboard-accessible (`tabIndex={-1}`)**: Design decision to keep Tab order simple. Arrows provide the same page navigation, so dots are mouse/touch only. This avoids a long Tab sequence through many dots.
+- **`useTouch` hook for swipe**: Abstracts `touchStart`/`touchEnd` event handling into a reusable hook. The 30px horizontal threshold prevents accidental swipes from light touches.
+- **`useImperativeHandle` for ref forwarding**: The component uses `useTouch` which owns the actual DOM ref (`componentRef`). `useImperativeHandle` exposes this internal ref to consumers via the forwarded `ref` prop — same pattern as Calendar.
+- **No `aria-live` region**: Slide position is conveyed via `aria-label` (e.g., "2 / 5: label") + `aria-current`. An `aria-live` region would announce every autoplay tick indefinitely — noise for screen reader users who haven't interacted.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> A well-built carousel that gets the hard things right — the autoplay-pauses-on-interaction pattern alone puts it ahead of most custom implementations I've seen. The dual API is genuinely useful: `items` for the common case, `children` with `pagesCount` for when you need full control over slide markup. The portal escape hatch for controls is a thoughtful solve for the nested-interactive-element problem that most carousel libraries just ignore.
+>
+> React Aria's carousel (via useTabList pattern) takes a fundamentally different approach — rotor-based navigation where slides are tab-like elements managed by arrow keys within a single tab stop. That's technically purer for accessibility, but it also means every carousel behaves like a tablist, which is a weird mental model for image galleries or hero banners. The `aria-roledescription="carousel"` approach here with explicit slide labels is more intuitive for both developers and screen reader users, and the decision to skip `aria-live` in favor of on-demand labeling shows real thought about what autoplay means for assistive technology in practice.
+>
+> `onPageChange` fires uniformly for every source — arrows, dots, swipe, and autoplay — which is the right default. If distinguishing user-initiated from timer-initiated changes matters (e.g., analytics), the consumer can track that from context rather than needing a separate callback. Clean API surface.
+>
+> Strong carousel that prioritizes real-world usability over theoretical purity.
+>
+> — *Claude, Opus 4.6, 2026-03-21*

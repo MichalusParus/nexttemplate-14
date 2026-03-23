@@ -9,7 +9,7 @@ import { FieldProps } from '@/components/utils/types'
 import { FormStyleContext } from '../../forms/Form/Form'
 import { SearchInput, SearchInputProps } from './SearchInput/SearchInput'
 
-export type InputFieldProps = Omit<SearchInputProps, 'value' | 'error' | 'onChange'> &
+export type SearchFieldProps = Omit<SearchInputProps, 'value' | 'error' | 'onChange'> &
   Partial<Pick<SearchInputProps, 'onChange'>> &
   FieldProps
 
@@ -24,7 +24,7 @@ export const SearchField = ({
   labelProps = {},
   onChange,
   ...rest
-}: InputFieldProps) => {
+}: SearchFieldProps) => {
   const {
     control,
     formState: { errors },

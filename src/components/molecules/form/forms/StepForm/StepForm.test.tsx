@@ -23,87 +23,219 @@ jest.mock('next/navigation', () => ({
 const steps = tabsOptions.map((tab, i) => ({ ...tab, value: i }))
 
 describe('StepForm', () => {
-  it('default', async () => {
-    render(<StepForm className="className" currentStep={0} steps={steps} onStepChange={() => {}} />)
-    const tabsTestId = screen.getByTestId('Tabs')
-    const tablistRole = screen.getByRole('tablist')
-    const tabRoles = screen.getAllByRole('tab')
-    const tabPanelRoles = screen.getAllByRole('tabpanel')
+  describe('Semantics', () => {
+    it('renders Tabs wrapper', () => {
+      render(<StepForm currentStep={0} steps={steps} onStepChange={() => {}} />)
 
-    expect(tabsTestId).toBeInTheDocument()
-    expect(tabsTestId).toHaveClass('className')
-    expect(tablistRole).toBeInTheDocument()
-    expect(tabRoles).toHaveLength(tabsOptions.length)
-    expect(tabRoles[0]).toHaveTextContent(tabsOptions[0].label)
-    expect(tabRoles[1]).toHaveTextContent(tabsOptions[1].label)
-    expect(tabRoles[2]).toHaveTextContent(tabsOptions[2].label)
-    expect(tabRoles[0]).toHaveAttribute('aria-controls', tabPanelRoles[0].getAttribute('id'))
-    expect(tabRoles[0]).toHaveClass('selected')
-    expect(tabRoles[1]).toHaveAttribute('aria-disabled', 'true')
-    expect(tabRoles[0]).toHaveAttribute('aria-selected', 'true')
-    expect(tabPanelRoles).toHaveLength(1)
-    expect(tabPanelRoles[0]).toHaveAttribute('id', tabRoles[0].getAttribute('aria-controls'))
-    expect(tabPanelRoles[0]).toHaveAttribute('aria-labelledby', tabRoles[0].getAttribute('id'))
-    await act(async () => {
-      tabRoles[0].focus()
+      expect(screen.getByTestId('Tabs')).toBeInTheDocument()
     })
-    expect(document.activeElement).toBe(tabRoles[0])
-  })
 
-  it('tabButtonProps/selectProps', async () => {
-    render(
-      <StepForm
-        currentStep={1}
-        steps={steps}
-        onStepChange={() => {}}
-        tabButtonProps={{ className: 'tabButtonClass' }}
-        selectProps={{ className: 'selectProps' }}
-      />,
-    )
-    const tabRoles = screen.getAllByRole('tab')
-    const selectTestId = screen.getByTestId('TabListSelect')
+    it('forwards className', () => {
+      render(<StepForm className="className" currentStep={0} steps={steps} onStepChange={() => {}} />)
 
-    expect(tabRoles[0]).toHaveClass('tabButtonClass')
-    expect(selectTestId).toHaveClass('selectProps')
-  })
-
-  it('onStepChange', async () => {
-    const spy = jest.fn()
-    render(<StepForm currentStep={1} steps={steps} onStepChange={spy} />)
-    const tabRoles = screen.getAllByRole('tab')
-
-    await act(async () => {
-      fireEvent.click(tabRoles[0])
+      expect(screen.getByTestId('Tabs')).toHaveClass('className')
     })
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(steps[0].value)
+
+    it('renders tablist', () => {
+      render(<StepForm currentStep={0} steps={steps} onStepChange={() => {}} />)
+
+      expect(screen.getByRole('tablist')).toBeInTheDocument()
+    })
+
+    it('renders correct number of tabs', () => {
+      render(<StepForm currentStep={0} steps={steps} onStepChange={() => {}} />)
+
+      expect(screen.getAllByRole('tab')).toHaveLength(steps.length)
+    })
+
+    it('tabs display step labels', () => {
+      render(<StepForm currentStep={0} steps={steps} onStepChange={() => {}} />)
+      const tabs = screen.getAllByRole('tab')
+
+      expect(tabs[0]).toHaveTextContent(tabsOptions[0].label)
+      expect(tabs[1]).toHaveTextContent(tabsOptions[1].label)
+      expect(tabs[2]).toHaveTextContent(tabsOptions[2].label)
+    })
+
+    it('tab aria-controls links to panel', () => {
+      render(<StepForm currentStep={0} steps={steps} onStepChange={() => {}} />)
+      const tabs = screen.getAllByRole('tab')
+      const panel = screen.getByRole('tabpanel')
+
+      expect(tabs[0]).toHaveAttribute('aria-controls', panel.getAttribute('id'))
+    })
+
+    it('selected tab has selected class', () => {
+      render(<StepForm currentStep={0} steps={steps} onStepChange={() => {}} />)
+      const tabs = screen.getAllByRole('tab')
+
+      expect(tabs[0]).toHaveClass('selected')
+    })
+
+    it('selected tab has aria-selected true', () => {
+      render(<StepForm currentStep={0} steps={steps} onStepChange={() => {}} />)
+      const tabs = screen.getAllByRole('tab')
+
+      expect(tabs[0]).toHaveAttribute('aria-selected', 'true')
+    })
+
+    it('future steps are disabled', () => {
+      render(<StepForm currentStep={0} steps={steps} onStepChange={() => {}} />)
+      const tabs = screen.getAllByRole('tab')
+
+      expect(tabs[1]).toHaveAttribute('aria-disabled', 'true')
+      expect(tabs[2]).toHaveAttribute('aria-disabled', 'true')
+    })
+
+    it('past steps remain enabled', () => {
+      render(<StepForm currentStep={1} steps={steps} onStepChange={() => {}} />)
+      const tabs = screen.getAllByRole('tab')
+
+      expect(tabs[0]).not.toHaveAttribute('aria-disabled', 'true')
+      expect(tabs[1]).not.toHaveAttribute('aria-disabled', 'true')
+      expect(tabs[2]).toHaveAttribute('aria-disabled', 'true')
+    })
+
+    it('renders only active panel', () => {
+      render(<StepForm currentStep={0} steps={steps} onStepChange={() => {}} />)
+
+      expect(screen.getAllByRole('tabpanel')).toHaveLength(1)
+    })
+
+    it('panel aria-labelledby matches tab id', () => {
+      render(<StepForm currentStep={0} steps={steps} onStepChange={() => {}} />)
+      const tabs = screen.getAllByRole('tab')
+      const panel = screen.getByRole('tabpanel')
+
+      expect(panel).toHaveAttribute('id', tabs[0].getAttribute('aria-controls'))
+      expect(panel).toHaveAttribute('aria-labelledby', tabs[0].getAttribute('id'))
+    })
+
+    it('tabButtonProps forwards className', () => {
+      render(
+        <StepForm
+          currentStep={1}
+          steps={steps}
+          onStepChange={() => {}}
+          tabButtonProps={{ className: 'tabButtonClass' }}
+        />,
+      )
+      const tabs = screen.getAllByRole('tab')
+
+      expect(tabs[0]).toHaveClass('tabButtonClass')
+    })
+
+    it('selectProps forwards className', () => {
+      render(
+        <StepForm
+          currentStep={1}
+          steps={steps}
+          onStepChange={() => {}}
+          selectProps={{ className: 'selectProps' }}
+        />,
+      )
+
+      expect(screen.getByTestId('TabListSelect')).toHaveClass('selectProps')
+    })
+
+    it('returns null for invalid currentStep', () => {
+      const { container } = render(<StepForm currentStep={99} steps={steps} onStepChange={() => {}} />)
+
+      expect(container.innerHTML).toBe('')
+    })
+
+    it('returns null for empty steps', () => {
+      const { container } = render(<StepForm currentStep={0} steps={[]} onStepChange={() => {}} />)
+
+      expect(container.innerHTML).toBe('')
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLDivElement>()
-    render(<StepForm currentStep={1} steps={steps} onStepChange={() => {}} ref={ref} />)
+  describe('Keyboard', () => {
+    it('tab focuses step tab', async () => {
+      render(<StepForm currentStep={2} steps={steps} onStepChange={() => {}} />)
+      const tabs = screen.getAllByRole('tab')
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
+      await act(async () => {
+        tabs[0].focus()
+      })
+      expect(document.activeElement).toBe(tabs[0])
+    })
 
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
+    it('ArrowRight moves focus to next enabled tab', async () => {
+      render(<StepForm currentStep={2} steps={steps} onStepChange={() => {}} />)
+      const tabs = screen.getAllByRole('tab')
 
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
+      await act(async () => {
+        tabs[0].focus()
+      })
+      await act(async () => {
+        fireEvent.keyDown(tabs[0], { key: 'ArrowRight', code: 'ArrowRight' })
+      })
+      expect(document.activeElement).toBe(tabs[1])
+    })
+
+    it('ArrowRight wraps to first tab', async () => {
+      render(<StepForm currentStep={2} steps={steps} onStepChange={() => {}} />)
+      const tabs = screen.getAllByRole('tab')
+
+      await act(async () => {
+        tabs[2].focus()
+      })
+      await act(async () => {
+        fireEvent.keyDown(tabs[2], { key: 'ArrowRight', code: 'ArrowRight' })
+      })
+      expect(document.activeElement).toBe(tabs[0])
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(
-      <StepForm
-        currentStep={0}
-        steps={steps}
-        onStepChange={() => {}}
-        selectProps={{ title: 'title' }}
-      />,
-    )
+  describe('Interaction', () => {
+    it('click fires onStepChange with step value', async () => {
+      const onStepChange = jest.fn()
+      render(<StepForm currentStep={1} steps={steps} onStepChange={onStepChange} />)
+      const tabs = screen.getAllByRole('tab')
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      await act(async () => {
+        fireEvent.click(tabs[0])
+      })
+      expect(onStepChange).toHaveBeenCalledTimes(1)
+      expect(onStepChange).toHaveBeenCalledWith(steps[0].value)
+    })
+
+    it('click on disabled tab does not fire onStepChange', async () => {
+      const onStepChange = jest.fn()
+      render(<StepForm currentStep={0} steps={steps} onStepChange={onStepChange} />)
+      const tabs = screen.getAllByRole('tab')
+
+      await act(async () => {
+        fireEvent.click(tabs[1])
+      })
+      expect(onStepChange).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('Ref', () => {
+    it('exposes HTMLDivElement', () => {
+      const ref = createRef<HTMLDivElement>()
+      render(<StepForm currentStep={1} steps={steps} onStepChange={() => {}} ref={ref} />)
+
+      expect(ref.current).toBeInstanceOf(HTMLDivElement)
+    })
+  })
+
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(
+        <StepForm
+          currentStep={0}
+          steps={steps}
+          onStepChange={() => {}}
+          selectProps={{ title: 'title' }}
+        />,
+      )
+
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

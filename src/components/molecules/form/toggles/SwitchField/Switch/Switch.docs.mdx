@@ -1,0 +1,90 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/toggles/Switch/Def" />
+
+# Switch
+
+> A toggle switch rendered as a native `<input type="checkbox">` with a sliding thumb indicator, optional label, and the same variant/color/size system as Checkbox. Used standalone or composed inside CheckboxGroup (via `switchType`) for multi-select toggle lists.
+
+<br/>
+
+## Features
+
+- Native `<input type="checkbox">` — full form participation, browser autofill, no ARIA role simulation needed
+- Fake mode — thumb-only rendering without input or label (for decorative use in group components)
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Outer `<div data-testid="SwitchWrap">` — flex layout wrapper, receives `className` and margin spacing
+- Inner `<div data-testid="SwitchInputWrap">` — visual switch track with `aria-disabled`, holds native input and thumb
+- `<input type="checkbox">` — native checkbox, absolutely positioned and invisible (`opacity-0`, `z-10`), receives `id={name}`, `name`, `value`, `checked`, `disabled`, `ref`, and rest props
+- `<div data-testid="SwitchThumb">` — sliding circle indicator, positioned via `left` classes based on `isChecked` state
+- `<label data-testid="Label">` — linked to input via `htmlFor={name}`, has `id={name}-label`, renders `content || label`
+- In `fake` mode: input and label are not rendered, only the track with thumb
+
+### Keyboard Handling
+- **Tab** — Moves focus to the native `<input>` (standard tab order)
+- **Space** — Toggles checked state (native checkbox behavior, triggers `onChange`)
+- **Disabled** — Native `disabled` attribute prevents focus and interaction
+
+### Accessibility (WAI-ARIA)
+- Follows [WAI-ARIA Switch Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/switch/) via `role="switch"` on native `<input type="checkbox">`
+- `aria-checked` reflects on/off state for screen readers
+- `checked` attribute also present (native checkbox behavior)
+- `disabled` attribute on input for native disabled behavior
+- `aria-disabled` on the visual wrapper for styling hooks
+- `<label htmlFor={name}>` provides accessible name
+
+### Visual States
+- **Off** — Thumb at `-left-1` (slightly outside track), no `selected` class
+- **On** — Thumb slides to `switchLeft[size]` position, `selected` class on track
+- **Error** — `error` class on input wrapper, triggers shared error styling
+- **Disabled** — `disabled` class on track and thumb, `cursor-not-allowed` on input, muted thumb colors
+- **Focus** — Focus ring via `[&:has(input:focus-visible)]:ring-1` on track
+- **Hover** — Color shift via `group-hoverable` utility on track
+
+### Interaction Behavior
+- Controlled component — `isChecked` (default `false`) and `onChange` are required props
+- `onChange` receives `e.target.value` (the `value` string prop), same signature as Checkbox
+- Click on the invisible input or the linked label triggers native `change` event
+
+### Responsive & Layout
+- Inline-block flow via `flex items-start` on wrapper
+- Track dimensions vary by size: `sm` = `h-sm-icon w-8`, `md` = `h-md-icon w-10`, `lg` = `h-lg-icon w-12`
+- Margin spacing shared with Checkbox via `checkboxMargin`
+
+<br/>
+
+## Architecture Decisions
+- **Shared Checkbox styles**: Imports `checkboxVariant`, `checkboxMargin`, `checkIconDisabledVariant` from `Checkbox.style.ts`. Switch and Checkbox share the same color/variant/disabled styling — visual consistency maintained in one place.
+- **`type="checkbox"` with `role="switch"`**: Uses native checkbox input with `role="switch"` and `aria-checked` overlay. This gives screen readers the correct "switch, on/off" announcement while preserving all native checkbox behavior (form submission, label association, keyboard). The native `checked` attribute and `aria-checked` are both present — `aria-checked` is what screen readers read for `role="switch"`.
+- **Thumb position via CSS classes**: `switchLeft[size]` maps checked position per size (`left-3`, `left-4`, `left-5`). Unchecked is always `-left-1` (negative offset for visual overhang effect). CSS `transition-position` handles the animation.
+- **`isChecked` defaults to `false`**: Unlike Checkbox where `isChecked` has no default, Switch defaults to `false` in destructuring — a standalone Switch renders in off state without explicit `isChecked={false}`.
+- **Fake mode for decorative use**: Same as Checkbox — `fake` removes the input and label. The `selected` class is suppressed (`!fake && 'selected'`) so only thumb position changes.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Switch is one of those components where getting the semantics right matters more than the visuals, and this nails it: `type="checkbox"` with `role="switch"` and `aria-checked` is exactly the ARIA pattern that gives screen readers the "switch, on/off" announcement instead of the generic "checkbox" one. The thumb positioning through size-mapped class tokens is clean — no inline styles, no JS-driven animation, just CSS transitions doing their thing.
+>
+> Radix UI's Switch primitive takes a different approach — it renders a `<button role="switch">` rather than a native checkbox, which means you lose free form submission without a hidden input. This component keeps the native `<input>` so it participates in forms naturally, and the `onChange` emitting `e.target.value` (the identity string, not a boolean) makes it group-friendly out of the box. Radix is more minimal, but you'd end up rebuilding the form integration this already has.
+>
+> Solid switch, right semantics, minimal API surface.
+>
+> — *Claude, Opus 4.6, 2026-03-23*

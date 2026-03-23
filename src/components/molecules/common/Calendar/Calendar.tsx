@@ -13,7 +13,7 @@ import {
   startOfMonth,
   startOfWeek,
 } from 'date-fns'
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
 
 import { ButtonProps } from '@/components/atoms/common/Button/Button'
 import { Paper } from '@/components/atoms/containers/Paper'
@@ -27,6 +27,8 @@ import { DateButtonType, DayPicker } from './DayPicker'
 import { MonthPicker } from './MonthPicker'
 import { useCalendarFocus } from './useCalendarFocus'
 import { YearPicker } from './YearPicker'
+
+export type CalendarState = 'days' | 'months' | 'years'
 
 export type CalendarProps = StyleProps & {
   /** for passing custom tailwind classes */
@@ -49,8 +51,10 @@ export type CalendarProps = StyleProps & {
   buttonProps?: Partial<ButtonProps>
   /** for passing aditional props to dropdown */
   paperProps?: Partial<PaperProps>
-  /** whether the calendar dropdown is open (enables keyboard navigation) */
+  /** enables keyboard navigation and roving tabindex */
   isActive?: boolean
+  /** focus selected cell on mount — used by DatePicker when dropdown opens */
+  focusOnOpen?: boolean
   /** callback to close the dropdown (for Escape key from grid) */
   onClose?: () => void
   /** onChange function */
@@ -74,7 +78,8 @@ export const Calendar = forwardRef<HTMLDivElement | null, CalendarProps>(
       unavailable = [],
       buttonProps = {},
       paperProps = {},
-      isActive = false,
+      isActive = true,
+      focusOnOpen = false,
       onClose,
       onChange,
       ...rest
@@ -87,62 +92,19 @@ export const Calendar = forwardRef<HTMLDivElement | null, CalendarProps>(
       ref,
       () => componentRef.current,
     )
-    const [calendarState, setCalendarState] = useState<'days' | 'months' | 'years'>('days')
+    const [calendarState, setCalendarState] = useState<CalendarState>('days')
     const [currentMonth, setCurrentMonth] = useState<Date>(date || new Date())
     const { className: paperClassName, ...restPaperProps } = paperProps
 
     useCalendarFocus({
       isActive,
+      focusOnOpen,
       gridRef,
       calendarState,
       currentMonth,
       setCurrentMonth,
       onClose,
     })
-
-    // Arrow key navigation on header buttons (PreviousMonth, MonthSelect, NextMonth).
-    // Native listener on componentRef fires before DatePicker's portal listener in bubbling order,
-    // so we intercept and stopPropagation to prevent DatePicker's useFocus from handling with stale index.
-    useEffect(() => {
-      const el = componentRef.current
-      if (!el || !isActive) return
-
-      const handleHeaderKeyDown = (e: KeyboardEvent) => {
-        const target = e.target as HTMLElement
-        if (gridRef.current?.contains(target)) return
-
-        const header = el.querySelector('.CalendarHeader')
-        if (!header?.contains(target)) return
-
-        const headerButtons = Array.from(
-          header.querySelectorAll('button:not([disabled])'),
-        ) as HTMLElement[]
-        const idx = headerButtons.indexOf(target)
-        if (idx === -1) return
-
-        const focusGrid = () => {
-          const gridCell = gridRef.current?.querySelector('[tabindex="0"]') as HTMLElement
-          gridCell?.focus()
-        }
-
-        if (e.code === 'ArrowRight') {
-          e.preventDefault()
-          e.stopPropagation()
-          idx < headerButtons.length - 1 ? headerButtons[idx + 1].focus() : focusGrid()
-        } else if (e.code === 'ArrowLeft') {
-          e.preventDefault()
-          e.stopPropagation()
-          idx > 0 ? headerButtons[idx - 1].focus() : focusGrid()
-        } else if (e.code === 'ArrowDown') {
-          e.preventDefault()
-          e.stopPropagation()
-          focusGrid()
-        }
-      }
-
-      el.addEventListener('keydown', handleHeaderKeyDown)
-      return () => el.removeEventListener('keydown', handleHeaderKeyDown)
-    }, [isActive])
 
     const handleOnChange = useCallback(
       (value: Date) => {
@@ -160,7 +122,7 @@ export const Calendar = forwardRef<HTMLDivElement | null, CalendarProps>(
             range?.start &&
             range?.end &&
             isWithinInterval(day, { start: startOfDay(range.start), end: endOfDay(range.end) }) &&
-            !unavailable?.some(d => isSameDay(day, d))
+            !unavailable.some(d => isSameDay(day, d))
           const multiSelected = multiValue && multiValue.some(v => isSameDay(day, v))
           return selected || inRange || multiSelected || false
         }
@@ -174,7 +136,7 @@ export const Calendar = forwardRef<HTMLDivElement | null, CalendarProps>(
         return (
           (minMaxDate?.min && isBefore(startOfDay(day), startOfDay(minMaxDate?.min))) ||
           (minMaxDate?.max && isAfter(startOfDay(day), startOfDay(minMaxDate?.max))) ||
-          (unavailable && unavailable?.some(d => isSameDay(day, d))) ||
+          unavailable.some(d => isSameDay(day, d)) ||
           false
         )
       },

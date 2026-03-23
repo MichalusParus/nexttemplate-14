@@ -41,106 +41,136 @@ const FieldWithHooks = (props: any) => {
 }
 
 describe('CheckboxGroupField', () => {
-  it('default', () => {
-    render(<FieldWithHooks />)
-    const fieldsetRole = screen.getByRole('group')
-    const inputRoles = screen.getAllByRole('checkbox')
-    const fakeLabelTestId = screen.getByTestId('FakeLabel')
-    const labelTestIds = screen.getAllByTestId('Label')
+  describe('Semantics', () => {
+    it('renders CheckboxGroup with Label', () => {
+      render(<FieldWithHooks />)
 
-    expect(fieldsetRole).toBeInTheDocument()
-    expect(fieldsetRole).toHaveClass('className')
-    expect(fieldsetRole).toHaveAttribute('id', 'fieldTest')
-    expect(fieldsetRole).toHaveAttribute('aria-invalid', 'false')
-    expect(fakeLabelTestId).toBeInTheDocument()
-    expect(fakeLabelTestId).toHaveTextContent('Label')
-    expect(fakeLabelTestId.tagName).toBe('LEGEND')
-    expect(inputRoles[0]).toHaveAttribute('id', options[0].value)
-    expect(inputRoles[0]).toHaveAttribute('name', options[0].value)
-    expect(inputRoles[0]).toHaveAttribute('type', 'checkbox')
-    expect(inputRoles[0]).toHaveAttribute('value', options[0].value)
-    expect(inputRoles[0]).not.toHaveAttribute('aria-describedby')
-    expect(labelTestIds[0]).toBeInTheDocument()
-    expect(labelTestIds[0]).toHaveTextContent(options[0].label)
-    expect(labelTestIds[0]).toHaveAttribute('for', options[0].value)
-    expect(labelTestIds[0]).toHaveAttribute('id', `${options[0].value}-label`)
-  })
-
-  it('value', async () => {
-    render(<FieldWithHooks />)
-    const inputRoles = screen.getAllByRole('checkbox')
-
-    expect(inputRoles[0]).toHaveAttribute('value', options[0].value)
-
-    await act(async () => {
-      fireEvent.click(inputRoles[0])
+      expect(screen.getByRole('group')).toBeInTheDocument()
+      expect(screen.getAllByRole('checkbox')).toHaveLength(5)
     })
 
-    expect(inputRoles[0]).toHaveAttribute('value', undefined)
-  })
+    it('forwards className', () => {
+      render(<FieldWithHooks />)
 
-  it('description', () => {
-    render(<FieldWithHooks labelProps={{ description: 'description' }} />)
-    const alertTestId = screen.getByTestId('Alert')
-
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveTextContent('description')
-  })
-
-  it('error', async () => {
-    render(<FieldWithHooks />)
-    const fieldsetRole = screen.getByRole('group')
-    const alertRole = screen.getByTestId('Alert')
-
-    await act(async () => {
-      fireEvent.submit(screen.getByTestId('submitButton'))
+      expect(screen.getByRole('group')).toHaveClass('className')
     })
 
-    await waitFor(() => {
-      expect(alertRole).toBeInTheDocument()
-      expect(alertRole).toHaveTextContent('min 3 checks')
-      expect(alertRole).toHaveAttribute('role', 'alert')
-      expect(fieldsetRole).toHaveAttribute('aria-describedby', 'fieldTest-description')
-      expect(fieldsetRole).toHaveAttribute('aria-invalid', 'true')
+    it('id from name prop', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('group')).toHaveAttribute('id', 'fieldTest')
+    })
+
+    it('legend renders as label', () => {
+      render(<FieldWithHooks />)
+      const fakeLabel = screen.getByTestId('FakeLabel')
+
+      expect(fakeLabel).toHaveTextContent('Label')
+      expect(fakeLabel.tagName).toBe('LEGEND')
+    })
+
+    it('checkbox attributes', () => {
+      render(<FieldWithHooks />)
+      const checkboxes = screen.getAllByRole('checkbox')
+      const labels = screen.getAllByTestId('Label')
+
+      expect(checkboxes[0]).toHaveAttribute('id', 'fieldTest-0')
+      expect(checkboxes[0]).toHaveAttribute('name', 'fieldTest-0')
+      expect(checkboxes[0]).toHaveAttribute('type', 'checkbox')
+      expect(checkboxes[0]).toHaveAttribute('value', '0')
+      expect(checkboxes[0]).not.toHaveAttribute('aria-describedby')
+      expect(labels[0]).toHaveTextContent(options[0].label)
+      expect(labels[0]).toHaveAttribute('for', 'fieldTest-0')
+      expect(labels[0]).toHaveAttribute('id', 'fieldTest-0-label')
+    })
+
+    it('aria-labelledby points to label', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('group')).toHaveAttribute('aria-labelledby', 'fieldTest-label')
+    })
+
+    it('aria-invalid false when no error', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('group')).toHaveAttribute('aria-invalid', 'false')
+    })
+
+    it('description', () => {
+      render(<FieldWithHooks labelProps={{ description: 'description' }} />)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toHaveTextContent('description')
+    })
+
+    it('labelProps forwarded', () => {
+      render(<FieldWithHooks labelProps={{ className: 'className' }} />)
+
+      expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
     })
   })
 
-  it('onChange', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks onChange={spy} />)
-    const inputRoles = screen.getAllByRole('checkbox')
+  describe('Interaction', () => {
+    it('value change on click', async () => {
+      render(<FieldWithHooks />)
+      const checkboxes = screen.getAllByRole('checkbox')
 
-    await act(async () => {
-      fireEvent.click(inputRoles[1])
+      expect(checkboxes[0]).toHaveAttribute('value', '0')
+
+      await act(async () => {
+        fireEvent.click(checkboxes[0])
+      })
+
+      expect(checkboxes[0]).toHaveAttribute('value', '0')
     })
 
-    expect(spy).toHaveBeenCalled()
-    expect(spy).toHaveBeenCalledWith([options[0].value, options[1].value])
-  })
+    it('onChange fires with value', async () => {
+      const onChange = jest.fn()
+      render(<FieldWithHooks onChange={onChange} />)
 
-  it('labelProps', () => {
-    render(<FieldWithHooks labelProps={{ className: 'className' }} />)
-    const labelWrapTestId = screen.getByTestId('LabelWrap')
+      await act(async () => {
+        fireEvent.click(screen.getAllByRole('checkbox')[1])
+      })
 
-    expect(labelWrapTestId).toHaveClass('className')
-  })
-
-  it('onSubmit', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks />)
-    screen.getByTestId('Form').onsubmit = spy
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('submitButton'))
+      expect(onChange).toHaveBeenCalledWith([options[0].value, options[1].value])
     })
-    // TODO beenCalledWith, spy return native event and not values
-    expect(spy).toHaveBeenCalled()
+
+    it('error shown on invalid submit', async () => {
+      render(<FieldWithHooks />)
+      const group = screen.getByRole('group')
+      const alert = screen.getByTestId('Alert')
+
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('submitButton'))
+      })
+
+      await waitFor(() => {
+        expect(alert).toHaveTextContent('min 3 checks')
+        expect(alert).toHaveAttribute('role', 'alert')
+        expect(group).toHaveAttribute('aria-describedby', 'fieldTest-description')
+        expect(group).toHaveAttribute('aria-invalid', 'true')
+      })
+    })
+
+    it('form submit works', async () => {
+      const onSubmit = jest.fn()
+      render(<FieldWithHooks />)
+      screen.getByTestId('Form').onsubmit = onSubmit
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submitButton'))
+      })
+
+      expect(onSubmit).toHaveBeenCalled()
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(<FieldWithHooks />)
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<FieldWithHooks />)
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

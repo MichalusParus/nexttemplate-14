@@ -1,12 +1,13 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
 import { FileRejection, useDropzone } from 'react-dropzone'
 
 import { SignOutIcon } from '@/components/atoms/icons'
 import { Span } from '@/components/atoms/typography/Span'
 import { useToast } from '@/components/molecules/popovers/ToastProvider'
 import { childrenIconSize, disabledVariant } from '@/components/utils/common.style'
+import { devWarning } from '@/components/utils/devWarning'
 import { InputProps, NativeInputProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -22,14 +23,17 @@ interface BaseFile {
   lastModified: number
 }
 
+export const generateFileId = (file: BaseFile) => `${file.name}-${file.size}-${file.lastModified}`
+
 type FileState<T extends BaseFile = File> = {
   file: T
   isLoading: boolean
+  progress?: number
 }
 
 export type FileInputProps<T = File> = NativeInputProps &
   Omit<InputProps, 'placeholder' | 'onChange'> &
-  Omit<FileDetailProps, 'file' | 'isLoading'> & {
+  Omit<FileDetailProps, 'file' | 'isLoading' | 'progress'> & {
     /** value of input */
     value?: T[]
     /** array of allowed file types */
@@ -38,8 +42,8 @@ export type FileInputProps<T = File> = NativeInputProps &
     maxFileCount?: number
     /** maximal file size in bytes */
     maxFileSize?: number
-    /** onDrop function */
-    onDrop: (value: File) => Promise<T>
+    /** onDrop function — receives file and optional onProgress callback for upload progress (0-100) */
+    onDrop: (value: File, onProgress: (percent: number) => void) => Promise<T>
     /** optional onDropAccepted function */
     onDropAccepted?: (value: File[]) => void
     /** optional onDropRejected function */
@@ -69,6 +73,8 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
     },
     ref,
   ) => {
+    devWarning(maxFileCount <= 0, 'FileInput: maxFileCount is zero or negative — no files can be uploaded.')
+
     const t = useTranslations()
     const { addToast } = useToast()
     const defaultValue = (Array.isArray(value) ? value : []).map(f => ({
@@ -76,11 +82,26 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
       isLoading: false,
     }))
     const [fileList, setFileList] = useState<FileState[]>(defaultValue)
+    const fileListRef = useRef(fileList)
 
-    const generateFileId = (file: File) => `${file.name}-${file.size}-${file.lastModified}`
+    const updateFileList = (updater: FileState[] | ((prev: FileState[]) => FileState[])) => {
+      setFileList(prev => {
+        const next = typeof updater === 'function' ? updater(prev) : updater
+        fileListRef.current = next
+        return next
+      })
+    }
+
+    useEffect(() => {
+      updateFileList(
+        value ? value.map(f => ({ file: f, isLoading: false })) : [],
+      )
+    }, [value])
+
+    const isUploading = fileList.some(f => f.isLoading)
 
     const isValidFile = (file: File): boolean => {
-      if (value?.some(f => generateFileId(f) === generateFileId(file))) {
+      if (fileListRef.current.some(f => generateFileId(f.file) === generateFileId(file))) {
         addToast('error', t('Common.formErrors.fileAlreadySelected', { fileName: file.name }))
         return false
       }
@@ -98,19 +119,28 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
     }
 
     const handleDrop = async (acceptedFiles: File[]) => {
-      if (acceptedFiles.length > maxFileCount) {
+      if (fileListRef.current.length + acceptedFiles.length > maxFileCount) {
         addToast('error', t('Common.formErrors.maxFileCount', { maxFileCount }))
         return
       }
 
       const validFiles = acceptedFiles.filter(file => isValidFile(file))
 
-      setFileList(prev => [...prev, ...validFiles.map(file => ({ file, isLoading: true }))])
+      updateFileList(prev => [...prev, ...validFiles.map(file => ({ file, isLoading: true }))])
 
       const promises = validFiles.map(async file => {
+        const onProgress = (percent: number) => {
+          updateFileList(prev =>
+            prev.map(item =>
+              generateFileId(item.file) === generateFileId(file)
+                ? { ...item, progress: Math.min(100, Math.max(0, percent)) }
+                : item,
+            ),
+          )
+        }
         try {
-          const uploadedFile = await onDrop(file)
-          setFileList(prev =>
+          const uploadedFile = await onDrop(file, onProgress)
+          updateFileList(prev =>
             prev.map(item =>
               generateFileId(item.file) === generateFileId(file)
                 ? { file: uploadedFile, isLoading: false }
@@ -118,7 +148,7 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
             ),
           )
         } catch (error) {
-          setFileList(prev => prev.filter(item => item.file.name !== file.name))
+          updateFileList(prev => prev.filter(item => generateFileId(item.file) !== generateFileId(file)))
           addToast('error', t('Common.formErrors.uploadFailed', { fileName: file.name }))
         }
       })
@@ -126,7 +156,7 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
     }
 
     const handleDelete = async (file: File) => {
-      setFileList(prev =>
+      updateFileList(prev =>
         prev.map(item =>
           generateFileId(item.file) === generateFileId(file) ? { ...item, isLoading: true } : item,
         ),
@@ -134,37 +164,35 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
       if (onDelete) {
         await onDelete(file)
       }
-      setFileList(prev => prev.filter(item => item.file.name !== file.name))
+      updateFileList(prev => prev.filter(item => generateFileId(item.file) !== generateFileId(file)))
     }
 
-    useEffect(() => {
-      const abortController = new AbortController()
+    const acceptObj = useMemo(
+      () => Object.fromEntries(allowedFileTypes.map(type => [type, []])),
+      [allowedFileTypes],
+    )
 
-      return () => {
-        abortController.abort()
-      }
-    }, [])
-
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
       onDrop: handleDrop,
       onDropAccepted: onDropAccepted,
       onDropRejected: onDropRejected,
+      accept: acceptObj,
+      noClick: isUploading,
+      noDrag: isUploading,
       disabled,
     })
 
     const inputPropsObj = getInputProps({
       id: name,
       name,
-      accept: allowedFileTypes.join(','),
       ...rest,
     })
-    const inputRef = useRef<HTMLInputElement>(null)
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
-      if (disabled) return
+      if (disabled || isUploading) return
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault()
-        inputRef.current?.click()
+        open()
       }
     }
 
@@ -192,7 +220,6 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
           <SignOutIcon className="-rotate-90" />
           <input
             {...inputPropsObj}
-            ref={inputRef}
             data-testid="FileInput"
           />
           {isDragActive ? (
@@ -206,14 +233,15 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
           )}
         </div>
         <div className={cn('FileDetailList', 'flex flex-col gap-2')}>
-          {fileList.map(({ file, isLoading }) => (
+          {fileList.map(({ file, isLoading, progress }) => (
             <FileDetail
-              key={file.name}
+              key={generateFileId(file)}
               file={file}
               variant={variant}
               color={color}
               size={size}
               isLoading={isLoading}
+              progress={progress}
               onDelete={handleDelete}
             />
           ))}

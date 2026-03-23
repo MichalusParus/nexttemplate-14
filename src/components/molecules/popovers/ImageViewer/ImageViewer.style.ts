@@ -5,11 +5,11 @@ export const viewerDialogClass = cn(
 )
 
 export const viewerInnerWrapClass = cn(
-  'flex h-full min-w-full flex-col items-center justify-center bg-dark-800 from-dark-800',
+  'flex h-full min-w-full flex-col items-center justify-center bg-dark-800',
 )
 
 export const viewerButtonClass = cn(
-  'w-full shrink-0 cursor-zoom-in overflow-hidden rounded-md border-none border-none focus-visible:outline-1 focus-visible:outline-dark-950',
+  'w-full shrink-0 cursor-zoom-in overflow-hidden rounded-md border-none focus-visible:outline-1 focus-visible:outline-dark-950',
 )
 
 export const closeButtonClass = cn(

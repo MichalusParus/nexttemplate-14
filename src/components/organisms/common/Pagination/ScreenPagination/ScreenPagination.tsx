@@ -11,7 +11,7 @@ import { cn } from '@/utils/utils'
 import { MobilePaginationProps } from '../MobilePagination/MobilePagination'
 import { chevronPosition } from '../MobilePagination/MobilePagination.style'
 import { PageSpread } from '../useResponsivePageSpread'
-import { dottColor, pageButtonSize } from './ScreenPagination.style'
+import { dotColor, pageButtonSize } from './ScreenPagination.style'
 
 export type ScreenPaginationProps = MobilePaginationProps & {
   /** number of visible pages */
@@ -156,14 +156,14 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
           )}
           {!isLoading && showEllipsis && page > sidePagesCount + 3 && (
             <div
-              className={cn('DottWrap', 'flex items-center justify-around', pageButtonSize[size])}
+              className={cn('DotWrap', 'flex items-center justify-around', pageButtonSize[size])}
               role="presentation"
               aria-hidden="true"
-              data-testid="DottWrap"
+              data-testid="DotWrap"
             >
-              <div className={dottColor[color]} />
-              <div className={dottColor[color]} />
-              <div className={dottColor[color]} />
+              <div className={dotColor[color]} />
+              <div className={dotColor[color]} />
+              <div className={dotColor[color]} />
             </div>
           )}
           {displayablePages.map(pageNum => (
@@ -189,14 +189,14 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
           ))}
           {!isLoading && showEllipsis && page < count - (sidePagesCount + 2) && (
             <div
-              className={cn('DottWrap', 'flex items-center justify-around', pageButtonSize[size])}
+              className={cn('DotWrap', 'flex items-center justify-around', pageButtonSize[size])}
               role="presentation"
               aria-hidden="true"
-              data-testid="DottWrap"
+              data-testid="DotWrap"
             >
-              <div className={dottColor[color]} />
-              <div className={dottColor[color]} />
-              <div className={dottColor[color]} />
+              <div className={dotColor[color]} />
+              <div className={dotColor[color]} />
+              <div className={dotColor[color]} />
             </div>
           )}
           {!isLoading && showEllipsis && page < count - (sidePagesCount + 2) && (

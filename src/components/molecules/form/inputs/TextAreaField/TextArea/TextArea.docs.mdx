@@ -1,0 +1,57 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/inputs/TextArea/Def" />
+
+# TextArea
+
+> Multi-line text input for longer content. Extends TextInput's visual system — same wrapper pattern, same styles, different HTML element. For form integration with validation and labels, use TextAreaField.
+
+<br/>
+
+## Features
+
+- Error and disabled states
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+Inherits from [TextInput](?path=/docs/molecules-form-inputs-textinput-def--docs)
+- Native `<textarea>` element instead of `<input>` — implicit `role="textbox"`, multi-line
+- No `startIcon`/`endIcon` support — textarea content area doesn't suit icon overlays
+- No `type` prop — textarea has no type attribute
+- Ref forwards to `HTMLTextAreaElement` (not `HTMLInputElement`)
+- Supports native textarea attributes: `rows`, `cols`, `wrap`, `maxLength`, `minLength`, `readOnly` via `TextareaHTMLAttributes`
+- Browser-native resize handle (bottom-right corner) — controllable via CSS `resize` class on the textarea
+
+<br/>
+
+## Architecture Decisions
+- **Styles imported, not duplicated**: TextArea imports `inputWrapClass`, `inputClass`, `inputVariant`, `inputSize` from `TextInput.style.ts` — one source of truth for input visual styling across both elements. The style file includes `[&:has(textarea:focus-visible)]:ring-1` specifically for textarea focus-within support.
+- **No icon support by design**: Multi-line textareas with absolutely positioned icons create layout problems — the icon stays vertically centered while content grows. Omitting icons keeps the API honest.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> TextArea is a thin wrapper that does one smart thing: it imports all its styling from TextInput rather than maintaining a parallel style system. This means every visual variant, color, and size you add to TextInput automatically works for TextArea with zero drift. The component itself is just a textarea element inside that shared wrapper — no resize constraints, no auto-grow, no row defaults. That's a lot of layout behavior left to the consumer, though `className` on the wrapper and `...rest` on the textarea give you the escape hatches to handle it.
+>
+> Radix UI's textarea (via shadcn/ui) takes a different approach — it's a standalone styled primitive with no shared input system, so text inputs and textareas can visually diverge over time. The shared-style import here is genuinely better for a copy-paste library where you'll be editing those styles directly. One source of truth means one place to update.
+>
+> The deliberate omission of icons is the kind of constraint that ages well. Multi-line content and absolutely positioned icons fight each other, and most libraries that include them end up with awkward vertical centering or top-pinned icons that look disconnected once content grows. Saying no here keeps the component honest about what a textarea actually is.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

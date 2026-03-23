@@ -158,6 +158,7 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
             color={color}
             size={size}
             isActive={isOpen}
+            focusOnOpen
             onClose={handleCalendarClose}
             aria-hidden={!isOpen}
             paperProps={{ className: 'border-none', ...paperProps }}

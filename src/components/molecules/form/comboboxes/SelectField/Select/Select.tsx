@@ -15,7 +15,7 @@ import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
 import { FOCUS_SELECTORS, useFocus } from '@/components/utils/hooks/useFocus'
 import { useGroupedOptions } from '@/components/utils/hooks/useGroupedOptions'
-import { OptionGroupType, OptionType } from '@/components/utils/types'
+import { OptionGroupType, OptionType, SelectAllState } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { ListBox, ListBoxProps } from './ListBox'
@@ -33,6 +33,8 @@ export type SelectProps<T = string> = Omit<
   multiValue?: T[]
   /** options for select to choose from */
   options: OptionType<T>[] | OptionGroupType<T>[]
+  /** state for select all checkbox */
+  selectAllState?: SelectAllState
   /** for passing aditional props to dropdown */
   dropdownProps?: Partial<DropdownProps>
   /** for passing aditional props to listbox */
@@ -43,6 +45,8 @@ export type SelectProps<T = string> = Omit<
   onClose?: () => void
   /** onChange function */
   onChange: (value: T) => void
+  /** callback for select all action, renders select all row when provided */
+  onSelectAll?: () => void
 }
 
 /** Basic custom uncontroled Select. For form purposes use SelectField. Button, Dropdown and ListBox props supported. USE CLIENT */
@@ -56,11 +60,13 @@ function SelectComponent<T = string>(
     color = 'primary',
     size = 'md',
     placement = 'bottom',
+    selectAllState,
     dropdownProps = {},
     listboxProps = {},
     onOpen,
     onClose,
     onChange,
+    onSelectAll,
     children,
     ...rest
   }: SelectProps<T>,
@@ -146,6 +152,7 @@ function SelectComponent<T = string>(
       >
         <ListBox<T>
           name={`${name}-listbox`}
+          labelId={`${name}-label`}
           value={multiValue ? multiValue : [value]}
           options={options}
           isGrouped={isGrouped}
@@ -153,7 +160,9 @@ function SelectComponent<T = string>(
           color={color}
           size={size}
           hideCheckbox={!multiValue}
+          selectAllState={selectAllState}
           aria-hidden={!isOpen}
+          onSelectAll={onSelectAll}
           onClick={handleOnChange}
           {...listboxProps}
         >

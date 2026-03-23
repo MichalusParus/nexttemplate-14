@@ -1,5 +1,5 @@
 'use client'
-import { addMonths, format, getMonth, getYear, isSameMonth, isSameYear } from 'date-fns'
+import { addMonths, format, getMonth, getYear, isSameMonth } from 'date-fns'
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/atoms/common/Button'
@@ -7,15 +7,17 @@ import { ChevronIcon } from '@/components/atoms/icons'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
+import { CalendarState } from '../Calendar'
+
 export type CalendarHeaderProps = StyleProps & {
   /** current month state */
   currentMonth: Date
   /** selected calendar state */
-  calendarState: 'days' | 'months' | 'years'
+  calendarState: CalendarState
   /** optional min max date for calendar */
   minMaxDate?: { min?: Date; max?: Date }
   /** change calendar state fn */
-  setCalendarState: (state: 'days' | 'months' | 'years') => void
+  setCalendarState: (state: CalendarState) => void
   /** change current month fn */
   setCurrentMonth: (date: Date) => void
 }
@@ -56,11 +58,13 @@ export const CalendarHeader = ({
         size={size}
         hideShadow
         disabled={
-          minMaxDate?.min && minMaxDate?.max && isSameYear(minMaxDate?.min, minMaxDate?.max)
+          minMaxDate?.min && minMaxDate?.max && isSameMonth(minMaxDate?.min, minMaxDate?.max)
         }
         onClick={() => setCalendarState(calendarState === 'days' ? 'years' : 'days')}
       >
-        {t(`months.${getMonth(currentMonth)}` as Parameters<typeof t>[0]) + ' ' + getYear(currentMonth)}
+        <span aria-live="polite" aria-atomic="true">
+          {t(`months.${getMonth(currentMonth)}` as Parameters<typeof t>[0]) + ' ' + getYear(currentMonth)}
+        </span>
         <ChevronIcon
           className={cn(
             'text-inherit transition-transform',

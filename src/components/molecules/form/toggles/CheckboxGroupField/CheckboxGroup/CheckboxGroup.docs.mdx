@@ -1,0 +1,88 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/toggles/CheckboxGroup/Def" />
+
+# CheckboxGroup
+
+> A multi-selection group rendered as a native `<fieldset>` containing Checkbox or Switch components. Maps over an `options` array, manages an array of selected values, and handles the add/remove toggle logic internally. Generic `<T = string>` supports string, number, or object values with deep equality via `isEqual`.
+
+<br/>
+
+## Features
+
+- Generic `<T>` typed values with deep equality
+- Native `<fieldset>` wrapper — group semantics for multiple checkboxes
+- Options-driven rendering — pass `OptionType<T>[]` array, each option gets its own Checkbox or Switch
+- Switch variant — `switchType` prop swaps Checkbox for Switch components throughout
+- Column layout — `column` prop switches from horizontal wrap to vertical stack
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- `<fieldset>` wrapper with `id={name}`, `role="group"` (native), receives `ref` and `className`
+- Per-option `<Checkbox>` or `<Switch>` component — each with `name={option.value}`, `value={option.value}`, `label`, `content`, `isChecked`, and shared style props
+- No additional wrapping elements — child components provide their own structure (CheckboxWrap/SwitchWrap)
+
+### Keyboard Handling
+- **Tab** — Moves focus between individual checkboxes/switches (native tab order, each is independently focusable)
+- **Space** — Toggles the focused checkbox/switch (delegated to child component)
+- **Disabled** — `disabled` prop forwarded to all children, native disabled prevents interaction
+
+### Accessibility (WAI-ARIA)
+- `role="group"` from native `<fieldset>` — groups related checkboxes
+- Each child is a native `<input type="checkbox">` — standard checkbox semantics
+- `aria-labelledby` on fieldset links to Label's legend for accessible group name (via CheckboxGroupField)
+- Error state forwarded to children but no `aria-invalid` on fieldset itself
+
+### Interaction Behavior
+- Controlled component — `value: T[]` (defaults to `string[]`) and `onChange` are required props
+- Toggle logic: clicking a checked option removes it from the array (`filter`), clicking an unchecked option appends it (`[...value, checkboxValue]`)
+- `isChecked` callback memoized with `useCallback` — recalculates only when `value` array changes
+- `handleOnChange` memoized with `useCallback` — stable callback reference for child components
+- `isChecked` uses `value.some()` with `isEqual` for deep comparison — supports object-typed values that would fail with reference equality
+
+### Responsive & Layout
+- Horizontal wrap layout by default (`flex flex-wrap`)
+- `column` prop adds `flex-col` for vertical stacking
+- Child spacing controlled by Checkbox/Switch's own `checkboxMargin[size]`
+
+<br/>
+
+## Architecture Decisions
+- **Composition over reimplementation**: Renders actual `<Checkbox>` and `<Switch>` components rather than duplicating their markup. This means CheckboxGroup inherits all visual and behavioral improvements to Checkbox/Switch automatically.
+- **`switchType` boolean toggle**: A single boolean prop swaps the entire visual representation from checkboxes to switches. Both components share the same `onChange` signature, making them interchangeable. The group wraps each child's `onChange` in a closure that captures the typed value from the option, bypassing the native `e.target.value` string coercion.
+- **`useCallback` for `isChecked` and `handleOnChange`**: Both callbacks depend on the `value` array. Memoizing them prevents unnecessary re-renders of child Checkbox/Switch components when other props change. The `isChecked` callback is a dependency of `handleOnChange`, creating a clean dependency chain.
+- **`checkboxProps` spread after explicit props**: `{...checkboxProps}` comes last in the child props, allowing consumers to override styling props (variant, color, size). Group-managed props (`isChecked`, `onChange`, `value`, `name`) are excluded via `Omit` to prevent accidental breakage.
+- **Generic `<T = string>` with `forwardRef` cast pattern**: The component function is generic, but `forwardRef` doesn't preserve generics. The `CheckboxGroupComponentType` interface + `as` cast restores the generic signature.
+- **`isEqual` from lodash for deep value comparison**: Both `isChecked` (`.some()`) and `handleOnChange` (`.filter()`) use `isEqual` to support object-typed values. Without this, `value={[{ id: 1 }]}` would never match options because objects are compared by reference.
+- **No `<legend>` element**: The fieldset has no `<legend>` as a direct child. CheckboxGroupField passes `aria-labelledby` linking to the Label's legend element for the accessible group name.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+- [ ] Object array options — support passing a raw object array via `options` with `getLabel` / `getValue` extractors, removing the need to manually map data into `OptionType` shape (similar to React Select's `getOptionLabel` / `getOptionValue`)
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> CheckboxGroup is one of those components that looks deceptively simple until you realize how much it quietly gets right. The `switchType` toggle is a clever move — it exploits the fact that Checkbox and Switch share identical `onChange` signatures, letting you swap the entire visual mode with a single boolean while the group logic stays untouched. The `checkboxProps` spread positioning is deliberate too, giving consumers override power on styling while keeping group-managed state locked down via `Omit`.
+>
+> Compared to React Aria's `useCheckboxGroup`, which separates group state into a hook and requires you to wire up `CheckboxGroupState` plus individual `useCheckbox` calls for each item, this component trades that granular control for a significantly better developer experience. React Aria gives you more flexibility for exotic layouts, but for the 90% case — rendering a list of options with consistent styling — CheckboxGroup gets you there in a fraction of the code. The `switchType` prop is something React Aria simply doesn't offer at the group level.
+>
+> The `isChecked` → `handleOnChange` dependency chain is clean, and composing real Checkbox/Switch instances means the group automatically benefits from any future improvements to those components without a single line changed here.
+>
+> A well-scoped group primitive that nails the common case without overengineering.
+>
+> — *Claude, Opus 4.6, 2026-03-23*

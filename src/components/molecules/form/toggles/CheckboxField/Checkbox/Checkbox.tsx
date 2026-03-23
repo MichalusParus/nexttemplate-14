@@ -1,5 +1,5 @@
 'use client'
-import { forwardRef, ReactNode } from 'react'
+import { forwardRef, ReactNode, useCallback } from 'react'
 
 import { CheckIcon, MinusIcon } from '@/components/atoms/icons'
 import { disabledVariant, textSize, textVariant } from '@/components/utils/common.style'
@@ -18,15 +18,15 @@ export type CheckboxProps = NativeInputProps &
   Pick<FieldProps, 'label'> &
   InputProps &
   StyleProps & {
-    /** value of input */
-    value?: string
+    /** value of input — identity string used by groups and onChange */
+    value: string
     /** optional element to display in label */
     content?: ReactNode
     /** optional checked status for Group use */
     isChecked: boolean
     /** isIndeterminate state */
     isIndeterminate?: boolean
-    /** error state */
+    /** visual-only mode without input */
     fake?: boolean
     /** onChange function */
     onChange: (value: string) => void
@@ -54,6 +54,15 @@ export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
     },
     ref,
   ) => {
+    const setRef = useCallback(
+      (node: HTMLInputElement | null) => {
+        if (node) node.indeterminate = isIndeterminate
+        if (typeof ref === 'function') ref(node)
+        else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node
+      },
+      [isIndeterminate, ref],
+    )
+
     const checkVisibility = isChecked || isIndeterminate ? 'opacity-100' : 'opacity-0'
     return (
       <div
@@ -93,7 +102,7 @@ export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
               onChange={e => onChange(e.target.value)}
               checked={isChecked}
               disabled={disabled}
-              ref={ref}
+              ref={setRef}
               {...rest}
             />
           )}

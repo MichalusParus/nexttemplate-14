@@ -4,6 +4,7 @@ import { forwardRef, PropsWithChildren, useEffect, useId, useRef, useState } fro
 import { createPortal } from 'react-dom'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
+import { Overlay } from '@/components/atoms/common/Overlay'
 import { XIcon } from '@/components/atoms/icons'
 import { useFocus } from '@/components/utils/hooks/useFocus'
 import { useInternalOpenState } from '@/components/utils/hooks/useInternalOpenState'
@@ -85,9 +86,10 @@ export const ImageViewer = forwardRef<
       >
         {!openState && children}
       </Button>
-      {!openState && !isVisible || !container
+      {(!openState && !isVisible) || !container
         ? null
         : createPortal(
+            <>
             <div
               id={nameId}
               className={cn(
@@ -112,7 +114,9 @@ export const ImageViewer = forwardRef<
                 onClick={() => handleOpen(false)}
                 data-testid="ImageViewerCloseButton"
               />
-            </div>,
+            </div>
+            <Overlay isOpen={openState} onClose={() => handleOpen(false)} />
+            </>,
             container,
           )}
     </>

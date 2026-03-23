@@ -1,45 +1,56 @@
 'use client'
 import { isEqual } from 'lodash'
-import { forwardRef, useCallback } from 'react'
+import { ForwardedRef, forwardRef, useCallback } from 'react'
 
 import { ToggleGroup, ToggleGroupProps } from '../../ToggleGroupField/ToggleGroup'
 
-export type MultiToggleGroupProps = Omit<ToggleGroupProps, 'value' | 'onChange' | 'multiValue'> & {
+export type MultiToggleGroupProps<T = string> = Omit<ToggleGroupProps<T>, 'value' | 'onChange' | 'multiValue'> & {
   /** value of multiToggleGroup */
-  value: string[]
+  value: T[]
   /** onChange function */
-  onChange: (value: string[]) => void
+  onChange: (value: T[]) => void
 }
 
-/** Basic styled uncontroled MultiToggleGroup. For form purposes use MultiMultiToggleGroupField. Native DivHTMLAttributes and Button props supported. USE CLIENT */
-export const MultiToggleGroup = forwardRef<HTMLDivElement | null, MultiToggleGroupProps>(
-  ({ value, onChange, onClear, ...rest }, ref) => {
-    const handleOnChange = useCallback(
-      (v: string) => {
-        if (value.some(val => isEqual(val, v))) {
-          const newValue = value.filter(val => val !== v)
-          if (newValue.length === 0 && onClear) {
-            onClear()
-          } else {
-            onChange(newValue)
-          }
+/** Basic styled controlled MultiToggleGroup. For form purposes use MultiToggleGroupField. Native DivHTMLAttributes and Button props supported. USE CLIENT */
+function MultiToggleGroupComponent<T = string>(
+  { value, onChange, onClear, ...rest }: MultiToggleGroupProps<T>,
+  ref: ForwardedRef<HTMLDivElement>,
+) {
+  const handleOnChange = useCallback(
+    (v: T | undefined) => {
+      if (v === undefined) return
+      if (value.some(val => isEqual(val, v))) {
+        const newValue = value.filter(val => !isEqual(val, v))
+        if (newValue.length === 0 && onClear) {
+          onClear()
         } else {
-          onChange([...value, v])
+          onChange(newValue)
         }
-      },
-      [value, onChange, onClear],
-    )
+      } else {
+        onChange([...value, v])
+      }
+    },
+    [value, onChange, onClear],
+  )
 
-    return (
-      <ToggleGroup
-        value={value?.[0]}
-        multiValue={value}
-        onChange={handleOnChange}
-        ref={ref}
-        {...rest}
-      />
-    )
-  },
-)
+  return (
+    <ToggleGroup<T>
+      value={value?.[0]}
+      multiValue={value}
+      onChange={handleOnChange}
+      ref={ref}
+      {...rest}
+    />
+  )
+}
+
+type MultiToggleGroupComponentType = {
+  <T = string>(
+    props: MultiToggleGroupProps<T> & { ref?: ForwardedRef<HTMLDivElement> },
+  ): React.ReactElement | null
+  displayName?: string
+}
+
+export const MultiToggleGroup = forwardRef(MultiToggleGroupComponent) as MultiToggleGroupComponentType
 
 MultiToggleGroup.displayName = 'MultiToggleGroup'

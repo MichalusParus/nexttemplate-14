@@ -1,0 +1,84 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/comboboxes/MultiSelect/Def" />
+
+# MultiSelect
+
+> Multi-value selection wrapper over Select — clicking an unselected option adds it, clicking a selected option removes it. Dropdown stays open for continuous selection. Provides internal `onClear` to clear all values. For form integration with validation and labels, use MultiSelectField.
+
+<br/>
+
+## Features
+
+- Generic `<T>` typed values with deep equality
+- Grouped options
+- Loading state with skeleton
+- Typeahead search
+- Value chips display via `displayChips`
+- Clear button
+- Select all / deselect all via `selectAll` prop
+- Configurable placement
+- Dropdown `children` slot for custom content
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+Inherits from [Select](?path=/docs/molecules-form-comboboxes-select-def--docs)
+- `value: T[]` — array of selected values instead of single value
+- Passes `multiValue={value}` to Select, enabling checkbox display on options and preventing auto-close
+- Passes `value={value[0]}` as the "primary" display value for combobox text
+- Internal `onClear={() => onChange([])}` always provided — ClearAllButton always visible when values exist
+
+### Keyboard Handling
+Inherits from [Select](?path=/docs/molecules-form-comboboxes-select-def--docs)
+- Dropdown stays open after each selection (Select's `handleOnChange` checks `multiValue` and skips auto-close)
+
+### Accessibility (WAI-ARIA)
+Inherits from [Select](?path=/docs/molecules-form-comboboxes-select-def--docs)
+- Multi-value selection communicated via per-option `aria-selected` on each selected option independently
+
+### Interaction Behavior
+Inherits from [Select](?path=/docs/molecules-form-comboboxes-select-def--docs)
+- **Toggle selection**: clicking a selected option removes it from the array, clicking an unselected option adds it
+- `onChange` fires with the updated array after each toggle
+- `onClear` (internal) resets to empty array `[]`
+- Chip clear buttons (when `displayChips=true`) remove individual values via `handleOnChange`
+
+<br/>
+
+## Architecture Decisions
+- **Short wrapper**: All UI, keyboard, and accessibility complexity lives in Select. MultiSelect only adds `handleOnChange` (toggle logic) and passes `multiValue` to Select.
+- **Omits `onClear`, `multiValue`, and `onSelectAll` from consumer type**: `MultiSelectProps` uses `Omit<SelectProps, 'value' | 'multiValue' | 'onChange' | 'onClear' | 'onSelectAll'>`. Consumers never provide `onClear` (always internal `onChange([])`) or `multiValue` (always `value`). The `onSelectAll` callback is computed internally from the `selectAll` boolean prop — consumers set a flag, not a handler.
+- **Toggle via `isEqual`**: `handleOnChange` uses `isEqual` for both detection (`.some(val => isEqual(val, v))`) and removal (`.filter(val => !isEqual(val, v))`), ensuring consistent deep equality for object-typed values.
+- **SelectAll**: `selectAll` prop enables a "Select All" checkbox row. MultiSelect computes both `selectAllState` (checked, indeterminate, disabled) and `handleSelectAll` callback, threading them through Select to ListBox which renders purely from props.
+
+<br/>
+
+## Known Bugs & Limitations
+- **Button-based combobox without text input**: Uses `role="combobox"` on a `<Button>` — ARIA 1.2 expects combobox to be a text input element. Screen readers announce "combobox" but the user cannot type to filter options. Passes automated axe audits but doesn't match the spec's intended interaction model. Most libraries (MUI, Radix, React Aria) use an `<input>` for the combobox element. A `<button aria-haspopup="listbox">` would be more semantically accurate for a non-editable select. This is a library-wide convention shared with DatePicker. Autocomplete uses the correct pattern (`<div role="combobox">` with nested `<TextInput>`).
+
+<br/>
+
+## Future Ideas
+- [ ] Object array options — support passing a raw object array via `options` with `getLabel` / `getValue` extractors, removing the need to manually map data into `OptionType` shape (similar to React Select's `getOptionLabel` / `getOptionValue`)
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> MultiSelect is a refreshingly thin wrapper — it does exactly one job and resists the urge to reimplement what Select already handles. The toggle logic via `isEqual` is a smart call for object-typed values, and omitting `onClear` and `multiValue` from the consumer type closes off a real class of misuse bugs before they happen.
+>
+> React Aria's multi-select approach (`useListBox` with `selectionMode="multiple"`) pushes selection state into a `useListState` hook, giving you controlled selection tracking but asking you to wire up your own toggle logic anyway. MultiSelect arrives at a similar outcome with less ceremony — the `handleOnChange` callback is the entire selection model, and because it delegates everything else to Select, consumers get keyboard navigation and accessibility without a second thought. The tradeoff is that React Aria gives you `selectionManager` methods like `selectAll` or `toggleSelectAll` for free, which this component would need to add explicitly if the need arose.
+>
+> The `value[0]` passed as the singular `value` prop to Select is a pragmatic choice for display purposes, though it's worth noting that if `value` is an empty array, Select receives `undefined` — worth confirming that Select handles that gracefully rather than showing stale text. Beyond that, there's genuinely nothing to cut or restructure here; the component earns its existence by being exactly as small as it needs to be.
+>
+> A well-scoped wrapper that trusts its foundation and adds only what multi-selection actually requires.
+>
+> — *Claude, Opus 4.6, 2026-03-22*
+

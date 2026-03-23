@@ -1,0 +1,115 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Common/Calendar/Def" />
+
+# Calendar
+
+> Date picker grid component with three view modes — days, months, and years. Supports single date, range, and multi-value selection with full keyboard navigation following the WAI-ARIA grid pattern.
+
+<br/>
+
+## Features
+
+- Three selection modes — single date, range, and multi-value
+- Min/max date boundaries
+- Unavailable dates
+- Configurable week start — Sunday or Monday
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Wrapping `<div>` with optional `id` via `name` prop, contains a `Paper` component
+- Three view modes controlled by internal `CalendarState` type: `'days'` (DayPicker), `'months'` (MonthPicker), `'years'` (YearPicker)
+- Each picker renders a `role="grid"` with `role="row"` containers and `role="gridcell"` buttons
+- DayPicker grid: 7 columns with `role="columnheader"` for day abbreviations, 5-6 rows of date cells
+- MonthPicker grid: 3 columns, 4 rows (12 months)
+- YearPicker grid: 5 columns, scrollable via ScrollShadow, year range from minMax or +-30 years
+- CalendarHeader renders three buttons: PreviousMonth, MonthSelect (month+year label with chevron), NextMonth
+- Roving tabindex pattern — only one gridcell has `tabIndex={0}` at any time, all others are `tabIndex={-1}`
+
+### Keyboard Handling
+Tier 4 — complex multi-axis grid navigation with cross-boundary support, managed by `useCalendarFocus` hook.
+
+**Grid navigation (all views):**
+- **ArrowUp / ArrowDown** — Move focus up/down by one row. In day view, wraps to previous/next month at grid edges.
+- **ArrowLeft / ArrowRight** — Move focus by one cell. In day view, wraps to previous/next month at grid edges. MonthPicker and YearPicker stop at edges.
+- **Home / End** — Jump to first/last cell in the current row
+- **Enter / Space** — Select the focused gridcell (blocked when `aria-disabled="true"`)
+- **Tab / Shift+Tab** — Natural Tab order through header buttons and grid cell. Arrow keys handle internal navigation between header and grid.
+- **Escape** — Close the dropdown via `onClose` callback
+
+**Day view only:**
+- **PageDown / PageUp** — Navigate to next/previous month, focusing the same day-of-month (falls back to column position if the day doesn't exist)
+- **Shift+PageDown / Shift+PageUp** — Navigate to next/previous year
+
+**Header buttons:**
+- **ArrowLeft / ArrowRight** — Move between header buttons. From either end, wraps into the grid.
+- **ArrowDown** — Move from header into the grid (focuses cell with `tabIndex={0}`)
+- **ArrowUp** — Not handled (no-op)
+
+### Accessibility (WAI-ARIA)
+- Follows [WAI-ARIA Grid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/) with roving tabindex
+- `aria-selected` on gridcells reflects selection state (single, range, or multi-value)
+- `aria-current="date"` marks today's date in day view, current month in month view, current year in year view
+- `aria-disabled` on gridcells outside minMaxDate range or in the unavailable array
+- `aria-label` on day cells uses full date format (`"Saturday, March 4th, 2023"`), month cells use month name, year cells use year number
+- PreviousMonth/NextMonth header buttons have aria-labels with translated month names
+- MonthSelect header button disabled when min and max dates are in the same month (no navigation possible)
+- `aria-live="polite"` with `aria-atomic="true"` on the month/year label announces month and year changes to screen readers during keyboard navigation
+
+### Interaction Behavior
+- **Single date**: `date` prop sets the selected day, `onChange` fires with the clicked date
+- **Range selection**: `range` prop with `start`/`end` highlights all days in the interval (excluding unavailable dates)
+- **Multi-value**: `multiValue` prop highlights an array of specific dates
+- **Unavailable dates**: `unavailable` prop marks dates as `aria-disabled` and blocks clicks via onClick guard
+- **minMaxDate boundaries**: Dates outside min/max range are disabled, header navigation buttons are disabled at boundaries
+- **State machine flow**: days -> years (click MonthSelect) -> months (click year) -> days (click month). There is no direct days -> months transition.
+- **Month clamping**: MonthPicker and YearPicker clamp selected values to minMaxDate range when the chosen month/year would exceed boundaries
+- **Standalone vs DatePicker**: `isActive` (default `true`) enables keyboard navigation and roving tabindex — standalone Calendars work out of the box. `focusOnOpen` (default `false`) auto-focuses the selected cell on mount — DatePicker passes this to focus the grid when the dropdown opens. Standalone Calendars let the user Tab in naturally without stealing focus.
+
+### Responsive & Layout
+- Calendar size controlled by `size` prop (sm/md/lg) via `calendarSize` style map
+- YearPicker wrapped in ScrollShadow with size-dependent height, auto-scrolls to selected year on mount
+- Paper component provides border/shadow styling with `variant` and `color` pass-through
+
+<br/>
+
+## Architecture Decisions
+- **useImperativeHandle with dual refs**: `componentRef` for the outer Calendar div (exposed via `ref`), `gridRef` for the picker grid (passed to `useCalendarFocus`). The hook needs the grid ref to manage focus within the grid, while consumers need the component ref for external focus management.
+- **Refs for mutable state in key handlers**: `useCalendarFocus` reads `currentMonth` and `calendarState` via refs inside `useMemo`'d key handlers to avoid stale closures during fast key repeat.
+- **Cross-month boundary navigation**: Arrow keys at grid edges trigger `setCurrentMonth` and set a `pendingFocusRef` with the target position. After React re-renders the new month's grid, a `useEffect` reads the pending ref and focuses the correct cell.
+- **State machine: days -> years -> months -> days**: MonthSelect toggles between 'days' and 'years' (not 'months'). Clicking a year navigates to 'months', clicking a month navigates back to 'days'. This gives users a year overview before month selection.
+- **Header keydown listener with stopPropagation**: A separate `useEffect` on Calendar attaches a keydown handler for header button arrow navigation. It calls `stopPropagation()` to prevent `useFocus` (which listens on the grid) from processing the same event with stale state.
+- **date-fns for all date operations**: Uses `startOfDay`, `isSameDay`, `isWithinInterval`, `eachDayOfInterval`, etc. for deterministic date comparisons. No raw Date arithmetic.
+- **Dummy ref for useFocus**: A `dummyRef` is passed as `triggerRef` to prevent `useFocus` from attaching focus/blur listeners on the grid element, which would incorrectly activate `hasTriggerFocus` when the grid div gets accidentally focused.
+- **PageDown/PageUp preserves day-of-month**: `pageNav` reads the focused cell's `data-date` attribute to extract the day number, stores it in `pendingFocusRef`, and the effect finds the matching day in the new month. Falls back to column position when the day doesn't exist (e.g. Jan 31 → Feb 28).
+- **`aria-live="polite"` on month/year label**: The CalendarHeader wraps the month+year text in a `<span aria-live="polite" aria-atomic="true">` so screen readers announce month/year changes from keyboard navigation (PageDown, boundary crossing, header buttons).
+- **`isActive` / `focusOnOpen` separation**: `isActive` controls keyboard enablement (listeners + roving tabindex), `focusOnOpen` controls focus stealing on mount. Split because standalone Calendars need keyboard without focus theft, while DatePicker needs both (auto-focus when dropdown opens). Dropdown unmounts Calendar when closed, so every open is a fresh mount — `focusOnOpen` triggers `shouldFocusGridRef` to focus the selected cell immediately.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> This is a seriously ambitious calendar — full keyboard navigation across month boundaries, a days→years→months state machine, roving tabindex with pending focus refs that survive React re-renders. The cross-boundary navigation where arrow keys at grid edges trigger a month change and then a `useEffect` picks up the pending focus position is genuinely clever engineering. What impressed me most is how all mutable state is read through refs inside key handlers to dodge stale closures during fast key repeat — that's the kind of detail that separates calendars that demo well from ones that survive real users.
+>
+> React Aria's calendar (used by Adobe's React Spectrum) is the gold standard here. Their approach externalizes all date logic into a `useCalendarState` hook with a proper state machine, and keyboard navigation comes free from `useCalendarGrid`. That separation means you can't accidentally create focus/state mismatches. This implementation rolls its own equivalent across `useCalendarFocus` plus inline `useEffect`s, which gives more control but puts the burden on you to keep focus and month state synchronized — the `pendingFocusRef` mechanism works, but it's a hand-built version of what React Aria solves architecturally. The tradeoff is fair though: this calendar owns its full visual layer and doesn't fight an external library's styling opinions.
+>
+> The `aria-live` region on the month label, `aria-disabled` keeping cells focusable for screen readers, and full `aria-label` on every cell with the complete date string — the accessibility layer is thorough and follows the same `aria-disabled` pattern used across the library's Button component.
+>
+> A production-grade calendar with keyboard navigation that most teams would punt on entirely.
+>
+> — *Claude, Opus 4.6, 2026-03-21*

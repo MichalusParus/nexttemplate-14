@@ -1,0 +1,97 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/toggles/RadioGroup/Def" />
+
+# RadioGroup
+
+> A single-selection group rendered as a native `<fieldset>` containing `<input type="radio">` elements. Maps over an `options` array to produce labeled radio buttons with shared name, variant, and size styling. Generic `<T = string>` supports string, number, or object values with deep equality via `isEqual`.
+
+<br/>
+
+## Features
+
+- Generic `<T>` typed values with deep equality
+- Native `<fieldset>` + `<input type="radio">` — full form participation, browser-native group semantics and keyboard navigation
+- Options-driven rendering — pass `OptionType<T>[]` array, each option gets its own radio input + label
+- Column layout — `column` prop switches from horizontal wrap to vertical stack
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- `<fieldset>` wrapper with `id={name}`, `role="group"` (native), receives `ref` and `className`
+- Per-option `<div data-testid="Radio">` — flex row container with size-based margin and disabled cursor styling
+- `<input type="radio">` — native radio, receives `id={option.value}`, `name={name}`, `value={option.value}`, `checked`, `disabled`, plus `radioProps` spread
+- `<label data-testid="Label">` — linked via `htmlFor={option.value}`, has `id={option.value}-label`, renders `content || label`
+- Checked indicator via CSS `::after` pseudo-element — centered dot with `opacity-0`→`opacity-100` transition
+
+### Keyboard Handling
+- **Tab** — Moves focus into the radio group (to the checked radio, or first if none checked) — native behavior
+- **Arrow Down / Arrow Right** — Moves selection to next radio in the group — native behavior
+- **Arrow Up / Arrow Left** — Moves selection to previous radio in the group — native behavior
+- **Disabled** — Native `disabled` on all inputs prevents focus and selection
+
+### Accessibility (WAI-ARIA)
+- Follows native [Radio Group Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/) via `<fieldset>` + `<input type="radio">`
+- `role="group"` from native `<fieldset>` — groups related radio inputs
+- Each radio has native `checked` state — no `aria-checked` needed
+- `disabled` attribute on each input for native disabled behavior
+- `<label htmlFor>` provides accessible name per radio
+- `aria-labelledby` on fieldset links to Label's legend for accessible group name (via RadioGroupField)
+
+### Visual States
+- **Unchecked** — `::after` dot at `opacity-0`, `invisible`
+- **Checked** — `::after` dot at `opacity-100`, `visible`, background color per variant/color theme; input gets `checked:bg-*` class
+- **Error** — `error` class on each radio input, triggers shared error styling
+- **Disabled** — Native `disabled` with `opacity-50`, `cursor-not-allowed` on both input and radio wrapper; label text gets `text-dark-500`
+- **Focus** — `focus-visible:ring` on the focused radio input (direct, not via `:has()`)
+- **Hover** — Interactive color shift via shared `interactiveVariant` styles
+
+### Interaction Behavior
+- Controlled component — `value` (optional) and `onChange` are props, parent owns selection state
+- `onChange` receives the selected option's typed value (`T`, defaults to `string`) — captured from the option directly, not from `e.target.value`
+- Clicking any radio selects it and deselects the previous selection (native radio mutual exclusion)
+- No `value` prop means no radio is initially checked
+
+### Responsive & Layout
+- Horizontal wrap layout by default (`flex flex-wrap`)
+- `column` prop adds `flex-col` for vertical stacking
+- Per-radio margin controlled by `radioSize[size]` — bottom and right spacing
+
+<br/>
+
+## Architecture Decisions
+- **Native radio inputs without abstraction**: Each option renders a real `<input type="radio">` — no custom ARIA simulation, no `role="radio"`. This means browser-native arrow key navigation, form submission, and group semantics work without any JavaScript keyboard handling.
+- **CSS `::after` for checked dot**: The selected indicator is a pseudo-element on the radio input itself, positioned center with `left-[50%] top-[50%] translate`. Sized per radio size (`after:h-2`, `after:h-2.5`, `after:h-3`). This avoids an extra DOM element and keeps the check indicator tied to the input's CSS state (`:checked`).
+- **`radioProps` destructured for className**: `radioProps` is split into `{ className: radioClassName, ...restRadioProps }` so className merges via `cn()` while other props spread directly. This prevents className collisions with the base radio styling.
+- **No `<legend>` element**: The fieldset has no `<legend>` as a direct child. RadioGroupField passes `aria-labelledby` linking to the Label's legend element for the accessible group name.
+- **Generic `<T = string>` with `forwardRef` cast pattern**: The component function is generic, but `forwardRef` doesn't preserve generics. The `RadioGroupComponentType` interface + `as` cast restores the generic signature.
+- **`isEqual` from lodash for deep value comparison**: The `checked` prop uses `isEqual(value, radioValue)` to support object-typed values. The `onChange` handler passes the typed option value directly (not `e.target.value`) to preserve the generic type.
+- **Disabled applies to wrapper too**: `disabled && 'cursor-not-allowed [&_label]:text-dark-500'` on the Radio wrapper ensures the entire row looks disabled, not just the input. The label text dims via descendant selector.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+- [ ] Object array options — support passing a raw object array via `options` with `getLabel` / `getValue` extractors, removing the need to manually map data into `OptionType` shape (similar to React Select's `getOptionLabel` / `getOptionValue`)
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Native radio inputs are the right call here — you get arrow key navigation, form submission, and screen reader semantics for free, with zero JavaScript overhead. The component is lean and focused: options in, value out, styling handled through a clean variant/color/size matrix. The `radioProps` destructuring pattern for className is a nice touch that prevents the most common footgun with prop spreading on styled inputs.
+>
+> React Aria's `useRadioGroup` is the gold standard for radio implementations, layering managed focus, ARIA descriptions, and read-only states onto native inputs. But it also demands a provider/item component split and considerably more boilerplate. For a controlled component that already gets native semantics right, that complexity buys very little — the main thing you'd actually miss is `isReadOnly` support, which is niche. This component's flat-list approach is faster to wire up and harder to misuse.
+>
+> A clean, minimal radio group that nails the fundamentals and stays out of your way.
+>
+> — *Claude, Opus 4.6, 2026-03-23*

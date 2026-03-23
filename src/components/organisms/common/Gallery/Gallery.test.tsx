@@ -9,7 +9,6 @@ import { Gallery } from '.'
 
 expect.extend(toHaveNoViolations)
 
-window.HTMLElement.prototype.scrollIntoView = jest.fn()
 
 describe('Gallery', () => {
   const items = getGalleryItems(18)
@@ -118,7 +117,7 @@ describe('Gallery', () => {
     const previousTestId = screen.queryByTestId('PreviousButton')
     const nextTestId = screen.getByTestId('NextButton')
     const autoplayTestId = screen.getByTestId('AutoplayButton')
-    const dottsTestId = screen.queryByTestId('DottWrap')
+    const dotsTestId = screen.queryByTestId('DotWrap')
     const playIconQuery = screen.queryByTestId('PlayIcon')
     const pauseIconQuery = screen.queryByTestId('PauseIcon')
 
@@ -127,7 +126,7 @@ describe('Gallery', () => {
     expect(nextTestId).toBeInTheDocument()
     expect(nextTestId).toHaveAttribute('aria-label', 'next page 2')
     expect(autoplayTestId).toBeInTheDocument()
-    expect(dottsTestId).toBeNull()
+    expect(dotsTestId).toBeNull()
     expect(playIconQuery).toBeInTheDocument()
     expect(pauseIconQuery).toBeNull()
     expect(autoplayTestId).toHaveAttribute('aria-label', 'Play')

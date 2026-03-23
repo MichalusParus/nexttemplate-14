@@ -9,105 +9,116 @@ import { SearchInput } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('SearchInput', () => {
-  it('default', () => {
-    render(
-      <SearchInput
-        className="className"
-        name="searchTest"
-        placeholder="placeholder"
-        onChange={() => {}}
-      />,
-    )
-    const inputWrapTestId = screen.getByTestId('InputWrap')
-    const inputRole = screen.getByRole('searchbox')
+  describe('Semantics', () => {
+    it('renders input with type search and searchbox role', () => {
+      render(<SearchInput name="search" placeholder="Search" onChange={() => {}} />)
+      const input = screen.getByRole('searchbox')
 
-    expect(inputWrapTestId).toBeInTheDocument()
-    expect(inputWrapTestId).toHaveClass('className')
-    expect(inputRole).toHaveAttribute('type', 'search')
-    expect(inputRole).toHaveAttribute('id', 'searchTest')
-    expect(inputRole).toHaveAttribute('name', 'searchTest')
-    expect(inputRole).toHaveAttribute('placeholder', 'placeholder')
-    inputRole.focus()
-    expect(document.activeElement).toBe(inputRole)
-  })
-
-  it('value', () => {
-    render(<SearchInput name="name" value="value" onChange={() => {}} />)
-    const inputRole = screen.getByRole('searchbox')
-
-    expect(inputRole).toHaveValue('value')
-  })
-
-  it('icon', () => {
-    render(<SearchInput name="name" value="value" onChange={() => {}} />)
-    const svgTestId = screen.getByTestId('SearchIcon')
-
-    expect(svgTestId).toBeInTheDocument()
-    expect(svgTestId).toHaveAttribute('aria-hidden')
-  })
-
-  it('clear', () => {
-    const spy = jest.fn()
-    render(<SearchInput name="name" value="value" onChange={spy} />)
-    const buttonRole = screen.getByRole('button')
-
-    expect(buttonRole).toBeInTheDocument()
-    expect(buttonRole).toHaveAttribute('aria-label')
-    fireEvent.click(buttonRole)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('')
-  })
-
-  it('error', () => {
-    render(<SearchInput name="name" error="error" onChange={() => {}} />)
-    const inputWrapTestId = screen.getByTestId('InputWrap')
-
-    expect(inputWrapTestId).toHaveClass('error')
-  })
-
-  it('onChange', () => {
-    const spy = jest.fn()
-    render(<SearchInput name="name" value="value" onChange={spy} />)
-    const inputRole = screen.getByRole('searchbox')
-
-    fireEvent.change(inputRole, {
-      target: {
-        value: 'newvalue',
-      },
+      expect(input).toHaveAttribute('type', 'search')
+      expect(input).toHaveAttribute('id', 'search')
+      expect(input).toHaveAttribute('name', 'search')
     })
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('newvalue')
+
+    it('renders decorative search icon with aria-hidden', () => {
+      render(<SearchInput name="search" onChange={() => {}} />)
+      const icon = screen.getByTestId('SearchIcon')
+
+      expect(icon).toBeInTheDocument()
+      expect(icon).toHaveAttribute('aria-hidden')
+    })
+
+    it('renders clear button with aria-label', () => {
+      render(<SearchInput name="search" value="query" onChange={() => {}} />)
+      const clear = screen.getByRole('button')
+
+      expect(clear).toBeInTheDocument()
+      expect(clear).toHaveAttribute('aria-label')
+    })
+
+    it('className lands on TextInput wrapper', () => {
+      render(<SearchInput className="w-96" name="search" onChange={() => {}} />)
+      const wrapper = screen.getByTestId('InputWrap')
+
+      expect(wrapper).toHaveClass('w-96')
+    })
+
+    it('error adds error class to wrapper', () => {
+      render(<SearchInput name="search" error="required" onChange={() => {}} />)
+      const wrapper = screen.getByTestId('InputWrap')
+
+      expect(wrapper).toHaveClass('error')
+    })
+
+    it('disabled disables both input and clear button', () => {
+      render(<SearchInput name="search" value="query" disabled onChange={() => {}} />)
+      const input = screen.getByRole('searchbox')
+      const clear = screen.getByRole('button')
+
+      expect(input).toBeDisabled()
+      expect(clear).toHaveAttribute('aria-disabled', 'true')
+    })
   })
 
-  it('disabled', () => {
-    render(<SearchInput name="name" value="" disabled onChange={() => {}} />)
-    const inputRole = screen.getByRole('searchbox')
+  describe('Keyboard', () => {
+    it('Tab focuses the input', () => {
+      render(<SearchInput name="search" onChange={() => {}} />)
+      const input = screen.getByRole('searchbox')
 
-    expect(inputRole).toHaveAttribute('disabled')
+      input.focus()
+      expect(document.activeElement).toBe(input)
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLInputElement>()
-    render(
-      <SearchInput ref={ref} name="searchTest" placeholder="placeholder" onChange={() => {}} />,
-    )
+  describe('Interaction', () => {
+    it('onChange fires with string value', () => {
+      const onChange = jest.fn()
+      render(<SearchInput name="search" value="" onChange={onChange} />)
+      const input = screen.getByRole('searchbox')
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
+      fireEvent.change(input, { target: { value: 'query' } })
+      expect(onChange).toHaveBeenCalledTimes(1)
+      expect(onChange).toHaveBeenCalledWith('query')
+    })
 
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
+    it('clear button calls onChange with empty string', () => {
+      const onChange = jest.fn()
+      render(<SearchInput name="search" value="query" onChange={onChange} />)
+      const clear = screen.getByRole('button')
 
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
+      fireEvent.click(clear)
+      expect(onChange).toHaveBeenCalledTimes(1)
+      expect(onChange).toHaveBeenCalledWith('')
+    })
+
+    it('clear button calls onClear when provided', () => {
+      const onChange = jest.fn()
+      const onClear = jest.fn()
+      render(<SearchInput name="search" value="query" onChange={onChange} onClear={onClear} />)
+      const clear = screen.getByRole('button')
+
+      fireEvent.click(clear)
+      expect(onClear).toHaveBeenCalledTimes(1)
+      expect(onChange).not.toHaveBeenCalled()
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(
-      <SearchInput name="searchTest" placeholder="placeholder" onChange={() => {}} />,
-    )
+  describe('Ref', () => {
+    it('forwards ref to input element', () => {
+      const ref = createRef<HTMLInputElement>()
+      render(<SearchInput ref={ref} name="search" onChange={() => {}} />)
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      expect(ref.current).toBeInstanceOf(HTMLInputElement)
+    })
+  })
+
+  describe('Accessibility', () => {
+    it('axe', async () => {
+      const { container } = render(
+        <SearchInput name="search" placeholder="Search" onChange={() => {}} />,
+      )
+      const results = await axe(container)
+
+      expect(results).toHaveNoViolations()
+    })
   })
 })

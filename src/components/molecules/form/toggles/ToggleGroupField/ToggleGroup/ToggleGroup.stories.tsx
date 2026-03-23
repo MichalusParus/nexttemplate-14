@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { getOptions, optionsWithContent } from '../../../../../../../.storybook/helpers'
 import { ToggleGroup, ToggleGroupProps } from './ToggleGroup'
 
-const meta: Meta<typeof ToggleGroup> = {
+const meta: Meta<typeof ToggleGroup<string>> = {
   title: 'Molecules/Form/toggles/ToggleGroup',
   component: ToggleGroup,
   tags: ['autodocs'],
@@ -19,12 +19,12 @@ const meta: Meta<typeof ToggleGroup> = {
 }
 
 const ToggleGroupWithHooks = (args: ToggleGroupProps) => {
-  const [value, setValue] = useState<string>('')
-  return <ToggleGroup {...args} value={value} onChange={v => setValue(v)} />
+  const [value, setValue] = useState<string | undefined>('')
+  return <ToggleGroup {...args} value={value} onChange={setValue} />
 }
 
 export default meta
-type Story = StoryObj<typeof ToggleGroup>
+type Story = StoryObj<typeof ToggleGroup<string>>
 
 export const PrimaryDefault: Story = {
   args: {

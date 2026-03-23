@@ -9,97 +9,118 @@ import { PasswordInput } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('PasswordInput', () => {
-  it('default', () => {
-    render(
-      <PasswordInput
-        className="className"
-        name="passwordTest"
-        placeholder="placeholder"
-        onChange={() => {}}
-      />,
-    )
-    const inputWrapTestId = screen.getByTestId('InputWrap')
-    const passwordtestId = screen.getByTestId('PasswordInput')
+  describe('Semantics', () => {
+    it('renders input with type password', () => {
+      render(<PasswordInput name="password" placeholder="Password" onChange={() => {}} />)
+      const input = screen.getByTestId('PasswordInput')
 
-    expect(inputWrapTestId).toBeInTheDocument()
-    expect(inputWrapTestId).toHaveClass('className')
-    expect(passwordtestId).toHaveAttribute('type', 'password')
-    expect(passwordtestId).toHaveAttribute('id', 'passwordTest')
-    expect(passwordtestId).toHaveAttribute('name', 'passwordTest')
-    expect(passwordtestId).toHaveAttribute('placeholder', 'placeholder')
-    passwordtestId.focus()
-    expect(document.activeElement).toBe(passwordtestId)
-  })
-
-  it('value', () => {
-    render(<PasswordInput name="name" value="value" onChange={() => {}} />)
-    const passwordtestId = screen.getByTestId('PasswordInput')
-
-    expect(passwordtestId).toHaveValue('value')
-  })
-
-  it('unmask', () => {
-    render(<PasswordInput name="name" value="value" onChange={() => {}} />)
-    const buttonRole = screen.getByRole('button')
-    const passwordtestId = screen.getByTestId('PasswordInput')
-
-    expect(passwordtestId).toHaveAttribute('type', 'password')
-    expect(buttonRole).toBeInTheDocument()
-    expect(buttonRole).toHaveAttribute('aria-label')
-    fireEvent.click(buttonRole)
-    expect(passwordtestId).toHaveAttribute('type', 'text')
-  })
-
-  it('error', () => {
-    render(<PasswordInput name="name" error="error" onChange={() => {}} />)
-    const inputWrapTestId = screen.getByTestId('InputWrap')
-
-    expect(inputWrapTestId).toHaveClass('error')
-  })
-
-  it('onChange', () => {
-    const spy = jest.fn()
-    render(<PasswordInput name="name" value="value" onChange={spy} />)
-    const passwordtestId = screen.getByTestId('PasswordInput')
-
-    fireEvent.change(passwordtestId, {
-      target: {
-        value: 'newvalue',
-      },
+      expect(input).toHaveAttribute('type', 'password')
+      expect(input).toHaveAttribute('id', 'password')
+      expect(input).toHaveAttribute('name', 'password')
     })
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('newvalue')
+
+    it('renders visibility toggle button with aria-label', () => {
+      render(<PasswordInput name="password" onChange={() => {}} />)
+      const toggle = screen.getByRole('button')
+
+      expect(toggle).toBeInTheDocument()
+      expect(toggle).toHaveAttribute('aria-label')
+    })
+
+    it('className lands on TextInput wrapper', () => {
+      render(<PasswordInput className="w-96" name="password" onChange={() => {}} />)
+      const wrapper = screen.getByTestId('InputWrap')
+
+      expect(wrapper).toHaveClass('w-96')
+    })
+
+    it('error adds error class to wrapper', () => {
+      render(<PasswordInput name="password" error="required" onChange={() => {}} />)
+      const wrapper = screen.getByTestId('InputWrap')
+
+      expect(wrapper).toHaveClass('error')
+    })
+
+    it('disabled disables both input and toggle button', () => {
+      render(<PasswordInput name="password" disabled onChange={() => {}} />)
+      const input = screen.getByTestId('PasswordInput')
+      const toggle = screen.getByRole('button')
+
+      expect(input).toBeDisabled()
+      expect(toggle).toHaveAttribute('aria-disabled', 'true')
+    })
   })
 
-  it('disabled', () => {
-    render(<PasswordInput name="name" value="" disabled onChange={() => {}} />)
-    const passwordtestId = screen.getByTestId('PasswordInput')
+  describe('Keyboard', () => {
+    it('Tab focuses the input', () => {
+      render(<PasswordInput name="password" onChange={() => {}} />)
+      const input = screen.getByTestId('PasswordInput')
 
-    expect(passwordtestId).toHaveAttribute('disabled')
+      input.focus()
+      expect(document.activeElement).toBe(input)
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLInputElement>()
-    render(
-      <PasswordInput ref={ref} name="passwordTest" placeholder="placeholder" onChange={() => {}} />,
-    )
+  describe('Interaction', () => {
+    it('toggle button switches type to text', () => {
+      render(<PasswordInput name="password" value="secret" onChange={() => {}} />)
+      const input = screen.getByTestId('PasswordInput')
+      const toggle = screen.getByRole('button')
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
+      expect(input).toHaveAttribute('type', 'password')
+      fireEvent.click(toggle)
+      expect(input).toHaveAttribute('type', 'text')
+    })
 
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
+    it('toggle button switches back to password', () => {
+      render(<PasswordInput name="password" value="secret" onChange={() => {}} />)
+      const toggle = screen.getByRole('button')
+      const input = screen.getByTestId('PasswordInput')
 
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
+      fireEvent.click(toggle)
+      fireEvent.click(toggle)
+      expect(input).toHaveAttribute('type', 'password')
+    })
+
+    it('toggle aria-label changes with visibility state', () => {
+      render(<PasswordInput name="password" onChange={() => {}} />)
+      const toggle = screen.getByRole('button')
+      const initialLabel = toggle.getAttribute('aria-label')
+
+      fireEvent.click(toggle)
+      const toggledLabel = toggle.getAttribute('aria-label')
+
+      expect(initialLabel).not.toBe(toggledLabel)
+    })
+
+    it('onChange fires with string value', () => {
+      const onChange = jest.fn()
+      render(<PasswordInput name="password" value="" onChange={onChange} />)
+      const input = screen.getByTestId('PasswordInput')
+
+      fireEvent.change(input, { target: { value: 'secret' } })
+      expect(onChange).toHaveBeenCalledTimes(1)
+      expect(onChange).toHaveBeenCalledWith('secret')
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(
-      <PasswordInput name="passwordTest" placeholder="placeholder" onChange={() => {}} />,
-    )
+  describe('Ref', () => {
+    it('forwards ref to input element', () => {
+      const ref = createRef<HTMLInputElement>()
+      render(<PasswordInput ref={ref} name="password" onChange={() => {}} />)
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      expect(ref.current).toBeInstanceOf(HTMLInputElement)
+    })
+  })
+
+  describe('Accessibility', () => {
+    it('axe', async () => {
+      const { container } = render(
+        <PasswordInput name="password" placeholder="Password" onChange={() => {}} />,
+      )
+      const results = await axe(container)
+
+      expect(results).toHaveNoViolations()
+    })
   })
 })

@@ -94,6 +94,20 @@ export const HideXButton: Story = {
   render: args => <DialogWithHooks {...args} />,
 }
 
+export const Empty: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'dialogStory4',
+    title: undefined,
+    label: 'empty dialog',
+    hideXButton: true,
+    closeButton: false,
+    dialogActions: undefined,
+    children: textContent.slice(0, 600),
+  },
+  render: args => <DialogWithHooks {...args} />,
+}
+
 export const Scroll: Story = {
   args: {
     ...PrimaryDefault.args,

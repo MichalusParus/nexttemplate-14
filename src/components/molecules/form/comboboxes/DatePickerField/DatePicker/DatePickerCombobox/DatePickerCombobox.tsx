@@ -1,6 +1,5 @@
 'use client'
-import { format } from 'date-fns'
-import { forwardRef, useMemo } from 'react'
+import { forwardRef, useCallback, useMemo } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
 import { ChipProps } from '@/components/atoms/common/Chip'
@@ -25,6 +24,12 @@ type PartialButtonProps = Omit<
   | 'onClear'
 >
 
+const defaultDateFormatOptions: Intl.DateTimeFormatOptions = {
+  day: 'numeric',
+  month: 'numeric',
+  year: 'numeric',
+}
+
 export type DatePickerComboboxProps = PartialButtonProps &
   InputProps &
   StyleProps & {
@@ -40,6 +45,10 @@ export type DatePickerComboboxProps = PartialButtonProps &
     chipProps?: Partial<ChipProps>
     /** optional onClear function that render clear button when value is defined */
     onClear?: () => void
+    /** optional locale for date formatting */
+    locale?: Intl.LocalesArgument
+    /** optional Intl.DateTimeFormat options for date display */
+    dateFormatOptions?: Intl.DateTimeFormatOptions
     /** handle onOpen function */
     handleOpen: () => void
     /** handle onChange function */
@@ -64,6 +73,8 @@ export const DatePickerCombobox = forwardRef<HTMLButtonElement | null, DatePicke
       calendarProps = {},
       chipProps = {},
       onClear,
+      locale,
+      dateFormatOptions,
       handleOpen,
       handleOnChange,
       ...rest
@@ -71,16 +82,23 @@ export const DatePickerCombobox = forwardRef<HTMLButtonElement | null, DatePicke
     ref,
   ) => {
     const { range, multiValue } = calendarProps
+
+    const formatDate = useCallback(
+      (date: Date) =>
+        new Intl.DateTimeFormat(locale, dateFormatOptions ?? defaultDateFormatOptions).format(date),
+      [locale, dateFormatOptions],
+    )
+
     const comboboxTitle = useMemo(() => {
       if (value && !range && !multiValue) {
-        return format(value, 'd.M.y')
+        return formatDate(value)
       } else if (range?.start) {
-        return `${format(range.start, 'd.M.y')} ${range?.end ? `- ${format(range.end, 'd.M.y')}` : '-'}`
+        return `${formatDate(range.start)} ${range?.end ? `- ${formatDate(range.end)}` : '-'}`
       } else if (multiValue?.length) {
-        return multiValue.map(v => format(v, 'd.M.y')).join(', ')
+        return multiValue.map(v => formatDate(v)).join(', ')
       }
       return placeholder
-    }, [multiValue, range, placeholder, value])
+    }, [multiValue, range, placeholder, value, formatDate])
 
     return (
       <Button
@@ -121,7 +139,7 @@ export const DatePickerCombobox = forwardRef<HTMLButtonElement | null, DatePicke
           <ValueChips
             selectedOptions={calendarProps.multiValue.map(v => ({
               value: v.toISOString(),
-              label: format(v, 'd.M.y'),
+              label: formatDate(v),
             }))}
             multiValue={calendarProps.multiValue.map(v => v.toISOString())}
             chipProps={chipProps}

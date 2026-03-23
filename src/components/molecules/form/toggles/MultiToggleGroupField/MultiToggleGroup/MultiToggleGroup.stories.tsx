@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { getOptions, optionsWithContent } from '../../../../../../../.storybook/helpers'
 import { MultiToggleGroup, MultiToggleGroupProps } from './MultiToggleGroup'
 
-const meta: Meta<typeof MultiToggleGroup> = {
+const meta: Meta<typeof MultiToggleGroup<string>> = {
   title: 'Molecules/Form/toggles/MultiToggleGroup',
   component: MultiToggleGroup,
   tags: ['autodocs'],
@@ -24,7 +24,7 @@ const MultiToggleGroupWithHooks = (args: MultiToggleGroupProps) => {
 }
 
 export default meta
-type Story = StoryObj<typeof MultiToggleGroup>
+type Story = StoryObj<typeof MultiToggleGroup<string>>
 
 export const PrimaryDefault: Story = {
   args: {

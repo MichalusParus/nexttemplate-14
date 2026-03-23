@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { getOptions, optionsWithContent } from '../../../../../../../.storybook/helpers'
 import { CheckboxGroup, CheckboxGroupProps } from './CheckboxGroup'
 
-const meta: Meta<typeof CheckboxGroup> = {
+const meta: Meta<typeof CheckboxGroup<string>> = {
   title: 'Molecules/Form/toggles/CheckboxGroup',
   component: CheckboxGroup,
   tags: ['autodocs'],
@@ -24,7 +24,7 @@ const CheckboxGroupWithHooks = (args: CheckboxGroupProps) => {
 }
 
 export default meta
-type Story = StoryObj<typeof CheckboxGroup>
+type Story = StoryObj<typeof CheckboxGroup<string>>
 
 export const PrimaryDefault: Story = {
   args: {

@@ -1,0 +1,140 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/comboboxes/Select/Def" />
+
+# Select
+
+> Combobox-triggered listbox for single-value selection — a `<Button role="combobox">` opens a portal-rendered Dropdown containing a scrollable option list. Generic `<T = string>` supports string, number, or object values with deep equality via `isEqual`. Also serves as base component for [MultiSelect](?path=/docs/molecules-form-comboboxes-multiselect-def--docs) via the `multiValue` prop. For form integration with validation and labels, use SelectField.
+
+<br/>
+
+## Features
+
+- Generic `<T>` typed values with deep equality
+- Grouped options
+- Loading state with skeleton
+- Typeahead search
+- Value chips display via `displayChips`
+- Clear button via `onClear`
+- Configurable placement
+- Dropdown `children` slot for custom content
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Outer `<div>` wrapper with `data-testid="Select"` and `className="Select relative w-full"`
+- **SelectCombobox** — `<Button role="combobox">` with `id={name}`, `name={name}`, `type="button"`
+  - `aria-expanded={isOpen}` — reflects dropdown visibility
+  - `aria-haspopup="listbox"` — announces listbox popup
+  - `aria-controls={name}-listbox` / `aria-owns={name}-listbox` — links to ListBox element
+  - `aria-disabled` — set via Button's disabled handling (not native `disabled`), keeps button in tab order for screen readers
+  - Display: `<Ellipsis>` with selected option's `label` or `placeholder` text (placeholder styled with `text-placeholder`). When `displayChips=true` and value selected, renders `<ValueChips>` instead
+  - `endIcon` slot: optional ClearButton (`data-testid="ClearAllButton"`, visible when `onClear` provided AND value selected) + ChevronIcon (`aria-hidden`, rotates 180deg when open)
+- **Dropdown** — portal-rendered, positioned via Popper.js (`placement` prop, default `bottom`)
+  - Contains ListBox, `scrollShadowProps={{ disableHorizontal: true }}`
+- **ListBox** — `<ul role="listbox">` with `id={name}-listbox`, `aria-labelledby={name}-listbox-label`, `aria-busy={isLoading}`, `aria-hidden={!isOpen}`
+  - **Flat options**: maps each option to `<OptionItem>`
+  - **Grouped options**: `<li role="presentation">` → `<ul role="group" aria-label={groupLabel}>` → GroupLabel (`data-testid="GroupLabel"`, `role="presentation"`) + OptionItems
+  - Empty + not loading + `noOptionLabel`: renders `<li>` with label text (styled with button size + span color)
+  - Loading + no options: renders single Ghost skeleton option
+- **OptionItem** — `<li role="presentation">` → `<Button role="option">` with `aria-selected={isSelected}`, `tabIndex=-1`
+  - `id={name}-{label}-option`, `className="Option"` + `selected` class when selected
+  - Optional fake `<Checkbox>` as `startIcon` (`aria-hidden="true"`, visual only) — hidden via `hideCheckbox` when not in multi-select mode
+  - Loading: `<Ghost>` skeleton replaces content, `cursor-not-allowed`, `onClick` blocked
+  - Content priority: `buttonProps.children` → `children` (from option `content` field) → `label`
+- **ClearButton** — `<span role="button">` with `aria-label` (translated), `tabIndex=-1`
+  - Handles click + Enter/Space via `onKeyDown`, `preventDefault` + `stopPropagation` on both
+  - Renders `<XIcon aria-hidden>`
+- **ValueChips** — `<div data-testid="ValueChips">` with flex-wrap layout
+  - Maps selected options to `<Chip>` with per-chip ClearButton (className `ChipClearButton`, hidden when not `multiValue` mode)
+
+### Keyboard Handling
+Tier 3 — Selection lists with combobox trigger.
+- **ArrowDown** on combobox (closed) — opens dropdown (`triggerNav: true`)
+- **ArrowDown/Up** — cycles through options (wraps at boundaries via useFocus)
+- **Home/End** — jumps to first/last option
+- **Enter/Space** — selects focused option (via Button click handler)
+- **Escape** — closes dropdown, returns focus to combobox trigger
+- **Type-ahead** — accumulates typed characters (500ms buffer), focuses first matching option by text content
+- **Tab** — closes dropdown (managed by useFocus scope)
+- Single select: after selection, focus returns to combobox and dropdown auto-closes
+- Disabled state blocks keyboard interaction via `aria-disabled` — Enter/Space `preventDefault`'d by Button, click handler nullified
+- `useFocus` config: `scope=true`, `triggerNav=true`, `scopeType='dropdown'`, `typeAhead=true`, `selectors=FOCUS_SELECTORS.select` (targets `.Option`, `.ClearButton`, `.ChipClearButton`, `.Button`, `.Link`)
+- Focus on open: `requestAnimationFrame` → selected option (`.selected` class, excluding combobox via `role !== 'combobox'` check) → fallback to index 0 (combobox trigger, since `triggerNav` includes it in the focusable list)
+
+### Accessibility (WAI-ARIA)
+- Follows [Combobox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) with listbox popup
+- Trigger: `role="combobox"` with `aria-expanded`, `aria-haspopup="listbox"`, `aria-controls`, `aria-owns`
+- ListBox: `role="listbox"` with `aria-labelledby`, `aria-busy` during loading, `aria-hidden` when closed
+- Options: `role="option"` with `aria-selected` on selected items
+- Groups: `role="group"` with `aria-label={groupLabel}`, group items wrapped in `role="presentation"` `<li>`
+- ClearButton: `role="button"` with translated `aria-label`
+- Fake checkboxes: `aria-hidden="true"` — purely visual, no screen reader interaction
+- Screen reader: combobox announces expanded/collapsed state; listbox provides selection context
+
+### Visual States
+- **Default** — outlined button with placeholder text
+- **Open** — `selected z-combobox` classes on combobox, dropdown visible with ListBox
+- **Value selected** — selected option label replaces placeholder in Ellipsis
+- **DisplayChips** — selected value(s) rendered as Chip components inside combobox
+- **Error** — `error` class on combobox button
+- **Disabled** — `aria-disabled="true"`, stays in tab order for screen readers, click/keyboard blocked
+- **Loading** — Ghost skeleton in options, `cursor-not-allowed`, clicks blocked, `aria-busy="true"` on listbox
+
+### Interaction Behavior
+- Click combobox toggles dropdown open/close
+- **Single select**: selecting an option fires `onChange`, auto-closes dropdown, returns focus to combobox (`componentRef.current?.focus()`)
+- [MultiSelect](?path=/docs/molecules-form-comboboxes-multiselect-def--docs) overrides auto-close via `multiValue` prop
+- `onOpen` / `onClose` callbacks fire synchronously with the toggle
+- `onChange` fires with the selected option's `value` (type `T`)
+- ClearButton: visible when `onClear` provided AND `selectedOptions.length > 0`; click calls `onClear` with `preventDefault` + `stopPropagation` to prevent combobox toggle
+- Disabled: `aria-disabled="true"`, stays in tab order, click handler nullified by Button (`!isLoading && !disabled ? onClick : undefined`), Enter/Space `preventDefault`'d by Button's `onKeyDown`
+- Loading: options show Ghost skeleton, clicks blocked via `isLoading` guard in `onClick`
+
+### Responsive & Layout
+- Wrapper: `w-full` — fills container width
+- Dropdown: width matches anchor element by default (Popper.js)
+- Placement configurable via `placement` prop (default `bottom`)
+
+<br/>
+
+## Architecture Decisions
+- **Generic `<T = string>` with `forwardRef` cast pattern**: The component function is generic, but `forwardRef` doesn't preserve generics. The `SelectComponentType` interface + `as` cast restores the generic signature. Same pattern used by ListBox, OptionItem, and SelectCombobox.
+- **`useImperativeHandle` for ref forwarding**: Internal `componentRef` stores the button element for `useFocus` and focus management (`componentRef.current?.focus()` after selection). The consumer's `ref` is forwarded via `useImperativeHandle` that returns `componentRef.current`.
+- **`useGroupedOptions` hook**: Detects whether options are flat or grouped (`OptionType[]` vs `OptionGroupType[]`) and provides `isGrouped` boolean + `flatOptions` (flattened for selectedOptions lookup). Avoids manual type checking in the component.
+- **`isEqual` from lodash for deep value comparison**: `selectedOptions` filtering uses `isEqual` to support object-typed values. Without this, `value=\{\{ id: 1 \}\}` would never match options because objects are compared by reference.
+- **`requestAnimationFrame` in useFocus `onOpen`**: ListBox options aren't available in the DOM until the Dropdown portal mounts and React paints. The `requestAnimationFrame` ensures the focus-on-open logic (selected → first) runs after options are rendered. This doesn't fire in JSDOM, which is why keyboard tests use the useFocus portal ArrowDown pattern instead.
+- **`handleToggle` with direct setState**: Unlike DatePicker's functional `setState` pattern, Select uses `setIsOpen(nextState)` with `onOpen`/`onClose` called after. This is simpler and works correctly because toggles are always user-initiated (click or keyboard), which are serialized by the browser event loop.
+- **`handleOnChange` checks `multiValue` for auto-close**: Instead of a `mode` prop, the handler checks `if (!multiValue)` to decide whether to auto-close and refocus. This lets Select serve as shared infrastructure for MultiSelect without a mode enum.
+- **ClearButton as `<span>` not `<button>`**: Avoids nested interactive elements — ClearButton lives inside the combobox `<Button>`, so using a native `<button>` would violate HTML nesting rules. The `<span role="button">` with manual keyboard handling (Enter/Space) provides the same behavior.
+- **`FOCUS_SELECTORS.select` targets class names**: Options use `tabIndex=-1` and are wrapped in Button components. The selectors (`.Option`, `.ClearButton`, `.ChipClearButton`, `.Button`, `.Link`) target CSS classes rather than ARIA roles to precisely control which elements participate in keyboard navigation.
+- **`value` prop passed to `useFocus`**: The `value` option (`multiValue ?? value`) is passed so useFocus can react to value changes — re-syncing the focusable element list when options change or selection updates.
+
+<br/>
+
+## Known Bugs & Limitations
+- **Button-based combobox without text input**: Uses `role="combobox"` on a `<Button>` — ARIA 1.2 expects combobox to be a text input element. Screen readers announce "combobox" but the user cannot type to filter options. Passes automated axe audits but doesn't match the spec's intended interaction model. Most libraries (MUI, Radix, React Aria) use an `<input>` for the combobox element. A `<button aria-haspopup="listbox">` would be more semantically accurate for a non-editable select. This is a library-wide convention shared with DatePicker. Autocomplete uses the correct pattern (`<div role="combobox">` with nested `<TextInput>`).
+
+<br/>
+
+## Future Ideas
+- [ ] Object array options — support passing a raw object array via `options` with `getLabel` / `getValue` extractors, removing the need to manually map data into `OptionType` shape (similar to React Select's `getOptionLabel` / `getOptionValue`)
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> This is a well-structured single-select that doubles as multi-select infrastructure without the typical mode-enum bloat — the `multiValue` check in `handleOnChange` is a clean split point. The `useImperativeHandle` + internal ref pattern keeps focus management self-contained while still exposing the trigger to consumers, and deep equality via `isEqual` is the right call for object-valued options that would silently break with reference comparison.
+>
+> React Aria's `useSelect` is the strongest comparison here, and it wins on separation of concerns — selection state, overlay state, and keyboard navigation are independent hooks you compose, whereas this Select bundles all three through `useFocus` with a growing options bag. React Aria uses `aria-activedescendant` for virtual focus, which works well on NVDA/JAWS but has known VoiceOver bugs — this component chose real DOM focus via roving tabindex specifically to avoid those issues, a defensible call that also lets interactive children (buttons, links inside options) work naturally. The drop-in simplicity is the bigger win: one `<Select>` with `value`/`onChange` versus wiring together three hooks, a hidden native select, and a custom overlay.
+>
+> A select that handles the hard problems — deep equality, portal focus timing, multi-select reuse — without making the consumer aware of any of them.
+>
+> — *Claude, Opus 4.6, 2026-03-23*
+

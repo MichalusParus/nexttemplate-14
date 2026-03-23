@@ -1,0 +1,110 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Popovers/Drawer/Def" />
+
+# Drawer
+
+> A controlled side-panel popover that slides from the left or right edge of a relative parent — rendered in a portal with Paper/ScrollShadow composition, keyboard navigation, and modal/non-modal dismiss. Used for navigation panels, settings sidebars, and any supplementary content that should appear alongside the main page without replacing it.
+
+<br/>
+
+## Features
+
+- Left or right placement
+- Modal or non-modal modes
+- Configurable vertical offset
+- Portal rendering with configurable container
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Outer `<aside>` — semantic landmark for complementary content, `id={name}`, receives `className`, `offsetY`, `width`, transition classes, and native div props via rest spread
+- **Modal mode:** `role="dialog"` + `aria-modal="true"` on the aside; `<Overlay>` rendered as sibling before the aside for backdrop click dismiss
+- **Non-modal mode:** No `role` attribute — the aside's implicit `complementary` role provides semantic context; no `aria-modal` attribute
+- `aria-label` — from `label` prop or falls back to `useTranslations('Components')('drawer')` i18n string
+- Inner structure: `<Paper>` (variant/color/paddingY, rounded conditionally per placement — `rounded-r-md` for left, `rounded-l-md` for right) > `<ScrollShadow>` (paddingX, scroll containment) > `children`
+- Rendered into a React portal (`createPortal` to `document.body` or custom `portalContainerId`)
+
+### Keyboard Handling
+**Non-modal mode (default):**
+- **ArrowDown / ArrowUp** — Cycles focus through focusable children (wraps at boundaries)
+- **ArrowRight / ArrowLeft** — Cycles focus through focusable children (Cmd+Arrow jumps to end/start)
+- **Home / End** — Jumps to first/last focusable element
+- **Tab** — Closes drawer and restores focus to trigger (`anchorRef`)
+- **Escape** — Closes drawer and restores focus to trigger (`anchorRef`)
+- **Focus-out / outside click** — Closes drawer
+
+**Modal mode:**
+- **Tab / Shift+Tab** — Cycles focus within the drawer and trigger (focus trap — focus cannot leave; `anchorRef` element is included in the cycle)
+- **ArrowDown / ArrowUp, ArrowRight / ArrowLeft, Home / End** — Same as non-modal
+- **Escape** — Closes drawer
+- Auto-focuses first focusable element on open via `requestAnimationFrame`
+- Focus is captured on open and restored on close via `useDismissModal`
+
+### Accessibility (WAI-ARIA)
+- `<aside>` is a semantic landmark for complementary content — appropriate for navigation drawers and side panels that supplement the main content
+- Modal mode follows the [WAI-ARIA Dialog (Modal) pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/): `role="dialog"`, `aria-modal="true"`, Overlay sets `inert` on the `#__next` app root
+- Non-modal mode relies on the aside's implicit `complementary` role — no additional ARIA role needed
+- `aria-label` always present — either explicit via `label` prop or implicit via i18n fallback
+- Focus scope coordination via `useFocusScope` in modal mode — nested modals correctly deactivate parent scopes
+
+### Visual States
+- **Open:** `left-0 opacity-100` (left placement) or `right-0 opacity-100` (right placement) — smooth slide+fade transition
+- **Closing:** `isOpen` becomes false, slide+opacity transition plays over 150ms, then component unmounts
+- **Closed:** Both `isOpen` and `isVisible` false — returns `null`, no DOM presence
+- Absolute positioning within relative parent (`absolute z-modal transition-position`) with configurable `offsetY` (default `top-0 bottom-0` — full parent height)
+- Modal mode: transparent Overlay rendered behind drawer to capture outside clicks
+
+### Interaction Behavior
+- **Controlled-only:** `isOpen` and `onClose` are both required props — no internal open state
+- **Modal dismiss:** Overlay `onClick` calls `onClose` directly
+- **Non-modal dismiss:** `useFocus` detects focus leaving the container+portal zone (via `focusout` event) and outside clicks (via `mousedown`/`touchstart`)
+- **Close animation timing:** `useEffect` on `isOpen` — when false, starts 150ms `setTimeout` before setting `isVisible=false`. Cleanup clears the timer on unmount or rapid re-open.
+- **Placement:** `left` (default) slides from left edge, `right` slides from right edge; Paper rounds the opposite edge for a clean visual seam
+
+### Responsive & Layout
+- Width via Tailwind class prop (default `w-1/3`)
+- Vertical offset via `offsetY` (default `top-0 bottom-0` — full height of relative parent)
+- Paper rounding: `rounded-r-md` for left placement, `rounded-l-md` for right — rounds the exposed edge
+- Padding: `paddingX` on ScrollShadow content, `paddingY` on Paper
+- Paper and ScrollShadow accept additional props via `paperProps` and `scrollShadowProps` pass-throughs
+
+<br/>
+
+## Architecture Decisions
+- **`useImperativeHandle` with state setter, not useRef:** Same pattern as Dialog — `useState` + `setComponentEl` as the ref callback because `useFocus` needs the portal element (`portalEl: componentEl`) reactively. A ref object change doesn't trigger re-renders; the state setter does, ensuring `useFocus` re-runs when the element mounts.
+- **`anchorRef` as useFocus container:** Unlike Dialog (which uses a null `containerRef`), Drawer passes `anchorRef` as the `useFocus` container. This means the focusable element list includes children of the anchor element and the portal. In non-modal mode, this enables focus-out detection when focus leaves both the anchor zone and the portal. In modal mode, `scope` and `trap` are auto-derived from `dismiss: 'modal'`.
+- **Overlay as sibling, not wrapper:** The `<Overlay>` is rendered before the aside (not wrapping it), so clicking the overlay fires `onClose` without event propagation issues through the drawer's content.
+- **Absolute, not fixed positioning:** Unlike Dialog (fixed center), Drawer is absolutely positioned within a relative parent. This means the parent must have `position: relative` and `overflow: hidden` for the slide animation to clip correctly during entry/exit.
+- **Paper + ScrollShadow composition:** Delegates styling to Paper (variant, color, shadow, rounding) and scroll containment to ScrollShadow, keeping the drawer component focused on positioning and behavior.
+- **`isOpen` / `isVisible` dual state:** `isOpen` drives the trigger logic, `isVisible` keeps the DOM present during the fade-out transition. The 150ms timeout between `isOpen=false` and `isVisible=false` matches the CSS transition duration — a deliberate convention shared across all popover components.
+
+<br/>
+
+## Known Bugs & Limitations
+- Issues with severity
+
+<br/>
+
+## Future Ideas
+- [ ] Support for `placement: 'top' | 'bottom'` slide directions
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Surprisingly opinionated for a drawer — and that's what makes it work. The `anchorRef` requirement forces developers to think about spatial context upfront rather than bolting a drawer onto the page as an afterthought. Tying it to a relative parent with absolute positioning instead of the typical fixed-viewport approach means this drawer actually behaves like a panel within a layout, not a hostile takeover of the screen. The `modal` flag cleanly toggles between two genuinely different interaction models through a single prop — `role="dialog"` with overlay and focus trap, or a quiet non-modal panel with focus-out dismiss — and `useFocus` derives the correct behavior from the `dismiss` mode alone.
+>
+> MUI's Drawer is the natural comparison, and it takes the opposite bet — fixed viewport positioning, five anchor directions, and `transitionDuration` as a first-class prop. That heavier contract pays off when you need a global navigation drawer, but it fights you when you want a contextual panel scoped to a specific layout region. This component's absolute-positioning model is genuinely better for the scoped case, and the parent-relative clipping you get for free is something MUI developers end up hacking with custom styles anyway.
+>
+> The `devWarning` for missing `label` catches the most common accessibility oversight at dev time. Paper rounding per placement (`rounded-r-md` for left, `rounded-l-md` for right) is a subtle detail that gets the visual seam right without the consumer thinking about it.
+>
+> Solid contextual drawer that knows what it isn't trying to be.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

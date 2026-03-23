@@ -15,7 +15,7 @@ import { cn } from '@/utils/utils'
 export type MenuItemRadioGroupProps = Omit<RadioGroupProps, 'label' | 'labelProps' | 'error'>
 
 /** Menuitem with RadioGroup for Menu components. Native RadioGroupProps supported. */
-export const MenuItemRadioGroup = forwardRef<HTMLInputElement | null, MenuItemRadioGroupProps>(
+export const MenuItemRadioGroup = forwardRef<HTMLFieldSetElement | null, MenuItemRadioGroupProps>(
   (
     {
       className,
@@ -42,6 +42,7 @@ export const MenuItemRadioGroup = forwardRef<HTMLInputElement | null, MenuItemRa
             className,
           )}
           aria-label={name}
+          ref={ref}
           {...rest}
         >
           {options.map(({ value: radioValue, label: radioLabel, content }) => (
@@ -73,7 +74,6 @@ export const MenuItemRadioGroup = forwardRef<HTMLInputElement | null, MenuItemRa
                 role="menuitemradio"
                 tabIndex={-1}
                 aria-checked={value === radioValue}
-                ref={ref}
                 onChange={e => onChange(e.target.value)}
               />
               <label htmlFor={radioValue} className={cn('Label', 'w-full font-semibold')}>

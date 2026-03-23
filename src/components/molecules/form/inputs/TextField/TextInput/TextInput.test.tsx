@@ -9,104 +9,131 @@ import { TextInput } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('TextInput', () => {
-  it('default', () => {
-    render(
-      <TextInput
-        className="className"
-        name="inputTest"
-        placeholder="placeholder"
-        onChange={() => {}}
-      />,
-    )
-    const inputWrapTestId = screen.getByTestId('InputWrap')
-    const inputRole = screen.getByRole('textbox')
+  describe('Semantics', () => {
+    it('renders native input with textbox role', () => {
+      render(<TextInput name="test" placeholder="placeholder" onChange={() => {}} />)
+      const input = screen.getByRole('textbox')
 
-    expect(inputWrapTestId).toBeInTheDocument()
-    expect(inputWrapTestId).toHaveClass('className')
-    expect(inputRole).toHaveAttribute('type', 'text')
-    expect(inputRole).toHaveAttribute('id', 'inputTest')
-    expect(inputRole).toHaveAttribute('name', 'inputTest')
-    expect(inputRole).toHaveAttribute('placeholder', 'placeholder')
-    inputRole.focus()
-    expect(document.activeElement).toBe(inputRole)
-  })
-
-  it('value', () => {
-    render(<TextInput name="name" value="value" onChange={() => {}} />)
-    const inputRole = screen.getByRole('textbox')
-
-    expect(inputRole).toHaveAttribute('value', 'value')
-  })
-
-  it('startIcon', () => {
-    render(
-      <TextInput name="inputTest" startIcon={<svg data-testid="testSvg" />} onChange={() => {}} />,
-    )
-    const svgTestId = screen.getByTestId('testSvg')
-
-    expect(svgTestId).toBeInTheDocument()
-  })
-
-  it('endIcon', () => {
-    render(
-      <TextInput name="inputTest" endIcon={<svg data-testid="testSvg" />} onChange={() => {}} />,
-    )
-    const svgTestId = screen.getByTestId('testSvg')
-
-    expect(svgTestId).toBeInTheDocument()
-  })
-
-  it('error', () => {
-    render(<TextInput name="inputTest" error="error" onChange={() => {}} />)
-    const inputWrapTestId = screen.getByTestId('InputWrap')
-
-    expect(inputWrapTestId).toHaveClass('error')
-  })
-
-  it('onChange', () => {
-    const spy = jest.fn()
-    render(<TextInput name="name" value="value" onChange={spy} />)
-    const inputRole = screen.getByRole('textbox')
-
-    fireEvent.change(inputRole, {
-      target: {
-        value: 'newvalue',
-      },
+      expect(input).toBeInTheDocument()
+      expect(input).toHaveAttribute('type', 'text')
     })
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('newvalue')
+
+    it('sets id and name from name prop', () => {
+      render(<TextInput name="firstName" onChange={() => {}} />)
+      const input = screen.getByRole('textbox')
+
+      expect(input).toHaveAttribute('id', 'firstName')
+      expect(input).toHaveAttribute('name', 'firstName')
+    })
+
+    it('className lands on wrapper div', () => {
+      render(<TextInput className="w-96" name="test" onChange={() => {}} />)
+      const wrapper = screen.getByTestId('InputWrap')
+
+      expect(wrapper).toHaveClass('w-96')
+    })
+
+    it('renders placeholder', () => {
+      render(<TextInput name="test" placeholder="Enter text" onChange={() => {}} />)
+      const input = screen.getByRole('textbox')
+
+      expect(input).toHaveAttribute('placeholder', 'Enter text')
+    })
+
+    it('renders value', () => {
+      render(<TextInput name="test" value="hello" onChange={() => {}} />)
+      const input = screen.getByRole('textbox')
+
+      expect(input).toHaveAttribute('value', 'hello')
+    })
+
+    it('renders startIcon', () => {
+      render(
+        <TextInput name="test" startIcon={<svg data-testid="startSvg" />} onChange={() => {}} />,
+      )
+
+      expect(screen.getByTestId('startSvg')).toBeInTheDocument()
+    })
+
+    it('renders endIcon', () => {
+      render(
+        <TextInput name="test" endIcon={<svg data-testid="endSvg" />} onChange={() => {}} />,
+      )
+
+      expect(screen.getByTestId('endSvg')).toBeInTheDocument()
+    })
+
+    it('error adds error class to wrapper', () => {
+      render(<TextInput name="test" error="required" onChange={() => {}} />)
+      const wrapper = screen.getByTestId('InputWrap')
+
+      expect(wrapper).toHaveClass('error')
+    })
+
+    it('disabled sets native disabled and aria-disabled on wrapper', () => {
+      render(<TextInput name="test" disabled onChange={() => {}} />)
+      const input = screen.getByRole('textbox')
+      const wrapper = screen.getByTestId('InputWrap')
+
+      expect(input).toBeDisabled()
+      expect(wrapper).toHaveAttribute('aria-disabled', 'true')
+      expect(wrapper).toHaveClass('disabled')
+    })
+
+    it('not disabled omits aria-disabled', () => {
+      render(<TextInput name="test" onChange={() => {}} />)
+      const wrapper = screen.getByTestId('InputWrap')
+
+      expect(wrapper).not.toHaveAttribute('aria-disabled')
+    })
   })
 
-  it('disabled', () => {
-    render(<TextInput name="name" value="" disabled onChange={() => {}} />)
-    const inputRole = screen.getByRole('textbox')
-    const inputWrapTestId = screen.getByTestId('InputWrap')
+  describe('Keyboard', () => {
+    it('Tab focuses the input', () => {
+      render(<TextInput name="test" onChange={() => {}} />)
+      const input = screen.getByRole('textbox')
 
-    expect(inputRole).toHaveAttribute('disabled')
-    expect(inputWrapTestId).toHaveAttribute('aria-disabled', 'true')
-    expect(inputWrapTestId).toHaveClass('disabled')
+      input.focus()
+      expect(document.activeElement).toBe(input)
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLInputElement>()
-    render(<TextInput ref={ref} name="inputTest" placeholder="placeholder" onChange={() => {}} />)
+  describe('Interaction', () => {
+    it('onChange fires with string value', () => {
+      const onChange = jest.fn()
+      render(<TextInput name="test" value="" onChange={onChange} />)
+      const input = screen.getByRole('textbox')
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
+      fireEvent.change(input, { target: { value: 'hello' } })
+      expect(onChange).toHaveBeenCalledTimes(1)
+      expect(onChange).toHaveBeenCalledWith('hello')
+    })
 
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
+    it('disabled input has disabled attribute', () => {
+      render(<TextInput name="test" value="" disabled onChange={() => {}} />)
+      const input = screen.getByRole('textbox')
 
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
+      expect(input).toBeDisabled()
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(
-      <TextInput name="inputTest" placeholder="placeholder" onChange={() => {}} />,
-    )
+  describe('Ref', () => {
+    it('forwards ref to input element', () => {
+      const ref = createRef<HTMLInputElement>()
+      render(<TextInput ref={ref} name="test" onChange={() => {}} />)
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      expect(ref.current).toBeInstanceOf(HTMLInputElement)
+    })
+  })
+
+  describe('Accessibility', () => {
+    it('axe', async () => {
+      const { container } = render(
+        <TextInput name="test" placeholder="placeholder" onChange={() => {}} />,
+      )
+      const results = await axe(container)
+
+      expect(results).toHaveNoViolations()
+    })
   })
 })

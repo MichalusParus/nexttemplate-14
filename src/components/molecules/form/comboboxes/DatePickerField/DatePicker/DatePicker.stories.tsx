@@ -48,6 +48,8 @@ export const PrimaryDefault: Story = {
     chipProps: undefined,
     dropdownProps: undefined,
     calendarProps: undefined,
+    locale: undefined,
+    dateFormatOptions: undefined,
     onClear: undefined,
     onOpen: undefined,
     onClose: undefined,

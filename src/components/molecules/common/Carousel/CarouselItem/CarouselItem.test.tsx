@@ -8,39 +8,66 @@ import { CarouselItem } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('CarouselItem', () => {
-  it('default', () => {
-    render(
-      <CarouselItem className="className" selectedPage={1} pages={3}>
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-      </CarouselItem>,
-    )
-    const carouselItemTestId = screen.getByTestId('CarouselItem')
-    const panelTestIds = screen.getAllByTestId('panel')
-    const srOnlyTestId = screen.getByTestId('CarouselItemSrOnly')
+  describe('Semantics', () => {
+    it('role group with slide roledescription', () => {
+      render(
+        <CarouselItem>
+          <div data-testid="panel" />
+        </CarouselItem>,
+      )
+      const carouselItem = screen.getByTestId('CarouselItem')
 
-    expect(carouselItemTestId).toBeInTheDocument()
-    expect(carouselItemTestId).toHaveClass('className')
-    expect(panelTestIds).toHaveLength(3)
-    expect(carouselItemTestId).toHaveAttribute('role', 'group')
-    expect(carouselItemTestId).toHaveAttribute('aria-roledescription', 'slide')
-    expect(srOnlyTestId).toBeInTheDocument()
-    expect(srOnlyTestId).toHaveClass('sr-only')
-    expect(srOnlyTestId).toHaveTextContent('Slide 1 of 3')
-    expect(srOnlyTestId).toHaveAttribute('aria-live', 'polite')
+      expect(carouselItem).toHaveAttribute('role', 'group')
+      expect(carouselItem).toHaveAttribute('aria-roledescription', 'slide')
+    })
+
+    it('forwards className', () => {
+      render(
+        <CarouselItem className="className">
+          <div data-testid="panel" />
+        </CarouselItem>,
+      )
+      const carouselItem = screen.getByTestId('CarouselItem')
+
+      expect(carouselItem).toHaveClass('className')
+    })
+
+    it('isActive defaults to true — no aria-hidden', () => {
+      render(
+        <CarouselItem>
+          <div data-testid="panel" />
+        </CarouselItem>,
+      )
+      const carouselItem = screen.getByTestId('CarouselItem')
+
+      expect(carouselItem).not.toHaveAttribute('aria-hidden')
+    })
+
+    it('isActive=false sets aria-hidden', () => {
+      render(
+        <CarouselItem isActive={false}>
+          <div data-testid="panel" />
+        </CarouselItem>,
+      )
+      const carouselItem = screen.getByTestId('CarouselItem')
+
+      expect(carouselItem).toHaveAttribute('aria-hidden', 'true')
+    })
+
   })
 
-  it('axe', async () => {
-    const { container } = render(
-      <CarouselItem>
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-        <div className="h-full w-full" data-testid="panel" />
-      </CarouselItem>,
-    )
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(
+        <CarouselItem>
+          <div className="h-full w-full" data-testid="panel" />
+          <div className="h-full w-full" data-testid="panel" />
+          <div className="h-full w-full" data-testid="panel" />
+        </CarouselItem>,
+      )
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

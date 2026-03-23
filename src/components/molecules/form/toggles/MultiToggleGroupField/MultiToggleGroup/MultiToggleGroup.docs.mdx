@@ -1,0 +1,61 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/toggles/MultiToggleGroup/Def" />
+
+# MultiToggleGroup
+
+> Multi-selection wrapper around [ToggleGroup](?path=/docs/molecules-form-toggles-togglegroup-def--docs). Manages an array of selected values and delegates all rendering, keyboard navigation, and visual styling to the underlying ToggleGroup component. Generic `<T = string>` supports string, number, or object values with deep equality via `isEqual`.
+
+<br/>
+
+## Features
+
+- Generic `<T>` typed values with deep equality
+- Toggle logic — clicking a selected option removes it, clicking unselected appends it
+- `allowEmpty` — controls whether the last selection can be cleared (default `true`), enforced via ToggleGroup
+- `onClear` callback — fires when the last selected option is deselected (instead of passing empty array to `onChange`)
+- Column layout — `column` prop (via ToggleGroup)
+
+<br/>
+
+## Component Definition
+
+### Interaction Behavior
+Inherits from [ToggleGroup](?path=/docs/molecules-form-toggles-togglegroup-def--docs)
+- **Multi-select toggle**: Click unselected → appends to array via `onChange([...value, v])`. Click selected → removes via `onChange(value.filter(...))`.
+- **`onClear` trigger**: When removing the last selected item and `onClear` is provided, calls `onClear()` instead of `onChange([])`. This lets form integrations distinguish between "user cleared everything" and "user changed selection".
+- **Deep equality for matching**: Uses `isEqual` in both `.some()` for checking if a value is selected and `.filter()` for removal — supports generic typed values (objects, numbers, etc.).
+
+<br/>
+
+## Architecture Decisions
+- **Thin wrapper pattern**: MultiToggleGroup is ~30 lines — it only manages the array toggle logic and delegates everything else to ToggleGroup via props spread. `value[0]` is passed as ToggleGroup's `value` and the full array as `multiValue`, which triggers ToggleGroup's multi-mode rendering path.
+- **`useCallback` for `handleOnChange`**: Memoized against `[value, onChange, onClear]`. ToggleGroup in multi-mode calls `onChange(toggleValue)` on click (with `allowEmpty` enforcement), and this callback receives the individual toggle value and manages the array add/remove.
+- **Generic `<T = string>` with `forwardRef` cast pattern**: The component function is generic, but `forwardRef` doesn't preserve generics. The `MultiToggleGroupComponentType` interface + `as` cast restores the generic signature. The generic is also forwarded to the inner `<ToggleGroup<T>>` call.
+- **Deep `isEqual` for both check and removal**: Both `.some()` and `.filter()` use `isEqual` from lodash, supporting generic typed values (`T[]`) including objects and other non-primitive types.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+- [ ] Object array options — support passing a raw object array via `options` with `getLabel` / `getValue` extractors, removing the need to manually map data into `OptionType` shape (similar to React Select's `getOptionLabel` / `getOptionValue`)
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> A clean, minimal wrapper that does exactly one job — turning single-selection toggle logic into multi-selection — and does it without inventing new abstractions. The `onClear` hook when the last item is deselected is a nice touch that most toggle group implementations leave to the consumer, and the whole thing stays thin enough that there's almost nothing to go wrong.
+>
+> Radix's ToggleGroup with `type="multiple"` is the closest comparison, and it handles the array management internally — you just set the type and get `string[]` back. That's arguably more ergonomic since developers don't need to know about two separate components. But this split approach has a real advantage: ToggleGroup stays simple with single-value semantics, and MultiToggleGroup layers on array logic without polluting the base component's types with union signatures. For a design system where both variants need to exist as distinct form field wrappers, the separation earns its keep.
+>
+> Solid wrapper with a clear purpose and nothing wasted.
+>
+> — *Claude, Opus 4.6, 2026-03-23*

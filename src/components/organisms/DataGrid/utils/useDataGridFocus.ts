@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect } from 'react'
+import { MutableRefObject } from 'react'
 
 import { CustomKeyHandler, FOCUS_SELECTORS, useFocus } from '@/components/utils/hooks/useFocus'
 
@@ -234,16 +234,8 @@ export const useDataGridFocus = ({
     triggerRef: { current: null },
     scope: true,
     scopeType: 'interactive',
+    rovingTabindex: true,
   })
-
-  // Update tabindex on all cells to implement roving tabindex pattern
-  useEffect(() => {
-    if (focusableElements.length === 0) return
-
-    focusableElements.forEach((el, index) => {
-      el.setAttribute('tabindex', index === currentFocusIndex ? '0' : '-1')
-    })
-  }, [focusableElements, currentFocusIndex])
 
   return {
     focusableElements,

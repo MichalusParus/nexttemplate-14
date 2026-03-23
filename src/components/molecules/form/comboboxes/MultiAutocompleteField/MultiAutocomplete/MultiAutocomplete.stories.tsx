@@ -111,20 +111,22 @@ export const PrimaryDefault: Story = {
   args: {
     className: '',
     name: 'MultiAutocompleteStory',
-    value: [],
     placeholder: 'placeholder',
+    value: [],
     options: [],
     displayChips: false,
+    selectAll: false,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
     placement: 'bottom',
     isLoading: false,
     error: '',
+    disabled: false,
     inputProps: undefined,
+    chipProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
-    chipProps: undefined,
     onOpen: undefined,
     onClose: undefined,
     onInputChange: () => {},
@@ -219,6 +221,16 @@ export const CreateNew: Story = {
     ),
   },
   render: args => <MultiAutocompleteWithFetch {...args} />,
+}
+
+export const SelectAll: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'MultiAutocompleteStory10',
+    options: getOptions('MultiAutocompleteStory10', 10),
+    selectAll: true,
+  },
+  render: args => <ClientMultiAutocomplete {...args} />,
 }
 
 export const Error: Story = {

@@ -6,7 +6,7 @@ export const pageButtonSize = {
   lg: cn('mx-1 min-w-11 md:mx-2'),
   none: '',
 }
-export const dottColor = {
+export const dotColor = {
   primary: cn('h-1.5 w-1.5 rounded-full bg-primary-800'),
   secondary: cn('h-1.5 w-1.5 rounded-full bg-secondary-800'),
   terciary: cn('h-1.5 w-1.5 rounded-full bg-terciary-800'),

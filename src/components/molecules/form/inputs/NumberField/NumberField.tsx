@@ -9,7 +9,7 @@ import { FieldProps } from '@/components/utils/types'
 import { FormStyleContext } from '../../forms/Form/Form'
 import { NumberInput, NumberInputProps } from './NumberInput/NumberInput'
 
-export type InputFieldProps = Omit<NumberInputProps, 'value' | 'error' | 'onChange'> &
+export type NumberFieldProps = Omit<NumberInputProps, 'value' | 'error' | 'onChange'> &
   Partial<Pick<NumberInputProps, 'onChange'>> &
   FieldProps
 
@@ -24,7 +24,7 @@ export const NumberField = ({
   labelProps = {},
   onChange,
   ...rest
-}: InputFieldProps) => {
+}: NumberFieldProps) => {
   const {
     control,
     formState: { errors },
@@ -36,35 +36,33 @@ export const NumberField = ({
     <Controller
       name={name}
       control={control}
-      render={({ field }) => {
-        return (
-          <Label
-            name={name}
-            label={label}
+      render={({ field }) => (
+        <Label
+          name={name}
+          label={label}
+          size={size || formSize}
+          error={errorMessage}
+          {...labelProps}
+        >
+          <NumberInput
+            className={className}
+            variant={variant || formVariant}
+            color={color || formColor}
             size={size || formSize}
             error={errorMessage}
-            {...labelProps}
-          >
-            <NumberInput
-              className={className}
-              variant={variant || formVariant}
-              color={color || formColor}
-              size={size || formSize}
-              error={errorMessage}
-              aria-describedby={
-                errorMessage || labelProps.description ? `${name}-description` : undefined
-              }
-              aria-invalid={!!errorMessage}
-              {...field}
-              onChange={v => {
-                field.onChange(v)
-                onChange?.(v)
-              }}
-              {...rest}
-            />
-          </Label>
-        )
-      }}
+            aria-describedby={
+              errorMessage || labelProps.description ? `${name}-description` : undefined
+            }
+            aria-invalid={!!errorMessage}
+            {...field}
+            onChange={v => {
+              field.onChange(v)
+              onChange?.(v)
+            }}
+            {...rest}
+          />
+        </Label>
+      )}
     />
   )
 }

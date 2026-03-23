@@ -38,126 +38,147 @@ const FieldWithHooks = (props: any) => {
 }
 
 describe('TextAreaField', () => {
-  it('default', () => {
-    render(<FieldWithHooks />)
-    const fieldWrapTestId = screen.getByTestId('TextAreaWrap')
-    const inputRole = screen.getByRole('textbox')
-    const labelTestId = screen.getByTestId('Label')
-    const alertTestId = screen.getByTestId('Alert')
-    const alertQuery = screen.queryByRole('alert')
+  describe('Semantics', () => {
+    it('renders TextArea with Label', () => {
+      render(<FieldWithHooks />)
 
-    expect(fieldWrapTestId).toBeInTheDocument()
-    expect(fieldWrapTestId).toHaveClass('className')
-    expect(inputRole).toHaveAttribute('id', 'fieldTest')
-    expect(inputRole).toHaveAttribute('name', 'fieldTest')
-    expect(inputRole).toHaveValue('value')
-    expect(inputRole).toHaveAttribute('placeholder', 'placeholder')
-    expect(inputRole).toHaveAttribute('aria-invalid', 'false')
-    expect(inputRole).not.toHaveAttribute('aria-describedby')
-    expect(labelTestId).toBeInTheDocument()
-    expect(labelTestId).toHaveTextContent('Label')
-    expect(labelTestId).toHaveAttribute('for', 'fieldTest')
-    expect(labelTestId).toHaveAttribute('id', 'fieldTest-label')
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveTextContent('')
-    expect(alertTestId).toHaveAttribute('id', 'fieldTest-description')
-    expect(alertQuery).toBeNull()
+      expect(screen.getByTestId('TextAreaWrap')).toBeInTheDocument()
+      expect(screen.getByRole('textbox')).toBeInTheDocument()
+    })
+
+    it('forwards className', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByTestId('TextAreaWrap')).toHaveClass('className')
+    })
+
+    it('id and name from name prop', () => {
+      render(<FieldWithHooks />)
+      const input = screen.getByRole('textbox')
+
+      expect(input).toHaveAttribute('id', 'fieldTest')
+      expect(input).toHaveAttribute('name', 'fieldTest')
+    })
+
+    it('placeholder', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('textbox')).toHaveAttribute('placeholder', 'placeholder')
+    })
+
+    it('label text with for attribute', () => {
+      render(<FieldWithHooks />)
+      const label = screen.getByTestId('Label')
+
+      expect(label).toBeInTheDocument()
+      expect(label).toHaveTextContent('Label')
+      expect(label).toHaveAttribute('for', 'fieldTest')
+      expect(label).toHaveAttribute('id', 'fieldTest-label')
+    })
+
+    it('alert with description id', () => {
+      render(<FieldWithHooks />)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toBeInTheDocument()
+      expect(alert).toHaveTextContent('')
+      expect(alert).toHaveAttribute('id', 'fieldTest-description')
+      expect(screen.queryByRole('alert')).toBeNull()
+    })
+
+    it('aria-invalid false when no error', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('textbox')).toHaveAttribute('aria-invalid', 'false')
+    })
+
+    it('no aria-describedby when no error or description', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('textbox')).not.toHaveAttribute('aria-describedby')
+    })
+
+    it('description in aria-describedby', () => {
+      render(<FieldWithHooks labelProps={{ description: 'description' }} />)
+      const input = screen.getByRole('textbox')
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toHaveTextContent('description')
+      expect(input).toHaveAttribute('aria-describedby', 'fieldTest-description')
+    })
+
+    it('labelProps forwarded', () => {
+      render(<FieldWithHooks labelProps={{ className: 'className' }} />)
+
+      expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    })
   })
 
-  it('value', async () => {
-    render(<FieldWithHooks />)
-    const inputRole = screen.getByRole('textbox')
+  describe('Interaction', () => {
+    it('value change', async () => {
+      render(<FieldWithHooks />)
+      const input = screen.getByRole('textbox')
 
-    expect(inputRole).toHaveValue('value')
+      expect(input).toHaveValue('value')
 
-    await act(async () => {
-      fireEvent.change(inputRole, {
-        target: {
-          value: 'newValue',
-        },
+      await act(async () => {
+        fireEvent.change(input, { target: { value: 'newValue' } })
+      })
+
+      expect(input).toHaveValue('newValue')
+    })
+
+    it('onChange fires with value', async () => {
+      const onChange = jest.fn()
+      render(<FieldWithHooks onChange={onChange} />)
+
+      await act(async () => {
+        fireEvent.change(screen.getByRole('textbox'), { target: { value: 'newValue' } })
+      })
+
+      expect(onChange).toHaveBeenCalledWith('newValue')
+    })
+
+    it('error shown on invalid submit', async () => {
+      render(<FieldWithHooks />)
+      const input = screen.getByRole('textbox')
+      const alert = screen.getByTestId('Alert')
+
+      await act(async () => {
+        fireEvent.change(input, { target: { value: '' } })
+      })
+
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('submitButton'))
+      })
+
+      await waitFor(() => {
+        expect(alert).toHaveTextContent('min 3 characters')
+        expect(alert).toHaveAttribute('role', 'alert')
+        expect(input).toHaveAttribute('aria-describedby', 'fieldTest-description')
+        expect(input).toHaveAttribute('aria-invalid', 'true')
       })
     })
 
-    expect(inputRole).toHaveValue('newValue')
-  })
+    it('form submit works', async () => {
+      const onSubmit = jest.fn()
+      render(<FieldWithHooks />)
+      screen.getByTestId('Form').onsubmit = onSubmit
 
-  it('description', () => {
-    render(<FieldWithHooks labelProps={{ description: 'description' }} />)
-    const inputRole = screen.getByRole('textbox')
-    const alertTestId = screen.getByTestId('Alert')
-
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveTextContent('description')
-    expect(inputRole).toHaveAttribute('aria-describedby', 'fieldTest-description')
-  })
-
-  it('error', async () => {
-    render(<FieldWithHooks />)
-    const inputRole = screen.getByRole('textbox')
-    const alertRole = screen.getByTestId('Alert')
-
-    await act(async () => {
-      fireEvent.change(inputRole, {
-        target: {
-          value: '',
-        },
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submitButton'))
       })
-    })
 
-    await act(async () => {
-      fireEvent.submit(screen.getByTestId('submitButton'))
-    })
-
-    await waitFor(() => {
-      expect(alertRole).toBeInTheDocument()
-      expect(alertRole).toHaveTextContent('min 3 characters')
-      expect(alertRole).toHaveAttribute('role', 'alert')
-      expect(inputRole).toHaveAttribute('aria-describedby', 'fieldTest-description')
-      expect(inputRole).toHaveAttribute('aria-invalid', 'true')
+      expect(onSubmit).toHaveBeenCalled()
     })
   })
 
-  it('onChange', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks onChange={spy} />)
-    const inputRole = screen.getByRole('textbox')
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<FieldWithHooks />)
 
-    await act(async () => {
-      fireEvent.change(inputRole, {
-        target: {
-          value: 'newValue',
-        },
-      })
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
     })
-
-    expect(spy).toHaveBeenCalled()
-    expect(spy).toHaveBeenCalledWith('newValue')
-  })
-
-  it('labelProps', () => {
-    render(<FieldWithHooks labelProps={{ className: 'className' }} />)
-    const labelWrapTestId = screen.getByTestId('LabelWrap')
-
-    expect(labelWrapTestId).toHaveClass('className')
-  })
-
-  it('onSubmit', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks />)
-    screen.getByTestId('Form').onsubmit = spy
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('submitButton'))
-    })
-
-    // TODO beenCalledWith, spy return native event and not values
-    expect(spy).toHaveBeenCalled()
-  })
-
-  it('axe', async () => {
-    const { container } = render(<FieldWithHooks />)
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
   })
 })

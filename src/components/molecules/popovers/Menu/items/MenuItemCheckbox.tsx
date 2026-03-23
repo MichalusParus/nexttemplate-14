@@ -50,6 +50,7 @@ export const MenuItemCheckbox = forwardRef<HTMLButtonElement | null, MenuItemChe
               className={checkboxClassName}
               name=""
               label=""
+              value=""
               variant={variant}
               color={color}
               size={size}

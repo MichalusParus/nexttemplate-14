@@ -19,6 +19,8 @@ import { disabledVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
+import { CalendarState } from '../Calendar'
+
 export type MonthPickerProps = StyleProps & {
   /** current month */
   month: Date
@@ -29,7 +31,7 @@ export type MonthPickerProps = StyleProps & {
   /** ref for the grid container (used by useCalendarFocus) */
   gridRef?: MutableRefObject<HTMLDivElement | null>
   /** set calendar state function */
-  setCalendarState: (state: 'days' | 'months' | 'years') => void
+  setCalendarState: (state: CalendarState) => void
   /** set current month function */
   setCurrentMonth: (date: Date) => void
 }
@@ -76,7 +78,7 @@ export const MonthPicker = ({
       ref={gridRef}
     >
       {monthRows.map(row => (
-        <div key={String([row[0], row[6]])} className="contents" role="row">
+        <div key={String([row[0], row[2]])} className="contents" role="row">
           {row.map(m => {
             const isDisabled =
               (minMaxDate?.min && isBefore(startOfMonth(m), startOfMonth(minMaxDate?.min))) ||

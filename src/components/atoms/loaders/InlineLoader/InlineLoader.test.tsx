@@ -27,7 +27,7 @@ describe('InlineLoader', () => {
     it('renders three dots', () => {
       render(<InlineLoader />)
       const loader = screen.getByRole('status')
-      const dots = loader.querySelectorAll('.Dott')
+      const dots = loader.querySelectorAll('.Dot')
 
       expect(dots).toHaveLength(3)
     })
@@ -35,7 +35,7 @@ describe('InlineLoader', () => {
     it('dots have staggered animation delays', () => {
       render(<InlineLoader />)
       const loader = screen.getByRole('status')
-      const dots = loader.querySelectorAll('.Dott')
+      const dots = loader.querySelectorAll('.Dot')
 
       expect(dots[0]).toHaveStyle({ animationDelay: '' })
       expect(dots[1]).toHaveStyle({ animationDelay: '150ms' })

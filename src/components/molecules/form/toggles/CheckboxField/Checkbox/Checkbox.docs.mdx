@@ -1,0 +1,95 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/toggles/Checkbox/Def" />
+
+# Checkbox
+
+> A single boolean toggle rendered as a native `<input type="checkbox">` with a visual icon overlay, optional label, and indeterminate state support. Used standalone or composed inside CheckboxGroup for multi-select scenarios.
+
+<br/>
+
+## Features
+
+- Native `<input type="checkbox">` — full form participation, browser autofill, no ARIA role simulation needed
+- Indeterminate state — visual minus icon with `selected` styling, distinct from checked/unchecked
+- Fake mode — icon-only rendering without input or label (for decorative use in group components)
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Outer `<div data-testid="CheckboxWrap">` — flex layout wrapper, receives `className` and margin spacing
+- Inner `<div data-testid="CheckboxInputWrap">` — visual checkbox container with `aria-disabled`, holds both the native input and the icon overlay
+- `<input type="checkbox">` — native checkbox, absolutely positioned and invisible (`opacity-0`, `z-10`), receives `id={name}`, `name`, `value`, `checked`, `disabled`, `ref`, and rest props
+- `<CheckIcon data-testid="CheckIcon">` or `<MinusIcon data-testid="MinusIcon">` — absolutely centered SVG icon, toggled via `opacity-0`/`opacity-100` based on checked/indeterminate state
+- `<label data-testid="Label">` — linked to input via `htmlFor={name}`, has `id={name}-label`, renders `content || label`
+- In `fake` mode: input and label are not rendered, only the icon overlay in its container
+
+### Keyboard Handling
+- **Tab** — Moves focus to the native `<input>` (standard tab order)
+- **Space** — Toggles checked state (native checkbox behavior, triggers `onChange`)
+- **Disabled** — Native `disabled` attribute prevents focus and interaction
+
+### Accessibility (WAI-ARIA)
+- Follows native [Checkbox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/) via `<input type="checkbox">`
+- No `role` attribute needed — native `checkbox` role from element type
+- `checked` attribute reflects boolean state
+- `disabled` attribute on input for native disabled behavior
+- `aria-disabled` on the visual wrapper for styling hooks
+- `<label htmlFor={name}>` provides accessible name
+- `id={name}-label` on label enables external `aria-labelledby` references
+
+### Visual States
+- **Unchecked** — Icon at `opacity-0`, no `selected` class
+- **Checked** — Icon at `opacity-100`, `selected` class on input wrapper
+- **Indeterminate** — MinusIcon replaces CheckIcon, `opacity-100`, `selected` class applied
+- **Error** — `error` class on input wrapper, triggers shared error styling
+- **Disabled** — `disabled` class on input wrapper, `cursor-not-allowed` on input, muted icon colors via `checkIconDisabledVariant`
+- **Focus** — Focus ring via `[&:has(input:focus-visible)]:ring-1` on wrapper
+- **Hover** — Color shift via `group-hoverable` utility on wrapper
+
+### Interaction Behavior
+- Controlled component — `isChecked` and `onChange` are required props, parent owns state. `isChecked` has no default (unlike Switch which defaults to `false`)
+- `onChange` receives `e.target.value` (the `value` string prop), not a boolean
+- Click on the invisible input or the linked label triggers native `change` event
+- No click blocking logic for disabled — native `disabled` handles it
+
+### Responsive & Layout
+- Inline-block flow via `flex items-start` on wrapper
+- Margin spacing controlled by `size` prop via `checkboxMargin` — bottom and right margins for grid/flow layouts
+- `fake` mode removes margin (`!fake && checkboxMargin[size]`) and right spacing
+
+<br/>
+
+## Architecture Decisions
+- **Invisible native input overlay**: The actual `<input>` is positioned absolute, full-size, `opacity-0`, `z-10` on top of the visual icon. This preserves all native checkbox semantics (form submission, label association, keyboard, screen readers) while allowing full visual customization of the icon underneath. No ARIA simulation needed.
+- **`value` is required — identity string**: `onChange(e.target.value)` passes the `value` prop string, following the same extract-value pattern as all inputs in this codebase. The `value` is the checkbox's identity — groups use it to know *which* checkbox changed. TypeScript enforces this at build time. Fake mode passes `value=""` since the input is never rendered.
+- **Indeterminate with native DOM sync**: The `isIndeterminate` prop swaps CheckIcon for MinusIcon, applies `selected` styling, and sets the native `HTMLInputElement.indeterminate` property via callback ref. The visual state (`isChecked` vs `isIndeterminate`) and native property are kept in sync — screen readers announce "mixed" state. The `isChecked` prop still controls the underlying checked state independently.
+- **Fake mode for decorative use**: `fake` removes the input and label, leaving just the styled icon container. The `selected` class is suppressed (`!fake && 'selected'`) so only icon opacity changes — the parent component handles selection highlighting.
+- **Shared style tokens**: `checkboxIconSize`, `checkboxMargin`, `checkboxVariant` are exported from `Checkbox.style.ts` and reused by Switch — same visual identity for both toggle types.
+- **Focus ring via :has()**: `[&:has(input:focus-visible)]:ring-1` on the visual wrapper detects focus on the invisible input inside and shows the ring on the visible element. Works because the input is a direct descendant.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> The invisible overlay pattern is the kind of thing that looks obvious in hindsight but most checkbox implementations get wrong — they either wrap the input in a label and lose precise click targets, or they hide it offscreen and break spatial navigation. Here, the native input sits exactly on top of the visual icon at full size, so pointer, keyboard, and assistive tech all hit the same element. The callback ref that syncs `indeterminate` to the DOM is the right call since there's no HTML attribute for it.
+>
+> Radix UI's Checkbox takes a different approach — it renders a button with `role="checkbox"` and manages aria-checked itself, including the "indeterminate" state as a third value. That's cleaner API-wise but means reimplementing native checkbox semantics from scratch. This component keeps the actual `<input type="checkbox">` in the DOM, which means browser-level form participation, autofill, and screen reader heuristics all come free. The tradeoff is the opacity-0 overlay trick and manual ref wiring, but that's a fair price for not fighting the platform.
+>
+> A component that chooses native semantics over synthetic ARIA and gets the indeterminate edge case right — solid fundamentals throughout.
+>
+> — *Claude, Opus 4.6, 2026-03-23*

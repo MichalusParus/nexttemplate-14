@@ -31,11 +31,11 @@ describe('CircularLoader', () => {
       expect(loader).toHaveAttribute('aria-busy', 'true')
     })
 
-    it('aria-label is Loading', () => {
+    it('aria-label matches label', () => {
       render(<CircularLoader />)
       const loader = screen.getByRole('status')
 
-      expect(loader).toHaveAttribute('aria-label', 'Loading')
+      expect(loader).toHaveAttribute('aria-label', 'Loading...')
     })
 
     it('renders label text by default', () => {

@@ -1,0 +1,150 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/comboboxes/Autocomplete/Def" />
+
+# Autocomplete
+
+> Combobox with text input for filtered single-value selection — a `<div role="combobox">` wraps a `<TextInput>` and opens a portal-rendered Dropdown containing a scrollable option list. Generic `<T = string>` supports string, number, or object values with deep equality via `isEqual`. Input value filters options via `onInputChange` callback for consumer-controlled filtering or server-side fetching. Also serves as base component for [MultiAutocomplete](?path=/docs/molecules-form-comboboxes-multiautocomplete-def--docs) via the `multiValue` prop. For form integration with validation and labels, use AutocompleteField.
+
+<br/>
+
+## Features
+
+- Generic `<T>` typed values with deep equality
+- Grouped options
+- Loading state with skeleton
+- Value chips display via `displayChips`
+- Clear button via `onClear`
+- Configurable placement
+- Dropdown `children` slot for custom option
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Outer `<div>` wrapper with `data-testid="Autocomplete"` and `className="Autocomplete relative flex w-full"`
+- **AutocompleteCombobox** — `<div role="combobox">` with `id=\{name\}-combobox`
+  - `aria-expanded=\{isOpen\}` — reflects dropdown visibility
+  - `aria-haspopup="listbox"` — announces listbox popup
+  - `aria-controls=\{name\}-listbox` / `aria-owns=\{name\}-listbox` — links to ListBox element
+  - `aria-disabled` — set when disabled, `tabIndex=\{disabled ? -1 : 0\}`
+  - `cursor-text` styling (not pointer like Select)
+  - Contains **AutocompleteInnerWrap** `<div>` with:
+    - Multi-value display (when `multiValue` provided): `<Ellipsis>` with comma-separated labels (default) OR `<ValueChips>` with per-chip ClearButtons (when `displayChips=true`, `flex-wrap` layout)
+    - **TextInput** — `<input>` with `id=\{name\}`, `name=\{name\}`, `type="text"`, `aria-autocomplete="list"`, `autoComplete="off"`, `variant="outlined"`, `color="none"`, `size="none"` (inherits from combobox styling)
+  - End slot: optional ClearButton (`data-testid="ClearAllButton"`, visible when `onClear` provided AND (`value` truthy OR `multiValue` has items)) + ChevronIcon (`aria-hidden`, rotates 180deg when open)
+- **Dropdown** — portal-rendered, positioned via Popper.js (`placement` prop, default `bottom`)
+  - Contains ListBox + optional `children`, `scrollShadowProps=\{\{ disableHorizontal: true \}\}`
+- **ListBox** — `<ul role="listbox">` with `id=\{name\}-listbox`, `aria-labelledby=\{name\}-label` (via `labelId` prop, matches Label's `id`), `aria-busy=\{isLoading\}`, `aria-hidden=\{!isOpen\}`
+  - Same OptionItem/GroupLabel structure as [Select](?path=/docs/molecules-form-comboboxes-select-def--docs)
+  - `noOptionLabel` switches based on input length: `inputValue.length <= 2` shows translated "Search for options", `> 2` shows "No options match \{value\}"
+  - `hideCheckbox=\{!multiValue\}` — checkboxes only in multi-select mode
+- **OptionItem** — `<li role="presentation">` → `<Button role="option">` with `aria-selected`, `tabIndex=-1`, `className="Option"` + `selected` class
+- **ClearButton** — `<span role="button">` with translated `aria-label`, `tabIndex=-1`
+- **ValueChips** — `<div data-testid="ValueChips">` with per-chip ClearButton (className `ChipClearButton`)
+
+### Keyboard Handling
+Tier 3 — Selection lists with combobox trigger.
+- **ArrowDown** on combobox (closed) — opens dropdown (custom handler in `useAutocompleteFocus`, prevents useFocus fallthrough)
+- **ArrowDown/Up** (open) — cycles through options (wraps at boundaries via useFocus)
+- **Home/End** — jumps to first/last option
+- **Enter/Space** on option — selects focused option (via Button click handler)
+- **Escape** — closes dropdown, returns focus to combobox trigger
+- **ArrowLeft** on input at cursor position 0 (dropdown closed) — focuses last chip/focusable element (chip navigation entry point)
+- **ArrowRight** on input — browser handles cursor movement (custom handler returns `true` to skip useFocus)
+- **ArrowRight** on chip — useFocus handles navigation to next element
+- **Printable key** on non-input focusable — redirects to input: focuses input, appends character, calls `onInputChange` with trimmed value
+- **Tab** — closes dropdown (managed by useFocus scope)
+- **Typing** in input — opens dropdown automatically if closed (`handleInputChange` sets `isOpen=true`)
+- Disabled state blocks keyboard interaction via `aria-disabled` + `disabled` on input
+- `useFocus` config: `scope=true`, `triggerNav=true`, `scopeType='dropdown'`, `triggerRef=inputRef`, `selectors=FOCUS_SELECTORS.autocomplete` (targets `.Option`, `.ClearButton`, `.ChipClearButton`, `.Button`, `.Link`)
+- Focus on open: `requestAnimationFrame` → selected option → fallback to trigger (inputRef via `triggerNav`)
+
+### Accessibility (WAI-ARIA)
+- Follows [Combobox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) with listbox popup
+- Trigger: `<div role="combobox">` wrapping `<input>` — correct ARIA 1.2 pattern (unlike Select's `<Button role="combobox">`)
+- Input: `aria-autocomplete="list"` signals suggestions appear in a listbox; `autoComplete="off"` prevents browser autocomplete from competing
+- Combobox focus redirect: focusing the combobox div auto-focuses the input and sets cursor to end via `requestAnimationFrame`
+- Input tabIndex management: input focus sets combobox `tabIndex=-1`, blur restores to `0` — prevents double tab stop
+- ListBox: `role="listbox"` with `aria-labelledby`, `aria-busy` during loading, `aria-hidden` when closed
+- Options: `role="option"` with `aria-selected` on selected items
+- Groups: `role="group"` with `aria-label=\{groupLabel\}`
+- ClearButton: `role="button"` with translated `aria-label`
+- Fake checkboxes in options: `aria-hidden="true"` — purely visual
+- Uses roving tabindex (not `aria-activedescendant`) — consistent with Select, avoids VoiceOver bugs and supports interactive children
+
+### Visual States
+- **Default** — outlined combobox with placeholder text in input, `cursor-text`
+- **Open** — `selected z-combobox` classes on combobox, dropdown visible with ListBox
+- **Typing** — input value displayed, dropdown opens automatically
+- **Value selected** — selected option label displayed in input (single select)
+- **DisplayChips** — selected values rendered as Chip components with flex-wrap inside combobox
+- **Error** — `error` class on combobox div
+- **Disabled** — `aria-disabled="true"`, `tabIndex=-1` on combobox, `disabled` on input, `disabled` class with variant styling
+- **Loading** — Ghost skeleton in options, `cursor-not-allowed`, clicks blocked, `aria-busy="true"` on listbox
+
+### Interaction Behavior
+- Click combobox/input toggles dropdown (via `handleOpen`). Enter key on keyboard also toggles. Space on input types normally.
+- **Typing opens dropdown**: `handleInputChange` sets `isOpen=true` if closed, calls `onOpen()`, then calls consumer's `onInputChange` with trimmed value
+- **`trimStart()`**: input values trimmed of leading whitespace before passing to consumer — `setInputValue(String(v).trimStart())`
+- **Single select**: selecting option fires `onChange`, sets input to selected option's label, calls `onInputChange` with label, closes dropdown
+- **Input reset on close**: when dropdown closes (single select), if input differs from selected label and no `multiValue`, resets to selected label via `requestAnimationFrame`
+- **`isLoading`**: passed to ListBox for Ghost skeleton display and `aria-busy`
+- `onOpen` / `onClose` callbacks fire on toggle (click, Enter, ArrowDown) and when typing opens dropdown
+- `onChange` fires with the selected option's `value` (type `T`)
+- ClearButton: visible when `onClear` provided AND (`value` truthy OR `multiValue` has items); click calls `onClear` with `preventDefault` + `stopPropagation`
+- Disabled: `aria-disabled="true"`, click handler checks `disabled` and returns, input has native `disabled`
+- [MultiAutocomplete](?path=/docs/molecules-form-comboboxes-multiautocomplete-def--docs) overrides auto-close via `multiValue` prop
+
+### Responsive & Layout
+- Wrapper: `relative flex w-full` — fills container width
+- Open state: `z-combobox` on both wrapper and combobox
+- AutocompleteInnerWrap: `flex-wrap` when `displayChips`, `min-w-0 flex-1` for overflow
+- Input: `w-auto min-w-[30%] shrink` — shares space with chips, minimum 30% width
+- Dropdown: width matches anchor element by default (Popper.js)
+- Placement configurable via `placement` prop (default `bottom`)
+
+<br/>
+
+## Architecture Decisions
+- **Generic `<T = string>` with `forwardRef` cast pattern**: Same as Select — `AutocompleteComponentType` interface + `as` cast restores the generic signature that `forwardRef` erases.
+- **`useImperativeHandle` for ref forwarding**: Internal `componentRef` stores the combobox div for `useFocus` and the Dropdown anchor. The consumer's `ref` is forwarded via `useImperativeHandle` that returns `componentRef.current`.
+- **`useAutocompleteFocus` as a separate hook**: Wraps `useFocus` with Autocomplete-specific key handlers (ArrowDown open, ArrowLeft/Right chip navigation, printable key redirect). Keeps keyboard logic out of the render function and makes the custom behaviors testable in isolation.
+- **`requestAnimationFrame` for input focus redirect**: `handleComboboxFocus` in AutocompleteCombobox focuses the input and then uses `requestAnimationFrame` to set the cursor to the end of the input value. This ensures the cursor position is set after the browser has updated the input's selection state. Does not fire in JSDOM.
+- **`requestAnimationFrame` for input reset on close**: `handleToggle` uses `requestAnimationFrame` when closing to reset the input to the selected label. This defers the reset until after React's state updates have flushed, preventing a flash where the input shows the typed value before resetting.
+- **`handleInputChange` applies `trimStart()`**: Prevents leading whitespace in filter values — `setInputValue(String(v).trimStart())`. Both internal state and consumer's `onInputChange` receive the trimmed value.
+- **`handleOnChange` checks `multiValue` for auto-close**: Same pattern as Select — instead of a `mode` prop, the handler checks `if (!multiValue)` to decide whether to auto-close, set input value, and call `onInputChange`. This lets Autocomplete serve as shared infrastructure for MultiAutocomplete.
+- **Input tabIndex swap on focus/blur**: When input is focused, combobox `tabIndex` is set to `-1` to prevent a double tab stop. On blur, it's restored to `0` (or `-1` if disabled). This keeps the combobox reachable by Tab when the input isn't focused, while avoiding two consecutive tab stops on the same visual element.
+- **`inputRef` as both callback ref and `triggerRef`**: The input ref is passed to `useFocus` via `triggerRef`, which includes it in the focusable element list when `triggerNav=true`. It's also passed to AutocompleteCombobox via `inputRef` prop for the focus redirect and keyboard handling. The callback ref pattern (`ref={el => { inputElRef.current = el; if (inputRef) inputRef.current = el }}`) allows both the local ref and the parent's ref to track the same element.
+- **`isFromFocusableElement` guard in `handleComboboxFocus`**: When focus moves from an Option, ClearButton, or ChipClearButton to the combobox, the focus redirect to input is skipped. This prevents focus flickering when keyboard navigation moves through focusable elements inside the combobox scope.
+- **`FOCUS_SELECTORS.autocomplete`**: Targets `.Option`, `.ClearButton`, `.ChipClearButton`, `.Button`, `.Link` — same classes as `FOCUS_SELECTORS.select`. These CSS class selectors precisely control which elements participate in keyboard navigation, rather than using ARIA roles which would be too broad.
+- **`noOptionLabel` threshold at 2 characters**: Shows "Search for options" when input is 2 or fewer characters, "No options match" above that. This prevents the "no match" message from showing before the user has typed enough to filter meaningfully, and the "search" message encourages typing.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+- [ ] Object array options — support passing a raw object array via `options` with `getLabel` / `getValue` extractors, removing the need to manually map data into `OptionType` shape (similar to React Select's `getOptionLabel` / `getOptionValue`)
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> Autocomplete is one of the hardest components to get right, and this implementation handles the core complexity well — the input/combobox dual-identity, the focus scope spanning a portal, and the single-select/multi-select duality all work through clean abstractions rather than sprawling conditionals. The `onPrintableKey` redirect that captures typing from chip-focused state back into the input is a nice touch that most custom autocompletes miss entirely.
+>
+> React Aria's `useCombobox` takes a more rigorous approach to the ARIA contract — it manages `aria-activedescendant` on the input to track the visually focused option, which means screen readers announce options as the user arrows through them. This component delegates option focus to `useFocus` keyboard navigation with actual DOM focus movement, which works but means the input loses focus during list navigation. React Aria's approach is better here specifically because it keeps the cursor position stable in the input while arrowing through results — a real usability difference when users want to keep editing their query. That said, this version's `triggerNav` pattern keeps the input in the focus loop, which is a reasonable pragmatic tradeoff.
+>
+> The `handleComboboxFocus` guard against focus flickering shows real attention to edge cases that only surface during keyboard testing.
+>
+> Solid autocomplete that nails the keyboard model and earns its complexity.
+>
+> — *Claude, Opus 4.6, 2026-03-22*
+

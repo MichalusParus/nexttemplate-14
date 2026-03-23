@@ -88,7 +88,7 @@ const ControlledMenu = (args: PropsWithChildren<MenuProps>) => {
   return (
     <div className="relative" ref={anchorRef}>
       <Button
-        id={`${args.name}-menu-button`}
+        id={`${args.name}-button`}
         aria-haspopup="menu"
         aria-expanded={isOpen}
         aria-controls={`${args.name}-menu`}

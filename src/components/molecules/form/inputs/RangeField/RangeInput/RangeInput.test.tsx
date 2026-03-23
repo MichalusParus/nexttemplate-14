@@ -4,91 +4,138 @@ import { axe, toHaveNoViolations } from 'jest-axe'
 import { createRef } from 'react'
 
 import { fireEvent, render, screen } from '../../../../../../../.jest/customRender'
-import { RangeInput } from './RangeInput'
+import { RangeInput } from '.'
 
 expect.extend(toHaveNoViolations)
 
 describe('RangeInput', () => {
-  it('default', () => {
-    render(
-      <RangeInput className="className" name="rangeTest" min={30} max={60} onChange={() => {}} />,
-    )
-    const rangeWrapTestId = screen.getByTestId('RangeWrap')
-    const rangeRole = screen.getByRole('slider')
-    const spanTestId = screen.getByTestId('Span')
+  describe('Semantics', () => {
+    it('renders slider with type range', () => {
+      render(<RangeInput name="rangeTest" onChange={() => {}} />)
+      const slider = screen.getByRole('slider')
 
-    expect(rangeWrapTestId).toBeInTheDocument()
-    expect(rangeWrapTestId).toHaveClass('className')
-    expect(rangeRole).toHaveAttribute('type', 'range')
-    expect(rangeRole).toHaveAttribute('id', 'rangeTest')
-    expect(rangeRole).toHaveAttribute('name', 'rangeTest')
-    expect(rangeRole).toHaveAttribute('min', '30')
-    expect(rangeRole).toHaveAttribute('max', '60')
-    expect(spanTestId).toHaveTextContent('0')
-    rangeRole.focus()
-    expect(document.activeElement).toBe(rangeRole)
-  })
-
-  it('value', () => {
-    render(<RangeInput name="rangeTest" value={50} onChange={() => {}} />)
-    const rangeRole = screen.getByRole('slider')
-    const spanTestId = screen.getByTestId('Span')
-
-    expect(rangeRole).toHaveAttribute('value', '50')
-    expect(spanTestId).toBeInTheDocument()
-    expect(spanTestId).toHaveTextContent('50')
-  })
-
-  it('error', () => {
-    render(<RangeInput name="rangeTest" error="error" onChange={() => {}} />)
-    const rangeRole = screen.getByRole('slider')
-
-    expect(rangeRole).toHaveClass('error')
-  })
-
-  it('onChange', () => {
-    const spy = jest.fn()
-    render(<RangeInput name="rangeTest" onChange={spy} />)
-    const rangeRole = screen.getByRole('slider')
-
-    fireEvent.change(rangeRole, {
-      target: {
-        value: 50,
-      },
+      expect(slider).toBeInTheDocument()
+      expect(slider).toHaveAttribute('type', 'range')
     })
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(50)
+
+    it('sets id and name from name prop', () => {
+      render(<RangeInput name="rangeTest" onChange={() => {}} />)
+      const slider = screen.getByRole('slider')
+
+      expect(slider).toHaveAttribute('id', 'rangeTest')
+      expect(slider).toHaveAttribute('name', 'rangeTest')
+    })
+
+    it('className lands on wrapper div', () => {
+      render(<RangeInput className="w-96" name="rangeTest" onChange={() => {}} />)
+      const wrapper = screen.getByTestId('RangeWrap')
+
+      expect(wrapper).toHaveClass('w-96')
+    })
+
+    it('renders min and max attributes', () => {
+      render(<RangeInput name="rangeTest" min={30} max={60} onChange={() => {}} />)
+      const slider = screen.getByRole('slider')
+
+      expect(slider).toHaveAttribute('min', '30')
+      expect(slider).toHaveAttribute('max', '60')
+    })
+
+    it('renders value and displays in Span', () => {
+      render(<RangeInput name="rangeTest" value={50} onChange={() => {}} />)
+      const slider = screen.getByRole('slider')
+      const valueDisplay = screen.getByTestId('Span')
+
+      expect(slider).toHaveAttribute('value', '50')
+      expect(valueDisplay).toHaveTextContent('50')
+    })
+
+    it('displays 0 in Span when no value', () => {
+      render(<RangeInput name="rangeTest" onChange={() => {}} />)
+      const valueDisplay = screen.getByTestId('Span')
+
+      expect(valueDisplay).toHaveTextContent('0')
+    })
+
+    it('value Span is hidden from screen readers', () => {
+      render(<RangeInput name="rangeTest" value={50} onChange={() => {}} />)
+      const valueDisplay = screen.getByTestId('Span')
+
+      expect(valueDisplay).toHaveAttribute('aria-hidden', 'true')
+    })
+
+    it('sets aria-orientation horizontal', () => {
+      render(<RangeInput name="rangeTest" onChange={() => {}} />)
+      const slider = screen.getByRole('slider')
+
+      expect(slider).toHaveAttribute('aria-orientation', 'horizontal')
+    })
+
+    it('error adds error class to slider', () => {
+      render(<RangeInput name="rangeTest" error="error" onChange={() => {}} />)
+      const slider = screen.getByRole('slider')
+
+      expect(slider).toHaveClass('error')
+    })
+
+    it('disabled sets native disabled', () => {
+      render(<RangeInput name="rangeTest" disabled onChange={() => {}} />)
+      const slider = screen.getByRole('slider')
+
+      expect(slider).toBeDisabled()
+    })
   })
 
-  it('disabled', () => {
-    render(<RangeInput className="className" name="rangeTest" disabled onChange={() => {}} />)
-    const rangeRole = screen.getByRole('slider')
+  describe('Keyboard', () => {
+    it('Tab focuses the input', () => {
+      render(<RangeInput name="rangeTest" onChange={() => {}} />)
+      const slider = screen.getByRole('slider')
 
-    expect(rangeRole).toHaveAttribute('disabled')
+      slider.focus()
+      expect(document.activeElement).toBe(slider)
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLInputElement>()
-    render(<RangeInput ref={ref} name="rangeTest" min={30} max={60} onChange={() => {}} />)
+  describe('Interaction', () => {
+    it('onChange fires with parsed number', () => {
+      const onChange = jest.fn()
+      render(<RangeInput name="rangeTest" onChange={onChange} />)
+      const slider = screen.getByRole('slider')
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
+      fireEvent.change(slider, { target: { value: 50 } })
+      expect(onChange).toHaveBeenCalledTimes(1)
+      expect(onChange).toHaveBeenCalledWith(50)
+    })
 
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
+    it('disabled prevents interaction', () => {
+      const onChange = jest.fn()
+      render(<RangeInput name="rangeTest" disabled onChange={onChange} />)
+      const slider = screen.getByRole('slider')
 
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
+      expect(slider).toBeDisabled()
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(
-      <label htmlFor="rangeTest">
-        <RangeInput name="rangeTest" min={30} max={60} onChange={() => {}} />
-      </label>,
-    )
+  describe('Ref', () => {
+    it('forwards ref to input element', () => {
+      const ref = createRef<HTMLInputElement>()
+      render(<RangeInput ref={ref} name="rangeTest" onChange={() => {}} />)
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      expect(ref.current).toBeInstanceOf(HTMLInputElement)
+    })
+  })
+
+  describe('Accessibility', () => {
+    it('axe', async () => {
+      const { container } = render(
+        <label htmlFor="rangeTest">
+          Range
+          <RangeInput name="rangeTest" min={30} max={60} onChange={() => {}} />
+        </label>,
+      )
+      const results = await axe(container)
+
+      expect(results).toHaveNoViolations()
+    })
   })
 })

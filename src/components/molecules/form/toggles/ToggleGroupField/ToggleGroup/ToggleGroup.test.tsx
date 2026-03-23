@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { createRef } from 'react'
 
-import { fireEvent, render, screen } from '../../../../../../../.jest/customRender'
+import { act, fireEvent, render, screen } from '../../../../../../../.jest/customRender'
 import {
   getOptions,
   optionsWithContent,
@@ -16,202 +16,436 @@ expect.extend(toHaveNoViolations)
 const options = getOptions('toggleGroupTest', 5)
 
 describe('ToggleGroup', () => {
-  it('default', () => {
-    render(
-      <ToggleGroup
-        className="className"
-        name="toggleGroupTest"
-        value={options[0].value}
-        options={options}
-        onChange={() => {}}
-      />,
-    )
-    const toggleGroupRole = screen.getByRole('group')
-    const buttonRoles = screen.getAllByRole('button')
+  describe('Semantics', () => {
+    it('renders group wrapper with className and id', () => {
+      render(
+        <ToggleGroup
+          className="className"
+          name="toggleGroupTest"
+          value={options[0].value}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const group = screen.getByRole('group')
 
-    expect(toggleGroupRole).toBeInTheDocument()
-    expect(toggleGroupRole).toHaveClass('className')
-    expect(toggleGroupRole).toHaveClass('flex')
-    expect(toggleGroupRole).toHaveAttribute('id', 'toggleGroupTest')
+      expect(group).toBeInTheDocument()
+      expect(group).toHaveClass('className')
+      expect(group).toHaveClass('flex')
+      expect(group).toHaveAttribute('id', 'toggleGroupTest')
+    })
 
-    expect(buttonRoles).toHaveLength(options.length)
-    expect(buttonRoles[0]).toBeInTheDocument()
-    expect(buttonRoles[0]).toHaveClass('selected')
-    expect(buttonRoles[0]).toHaveTextContent(options[0].label)
-    expect(buttonRoles[3]).toBeInTheDocument()
-    expect(buttonRoles[3]).not.toHaveClass('selected')
-    expect(buttonRoles[3]).toHaveTextContent(options[3].label)
-    buttonRoles[0].focus()
-    expect(document.activeElement).toBe(buttonRoles[0])
-  })
+    it('renders correct number of buttons', () => {
+      render(
+        <ToggleGroup name="toggleGroupTest" options={options} onChange={() => {}} />,
+      )
+      const buttons = screen.getAllByRole('button')
 
-  it('content', () => {
-    render(
-      <ToggleGroup
-        name="toggleGroupTest"
-        value={optionsWithContent[0].value}
-        options={optionsWithContent}
-        onChange={() => {}}
-      />,
-    )
-    const contentTexts = screen.queryAllByText(textContent.slice(0, 21))
-    const buttonRoles = screen.getAllByRole('button')
+      expect(buttons).toHaveLength(options.length)
+    })
 
-    expect(contentTexts).toHaveLength(20)
-    expect(buttonRoles[0]).toHaveTextContent(`very long label1${textContent.slice(0, 21)}`)
-    expect(buttonRoles[3]).toHaveTextContent(`very long label4${textContent.slice(0, 21)}`)
-  })
+    it('selected button has selected class and aria-pressed', () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[0].value}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
 
-  it('value', () => {
-    render(
-      <ToggleGroup
-        name="toggleGroupTest"
-        value={options[2].value}
-        options={options}
-        error="error"
-        onChange={() => {}}
-      />,
-    )
-    const buttonRoles = screen.getAllByRole('button')
+      expect(buttons[0]).toHaveClass('selected')
+      expect(buttons[0]).toHaveAttribute('aria-pressed', 'true')
+      expect(buttons[0]).toHaveTextContent(options[0].label)
+    })
 
-    expect(buttonRoles[2]).toHaveClass('selected')
-  })
+    it('unselected button has no selected class', () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[0].value}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
 
-  it('error', () => {
-    render(
-      <ToggleGroup
-        name="toggleGroupTest"
-        value={'value1'}
-        options={options}
-        error="error"
-        onChange={() => {}}
-      />,
-    )
-    const toggleGroupRole = screen.getByRole('group')
+      expect(buttons[3]).not.toHaveClass('selected')
+      expect(buttons[3]).toHaveAttribute('aria-pressed', 'false')
+      expect(buttons[3]).toHaveTextContent(options[3].label)
+    })
 
-    expect(toggleGroupRole).toHaveClass('error')
-  })
+    it('renders content instead of label when provided', () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={optionsWithContent[0].value}
+          options={optionsWithContent}
+          onChange={() => {}}
+        />,
+      )
+      const contentTexts = screen.queryAllByText(textContent.slice(0, 21))
+      const buttons = screen.getAllByRole('button')
 
-  it('column', () => {
-    render(<ToggleGroup name="toggleGroupTest" options={options} column onChange={() => {}} />)
-    const toggleGroupRole = screen.getByRole('group')
+      expect(contentTexts).toHaveLength(20)
+      expect(buttons[0]).toHaveTextContent(`very long label1${textContent.slice(0, 21)}`)
+      expect(buttons[3]).toHaveTextContent(`very long label4${textContent.slice(0, 21)}`)
+    })
 
-    expect(toggleGroupRole).toHaveClass('flex-col')
-  })
+    it('value selects the correct button', () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[2].value}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
 
-  it('buttonProps', () => {
-    render(
-      <ToggleGroup
-        name="toggleGroupTest"
-        options={options}
-        buttonProps={{ className: 'className' }}
-        onChange={() => {}}
-      />,
-    )
-    const buttonRoles = screen.getAllByRole('button')
+      expect(buttons[2]).toHaveClass('selected')
+    })
 
-    expect(buttonRoles[0]).toHaveClass('className')
-  })
+    it('error applies error class to group wrapper', () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          options={options}
+          error="error"
+          onChange={() => {}}
+        />,
+      )
+      const group = screen.getByRole('group')
 
-  it('onChange', () => {
-    const spy = jest.fn()
-    render(
-      <ToggleGroup
-        name="toggleGroupTest"
-        value={options[0].value}
-        options={options}
-        error="error"
-        onChange={spy}
-      />,
-    )
-    const buttonRoles = screen.getAllByRole('button')
+      expect(group).toHaveClass('error')
+    })
 
-    fireEvent.click(buttonRoles[1])
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(options[1].value)
+    it('column applies flex-col to group wrapper', () => {
+      render(
+        <ToggleGroup name="toggleGroupTest" options={options} column onChange={() => {}} />,
+      )
+      const group = screen.getByRole('group')
 
-    fireEvent.click(buttonRoles[0])
-    expect(spy).toHaveBeenCalledTimes(2)
-    expect(spy).toHaveBeenCalledWith('')
-  })
+      expect(group).toHaveClass('flex-col')
+    })
 
-  it('onClear', () => {
-    const onChangeSpy = jest.fn()
-    const onClearSpy = jest.fn()
-    render(
-      <ToggleGroup
-        name="toggleGroupTest"
-        value={options[0].value}
-        options={options}
-        onChange={onChangeSpy}
-        onClear={onClearSpy}
-        allowEmpty={true}
-      />,
-    )
-    const buttonRoles = screen.getAllByRole('button')
+    it('buttonProps className forwards to buttons', () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          options={options}
+          buttonProps={{ className: 'customClass' }}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
 
-    fireEvent.click(buttonRoles[0])
-    expect(onClearSpy).toHaveBeenCalledTimes(1)
-    expect(onChangeSpy).not.toHaveBeenCalled()
-  })
+      expect(buttons[0]).toHaveClass('customClass')
+    })
 
-  it('allowEmpty false', () => {
-    const spy = jest.fn()
-    render(
-      <ToggleGroup
-        name="toggleGroupTest"
-        value={options[0].value}
-        options={options}
-        onChange={spy}
-        allowEmpty={false}
-      />,
-    )
-    const buttonRoles = screen.getAllByRole('button')
+    it('disabled sets aria-disabled on group and all buttons', () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[0].value}
+          options={options}
+          disabled
+          onChange={() => {}}
+        />,
+      )
+      const group = screen.getByRole('group')
+      const buttons = screen.getAllByRole('button')
 
-    fireEvent.click(buttonRoles[0])
-    expect(spy).not.toHaveBeenCalled()
-  })
+      expect(group).toHaveAttribute('aria-disabled', 'true')
+      buttons.forEach(button => {
+        expect(button).toHaveAttribute('aria-disabled', 'true')
+      })
+    })
 
-  it('disabled', () => {
-    render(
-      <ToggleGroup
-        name="toggleGroupTest"
-        value={options[0].value}
-        options={options}
-        error="error"
-        onChange={() => {}}
-        disabled
-      />,
-    )
-    const toggleGroupRole = screen.getByRole('group')
-    const buttonRoles = screen.getAllByRole('button')
+    it('disabled + error applies both states', () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          options={options}
+          disabled
+          error="error"
+          onChange={() => {}}
+        />,
+      )
+      const group = screen.getByRole('group')
+      const buttons = screen.getAllByRole('button')
 
-    expect(toggleGroupRole).toHaveAttribute('aria-disabled', 'true')
-    buttonRoles.forEach(button => {
-      expect(button).toHaveAttribute('aria-disabled', 'true')
+      expect(group).toHaveClass('error')
+      expect(group).toHaveAttribute('aria-disabled', 'true')
+      expect(buttons[0]).toHaveAttribute('aria-disabled', 'true')
+    })
+
+    it('multiValue marks multiple buttons as aria-pressed', () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[0].value}
+          multiValue={[options[0].value, options[2].value]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      expect(buttons[0]).toHaveAttribute('aria-pressed', 'true')
+      expect(buttons[1]).toHaveAttribute('aria-pressed', 'false')
+      expect(buttons[2]).toHaveAttribute('aria-pressed', 'true')
+    })
+
+    it('selected button has tabIndex 0, others have -1', () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[1].value}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      expect(buttons[1]).toHaveAttribute('tabindex', '0')
+      expect(buttons[0]).toHaveAttribute('tabindex', '-1')
+      expect(buttons[2]).toHaveAttribute('tabindex', '-1')
+    })
+
+    it('no selection makes first non-disabled button tabIndex 0', () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      expect(buttons[0]).toHaveAttribute('tabindex', '0')
+      expect(buttons[1]).toHaveAttribute('tabindex', '-1')
+    })
+
+    it('per-option isDisabled disables individual buttons', () => {
+      const optionsWithDisabled = options.map((opt, i) => ({
+        ...opt,
+        isDisabled: i === 2,
+      }))
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          options={optionsWithDisabled}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      expect(buttons[2]).toHaveAttribute('aria-disabled', 'true')
+      expect(buttons[0]).not.toHaveAttribute('aria-disabled', 'true')
     })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLDivElement>()
-    render(<ToggleGroup ref={ref} name="toggleGroupTest" options={options} onChange={() => {}} />)
+  describe('Keyboard', () => {
+    it('Tab focuses the active button', () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[0].value}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
+      buttons[0].focus()
+      expect(document.activeElement).toBe(buttons[0])
+    })
 
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
+    it('ArrowDown moves focus to next button', async () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[0].value}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const group = screen.getByRole('group')
+      const buttons = screen.getAllByRole('button')
 
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
+      await act(async () => {})
+      await act(async () => {})
+
+      // First ArrowDown on group — focuses next button from current index
+      await act(async () => {
+        fireEvent.keyDown(group, { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+      expect(document.activeElement).toBe(buttons[1])
+
+      await act(async () => {
+        fireEvent.keyDown(buttons[1], { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+      expect(document.activeElement).toBe(buttons[2])
+    })
+
+    it('ArrowUp moves focus to previous button', async () => {
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[0].value}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const group = screen.getByRole('group')
+      const buttons = screen.getAllByRole('button')
+
+      await act(async () => {})
+      await act(async () => {})
+
+      // Navigate down first to get to buttons[1]
+      await act(async () => {
+        fireEvent.keyDown(group, { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+      expect(document.activeElement).toBe(buttons[1])
+
+      // ArrowUp goes back
+      await act(async () => {
+        fireEvent.keyDown(buttons[1], { key: 'ArrowUp', code: 'ArrowUp' })
+      })
+      expect(document.activeElement).toBe(buttons[0])
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(
-      <ToggleGroup name="toggleGroupTest" options={options} onChange={() => {}} />,
-    )
+  describe('Interaction', () => {
+    it('click unselected toggle calls onChange with value', () => {
+      const onChange = jest.fn()
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[0].value}
+          options={options}
+          onChange={onChange}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      fireEvent.click(buttons[1])
+      expect(onChange).toHaveBeenCalledTimes(1)
+      expect(onChange).toHaveBeenCalledWith(options[1].value)
+    })
+
+    it('click selected toggle with allowEmpty calls onChange with empty string', () => {
+      const onChange = jest.fn()
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[0].value}
+          options={options}
+          onChange={onChange}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      fireEvent.click(buttons[0])
+      expect(onChange).toHaveBeenCalledTimes(1)
+      expect(onChange).toHaveBeenCalledWith(undefined)
+    })
+
+    it('click selected toggle with onClear calls onClear instead of onChange', () => {
+      const onChange = jest.fn()
+      const onClear = jest.fn()
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[0].value}
+          options={options}
+          onChange={onChange}
+          onClear={onClear}
+          allowEmpty
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      fireEvent.click(buttons[0])
+      expect(onClear).toHaveBeenCalledTimes(1)
+      expect(onChange).not.toHaveBeenCalled()
+    })
+
+    it('click selected toggle with allowEmpty=false does nothing', () => {
+      const onChange = jest.fn()
+      render(
+        <ToggleGroup
+          name="toggleGroupTest"
+          value={options[0].value}
+          options={options}
+          onChange={onChange}
+          allowEmpty={false}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      fireEvent.click(buttons[0])
+      expect(onChange).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('Generic values', () => {
+    const objOptions = options.map(o => ({ ...o, value: { key1: o.label, key2: o.value } }))
+
+    it('object value selects correct toggle', () => {
+      render(
+        <ToggleGroup<{ key1: string; key2: string }>
+          name="toggleGroupTest"
+          value={objOptions[1].value}
+          options={objOptions}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      expect(buttons[1]).toHaveAttribute('aria-pressed', 'true')
+      expect(buttons[0]).toHaveAttribute('aria-pressed', 'false')
+    })
+
+    it('onChange with object values', () => {
+      const onChange = jest.fn()
+      render(
+        <ToggleGroup<{ key1: string; key2: string }>
+          name="toggleGroupTest"
+          value={objOptions[0].value}
+          options={objOptions}
+          onChange={onChange}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      fireEvent.click(buttons[2])
+      expect(onChange).toHaveBeenCalledWith(objOptions[2].value)
+    })
+  })
+
+  describe('Ref', () => {
+    it('ref returns HTMLDivElement', () => {
+      const ref = createRef<HTMLDivElement>()
+      render(
+        <ToggleGroup ref={ref} name="toggleGroupTest" options={options} onChange={() => {}} />,
+      )
+
+      expect(ref.current).toBeInstanceOf(HTMLDivElement)
+    })
+  })
+
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(
+        <ToggleGroup name="toggleGroupTest" options={options} onChange={() => {}} />,
+      )
+
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

@@ -48,9 +48,11 @@ export type CarouselProps = Omit<
   autoplayInterval?: number
   /** optional set current page fn for external control. */
   setCurrentPage?: (page: number) => void
+  /** optional callback fired when the active page changes (works in both controlled and uncontrolled modes) */
+  onPageChange?: (page: number) => void
 }
 
-/** Carousel component can display multiple panels or images controled by arrows and dotts. Supports items array and/or manual children with pages prop. USE CLIENT */
+/** Carousel component can display multiple panels or images controlled by arrows and dots. Supports items array and/or manual children with pages prop. USE CLIENT */
 export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<CarouselProps>>(
   (
     {
@@ -65,9 +67,10 @@ export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<Caro
       autoplay = 'off',
       autoplayInterval = 3000,
       hideArrows,
-      hideControlDotts,
+      hideControlDots,
       children,
       setCurrentPage,
+      onPageChange,
       customControls,
       portalTargetId,
     },
@@ -77,7 +80,7 @@ export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<Caro
     const totalPages = pagesCount || items?.length || 1
     const [internalCurrentPage, setInternalCurrentPage] = useState(currentPage)
     const [isPaused, setIsPaused] = useState(autoplay === 'paused')
-    const selectedPage = currentPage && setCurrentPage ? currentPage : internalCurrentPage
+    const selectedPage = setCurrentPage ? currentPage : internalCurrentPage
 
     const handlePageChange = useCallback(
       (page: number, shouldPause: boolean = false) => {
@@ -86,18 +89,19 @@ export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<Caro
         } else {
           setInternalCurrentPage(page)
         }
-        if (autoplay !== 'off' && !isPaused && shouldPause) {
+        if (autoplay !== 'off' && shouldPause) {
           setIsPaused(true)
         }
+        onPageChange?.(page)
       },
-      [autoplay, isPaused, setIsPaused, setCurrentPage],
+      [autoplay, setCurrentPage, onPageChange],
     )
 
     const handleSwipe = useCallback(
       (value: { x: number; y: number }) => {
-        if (value.x > 0 && Math.abs(value.x) > 30) {
+        if (value.x > 0 && Math.abs(value.x) > 30 && Math.abs(value.y) < 30) {
           handlePageChange(selectedPage === 1 ? totalPages : selectedPage - 1, true)
-        } else if (value.x < 0 && Math.abs(value.x) > 30) {
+        } else if (value.x < 0 && Math.abs(value.x) > 30 && Math.abs(value.y) < 30) {
           handlePageChange(selectedPage === totalPages ? 1 : selectedPage + 1, true)
         }
       },
@@ -147,10 +151,9 @@ export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<Caro
               items.length > 0 &&
               items.map((item, index) => (
                 <CarouselItem
-                  key={item.label}
+                  key={`${item.label}-${index}`}
                   className="flex items-center justify-center"
-                  selectedPage={selectedPage}
-                  pages={totalPages}
+                  isActive={index + 1 === selectedPage}
                   aria-label={`${index + 1} / ${totalPages}: ${item.label}`}
                   aria-current={selectedPage === index + 1 ? 'true' : undefined}
                   {...item.carouselItemProps}
@@ -176,7 +179,7 @@ export const Carousel = forwardRef<HTMLDivElement | null, PropsWithChildren<Caro
           autoplay={autoplay}
           isPaused={isPaused}
           hideArrows={hideArrows}
-          hideControlDotts={hideControlDotts}
+          hideControlDots={hideControlDots}
           setIsPaused={setIsPaused}
           onPageChange={handlePageChange}
           customControls={customControls}

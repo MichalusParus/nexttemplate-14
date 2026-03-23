@@ -10,6 +10,6 @@ export const autoplayButtonClass = cn(
   'absolute left-0 top-0 rounded-md bg-dark-950/25 opacity-0 focus-visible:opacity-100 group-hoverable:opacity-100',
 )
 
-export const dottWrapClass = cn(
+export const dotWrapClass = cn(
   'absolute bottom-0 left-1/2 z-modal flex -translate-x-1/2 rounded-md bg-dark-950/25',
 )

@@ -9,7 +9,7 @@ import { FieldProps } from '@/components/utils/types'
 import { FormStyleContext } from '../../forms/Form/Form'
 import { MultiSelect, MultiSelectProps } from './MultiSelect/MultiSelect'
 
-type MultiSelectFieldProps = Omit<MultiSelectProps, 'value' | 'error' | 'onChange'> &
+export type MultiSelectFieldProps = Omit<MultiSelectProps, 'value' | 'error' | 'onChange'> &
   Partial<Pick<MultiSelectProps, 'onChange'>> &
   FieldProps
 
@@ -37,7 +37,7 @@ export const MultiSelectField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size} error={errorMessage} {...labelProps}>
+        <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps}>
           <MultiSelect
             className={className}
             variant={variant || formVariant}

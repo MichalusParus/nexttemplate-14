@@ -10,78 +10,83 @@ import { YearPicker } from '.'
 
 expect.extend(toHaveNoViolations)
 
-window.HTMLElement.prototype.scrollIntoView = jest.fn()
 
 describe('YearPicker', () => {
-  it('default', () => {
-    render(
-      <YearPicker year={defaultTestDate} setCalendarState={() => {}} setCurrentMonth={() => {}} />,
-    )
-    const gridRole = screen.getByRole('grid')
-    const rowRoles = screen.getAllByRole('row')
-    const cellRoles = screen.getAllByRole('gridcell')
-    const selectedText = screen.getByText('2023')
+  describe('Semantics', () => {
+    it('renders grid with rows and cells', () => {
+      render(
+        <YearPicker year={defaultTestDate} setCalendarState={() => {}} setCurrentMonth={() => {}} />,
+      )
+      const grid = screen.getByRole('grid')
+      const rows = screen.getAllByRole('row')
+      const cells = screen.getAllByRole('gridcell')
+      const selected = screen.getByText('2023')
 
-    expect(gridRole).toBeInTheDocument()
-    expect(gridRole).toHaveClass('grid grid-cols-5')
-    expect(rowRoles[0]).toHaveClass('contents')
-    rowRoles.forEach((row, i) => {
-      if (i !== rowRoles.length - 1) {
-        expect(within(row).getAllByRole('gridcell')).toHaveLength(5)
-      }
+      expect(grid).toBeInTheDocument()
+      expect(grid).toHaveClass('grid grid-cols-5')
+      expect(rows[0]).toHaveClass('contents')
+      rows.forEach((row, i) => {
+        if (i !== rows.length - 1) {
+          expect(within(row).getAllByRole('gridcell')).toHaveLength(5)
+        }
+      })
+      expect(cells.length).toBeGreaterThan(0)
+      expect(selected).toHaveClass('selected')
+      expect(selected).toHaveAttribute('aria-selected')
     })
-    expect(cellRoles.length).toBeGreaterThan(0)
-    expect(selectedText).toHaveClass('selected')
-    expect(selectedText).toHaveAttribute('aria-selected')
+
+    it('minMax limits year range', () => {
+      render(
+        <YearPicker
+          year={defaultTestDate}
+          minMaxDate={{ min: addYears(defaultTestDate, -1), max: addYears(defaultTestDate, 1) }}
+          setCalendarState={() => {}}
+          setCurrentMonth={() => {}}
+        />,
+      )
+      const previousYear = screen.queryByText('2021')
+      const nextYear = screen.queryByText('2025')
+
+      expect(previousYear).toBeNull()
+      expect(nextYear).toBeNull()
+    })
+
+    it('buttonProps forwarding', () => {
+      render(
+        <YearPicker
+          year={defaultTestDate}
+          setCalendarState={() => {}}
+          setCurrentMonth={() => {}}
+          buttonProps={{ className: 'className' }}
+        />,
+      )
+      const cells = screen.getAllByRole('gridcell')
+
+      expect(cells[0]).toHaveClass('className')
+      expect(cells[1]).toHaveClass('className')
+    })
   })
 
-  it('minMax', () => {
-    render(
-      <YearPicker
-        year={defaultTestDate}
-        minMaxDate={{ min: addYears(defaultTestDate, -1), max: addYears(defaultTestDate, 1) }}
-        setCalendarState={() => {}}
-        setCurrentMonth={() => {}}
-      />,
-    )
-    const previousYearText = screen.queryByText('2021')
-    const nextYearText = screen.queryByText('2025')
+  describe('Interaction', () => {
+    it('click sets year and switches to months', () => {
+      const spy = jest.fn()
+      render(<YearPicker year={defaultTestDate} setCalendarState={spy} setCurrentMonth={spy} />)
+      const currentYear = screen.getByText('2023')
 
-    expect(previousYearText).toBeNull()
-    expect(nextYearText).toBeNull()
+      fireEvent.click(currentYear)
+      expect(spy).toHaveBeenCalledTimes(2)
+      expect(spy).toHaveBeenCalledWith(defaultTestDate)
+      expect(spy).toHaveBeenCalledWith('months')
+    })
   })
 
-  it('buttonProps', () => {
-    render(
-      <YearPicker
-        year={defaultTestDate}
-        setCalendarState={() => {}}
-        setCurrentMonth={() => {}}
-        buttonProps={{ className: 'className' }}
-      />,
-    )
-    const cellRoles = screen.getAllByRole('gridcell')
-
-    expect(cellRoles[0]).toHaveClass('className')
-    expect(cellRoles[1]).toHaveClass('className')
-  })
-
-  it('setCurrentMondth', () => {
-    const spy = jest.fn()
-    render(<YearPicker year={defaultTestDate} setCalendarState={spy} setCurrentMonth={spy} />)
-    const currentYearText = screen.getByText('2023')
-
-    fireEvent.click(currentYearText)
-    expect(spy).toHaveBeenCalledTimes(2)
-    expect(spy).toHaveBeenCalledWith(defaultTestDate)
-    expect(spy).toHaveBeenCalledWith('months')
-  })
-
-  it('axe', async () => {
-    const { container } = render(
-      <YearPicker year={defaultTestDate} setCalendarState={() => {}} setCurrentMonth={() => {}} />,
-    )
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(
+        <YearPicker year={defaultTestDate} setCalendarState={() => {}} setCurrentMonth={() => {}} />,
+      )
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

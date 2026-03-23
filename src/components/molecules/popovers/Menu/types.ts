@@ -8,22 +8,24 @@ import {
   MenuItemLinkProps,
   MenuItemRadioGroupProps,
 } from './items'
+import { MenuItemSwitchProps } from './items/MenuItemSwitch'
 import { MenuProps } from './Menu'
 
 type BaseMenuOption = {
   label: string
   content?: ReactNode
-  closeOnClick?: boolean
 }
 
 type ButtonOption = BaseMenuOption & {
   type: 'button'
+  closeOnClick?: boolean
   onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   menuItemProps?: Partial<MenuItemButtonProps>
 }
 
 type LinkOption = BaseMenuOption & {
   type: 'link'
+  closeOnClick?: boolean
   href: string
   menuItemProps?: Partial<MenuItemLinkProps>
 }
@@ -39,7 +41,7 @@ type SwitchOption = BaseMenuOption & {
   type: 'switch'
   isChecked: boolean
   onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
-  menuItemProps?: Partial<MenuItemCheckboxProps>
+  menuItemProps?: Partial<MenuItemSwitchProps>
 }
 
 type RadioOption<T = string> = BaseMenuOption & {

@@ -1,117 +1,126 @@
 'use client'
-import { FieldsetHTMLAttributes, forwardRef, useCallback } from 'react'
+import { isEqual } from 'lodash'
+import { FieldsetHTMLAttributes, ForwardedRef, forwardRef, useCallback } from 'react'
 
+import { devWarning } from '@/components/utils/devWarning'
 import { InputProps, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { Checkbox, CheckboxProps } from '../../CheckboxField/Checkbox/Checkbox'
 import { Switch } from '../../SwitchField/Switch'
 
-export type CheckboxGroupProps = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className' | 'color' | 'name' | 'onChange'> &
+export type CheckboxGroupProps<T = string> = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className' | 'color' | 'name' | 'onChange'> &
   Omit<InputProps, 'placeholder'> &
   StyleProps & {
     /** checkboxGroup value */
-    value: string[]
-    /** group options for individual radio inputs */
-    options: OptionType[]
-    /** display radio inputs in column */
+    value: T[]
+    /** group options for individual checkboxes */
+    options: OptionType<T>[]
+    /** display checkboxes in column */
     column?: boolean
     /** optional boolean for switch version */
     switchType?: boolean
     /** optional checkbox props */
-    checkboxProps?: Partial<CheckboxProps>
+    checkboxProps?: Partial<Omit<CheckboxProps, 'isChecked' | 'onChange' | 'value' | 'name'>>
     /** onChange function */
-    onChange: (value: string[]) => void
+    onChange: (value: T[]) => void
   }
 
 /** Basic styled CheckboxGroup. For form purposes use CheckboxGroupField. Native FieldsetHTMLAttributes and Checkbox props supported. USE CLIENT */
-export const CheckboxGroup = forwardRef<HTMLFieldSetElement | null, CheckboxGroupProps>(
-  (
-    {
-      className,
-      name,
-      value,
-      options,
-      column,
-      switchType = false,
-      variant = 'outlined',
-      color = 'primary',
-      size = 'md',
-      disabled,
-      error,
-      checkboxProps = {},
-      onChange,
-      ...rest
+function CheckboxGroupComponent<T = string>(
+  {
+    className,
+    name,
+    value,
+    options,
+    column,
+    switchType = false,
+    variant = 'outlined',
+    color = 'primary',
+    size = 'md',
+    disabled,
+    error,
+    checkboxProps = {},
+    onChange,
+    ...rest
+  }: CheckboxGroupProps<T>,
+  ref: ForwardedRef<HTMLFieldSetElement>,
+) {
+  devWarning(
+    !rest['aria-label'] && !rest['aria-labelledby'],
+    'CheckboxGroup: no aria-label or aria-labelledby provided — group has no accessible name. Use CheckboxGroupField or pass aria-label manually.',
+  )
+
+  const isChecked = useCallback(
+    (checkboxValue: T) => value.some(v => isEqual(v, checkboxValue)),
+    [value],
+  )
+
+  const handleOnChange = useCallback(
+    (checkboxValue: T) => {
+      if (isChecked(checkboxValue)) {
+        onChange(value.filter(v => !isEqual(v, checkboxValue)))
+      } else {
+        onChange([...value, checkboxValue])
+      }
     },
-    ref,
-  ) => {
-    const isChecked = useCallback(
-      (checkboxValue: string) => {
-        if (value) {
-          return value.includes(checkboxValue)
-        } else {
-          return false
-        }
-      },
-      [value],
-    )
+    [value, isChecked, onChange],
+  )
 
-    const handleOnChange = useCallback(
-      (checkboxValue: string) => {
-        if (isChecked(checkboxValue)) {
-          onChange(value.filter(v => v !== checkboxValue))
-        } else {
-          onChange([...value, checkboxValue])
-        }
-      },
-      [value, isChecked, onChange],
-    )
+  return (
+    <fieldset
+      id={name}
+      className={cn('CheckboxGroup', 'flex flex-wrap', column && 'flex-col', className)}
+      aria-disabled={disabled}
+      ref={ref}
+      {...rest}
+    >
+      {options.map(({ value: checkboxValue, label: checkboxLabel, content, isDisabled }, index) =>
+        switchType ? (
+          <Switch
+            key={`${name}-${index}-${checkboxLabel}`}
+            name={`${name}-${index}`}
+            label={checkboxLabel}
+            value={String(index)}
+            content={content}
+            variant={variant}
+            color={color}
+            size={size}
+            isChecked={isChecked(checkboxValue)}
+            disabled={disabled || isDisabled}
+            error={error}
+            onChange={() => handleOnChange(checkboxValue)}
+            {...checkboxProps}
+          />
+        ) : (
+          <Checkbox
+            key={`${name}-${index}-${checkboxLabel}`}
+            name={`${name}-${index}`}
+            label={checkboxLabel}
+            value={String(index)}
+            content={content}
+            variant={variant}
+            color={color}
+            size={size}
+            isChecked={isChecked(checkboxValue)}
+            disabled={disabled || isDisabled}
+            error={error}
+            onChange={() => handleOnChange(checkboxValue)}
+            {...checkboxProps}
+          />
+        ),
+      )}
+    </fieldset>
+  )
+}
 
-    return (
-      <fieldset
-        id={name}
-        className={cn('CheckboxGroup', 'flex flex-wrap', column && 'flex-col', className)}
-        ref={ref}
-        {...rest}
-      >
-        {options.map(({ value: checkboxValue, label: checkboxLabel, content }) =>
-          switchType ? (
-            <Switch
-              key={checkboxValue}
-              name={checkboxValue}
-              label={checkboxLabel}
-              value={checkboxValue}
-              content={content}
-              variant={variant}
-              color={color}
-              size={size}
-              isChecked={isChecked(checkboxValue)}
-              disabled={disabled}
-              error={error}
-              onChange={handleOnChange}
-              {...checkboxProps}
-            />
-          ) : (
-            <Checkbox
-              key={checkboxValue}
-              name={checkboxValue}
-              label={checkboxLabel}
-              value={checkboxValue}
-              content={content}
-              variant={variant}
-              color={color}
-              size={size}
-              isChecked={isChecked(checkboxValue)}
-              disabled={disabled}
-              error={error}
-              onChange={handleOnChange}
-              {...checkboxProps}
-            />
-          ),
-        )}
-      </fieldset>
-    )
-  },
-)
+type CheckboxGroupComponentType = {
+  <T = string>(
+    props: CheckboxGroupProps<T> & { ref?: ForwardedRef<HTMLFieldSetElement> },
+  ): React.ReactElement | null
+  displayName?: string
+}
+
+export const CheckboxGroup = forwardRef(CheckboxGroupComponent) as CheckboxGroupComponentType
 
 CheckboxGroup.displayName = 'CheckboxGroup'

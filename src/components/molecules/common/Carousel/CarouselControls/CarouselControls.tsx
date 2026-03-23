@@ -8,7 +8,7 @@ import { ChevronIcon, PauseIcon } from '@/components/atoms/icons'
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { cn } from '@/utils/utils'
 
-import { arrowClass, controlClass, dottWrapClass } from './CarouselControls.style'
+import { arrowClass, controlClass, dotWrapClass } from './CarouselControls.style'
 
 export type CarouselControlsProps = {
   /** selected page */
@@ -21,8 +21,8 @@ export type CarouselControlsProps = {
   isPaused: boolean
   /** optional boolean for hiding carousel arrows. */
   hideArrows?: boolean
-  /** optional boolean for hiding carousel control dotts. */
-  hideControlDotts?: boolean
+  /** optional boolean for hiding carousel control dots. */
+  hideControlDots?: boolean
   /** set isPaused state */
   setIsPaused: (value: boolean) => void
   /** onPageChange fn */
@@ -40,7 +40,7 @@ export const CarouselControls = ({
   autoplay = 'off',
   isPaused,
   hideArrows,
-  hideControlDotts,
+  hideControlDots,
   setIsPaused,
   onPageChange,
   customControls,
@@ -112,13 +112,13 @@ export const CarouselControls = ({
           data-testid="AutoplayButton"
         />
       )}
-      {!hideControlDotts && (
-        <div className={cn('DottWrap', dottWrapClass)} data-testid="DottWrap">
+      {!hideControlDots && pages > 1 && (
+        <div className={cn('DotWrap', dotWrapClass)} data-testid="DotWrap">
           {Array.from({ length: pages }, (_, index) => (
             <Button
-              key={`ControlDott${index}`}
+              key={`ControlDot${index}`}
               className={cn(
-                'ControlDott',
+                'ControlDot',
                 'border-none p-1.5',
                 selectedPage === index + 1 && 'selected [&>div]:scale-150',
                 controlClass,
@@ -128,12 +128,13 @@ export const CarouselControls = ({
               hideShadow
               tabIndex={-1}
               aria-label={t('page', { page: index + 1 })}
-              onClick={() => {
+              onClick={e => {
+                e?.stopPropagation()
                 onPageChange(index + 1, true)
               }}
-              data-testid={`Dott${index}Button`}
+              data-testid={`Dot${index}Button`}
             >
-              <div className={cn('Dott', 'rounded-full bg-current p-1')} />
+              <div className={cn('Dot', 'rounded-full bg-current p-1')} />
             </Button>
           ))}
         </div>

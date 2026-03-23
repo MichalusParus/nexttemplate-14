@@ -181,7 +181,7 @@ export type UseFilterDataOptions = {
   onSortingChange?: (sorting: SortingState) => void
 }
 
-/** useFilterData is hook for client side filtering and sorting. Supports dott notations on keys. Accepts optional options for server-side mode. */
+/** useFilterData is hook for client side filtering and sorting. Supports dot notations on keys. Accepts optional options for server-side mode. */
 export const useFilterData = <T extends Record<string, unknown>>(
   data: T[],
   options?: UseFilterDataOptions,

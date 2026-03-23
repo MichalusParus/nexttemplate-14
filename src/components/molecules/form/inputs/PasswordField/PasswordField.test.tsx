@@ -38,127 +38,148 @@ const FieldWithHooks = (props: any) => {
 }
 
 describe('PasswordField', () => {
-  it('default', () => {
-    render(<FieldWithHooks />)
-    const fieldWrapTestId = screen.getByTestId('InputWrap')
-    const inputTestId = screen.getByTestId('PasswordInput')
-    const labelTestId = screen.getByTestId('Label')
-    const alertTestId = screen.getByTestId('Alert')
-    const alertQuery = screen.queryByRole('alert')
+  describe('Semantics', () => {
+    it('renders PasswordInput with Label', () => {
+      render(<FieldWithHooks />)
 
-    expect(fieldWrapTestId).toBeInTheDocument()
-    expect(fieldWrapTestId).toHaveClass('className')
-    expect(inputTestId).toHaveAttribute('id', 'fieldTest')
-    expect(inputTestId).toHaveAttribute('name', 'fieldTest')
-    expect(inputTestId).toHaveAttribute('type', 'password')
-    expect(inputTestId).toHaveAttribute('value', 'value')
-    expect(inputTestId).toHaveAttribute('placeholder', 'placeholder')
-    expect(inputTestId).toHaveAttribute('aria-invalid', 'false')
-    expect(inputTestId).not.toHaveAttribute('aria-describedby')
-    expect(labelTestId).toBeInTheDocument()
-    expect(labelTestId).toHaveTextContent('Label')
-    expect(labelTestId).toHaveAttribute('for', 'fieldTest')
-    expect(labelTestId).toHaveAttribute('id', 'fieldTest-label')
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveTextContent('')
-    expect(alertTestId).toHaveAttribute('id', 'fieldTest-description')
-    expect(alertQuery).toBeNull()
+      expect(screen.getByTestId('InputWrap')).toBeInTheDocument()
+      expect(screen.getByTestId('PasswordInput')).toBeInTheDocument()
+    })
+
+    it('forwards className', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByTestId('InputWrap')).toHaveClass('className')
+    })
+
+    it('id and name from name prop', () => {
+      render(<FieldWithHooks />)
+      const input = screen.getByTestId('PasswordInput')
+
+      expect(input).toHaveAttribute('id', 'fieldTest')
+      expect(input).toHaveAttribute('name', 'fieldTest')
+      expect(input).toHaveAttribute('type', 'password')
+    })
+
+    it('placeholder', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByTestId('PasswordInput')).toHaveAttribute('placeholder', 'placeholder')
+    })
+
+    it('label text with for attribute', () => {
+      render(<FieldWithHooks />)
+      const label = screen.getByTestId('Label')
+
+      expect(label).toBeInTheDocument()
+      expect(label).toHaveTextContent('Label')
+      expect(label).toHaveAttribute('for', 'fieldTest')
+      expect(label).toHaveAttribute('id', 'fieldTest-label')
+    })
+
+    it('alert with description id', () => {
+      render(<FieldWithHooks />)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toBeInTheDocument()
+      expect(alert).toHaveTextContent('')
+      expect(alert).toHaveAttribute('id', 'fieldTest-description')
+      expect(screen.queryByRole('alert')).toBeNull()
+    })
+
+    it('aria-invalid false when no error', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByTestId('PasswordInput')).toHaveAttribute('aria-invalid', 'false')
+    })
+
+    it('no aria-describedby when no error or description', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByTestId('PasswordInput')).not.toHaveAttribute('aria-describedby')
+    })
+
+    it('description in aria-describedby', () => {
+      render(<FieldWithHooks labelProps={{ description: 'description' }} />)
+      const input = screen.getByTestId('PasswordInput')
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toHaveTextContent('description')
+      expect(input).toHaveAttribute('aria-describedby', 'fieldTest-description')
+    })
+
+    it('labelProps forwarded', () => {
+      render(<FieldWithHooks labelProps={{ className: 'className' }} />)
+
+      expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    })
   })
 
-  it('value', async () => {
-    render(<FieldWithHooks />)
-    const inputTestId = screen.getByTestId('PasswordInput')
+  describe('Interaction', () => {
+    it('value change', async () => {
+      render(<FieldWithHooks />)
+      const input = screen.getByTestId('PasswordInput')
 
-    expect(inputTestId).toHaveAttribute('value', 'value')
+      expect(input).toHaveAttribute('value', 'value')
 
-    await act(async () => {
-      fireEvent.change(inputTestId, {
-        target: {
-          value: 'newValue',
-        },
+      await act(async () => {
+        fireEvent.change(input, { target: { value: 'newValue' } })
+      })
+
+      expect(input).toHaveAttribute('value', 'newValue')
+    })
+
+    it('onChange fires with value', async () => {
+      const onChange = jest.fn()
+      render(<FieldWithHooks onChange={onChange} />)
+
+      await act(async () => {
+        fireEvent.change(screen.getByTestId('PasswordInput'), { target: { value: 'newValue' } })
+      })
+
+      expect(onChange).toHaveBeenCalledWith('newValue')
+    })
+
+    it('error shown on invalid submit', async () => {
+      render(<FieldWithHooks />)
+      const input = screen.getByTestId('PasswordInput')
+      const alert = screen.getByTestId('Alert')
+
+      await act(async () => {
+        fireEvent.change(input, { target: { value: '' } })
+      })
+
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('submitButton'))
+      })
+
+      await waitFor(() => {
+        expect(alert).toHaveTextContent('min 3 characters')
+        expect(alert).toHaveAttribute('role', 'alert')
+        expect(input).toHaveAttribute('aria-describedby', 'fieldTest-description')
+        expect(input).toHaveAttribute('aria-invalid', 'true')
       })
     })
 
-    expect(inputTestId).toHaveAttribute('value', 'newValue')
-  })
+    it('form submit works', async () => {
+      const onSubmit = jest.fn()
+      render(<FieldWithHooks />)
+      screen.getByTestId('Form').onsubmit = onSubmit
 
-  it('description', () => {
-    render(<FieldWithHooks labelProps={{ description: 'description' }} />)
-    const inputTestId = screen.getByTestId('PasswordInput')
-    const alertTestId = screen.getByTestId('Alert')
-
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveTextContent('description')
-    expect(inputTestId).toHaveAttribute('aria-describedby', 'fieldTest-description')
-  })
-
-  it('error', async () => {
-    render(<FieldWithHooks />)
-    const inputTestId = screen.getByTestId('PasswordInput')
-    const alertRole = screen.getByTestId('Alert')
-
-    await act(async () => {
-      fireEvent.change(inputTestId, {
-        target: {
-          value: '',
-        },
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submitButton'))
       })
-    })
 
-    await act(async () => {
-      fireEvent.submit(screen.getByTestId('submitButton'))
-    })
-
-    await waitFor(() => {
-      expect(alertRole).toBeInTheDocument()
-      expect(alertRole).toHaveTextContent('min 3 characters')
-      expect(alertRole).toHaveAttribute('role', 'alert')
-      expect(inputTestId).toHaveAttribute('aria-describedby', 'fieldTest-description')
-      expect(inputTestId).toHaveAttribute('aria-invalid', 'true')
+      expect(onSubmit).toHaveBeenCalled()
     })
   })
 
-  it('onChange', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks onChange={spy} />)
-    const inputTestId = screen.getByTestId('PasswordInput')
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<FieldWithHooks />)
 
-    await act(async () => {
-      fireEvent.change(inputTestId, {
-        target: {
-          value: 'newValue',
-        },
-      })
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
     })
-
-    expect(spy).toHaveBeenCalled()
-    expect(spy).toHaveBeenCalledWith('newValue')
-  })
-
-  it('labelProps', () => {
-    render(<FieldWithHooks labelProps={{ className: 'className' }} />)
-    const labelWrapTestId = screen.getByTestId('LabelWrap')
-
-    expect(labelWrapTestId).toHaveClass('className')
-  })
-
-  it('onSubmit', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks />)
-    screen.getByTestId('Form').onsubmit = spy
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('submitButton'))
-    })
-
-    // TODO beenCalledWith, spy return native event and not values
-    expect(spy).toHaveBeenCalled()
-  })
-
-  it('axe', async () => {
-    const { container } = render(<FieldWithHooks />)
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
   })
 })

@@ -24,13 +24,11 @@ describe('MobilePagination', () => {
   it('isLoading', () => {
     render(<MobilePagination count={5} page={3} isLoading onChange={() => {}} />)
     const buttonRoles = screen.getAllByRole('button')
-    const statusRole = screen.getByRole('status')
 
     expect(buttonRoles).toHaveLength(2)
     buttonRoles.forEach(button => {
       expect(button).toHaveAttribute('aria-disabled', 'true')
     })
-    expect(statusRole).toBeInTheDocument()
   })
 
   it('hideNav', () => {

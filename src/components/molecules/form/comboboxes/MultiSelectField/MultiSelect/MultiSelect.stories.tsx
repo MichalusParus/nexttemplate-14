@@ -46,14 +46,16 @@ export const PrimaryDefault: Story = {
     value: [],
     options: getOptions('multiSelectStory', 5),
     displayChips: false,
+    selectAll: false,
     variant: 'outlined',
     color: 'primary',
     size: 'md',
     placement: 'bottom',
     error: '',
+    disabled: false,
+    chipProps: undefined,
     dropdownProps: undefined,
     listboxProps: undefined,
-    chipProps: undefined,
     onOpen: undefined,
     onClose: undefined,
     onChange: value => console.log(value),
@@ -126,6 +128,16 @@ export const CreateNew: Story = {
         </Button>
       </li>
     ),
+  },
+  render: args => <MultiSelectWithHooks {...args} />,
+}
+
+export const SelectAll: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'multiSelectStory10',
+    options: getOptions('multiSelectStory10', 10),
+    selectAll: true,
   },
   render: args => <MultiSelectWithHooks {...args} />,
 }

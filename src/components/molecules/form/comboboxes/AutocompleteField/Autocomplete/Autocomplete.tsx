@@ -19,7 +19,7 @@ import {
 import { Dropdown } from '@/components/molecules/popovers/Dropdown'
 import { DropdownProps } from '@/components/molecules/popovers/Dropdown/Dropdown'
 import { useGroupedOptions } from '@/components/utils/hooks/useGroupedOptions'
-import { InputProps, OptionGroupType, OptionType, StyleProps } from '@/components/utils/types'
+import { InputProps, OptionGroupType, OptionType, SelectAllState, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { ListBox, ListBoxProps } from '../../SelectField/Select/ListBox'
@@ -38,6 +38,8 @@ export type AutocompleteProps<T = string> = Omit<
     options: OptionType<T>[] | OptionGroupType<T>[]
     /** loading state for options fetching, loading is delayed for 1 second to prevent flickering */
     isLoading?: boolean
+    /** state for select all checkbox */
+    selectAllState?: SelectAllState
     /** for passing aditional props to dropdown */
     dropdownProps?: Partial<DropdownProps>
     /** for passing aditional props to listbox */
@@ -46,6 +48,8 @@ export type AutocompleteProps<T = string> = Omit<
     onOpen?: () => void
     /** optional onClose function for Select */
     onClose?: () => void
+    /** callback for select all action, renders select all row when provided */
+    onSelectAll?: () => void
     /** onChange function */
     onChange: (value: T) => void
   }
@@ -64,6 +68,7 @@ function AutocompleteComponent<T = string>(
     size = 'md',
     placement = 'bottom',
     isLoading,
+    selectAllState,
     disabled,
     inputProps = {},
     dropdownProps = {},
@@ -71,6 +76,7 @@ function AutocompleteComponent<T = string>(
     chipProps = {},
     onInputChange,
     onChange,
+    onSelectAll,
     onOpen,
     onClose,
     onClear,
@@ -119,8 +125,9 @@ function AutocompleteComponent<T = string>(
       if (!multiValue) {
         const selectedOption =
           flatOptions.find(({ value }) => isEqual(value, target)) || flatOptions[0]
-        setInputValue(selectedOption.label)
-        onInputChange(selectedOption.label)
+        const label = selectedOption?.label || ''
+        setInputValue(label)
+        onInputChange(label)
         setIsOpen(false)
       }
     },
@@ -131,11 +138,12 @@ function AutocompleteComponent<T = string>(
     (v: string) => {
       if (!isOpen) {
         setIsOpen(true)
+        onOpen?.()
       }
       setInputValue(String(v).trimStart())
       onInputChange(String(v).trimStart())
     },
-    [isOpen, onInputChange],
+    [isOpen, onInputChange, onOpen],
   )
 
   useAutocompleteFocus({
@@ -197,6 +205,7 @@ function AutocompleteComponent<T = string>(
       >
         <ListBox<T>
           name={`${name}-listbox`}
+          labelId={`${name}-label`}
           value={multiValue ? multiValue : [value]}
           options={options}
           isGrouped={isGrouped}
@@ -210,7 +219,9 @@ function AutocompleteComponent<T = string>(
               : t('noOptionsMatch', { value: inputValue })
           }
           hideCheckbox={!multiValue}
+          selectAllState={selectAllState}
           aria-hidden={!isOpen}
+          onSelectAll={onSelectAll}
           onClick={handleOnChange}
           {...listboxProps}
         />

@@ -40,11 +40,12 @@ export const RangeInput = forwardRef<HTMLInputElement | null, RangeProps>(
         )}
         data-testid="RangeWrap"
       >
-        <Span className={cn('ValueWrap', 'min-w-12', !value && 'opacity-0')}>
-          {value || '0'}
+        <Span aria-hidden="true" className={cn('ValueWrap', 'min-w-12', value == null && 'opacity-0')}>
+          {value ?? '0'}
         </Span>
         <input
           id={name}
+          aria-orientation="horizontal"
           className={cn(
             rangeClass,
             rangeColor[color],

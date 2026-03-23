@@ -14,6 +14,7 @@ import { createPortal } from 'react-dom'
 import { v4 as uuidv4 } from 'uuid'
 
 import { Alert } from '@/components/atoms/common/Alert'
+import { devWarning } from '@/components/utils/devWarning'
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { cn } from '@/utils/utils'
 
@@ -21,7 +22,12 @@ import { ClearButton } from '../../form/comboboxes/SelectField/Select/ClearButto
 import { AddToast, TOASTS_MAX, ToastType } from './types'
 
 const ToastContext = createContext<{ addToast: AddToast }>({
-  addToast: () => {},
+  addToast: () => {
+    devWarning(
+      true,
+      'useToast: addToast called outside of ToastProvider — wrap your app with <ToastProvider>',
+    )
+  },
 })
 
 export function useToast() {
@@ -37,6 +43,7 @@ export type ToastProviderProps = PropsWithChildren & {
 export const ToastProvider = forwardRef<HTMLDivElement | null, ToastProviderProps>(
   ({ children, portalContainerId }, ref) => {
     const timeoutIds = useRef<NodeJS.Timeout[]>([])
+    const rafIds = useRef<number[]>([])
     const [toasts, setToasts] = useState<ToastType[]>([])
     const container = usePortalContainer(portalContainerId)
 
@@ -52,34 +59,37 @@ export const ToastProvider = forwardRef<HTMLDivElement | null, ToastProviderProp
 
     const addToast: AddToast = useCallback(
       (status, message, title, options) => {
-        if (toasts.length >= TOASTS_MAX) {
-          console.warn('Toasts max count reached')
-          return
-        }
         const id = uuidv4()
-        const newToast = {
-          id,
-          status,
-          message,
-          title,
-          options: {
-            isPersistent: options?.isPersistent || false,
-            duration: options?.duration || 3000,
-            alertProps: options?.alertProps || {},
-          },
-          isVisible: false,
-        }
-        setToasts(prev => [...prev, newToast])
-        requestAnimationFrame(() => {
-          setToasts(prev => prev.map(t => (t.id === id ? { ...t, isVisible: true } : t)))
+        setToasts(prev => {
+          if (prev.length >= TOASTS_MAX) {
+            console.warn('Toasts max count reached')
+            return prev
+          }
+          return [...prev, {
+            id,
+            status,
+            message,
+            title,
+            options: {
+              isPersistent: options?.isPersistent ?? false,
+              duration: options?.duration ?? 3000,
+              alertProps: options?.alertProps ?? {},
+            },
+            isVisible: false,
+          }]
         })
-        if (options?.isPersistent) return
-        const timeoutId = setTimeout(() => {
-          handleRemove(id)
-        }, options?.duration || 3000)
-        timeoutIds.current.push(timeoutId)
+        const rafId = requestAnimationFrame(() => {
+          setToasts(p => p.map(t => (t.id === id ? { ...t, isVisible: true } : t)))
+        })
+        rafIds.current.push(rafId)
+        if (!options?.isPersistent) {
+          const timeoutId = setTimeout(() => {
+            handleRemove(id)
+          }, options?.duration ?? 3000)
+          timeoutIds.current.push(timeoutId)
+        }
       },
-      [toasts.length, handleRemove],
+      [handleRemove],
     )
 
     const contextValue = useMemo(() => ({ addToast }), [addToast])
@@ -88,18 +98,20 @@ export const ToastProvider = forwardRef<HTMLDivElement | null, ToastProviderProp
       return () => {
         timeoutIds.current.forEach(timeoutId => clearTimeout(timeoutId))
         timeoutIds.current = []
+        rafIds.current.forEach(rafId => cancelAnimationFrame(rafId))
+        rafIds.current = []
       }
     }, [])
 
     return (
       <ToastContext.Provider value={contextValue}>
         {children}
-        {!!toasts.length && container &&
+        {container &&
           createPortal(
             <div
               className={cn(
                 'ToastsWrap',
-                'fixed bottom-4 right-4 z-modal flex flex-col items-end gap-2',
+                'fixed bottom-4 right-4 z-modal flex flex-col items-end gap-2 pointer-events-none',
               )}
               ref={ref}
               data-testid="ToastsWrap"
@@ -116,7 +128,7 @@ export const ToastProvider = forwardRef<HTMLDivElement | null, ToastProviderProp
                     key={id}
                     className={cn(
                       'Toast',
-                      'max-w-64 translate-x-52 shadow-paper transition-position',
+                      'pointer-events-auto max-w-64 translate-x-52 shadow-paper transition-position',
                       isVisible && 'translate-x-0',
                       alertClassName,
                     )}
@@ -129,7 +141,7 @@ export const ToastProvider = forwardRef<HTMLDivElement | null, ToastProviderProp
                     }
                     variant={variant || 'contained'}
                     size={size || 'md'}
-                    aria-live="polite"
+                    aria-live={status === 'error' ? 'assertive' : 'polite'}
                     aria-atomic="true"
                     data-testid="Toast"
                     {...restAlertProps}

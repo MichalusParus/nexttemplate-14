@@ -1,0 +1,96 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/inputs/RangeInput/Def" />
+
+# RangeInput
+
+> Range slider for numeric value selection within a bounded interval. Wraps a native `<input type="range">` with a value display Span, wrapper div for styling, and color-themed thumb. Supports min/max, step (via rest props), error/disabled states, and three sizes. For form integration with validation and labels, use RangeField.
+
+<br/>
+
+## Features
+
+- Inline value display
+- Error and disabled states
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<input type="range">` — implicit `role="slider"`, no ARIA role override needed
+- Implicit `aria-valuemin`, `aria-valuemax`, `aria-valuenow` from native `min`, `max`, `value` attributes
+- Wrapped in a `<div>` (`data-testid="RangeWrap"`) that carries size, focus ring, and error styling
+- `className` lands on the wrapper div, not the input — correct for layout overrides
+- `id` and `name` set from the `name` prop
+- Value display `Span` shows current value, hidden via `opacity-0` when value is `undefined`/`null`, `aria-hidden="true"` prevents redundant screen reader announcements
+- `step` is not an explicit prop but passes through via `...rest` to the native input
+- `data-testid="Span"` on the value display element (from Span atom)
+
+### Keyboard Handling
+- All native `<input type="range">` keyboard behavior — no custom `onKeyDown` handling
+- **ArrowRight / ArrowUp** — Increases value by step (default 1)
+- **ArrowLeft / ArrowDown** — Decreases value by step (default 1)
+- **Home** — Sets to min value
+- **End** — Sets to max value
+- **PageUp / PageDown** — Larger step increment (browser-dependent, typically 10% of range)
+- Native `disabled` attribute prevents focus and all keyboard interaction
+
+### Accessibility (WAI-ARIA)
+- Follows native [HTML range input](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range) semantics and [WAI-ARIA Slider pattern](https://www.w3.org/WAI/ARIA/apg/patterns/slider/)
+- `aria-label` or `aria-labelledby` should be provided by consumers or by RangeField — standalone usage without a label will fail accessibility checks
+- `aria-orientation="horizontal"` hardcoded on the input — explicit intent, matches the always-horizontal layout
+- No other custom ARIA attributes needed — native range provides `aria-valuemin`, `aria-valuemax`, `aria-valuenow` implicitly
+- Value display Span has `aria-hidden="true"` — prevents redundant announcements (screen readers already get the value from native slider semantics)
+
+### Visual States
+- **Default** — Color-themed thumb (primary/secondary/terciary) on a translucent track
+- **Hover** — Thumb darkens via `hoverable:` pseudo-class (webkit and moz)
+- **Active** — Thumb darkens further via `active:` pseudo-class
+- **Focus-visible** — Color-themed ring on the wrapper div via `:has(input:focus-visible)` CSS
+- **Error** — `.error` class on both wrapper and input, red border/shadow via `errorStateClass`
+- **Disabled** — Native `disabled` on input, `opacity-50`, `cursor-not-allowed`, thumb changes to `bg-dark-500`
+
+### Interaction Behavior
+- `onChange` fires with `(value: number) => void` — returns `parseFloat(e.target.value)`, not the native event
+- Wrapper div gets focus ring styling, input gets thumb/track styling
+- Disabled state: native `disabled` on input blocks all interaction
+
+### Responsive & Layout
+- Full width by default (`w-full` on track)
+- Wrapper is `inline-flex` with `items-center` — value Span sits inline next to the slider
+- Value Span has `min-w-12` to prevent layout shift as numbers change width
+
+<br/>
+
+## Architecture Decisions
+- **Wrapper div for focus ring**: The focus ring targets the wrapper via `:has(input:focus-visible)` rather than the input itself — this creates a ring around the entire component including the value display, matching the visual pattern of other input wrappers.
+- **`onChange(number)` extraction**: `parseFloat(e.target.value)` instead of passing the native event — simplifies the API and matches the numeric contract. Consumers never parse strings themselves.
+- **Value display as separate Span**: The current value is shown in a Span next to the slider rather than as a tooltip or built-in browser display. This keeps the value persistently visible and styleable. The `opacity-0` hide when no value prevents layout shift (the Span stays in the DOM with `min-w-12`).
+- **No variant prop**: RangeInput omits `variant` from `StyleProps` via `Omit<StyleProps, 'variant'>` — sliders don't have text/outlined/contained visual variants, only color themes on the thumb.
+- **Cross-browser thumb styling**: Separate `[&::-webkit-slider-thumb]` and `[&::-moz-range-thumb]` selectors for WebKit and Firefox — required because there's no CSS standard for range thumb styling. Both sets maintain identical sizing and color.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+
+<br/>
+
+## Review
+
+> A thin wrapper that knows when to get out of the browser's way. RangeInput leans on native `<input type="range">` for all the heavy lifting — keyboard nav, ARIA semantics, value tracking — and limits itself to theming the thumb, sizing, and surfacing the current value in a persistent Span. The `onChange(number)` contract is a small but meaningful ergonomic win; consumers think in numbers, not synthetic events. The opacity-0 trick for the empty-value Span is a nice touch that avoids layout shift without conditional rendering.
+>
+> Compared to React Aria's `useSlider`, which builds slider semantics from a generic `div` with explicit ARIA wiring and custom keyboard handling, this component gets the same result for free by staying native. React Aria's approach pays off when you need vertical orientation, multi-thumb, or custom step logic — but for a single horizontal range, it's unnecessary machinery. RangeInput wins on simplicity here.
+>
+> A focused, browser-native slider that does exactly enough and nothing more.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

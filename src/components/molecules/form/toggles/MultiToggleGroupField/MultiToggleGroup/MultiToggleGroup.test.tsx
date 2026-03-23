@@ -16,198 +16,320 @@ expect.extend(toHaveNoViolations)
 const options = getOptions('toggleGroupTest', 5)
 
 describe('MultiToggleGroup', () => {
-  it('default', () => {
-    render(
-      <MultiToggleGroup
-        className="className"
-        name="toggleGroupTest"
-        value={[options[0].value]}
-        options={options}
-        onChange={() => {}}
-      />,
-    )
-    const toggleGroupRole = screen.getByRole('group')
-    const buttonRoles = screen.getAllByRole('button')
+  describe('Semantics', () => {
+    it('renders group wrapper with className and id', () => {
+      render(
+        <MultiToggleGroup
+          className="className"
+          name="toggleGroupTest"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const group = screen.getByRole('group')
 
-    expect(toggleGroupRole).toBeInTheDocument()
-    expect(toggleGroupRole).toHaveClass('className')
-    expect(toggleGroupRole).toHaveClass('flex')
-    expect(toggleGroupRole).toHaveAttribute('id', 'toggleGroupTest')
+      expect(group).toBeInTheDocument()
+      expect(group).toHaveClass('className')
+      expect(group).toHaveClass('flex')
+      expect(group).toHaveAttribute('id', 'toggleGroupTest')
+    })
 
-    expect(buttonRoles).toHaveLength(options.length)
-    expect(buttonRoles[0]).toBeInTheDocument()
-    expect(buttonRoles[0]).toHaveClass('selected')
-    expect(buttonRoles[0]).toHaveTextContent(options[0].label)
-    expect(buttonRoles[3]).toBeInTheDocument()
-    expect(buttonRoles[3]).not.toHaveClass('selected')
-    expect(buttonRoles[3]).toHaveTextContent(options[3].label)
-    buttonRoles[0].focus()
-    expect(document.activeElement).toBe(buttonRoles[0])
+    it('renders correct number of buttons', () => {
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      expect(buttons).toHaveLength(options.length)
+    })
+
+    it('selected buttons have selected class', () => {
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[options[0].value]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      expect(buttons[0]).toHaveClass('selected')
+      expect(buttons[0]).toHaveTextContent(options[0].label)
+      expect(buttons[3]).not.toHaveClass('selected')
+      expect(buttons[3]).toHaveTextContent(options[3].label)
+    })
+
+    it('multiple buttons can be selected simultaneously', () => {
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[options[0].value, options[2].value, options[4].value]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      expect(buttons[0]).toHaveClass('selected')
+      expect(buttons[1]).not.toHaveClass('selected')
+      expect(buttons[2]).toHaveClass('selected')
+      expect(buttons[3]).not.toHaveClass('selected')
+      expect(buttons[4]).toHaveClass('selected')
+    })
+
+    it('renders content instead of label when provided', () => {
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[optionsWithContent[0].value]}
+          options={optionsWithContent}
+          onChange={() => {}}
+        />,
+      )
+      const contentTexts = screen.queryAllByText(textContent.slice(0, 21))
+      const buttons = screen.getAllByRole('button')
+
+      expect(contentTexts).toHaveLength(20)
+      expect(buttons[0]).toHaveTextContent(`very long label1${textContent.slice(0, 21)}`)
+      expect(buttons[3]).toHaveTextContent(`very long label4${textContent.slice(0, 21)}`)
+    })
+
+    it('error applies error class to group wrapper', () => {
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[]}
+          options={options}
+          error="error"
+          onChange={() => {}}
+        />,
+      )
+      const group = screen.getByRole('group')
+
+      expect(group).toHaveClass('error')
+    })
+
+    it('column applies flex-col to group wrapper', () => {
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[]}
+          options={options}
+          column
+          onChange={() => {}}
+        />,
+      )
+      const group = screen.getByRole('group')
+
+      expect(group).toHaveClass('flex-col')
+    })
+
+    it('buttonProps className forwards to buttons', () => {
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[]}
+          options={options}
+          buttonProps={{ className: 'customClass' }}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      expect(buttons[0]).toHaveClass('customClass')
+    })
+
+    it('disabled + error applies both states', () => {
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[]}
+          options={options}
+          disabled
+          error="error"
+          onChange={() => {}}
+        />,
+      )
+      const group = screen.getByRole('group')
+      const buttons = screen.getAllByRole('button')
+
+      expect(group).toHaveClass('error')
+      expect(group).toHaveAttribute('aria-disabled', 'true')
+      expect(buttons[0]).toHaveAttribute('aria-disabled', 'true')
+    })
+
+    it('disabled sets aria-disabled on buttons', () => {
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[]}
+          options={options}
+          disabled
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      expect(buttons[0]).toHaveAttribute('aria-disabled', 'true')
+    })
   })
 
-  it('content', () => {
-    render(
-      <MultiToggleGroup
-        name="toggleGroupTest"
-        value={[optionsWithContent[0].value]}
-        options={optionsWithContent}
-        onChange={() => {}}
-      />,
-    )
-    const contentTexts = screen.queryAllByText(textContent.slice(0, 21))
-    const buttonRoles = screen.getAllByRole('button')
+  describe('Keyboard', () => {
+    it('Tab focuses a button', () => {
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[options[0].value]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
 
-    expect(contentTexts).toHaveLength(20)
-    expect(buttonRoles[0]).toHaveTextContent(`very long label1${textContent.slice(0, 21)}`)
-    expect(buttonRoles[3]).toHaveTextContent(`very long label4${textContent.slice(0, 21)}`)
+      buttons[0].focus()
+      expect(document.activeElement).toBe(buttons[0])
+    })
   })
 
-  it('value', () => {
-    render(
-      <MultiToggleGroup
-        name="toggleGroupTest"
-        value={[options[2].value]}
-        options={options}
-        error="error"
-        onChange={() => {}}
-      />,
-    )
-    const buttonRoles = screen.getAllByRole('button')
+  describe('Interaction', () => {
+    it('click unselected toggle adds to value array', () => {
+      const onChange = jest.fn()
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[options[0].value, options[1].value]}
+          options={options}
+          onChange={onChange}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
 
-    expect(buttonRoles[2]).toHaveClass('selected')
+      fireEvent.click(buttons[2])
+      expect(onChange).toHaveBeenCalledTimes(1)
+      expect(onChange).toHaveBeenCalledWith([options[0].value, options[1].value, options[2].value])
+    })
+
+    it('click selected toggle removes from value array', () => {
+      const onChange = jest.fn()
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[options[0].value, options[1].value]}
+          options={options}
+          onChange={onChange}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      fireEvent.click(buttons[1])
+      expect(onChange).toHaveBeenCalledTimes(1)
+      expect(onChange).toHaveBeenCalledWith([options[0].value])
+    })
+
+    it('click last selected toggle with onClear calls onClear', () => {
+      const onChange = jest.fn()
+      const onClear = jest.fn()
+      render(
+        <MultiToggleGroup
+          name="toggleGroupTest"
+          value={[options[0].value]}
+          options={options}
+          onChange={onChange}
+          onClear={onClear}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      fireEvent.click(buttons[0])
+      expect(onClear).toHaveBeenCalledTimes(1)
+      expect(onChange).not.toHaveBeenCalled()
+    })
   })
 
-  it('error', () => {
-    render(
-      <MultiToggleGroup
-        name="toggleGroupTest"
-        value={['value1']}
-        options={options}
-        error="error"
-        onChange={() => {}}
-      />,
-    )
-    const toggleGroupRole = screen.getByRole('group')
+  describe('Generic values', () => {
+    const objOptions = options.map(o => ({ ...o, value: { key1: o.label, key2: o.value } }))
 
-    expect(toggleGroupRole).toHaveClass('error')
+    it('object values select correct toggles', () => {
+      render(
+        <MultiToggleGroup<{ key1: string; key2: string }>
+          name="toggleGroupTest"
+          value={[objOptions[0].value, objOptions[2].value]}
+          options={objOptions}
+          onChange={() => {}}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      expect(buttons[0]).toHaveAttribute('aria-pressed', 'true')
+      expect(buttons[2]).toHaveAttribute('aria-pressed', 'true')
+      expect(buttons[1]).toHaveAttribute('aria-pressed', 'false')
+    })
+
+    it('click adds object value to array', () => {
+      const onChange = jest.fn()
+      render(
+        <MultiToggleGroup<{ key1: string; key2: string }>
+          name="toggleGroupTest"
+          value={[objOptions[0].value]}
+          options={objOptions}
+          onChange={onChange}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      fireEvent.click(buttons[1])
+      expect(onChange).toHaveBeenCalledWith([objOptions[0].value, objOptions[1].value])
+    })
+
+    it('click removes object value from array', () => {
+      const onChange = jest.fn()
+      render(
+        <MultiToggleGroup<{ key1: string; key2: string }>
+          name="toggleGroupTest"
+          value={[objOptions[0].value, objOptions[1].value]}
+          options={objOptions}
+          onChange={onChange}
+        />,
+      )
+      const buttons = screen.getAllByRole('button')
+
+      fireEvent.click(buttons[0])
+      expect(onChange).toHaveBeenCalledWith([objOptions[1].value])
+    })
   })
 
-  it('column', () => {
-    render(
-      <MultiToggleGroup
-        name="toggleGroupTest"
-        value={[]}
-        options={options}
-        column
-        onChange={() => {}}
-      />,
-    )
-    const toggleGroupRole = screen.getByRole('group')
+  describe('Ref', () => {
+    it('ref returns HTMLDivElement', () => {
+      const ref = createRef<HTMLDivElement>()
+      render(
+        <MultiToggleGroup
+          ref={ref}
+          name="toggleGroupTest"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
 
-    expect(toggleGroupRole).toHaveClass('flex-col')
+      expect(ref.current).toBeInstanceOf(HTMLDivElement)
+    })
   })
 
-  it('buttonProps', () => {
-    render(
-      <MultiToggleGroup
-        name="toggleGroupTest"
-        value={[]}
-        options={options}
-        buttonProps={{ className: 'className' }}
-        onChange={() => {}}
-      />,
-    )
-    const buttonRoles = screen.getAllByRole('button')
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(
+        <MultiToggleGroup name="toggleGroupTest" value={[]} options={options} onChange={() => {}} />,
+      )
 
-    expect(buttonRoles[0]).toHaveClass('className')
-  })
-
-  it('onChange', () => {
-    const spy = jest.fn()
-    render(
-      <MultiToggleGroup
-        name="toggleGroupTest"
-        value={[options[0].value, options[1].value]}
-        options={options}
-        error="error"
-        onChange={spy}
-      />,
-    )
-    const buttonRoles = screen.getAllByRole('button')
-
-    fireEvent.click(buttonRoles[2])
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith([options[0].value, options[1].value, options[2].value])
-
-    fireEvent.click(buttonRoles[1])
-    expect(spy).toHaveBeenCalledTimes(2)
-    expect(spy).toHaveBeenCalledWith([options[0].value])
-  })
-
-  it('onClear', () => {
-    const onChangeSpy = jest.fn()
-    const onClearSpy = jest.fn()
-    render(
-      <MultiToggleGroup
-        name="toggleGroupTest"
-        value={[options[0].value]}
-        options={options}
-        onChange={onChangeSpy}
-        onClear={onClearSpy}
-      />,
-    )
-    const buttonRoles = screen.getAllByRole('button')
-
-    fireEvent.click(buttonRoles[0])
-
-    expect(onClearSpy).toHaveBeenCalledTimes(1)
-    expect(onChangeSpy).not.toHaveBeenCalled()
-  })
-
-  it('disabled', () => {
-    render(
-      <MultiToggleGroup
-        name="toggleGroupTest"
-        value={['value1']}
-        options={options}
-        error="error"
-        onChange={() => {}}
-        disabled
-      />,
-    )
-    const buttonRoles = screen.getAllByRole('button')
-
-    expect(buttonRoles[0]).toHaveAttribute('aria-disabled', 'true')
-  })
-
-  it('ref', () => {
-    const ref = createRef<HTMLDivElement>()
-    render(
-      <MultiToggleGroup
-        ref={ref}
-        name="toggleGroupTest"
-        value={[]}
-        options={options}
-        onChange={() => {}}
-      />,
-    )
-
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
-  })
-
-  it('axe', async () => {
-    const { container } = render(
-      <MultiToggleGroup name="toggleGroupTest" value={[]} options={options} onChange={() => {}} />,
-    )
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

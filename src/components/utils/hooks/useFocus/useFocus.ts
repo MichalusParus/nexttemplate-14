@@ -90,6 +90,7 @@ export const useFocus = (
       portalEl: options?.portalEl,
       value: options?.value,
       triggerNav,
+      rovingTabindex: options?.rovingTabindex,
       onOpen: options?.onOpen ?? dismissModalOnOpen,
     },
   )

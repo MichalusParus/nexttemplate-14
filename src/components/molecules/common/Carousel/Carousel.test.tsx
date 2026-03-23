@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
 import { axe, toHaveNoViolations } from 'jest-axe'
-import { createRef, useState } from 'react'
+import { act, createRef, useState } from 'react'
 
 import { fireEvent, render, screen } from '../../../../../.jest/customRender'
 import { getCarouselItems } from '../../../../../.storybook/helpers'
@@ -18,199 +18,296 @@ const getTestItems = (count: number): CarouselItemType[] => {
 }
 
 describe('Carousel', () => {
-  it('default', () => {
-    render(<Carousel items={getTestItems(3)} className="className" ratio="aspect-video" />)
-    const carouselTestId = screen.getByTestId('Carousel')
-    const panelTestIds = screen.getAllByTestId('panel')
-    const carouselRatioWrapTestId = screen.getByTestId('CarouselRatioWrap')
-    const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
+  describe('Semantics', () => {
+    it('renders carousel container', () => {
+      render(<Carousel items={getTestItems(3)} />)
+      const carousel = screen.getByTestId('Carousel')
 
-    expect(carouselTestId).toBeInTheDocument()
-    expect(carouselTestId).toHaveClass('className')
-    expect(carouselTestId).toHaveAttribute('role', 'region')
-    expect(carouselTestId).toHaveAttribute('aria-roledescription', 'carousel')
-    expect(carouselTestId).toHaveAttribute('aria-label', 'Carousel')
-    expect(carouselRatioWrapTestId).toBeInTheDocument()
-    expect(carouselRatioWrapTestId).toHaveClass('aspect-video')
-    expect(carouselInnerWrapTestId).toBeInTheDocument()
-    expect(carouselInnerWrapTestId).toHaveStyle('width: calc(100% * 3);')
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 0);')
-    expect(panelTestIds).toHaveLength(3)
+      expect(carousel).toBeInTheDocument()
+    })
+
+    it('forwards className', () => {
+      render(<Carousel items={getTestItems(3)} className="className" />)
+      const carousel = screen.getByTestId('Carousel')
+
+      expect(carousel).toHaveClass('className')
+    })
+
+    it('role region with carousel roledescription', () => {
+      render(<Carousel items={getTestItems(3)} />)
+      const carousel = screen.getByTestId('Carousel')
+
+      expect(carousel).toHaveAttribute('role', 'region')
+      expect(carousel).toHaveAttribute('aria-roledescription', 'carousel')
+    })
+
+    it('default aria-label', () => {
+      render(<Carousel items={getTestItems(3)} />)
+      const carousel = screen.getByTestId('Carousel')
+
+      expect(carousel).toHaveAttribute('aria-label', 'Carousel')
+    })
+
+    it('custom aria-label', () => {
+      render(<Carousel items={getTestItems(3)} label="New Carousel" />)
+      const carousel = screen.getByTestId('Carousel')
+
+      expect(carousel).toHaveAttribute('aria-label', 'New Carousel')
+    })
+
+    it('ratio class on wrapper', () => {
+      render(<Carousel items={getTestItems(3)} ratio="aspect-video" />)
+      const ratioWrap = screen.getByTestId('CarouselRatioWrap')
+
+      expect(ratioWrap).toHaveClass('aspect-video')
+    })
+
+    it('inner wrap width and margin-left', () => {
+      render(<Carousel items={getTestItems(3)} />)
+      const innerWrap = screen.getByTestId('CarouselInnerWrap')
+
+      expect(innerWrap).toHaveStyle('width: calc(100% * 3);')
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 0);')
+    })
+
+    it('renders item panels', () => {
+      render(<Carousel items={getTestItems(3)} />)
+      const panels = screen.getAllByTestId('panel')
+
+      expect(panels).toHaveLength(3)
+    })
+
+    it('children API with pagesCount', () => {
+      render(
+        <Carousel pagesCount={3} className="className" ratio="aspect-video">
+          <CarouselItem>
+            <div className="h-full w-full" data-testid="panel-child" />
+          </CarouselItem>
+          <CarouselItem>
+            <div className="h-full w-full" data-testid="panel-child" />
+          </CarouselItem>
+          <CarouselItem>
+            <div className="h-full w-full" data-testid="panel-child" />
+          </CarouselItem>
+        </Carousel>,
+      )
+      const carousel = screen.getByTestId('Carousel')
+      const panels = screen.getAllByTestId('panel-child')
+      const innerWrap = screen.getByTestId('CarouselInnerWrap')
+
+      expect(carousel).toBeInTheDocument()
+      expect(carousel).toHaveClass('className')
+      expect(innerWrap).toHaveStyle('width: calc(100% * 3);')
+      expect(panels).toHaveLength(3)
+    })
+
+    it('empty state with noItemsLabel', () => {
+      const label = 'No content available'
+      render(<Carousel noItemsLabel={label} />)
+      const emptyMessage = screen.getByText(label)
+      const carouselItem = screen.getByTestId('CarouselItem')
+
+      expect(emptyMessage).toBeInTheDocument()
+      expect(carouselItem).toHaveAttribute('aria-label', label)
+      expect(carouselItem).toHaveAttribute('aria-current', 'true')
+    })
+
+    it('hides arrows and dots', () => {
+      render(<Carousel items={getTestItems(3)} hideArrows hideControlDots />)
+      const previousButton = screen.queryByTestId('PreviousButton')
+      const nextButton = screen.queryByTestId('NextButton')
+      const autoplayButton = screen.queryByTestId('AutoplayButton')
+      const dotWrap = screen.queryByTestId('DotWrap')
+
+      expect(previousButton).toBeNull()
+      expect(nextButton).toBeNull()
+      expect(autoplayButton).toBeNull()
+      expect(dotWrap).toBeNull()
+    })
   })
 
-  it('nextPage', () => {
-    render(<Carousel items={getTestItems(3)} />)
-    const nextButtonTestId = screen.getByTestId('NextButton')
-    const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
+  describe('Interaction', () => {
+    it('next page advances margin-left', () => {
+      render(<Carousel items={getTestItems(3)} />)
+      const nextButton = screen.getByTestId('NextButton')
+      const innerWrap = screen.getByTestId('CarouselInnerWrap')
 
-    fireEvent.click(nextButtonTestId)
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 1);')
-  })
+      fireEvent.click(nextButton)
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 1);')
+    })
 
-  it('previousPage', () => {
-    render(<Carousel items={getTestItems(3)} />)
-    const previousButtonTestId = screen.getByTestId('PreviousButton')
-    const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
+    it('previous page wraps to last', () => {
+      render(<Carousel items={getTestItems(3)} />)
+      const previousButton = screen.getByTestId('PreviousButton')
+      const innerWrap = screen.getByTestId('CarouselInnerWrap')
 
-    fireEvent.click(previousButtonTestId)
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 3);')
-  })
+      fireEvent.click(previousButton)
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 2);')
+    })
 
-  it('swipe', () => {
-    render(<Carousel items={getTestItems(3)} />)
+    it('swipe forward and backward', () => {
+      render(<Carousel items={getTestItems(3)} />)
+      const innerWrap = screen.getByTestId('CarouselInnerWrap')
 
-    const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 0);')
 
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 0);')
+      fireEvent.touchStart(innerWrap, { touches: [{ clientX: 100, clientY: 0 }] })
+      fireEvent.touchEnd(innerWrap, { changedTouches: [{ clientX: 50, clientY: 0 }] })
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 1);')
 
-    fireEvent.touchStart(carouselInnerWrapTestId, { touches: [{ clientX: 100 }] })
-    fireEvent.touchEnd(carouselInnerWrapTestId, { changedTouches: [{ clientX: 50 }] })
+      fireEvent.touchStart(innerWrap, { touches: [{ clientX: 50, clientY: 0 }] })
+      fireEvent.touchEnd(innerWrap, { changedTouches: [{ clientX: 100, clientY: 0 }] })
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 0);')
+    })
 
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 1);')
+    it('autoplay toggle and auto-pause on click', () => {
+      render(<Carousel items={getTestItems(3)} autoplay="on" />)
+      const previousButton = screen.queryByTestId('PreviousButton')
+      const nextButton = screen.getByTestId('NextButton')
+      const autoplayButton = screen.getByTestId('AutoplayButton')
+      const dotWrap = screen.queryByTestId('DotWrap')
 
-    fireEvent.touchStart(carouselInnerWrapTestId, { touches: [{ clientX: 50 }] })
-    fireEvent.touchEnd(carouselInnerWrapTestId, { changedTouches: [{ clientX: 100 }] })
+      expect(previousButton).toBeInTheDocument()
+      expect(previousButton).toHaveAttribute('aria-label', 'previous page 3')
+      expect(nextButton).toBeInTheDocument()
+      expect(nextButton).toHaveAttribute('aria-label', 'next page 2')
+      expect(autoplayButton).toBeInTheDocument()
+      expect(dotWrap).toBeInTheDocument()
+      expect(screen.queryByTestId('PlayIcon')).toBeNull()
+      expect(screen.queryByTestId('PauseIcon')).toBeInTheDocument()
+      expect(autoplayButton).toHaveAttribute('aria-label', 'Pause')
 
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 0);')
-  })
+      fireEvent.click(autoplayButton)
+      expect(autoplayButton).toHaveAttribute('aria-label', 'Play')
+      expect(screen.queryByTestId('PauseIcon')).toBeNull()
+      expect(screen.queryByTestId('PlayIcon')).toBeInTheDocument()
 
-  it('label', () => {
-    render(<Carousel items={getTestItems(3)} label="New Carousel" />)
-    const carouselTestId = screen.getByTestId('Carousel')
+      fireEvent.click(autoplayButton)
+      expect(screen.queryByTestId('PlayIcon')).toBeNull()
+      expect(screen.queryByTestId('PauseIcon')).toBeInTheDocument()
 
-    expect(carouselTestId).toHaveAttribute('aria-label', 'New Carousel')
-  })
+      fireEvent.click(nextButton)
+      expect(autoplayButton).toHaveAttribute('aria-label', 'Play')
+      expect(screen.queryByTestId('PauseIcon')).toBeNull()
+      expect(screen.queryByTestId('PlayIcon')).toBeInTheDocument()
+    })
 
-  it('autoplay', () => {
-    render(<Carousel items={getTestItems(3)} autoplay="on" />)
-    const previousTestId = screen.queryByTestId('PreviousButton')
-    const nextTestId = screen.getByTestId('NextButton')
-    const autoplayTestId = screen.getByTestId('AutoplayButton')
-    const dottsTestId = screen.queryByTestId('DottWrap')
-    const playIconQuery = screen.queryByTestId('PlayIcon')
-    const pauseIconQuery = screen.queryByTestId('PauseIcon')
+    it('vertical swipe does not change page', () => {
+      render(<Carousel items={getTestItems(3)} />)
+      const innerWrap = screen.getByTestId('CarouselInnerWrap')
 
-    expect(previousTestId).toBeInTheDocument()
-    expect(previousTestId).toHaveAttribute('aria-label', 'previous page 3')
-    expect(nextTestId).toBeInTheDocument()
-    expect(nextTestId).toHaveAttribute('aria-label', 'next page 2')
-    expect(autoplayTestId).toBeInTheDocument()
-    expect(dottsTestId).toBeInTheDocument()
-    expect(playIconQuery).toBeNull()
-    expect(pauseIconQuery).toBeInTheDocument()
-    expect(autoplayTestId).toHaveAttribute('aria-label', 'Pause')
+      fireEvent.touchStart(innerWrap, { touches: [{ clientX: 100, clientY: 0 }] })
+      fireEvent.touchEnd(innerWrap, { changedTouches: [{ clientX: 60, clientY: 100 }] })
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 0);')
+    })
 
-    fireEvent.click(autoplayTestId)
-    const playIconQuery1 = screen.queryByTestId('PlayIcon')
-    const pauseIconQuery1 = screen.queryByTestId('PauseIcon')
-    expect(autoplayTestId).toHaveAttribute('aria-label', 'Play')
-    expect(pauseIconQuery1).toBeNull()
-    expect(playIconQuery1).toBeInTheDocument()
+    it('inactive slides have aria-hidden and inert', () => {
+      render(<Carousel items={getTestItems(3)} />)
+      const items = screen.getAllByTestId('CarouselItem')
 
-    fireEvent.click(autoplayTestId)
-    const playIconQuery2 = screen.queryByTestId('PlayIcon')
-    const pauseIconQuery2 = screen.queryByTestId('PauseIcon')
-    expect(playIconQuery2).toBeNull()
-    expect(pauseIconQuery2).toBeInTheDocument()
+      expect(items[0]).not.toHaveAttribute('aria-hidden')
+      expect(items[1]).toHaveAttribute('aria-hidden', 'true')
+      expect(items[2]).toHaveAttribute('aria-hidden', 'true')
+    })
 
-    fireEvent.click(nextTestId)
-    const playIconQuery3 = screen.queryByTestId('PlayIcon')
-    const pauseIconQuery3 = screen.queryByTestId('PauseIcon')
-    expect(autoplayTestId).toHaveAttribute('aria-label', 'Play')
-    expect(pauseIconQuery3).toBeNull()
-    expect(playIconQuery3).toBeInTheDocument()
-  })
+    it('onPageChange fires in uncontrolled mode', () => {
+      const spy = jest.fn()
+      render(<Carousel items={getTestItems(3)} onPageChange={spy} />)
+      const nextButton = screen.getByTestId('NextButton')
 
-  it('hide', () => {
-    render(<Carousel items={getTestItems(3)} hideArrows hideControlDotts />)
-    const previousTestId = screen.queryByTestId('PreviousButton')
-    const nextTestId = screen.queryByTestId('NextButton')
-    const autoplayTestId = screen.queryByTestId('AutoplayButton')
-    const dottsTestId = screen.queryByTestId('DottWrap')
+      fireEvent.click(nextButton)
+      expect(spy).toHaveBeenCalledWith(2)
+    })
 
-    expect(previousTestId).toBeNull()
-    expect(nextTestId).toBeNull()
-    expect(autoplayTestId).toBeNull()
-    expect(dottsTestId).toBeNull()
-  })
-
-  it('controled', () => {
-    const ControlledCarousel = () => {
-      const [currentPage, setCurrentPage] = useState(1)
-      return (
+    it('onPageChange fires alongside setCurrentPage in controlled mode', () => {
+      const onPageChange = jest.fn()
+      const setCurrentPage = jest.fn()
+      render(
         <Carousel
           items={getTestItems(3)}
-          currentPage={currentPage}
+          currentPage={1}
           setCurrentPage={setCurrentPage}
-        />
+          onPageChange={onPageChange}
+        />,
       )
-    }
-    render(<ControlledCarousel />)
-    const previousTestId = screen.getByTestId('PreviousButton')
-    const nextTestId = screen.getByTestId('NextButton')
-    const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
+      const nextButton = screen.getByTestId('NextButton')
 
-    expect(carouselInnerWrapTestId).toHaveStyle('width: calc(100% * 3);')
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 0);')
-    fireEvent.click(nextTestId)
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 1);')
-    fireEvent.click(previousTestId)
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 0);')
+      fireEvent.click(nextButton)
+      expect(setCurrentPage).toHaveBeenCalledWith(2)
+      expect(onPageChange).toHaveBeenCalledWith(2)
+    })
+
+    it('controlled mode', () => {
+      const ControlledCarousel = () => {
+        const [currentPage, setCurrentPage] = useState(1)
+        return (
+          <Carousel
+            items={getTestItems(3)}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        )
+      }
+      render(<ControlledCarousel />)
+      const previousButton = screen.getByTestId('PreviousButton')
+      const nextButton = screen.getByTestId('NextButton')
+      const innerWrap = screen.getByTestId('CarouselInnerWrap')
+
+      expect(innerWrap).toHaveStyle('width: calc(100% * 3);')
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 0);')
+      fireEvent.click(nextButton)
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 1);')
+      fireEvent.click(previousButton)
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 0);')
+    })
+
+    it('single-item carousel hides arrows and dots', () => {
+      render(<Carousel items={getTestItems(1)} />)
+      const previousButton = screen.queryByTestId('PreviousButton')
+      const nextButton = screen.queryByTestId('NextButton')
+      const dotWrap = screen.queryByTestId('DotWrap')
+
+      expect(previousButton).toBeNull()
+      expect(nextButton).toBeNull()
+      expect(dotWrap).toBeNull()
+    })
+
+    it('autoplay timer advances page', () => {
+      jest.useFakeTimers()
+      render(<Carousel items={getTestItems(3)} autoplay="on" />)
+      const innerWrap = screen.getByTestId('CarouselInnerWrap')
+
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 0);')
+
+      act(() => {
+        jest.advanceTimersByTime(3000)
+      })
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 1);')
+
+      act(() => {
+        jest.advanceTimersByTime(3000)
+      })
+      expect(innerWrap).toHaveStyle('margin-left: calc(-100% * 2);')
+
+      jest.useRealTimers()
+    })
   })
 
-  it('noItemsLabel', () => {
-    const label = 'No content available'
-    render(<Carousel noItemsLabel={label} />)
-    const emptyMessage = screen.getByText(label)
-    const carouselItemTestId = screen.getByTestId('CarouselItem')
+  describe('Ref', () => {
+    it('exposes HTMLDivElement', () => {
+      const ref = createRef<HTMLDivElement>()
+      render(<Carousel ref={ref} items={getTestItems(3)} />)
 
-    expect(emptyMessage).toBeInTheDocument()
-    expect(carouselItemTestId).toHaveAttribute('aria-label', label)
-    expect(carouselItemTestId).toHaveAttribute('aria-current', 'true')
+      expect(ref.current).toBeInstanceOf(HTMLDivElement)
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLDivElement>()
-    render(<Carousel ref={ref} items={getTestItems(3)} />)
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<Carousel items={getTestItems(3)} />)
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
-  })
-
-  it('withChildren', () => {
-    render(
-      <Carousel pagesCount={3} className="className" ratio="aspect-video">
-        <CarouselItem>
-          <div className="h-full w-full" data-testid="panel-child" />
-        </CarouselItem>
-        <CarouselItem>
-          <div className="h-full w-full" data-testid="panel-child" />
-        </CarouselItem>
-        <CarouselItem>
-          <div className="h-full w-full" data-testid="panel-child" />
-        </CarouselItem>
-      </Carousel>,
-    )
-    const carouselTestId = screen.getByTestId('Carousel')
-    const panelTestIds = screen.getAllByTestId('panel-child')
-    const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
-
-    expect(carouselTestId).toBeInTheDocument()
-    expect(carouselTestId).toHaveClass('className')
-    expect(carouselInnerWrapTestId).toHaveStyle('width: calc(100% * 3);')
-    expect(panelTestIds).toHaveLength(3)
-  })
-
-  it('axe', async () => {
-    const { container } = render(<Carousel items={getTestItems(3)} />)
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

@@ -102,7 +102,7 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
               currentPage={currentPage}
               ratio={isOpen ? 'aspect-video' : ratio}
               autoplay="paused"
-              hideControlDotts
+              hideControlDots
               setCurrentPage={setCurrentPage}
               customControls={
                 <GalleryControls

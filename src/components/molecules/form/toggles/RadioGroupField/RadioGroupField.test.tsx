@@ -41,107 +41,136 @@ const FieldWithHooks = (props: any) => {
 }
 
 describe('RadioGroupField', () => {
-  it('default', () => {
-    render(<FieldWithHooks />)
-    const fieldsetRole = screen.getByRole('group')
-    const inputRoles = screen.getAllByRole('radio')
-    const fakeLabelTestId = screen.getByTestId('FakeLabel')
-    const labelTestIds = screen.getAllByTestId('Label')
+  describe('Semantics', () => {
+    it('renders RadioGroup with Label', () => {
+      render(<FieldWithHooks />)
 
-    expect(fieldsetRole).toBeInTheDocument()
-    expect(fieldsetRole).toHaveClass('className')
-    expect(fieldsetRole).toHaveAttribute('id', 'fieldTest')
-    expect(fieldsetRole).toHaveAttribute('aria-invalid', 'false')
-    expect(fakeLabelTestId).toBeInTheDocument()
-    expect(fakeLabelTestId).toHaveTextContent('Label')
-    expect(fakeLabelTestId.tagName).toBe('LEGEND')
-    expect(inputRoles[0]).toHaveAttribute('id', options[0].value)
-    expect(inputRoles[0]).toHaveAttribute('name', 'fieldTest')
-    expect(inputRoles[0]).toHaveAttribute('type', 'radio')
-    expect(inputRoles[0]).toHaveAttribute('value', options[0].value)
-    expect(inputRoles[0]).not.toHaveAttribute('aria-describedby')
-    expect(labelTestIds[0]).toBeInTheDocument()
-    expect(labelTestIds[0]).toHaveTextContent(options[0].label)
-    expect(labelTestIds[0]).toHaveAttribute('for', options[0].value)
-    expect(labelTestIds[0]).toHaveAttribute('id', `${options[0].value}-label`)
-  })
-
-  it('error', async () => {
-    render(<FieldWithHooks />)
-    const fieldsetRole = screen.getByRole('group')
-    const alertRole = screen.getByTestId('Alert')
-
-    await act(async () => {
-      fireEvent.submit(screen.getByTestId('submitButton'))
+      expect(screen.getByRole('group')).toBeInTheDocument()
+      expect(screen.getAllByRole('radio')).toHaveLength(5)
     })
 
-    await waitFor(() => {
-      expect(alertRole).toBeInTheDocument()
-      expect(alertRole).toHaveTextContent('select one')
-      expect(alertRole).toHaveAttribute('role', 'alert')
-      expect(fieldsetRole).toHaveAttribute('aria-describedby', 'fieldTest-description')
-      expect(fieldsetRole).toHaveAttribute('aria-invalid', 'true')
+    it('forwards className', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('group')).toHaveClass('className')
+    })
+
+    it('id from name prop', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('group')).toHaveAttribute('id', 'fieldTest')
+    })
+
+    it('legend renders as label', () => {
+      render(<FieldWithHooks />)
+      const fakeLabel = screen.getByTestId('FakeLabel')
+
+      expect(fakeLabel).toHaveTextContent('Label')
+      expect(fakeLabel.tagName).toBe('LEGEND')
+    })
+
+    it('radio attributes', () => {
+      render(<FieldWithHooks />)
+      const radios = screen.getAllByRole('radio')
+      const labels = screen.getAllByTestId('Label')
+
+      expect(radios[0]).toHaveAttribute('id', 'fieldTest-0')
+      expect(radios[0]).toHaveAttribute('name', 'fieldTest')
+      expect(radios[0]).toHaveAttribute('type', 'radio')
+      expect(radios[0]).toHaveAttribute('value', '0')
+      expect(radios[0]).not.toHaveAttribute('aria-describedby')
+      expect(labels[0]).toHaveTextContent(options[0].label)
+      expect(labels[0]).toHaveAttribute('for', 'fieldTest-0')
+      expect(labels[0]).toHaveAttribute('id', 'fieldTest-0-label')
+    })
+
+    it('aria-labelledby points to label', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('group')).toHaveAttribute('aria-labelledby', 'fieldTest-label')
+    })
+
+    it('aria-invalid false when no error', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('group')).toHaveAttribute('aria-invalid', 'false')
+    })
+
+    it('description in aria-describedby', () => {
+      render(<FieldWithHooks labelProps={{ description: 'description' }} />)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toHaveTextContent('description')
+    })
+
+    it('labelProps forwarded', () => {
+      render(<FieldWithHooks labelProps={{ className: 'className' }} />)
+
+      expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
     })
   })
 
-  it('value', async () => {
-    render(<FieldWithHooks />)
-    const inputRoles = screen.getAllByRole('radio')
+  describe('Interaction', () => {
+    it('value change on click', async () => {
+      render(<FieldWithHooks />)
+      const radios = screen.getAllByRole('radio')
 
-    expect(inputRoles[0]).toHaveAttribute('value', options[0].value)
+      expect(radios[0]).toHaveAttribute('value', '0')
 
-    await act(async () => {
-      fireEvent.click(inputRoles[0])
+      await act(async () => {
+        fireEvent.click(radios[0])
+      })
+
+      expect(radios[0]).toHaveAttribute('value', '0')
     })
 
-    expect(inputRoles[0]).toHaveAttribute('value', undefined)
-  })
+    it('onChange fires with value', async () => {
+      const onChange = jest.fn()
+      render(<FieldWithHooks onChange={onChange} />)
 
-  it('description', () => {
-    render(<FieldWithHooks labelProps={{ description: 'description' }} />)
-    const alertTestId = screen.getByTestId('Alert')
+      await act(async () => {
+        fireEvent.click(screen.getAllByRole('radio')[1])
+      })
 
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveTextContent('description')
-  })
-
-  it('onChange', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks onChange={spy} />)
-    const inputRoles = screen.getAllByRole('radio')
-
-    await act(async () => {
-      fireEvent.click(inputRoles[1])
+      expect(onChange).toHaveBeenCalledWith(options[1].value)
     })
 
-    expect(spy).toHaveBeenCalled()
-    expect(spy).toHaveBeenCalledWith(options[1].value)
-  })
+    it('error shown on invalid submit', async () => {
+      render(<FieldWithHooks />)
+      const group = screen.getByRole('group')
+      const alert = screen.getByTestId('Alert')
 
-  it('labelProps', () => {
-    render(<FieldWithHooks labelProps={{ className: 'className' }} />)
-    const labelWrapTestId = screen.getByTestId('LabelWrap')
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('submitButton'))
+      })
 
-    expect(labelWrapTestId).toHaveClass('className')
-  })
-
-  it('onSubmit', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks />)
-    screen.getByTestId('Form').onsubmit = spy
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('submitButton'))
+      await waitFor(() => {
+        expect(alert).toHaveTextContent('select one')
+        expect(alert).toHaveAttribute('role', 'alert')
+        expect(group).toHaveAttribute('aria-describedby', 'fieldTest-description')
+        expect(group).toHaveAttribute('aria-invalid', 'true')
+      })
     })
 
-    // TODO beenCalledWith, spy return native event and not values
-    expect(spy).toHaveBeenCalled()
+    it('form submit works', async () => {
+      const onSubmit = jest.fn()
+      render(<FieldWithHooks />)
+      screen.getByTestId('Form').onsubmit = onSubmit
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submitButton'))
+      })
+
+      expect(onSubmit).toHaveBeenCalled()
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(<FieldWithHooks />)
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<FieldWithHooks />)
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

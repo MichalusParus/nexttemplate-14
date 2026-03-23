@@ -15,11 +15,11 @@ expect.extend(toHaveNoViolations)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const FieldWithHooks = (props: any) => {
   const formSchema = z.object({
-    fieldTest: z.string().min(3, 'min 3 characters'),
+    fieldTest: z.boolean().refine(v => v, 'required'),
   })
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { fieldTest: 'fieldTest' },
+    defaultValues: { fieldTest: true },
   })
   return (
     <Form name="testForm" form={form} onSubmit={() => {}}>
@@ -32,68 +32,96 @@ const FieldWithHooks = (props: any) => {
 }
 
 describe('CheckboxField', () => {
-  it('default', () => {
-    render(<FieldWithHooks />)
-    const fieldWrapTestId = screen.getByTestId('CheckboxWrap')
-    const inputRole = screen.getByRole('checkbox')
-    const labelTestId = screen.getByTestId('Label')
+  describe('Semantics', () => {
+    it('renders Checkbox with inline label', () => {
+      render(<FieldWithHooks />)
 
-    expect(fieldWrapTestId).toBeInTheDocument()
-    expect(fieldWrapTestId).toHaveClass('className')
-    expect(inputRole).toHaveAttribute('id', 'fieldTest')
-    expect(inputRole).toHaveAttribute('name', 'fieldTest')
-    expect(inputRole).toHaveAttribute('type', 'checkbox')
-    expect(inputRole).toHaveAttribute('value', 'fieldTest')
-    expect(inputRole).toHaveAttribute('aria-invalid', 'false')
-    expect(inputRole).not.toHaveAttribute('aria-describedby')
-    expect(labelTestId).toBeInTheDocument()
-    expect(labelTestId).toHaveTextContent('Label')
-    expect(labelTestId).toHaveAttribute('for', 'fieldTest')
-    expect(labelTestId).toHaveAttribute('id', 'fieldTest-label')
-  })
-
-  it('value', async () => {
-    render(<FieldWithHooks />)
-    const inputRole = screen.getByRole('checkbox')
-
-    expect(inputRole).toHaveAttribute('value', 'fieldTest')
-
-    await act(async () => {
-      fireEvent.click(inputRole)
+      expect(screen.getByTestId('CheckboxWrap')).toBeInTheDocument()
+      expect(screen.getByRole('checkbox')).toBeInTheDocument()
     })
 
-    expect(inputRole).toHaveAttribute('value', '')
-  })
+    it('forwards className', () => {
+      render(<FieldWithHooks />)
 
-  it('onChange', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks onChange={spy} />)
-    const inputRole = screen.getByRole('checkbox')
-
-    await act(async () => {
-      fireEvent.click(inputRole)
+      expect(screen.getByTestId('CheckboxWrap')).toHaveClass('className')
     })
 
-    expect(spy).toHaveBeenCalled()
-    expect(spy).toHaveBeenCalledWith('')
-  })
+    it('id and name from name prop', () => {
+      render(<FieldWithHooks />)
+      const input = screen.getByRole('checkbox')
 
-  it('onSubmit', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks />)
-    screen.getByTestId('Form').onsubmit = spy
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('submitButton'))
+      expect(input).toHaveAttribute('id', 'fieldTest')
+      expect(input).toHaveAttribute('name', 'fieldTest')
+      expect(input).toHaveAttribute('type', 'checkbox')
     })
-    // TODO beenCalledWith, spy return native event and not values
-    expect(spy).toHaveBeenCalled()
+
+    it('label text with for attribute', () => {
+      render(<FieldWithHooks />)
+      const label = screen.getByTestId('Label')
+
+      expect(label).toBeInTheDocument()
+      expect(label).toHaveTextContent('Label')
+      expect(label).toHaveAttribute('for', 'fieldTest')
+      expect(label).toHaveAttribute('id', 'fieldTest-label')
+    })
+
+    it('aria-invalid false when no error', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('checkbox')).toHaveAttribute('aria-invalid', 'false')
+    })
+
+    it('no aria-describedby', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByRole('checkbox')).not.toHaveAttribute('aria-describedby')
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(<FieldWithHooks />)
+  describe('Interaction', () => {
+    it('value toggle', async () => {
+      render(<FieldWithHooks />)
+      const input = screen.getByRole('checkbox')
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      expect(input).toBeChecked()
+
+      await act(async () => {
+        fireEvent.click(input)
+      })
+
+      expect(input).not.toBeChecked()
+    })
+
+    it('onChange fires with value', async () => {
+      const onChange = jest.fn()
+      render(<FieldWithHooks onChange={onChange} />)
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('checkbox'))
+      })
+
+      expect(onChange).toHaveBeenCalledWith('')
+    })
+
+    it('form submit works', async () => {
+      const onSubmit = jest.fn()
+      render(<FieldWithHooks />)
+      screen.getByTestId('Form').onsubmit = onSubmit
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submitButton'))
+      })
+
+      expect(onSubmit).toHaveBeenCalled()
+    })
+  })
+
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<FieldWithHooks />)
+
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

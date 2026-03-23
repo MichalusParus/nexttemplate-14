@@ -4,16 +4,21 @@ import { PropsWithChildren, useRef, useState } from 'react'
 import { Button } from '@/components/atoms/common/Button'
 import { cn } from '@/utils/utils'
 
-import { menuButtonOptions } from '../../../../../.storybook/helpers'
-import { MenuList } from '../Menu/MenuList'
 import { Drawer, DrawerProps } from './Drawer'
 
-const scrollMenuOptions = [
-  ...menuButtonOptions,
-  ...menuButtonOptions,
-  ...menuButtonOptions,
-  ...menuButtonOptions,
-  ...menuButtonOptions,
+const drawerItems = ['Dashboard', 'Settings', 'Profile', 'Messages', 'Help']
+const scrollDrawerItems = [
+  ...drawerItems,
+  'Analytics',
+  'Reports',
+  'Notifications',
+  'Billing',
+  'Security',
+  'Integrations',
+  'Team',
+  'API Keys',
+  'Logs',
+  'Support',
 ]
 
 const meta: Meta<typeof Drawer> = {
@@ -58,12 +63,20 @@ const DrawerWithHooks = (args: PropsWithChildren<DrawerProps>) => {
         Drawer button
       </Button>
       <Drawer {...args} isOpen={isOpen} anchorRef={anchorRef} onClose={() => setIsOpen(false)}>
-        <MenuList
-          name="drawerStory"
-          options={args.className === 'scroll' ? scrollMenuOptions : menuButtonOptions}
-          variant={args.variant}
-          color={args.color}
-        />
+        <nav className="flex flex-col">
+          {(args.className === 'scroll' ? scrollDrawerItems : drawerItems).map(item => (
+            <Button
+              key={item}
+              className="w-full justify-start rounded-none border-transparent dark:border-transparent"
+              variant={args.variant}
+              color={args.color}
+              hideShadow
+              onClick={() => console.log(item)}
+            >
+              {item}
+            </Button>
+          ))}
+        </nav>
       </Drawer>
     </div>
   )

@@ -9,7 +9,7 @@ import { FieldProps } from '@/components/utils/types'
 import { FormStyleContext } from '../../forms/Form/Form'
 import { PasswordInput, PasswordInputProps } from './PasswordInput/PasswordInput'
 
-export type InputFieldProps = Omit<PasswordInputProps, 'value' | 'error' | 'onChange'> &
+export type PasswordFieldProps = Omit<PasswordInputProps, 'value' | 'error' | 'onChange'> &
   Partial<Pick<PasswordInputProps, 'onChange'>> &
   FieldProps
 
@@ -24,7 +24,7 @@ export const PasswordField = ({
   labelProps = {},
   onChange,
   ...rest
-}: InputFieldProps) => {
+}: PasswordFieldProps) => {
   const {
     control,
     formState: { errors },

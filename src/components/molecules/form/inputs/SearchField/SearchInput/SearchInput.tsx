@@ -5,21 +5,14 @@ import { forwardRef, useImperativeHandle, useRef } from 'react'
 import { Button } from '@/components/atoms/common/Button'
 import { SearchIcon, XIcon } from '@/components/atoms/icons'
 import { childrenIconSize } from '@/components/utils/common.style'
-import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { TextInput } from '../../TextField/TextInput'
+import { TextInput, TextInputProps } from '../../TextField/TextInput'
 
-export type SearchInputProps = NativeInputProps &
-  InputProps &
-  StyleProps & {
-    /** value of input */
-    value?: string
-    /** onChange function */
-    onChange: (value: string) => void
-    /** Optional callback when clear button is clicked */
-    onClear?: () => void
-  }
+export type SearchInputProps = Omit<TextInputProps, 'type' | 'startIcon' | 'endIcon'> & {
+  /** Optional callback when clear button is clicked */
+  onClear?: () => void
+}
 
 /** Basic styled uncontroled SearchInput. For form purposes use SearchField. Native InputHTMLAttributes props supported. USE CLIENT */
 export const SearchInput = forwardRef<HTMLInputElement | null, SearchInputProps>(

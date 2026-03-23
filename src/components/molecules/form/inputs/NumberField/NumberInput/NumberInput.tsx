@@ -1,35 +1,27 @@
 'use client'
-import { forwardRef, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
 
-import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
-
-import { TextInput } from '../../TextField/TextInput'
+import { TextInput, TextInputProps } from '../../TextField/TextInput'
 import { cleanValue, formatValue, getSeparators, validateValue } from './utils'
 
-export type NumberInputProps = Omit<NativeInputProps, 'min' | 'max'> &
-  InputProps &
-  StyleProps & {
-    /** value of input */
-    value?: number
-    /** boolean for negative values */
-    allowNegative?: boolean
-    /** number of decimal places, zero by default */
-    allowDecimal?: number
-    /** format type for number input */
-    formatOptions?: Intl.NumberFormatOptions
-    /** optional locale format */
-    locale?: Intl.LocalesArgument
-    /** minimal value of input */
-    min?: number
-    /** maximal value of input */
-    max?: number
-    /** pass svg icon before input value */
-    startIcon?: ReactNode
-    /** pass svg icon after input value */
-    endIcon?: ReactNode
-    /** onChange function */
-    onChange: (value?: number) => void
-  }
+export type NumberInputProps = Omit<TextInputProps, 'type' | 'value' | 'onChange' | 'min' | 'max'> & {
+  /** value of input */
+  value?: number
+  /** boolean for negative values */
+  allowNegative?: boolean
+  /** number of decimal places, default 2 */
+  decimalPlaces?: number
+  /** format type for number input */
+  formatOptions?: Intl.NumberFormatOptions
+  /** optional locale format */
+  locale?: Intl.LocalesArgument
+  /** minimal value of input */
+  min?: number
+  /** maximal value of input */
+  max?: number
+  /** onChange function */
+  onChange: (value?: number) => void
+}
 
 /** Styled uncontroled NumberInput with value formatting. For form purposes use NumberField. Alternatively TextInput with type number can be used for nativish number input. Native InputHTMLAttributes and Label props supported. USE CLIENT */
 export const NumberInput = forwardRef<HTMLInputElement | null, NumberInputProps>(
@@ -37,7 +29,7 @@ export const NumberInput = forwardRef<HTMLInputElement | null, NumberInputProps>
     {
       value,
       allowNegative,
-      allowDecimal = 2,
+      decimalPlaces = 2,
       formatOptions,
       locale,
       min,
@@ -60,7 +52,7 @@ export const NumberInput = forwardRef<HTMLInputElement | null, NumberInputProps>
         const validatedValue = validateValue(
           cleanValue(
             internalValue,
-            allowDecimal,
+            decimalPlaces,
             !!allowNegative,
             groupSeparator,
             decimalSeparator,
@@ -80,8 +72,12 @@ export const NumberInput = forwardRef<HTMLInputElement | null, NumberInputProps>
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       isFocusedRef.current = false
       rest.onBlur?.(e)
-      if (value || value === 0) {
-        setInternalValue(formatValue(value, allowDecimal, formatOptions, locale))
+      if (value !== undefined) {
+        const clampedValue = validateValue(String(value), allowNegative, min, max)
+        if (clampedValue !== null && clampedValue !== value) {
+          onChange(clampedValue)
+        }
+        setInternalValue(formatValue(clampedValue ?? value, decimalPlaces, formatOptions, locale))
       } else {
         setInternalValue('')
       }
@@ -95,27 +91,28 @@ export const NumberInput = forwardRef<HTMLInputElement | null, NumberInputProps>
       }
       const cleanedValue = cleanValue(
         inputValue,
-        allowDecimal,
+        decimalPlaces,
         !!allowNegative,
         groupSeparator,
         decimalSeparator,
       )
       if (cleanedValue === null) return
       setInternalValue(inputValue)
-      const parsedValue = validateValue(cleanedValue, allowNegative, min, max)
-      if (parsedValue === null) return
-      onChange(parsedValue)
+      const numberValue = Number(cleanedValue)
+      if (isNaN(numberValue)) return
+      const finalValue = !allowNegative && numberValue < 0 ? Math.abs(numberValue) : numberValue
+      onChange(finalValue)
     }
 
     useEffect(() => {
       if (!isFocusedRef.current) {
         if (value || value === 0) {
-          setInternalValue(formatValue(value, allowDecimal, formatOptions, locale))
+          setInternalValue(formatValue(value, decimalPlaces, formatOptions, locale))
         } else {
           setInternalValue('')
         }
       }
-    }, [value, allowDecimal, allowNegative, formatOptions, min, max, locale])
+    }, [value, decimalPlaces, allowNegative, formatOptions, min, max, locale])
 
     return (
       <TextInput

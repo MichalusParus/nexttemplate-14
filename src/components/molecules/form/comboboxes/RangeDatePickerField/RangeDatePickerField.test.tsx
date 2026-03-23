@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom'
 
-window.HTMLElement.prototype.scrollIntoView = jest.fn()
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { startOfDay } from 'date-fns'
 import { axe, toHaveNoViolations } from 'jest-axe'
@@ -43,127 +41,164 @@ const FieldWithHooks = (props: any) => {
 }
 
 describe('RangeDatePickerField', () => {
-  it('default', () => {
-    render(<FieldWithHooks />)
-    const fieldWrapTestId = screen.getByTestId('DatePicker')
-    const comboboxRole = screen.getByRole('combobox')
-    const labelTestId = screen.getByTestId('Label')
-    const alertTestId = screen.getByTestId('Alert')
-    const alertQuery = screen.queryByRole('alert')
+  describe('Semantics', () => {
+    it('renders with Label', () => {
+      render(<FieldWithHooks />)
 
-    expect(fieldWrapTestId).toBeInTheDocument()
-    expect(comboboxRole).toBeInTheDocument()
-    expect(comboboxRole).toHaveClass('className')
-    expect(comboboxRole).toHaveAttribute('id', 'fieldTest')
-    expect(comboboxRole).toHaveAttribute('name', 'fieldTest')
-    expect(comboboxRole).toHaveAttribute('type', 'button')
-    expect(comboboxRole).toHaveTextContent('placeholder')
-    expect(comboboxRole).toHaveAttribute('aria-invalid', 'false')
-    expect(comboboxRole).not.toHaveAttribute('aria-describedby')
-    expect(labelTestId).toBeInTheDocument()
-    expect(labelTestId).toHaveTextContent('Label')
-    expect(labelTestId).toHaveAttribute('for', 'fieldTest')
-    expect(labelTestId).toHaveAttribute('id', 'fieldTest-label')
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveTextContent('')
-    expect(alertTestId).toHaveAttribute('id', 'fieldTest-description')
-    expect(alertQuery).toBeNull()
+      expect(screen.getByTestId('DatePicker')).toBeInTheDocument()
+      expect(screen.getByRole('combobox')).toBeInTheDocument()
+    })
+
+    it('forwards className', () => {
+      render(<FieldWithHooks />)
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveClass('className')
+    })
+
+    it('id and name from name prop', () => {
+      render(<FieldWithHooks />)
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveAttribute('id', 'fieldTest')
+      expect(combobox).toHaveAttribute('name', 'fieldTest')
+      expect(combobox).toHaveAttribute('type', 'button')
+    })
+
+    it('placeholder', () => {
+      render(<FieldWithHooks />)
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveTextContent('placeholder')
+    })
+
+    it('label text with for attribute', () => {
+      render(<FieldWithHooks />)
+      const label = screen.getByTestId('Label')
+
+      expect(label).toBeInTheDocument()
+      expect(label).toHaveTextContent('Label')
+      expect(label).toHaveAttribute('for', 'fieldTest')
+      expect(label).toHaveAttribute('id', 'fieldTest-label')
+    })
+
+    it('alert with description id', () => {
+      render(<FieldWithHooks />)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toBeInTheDocument()
+      expect(alert).toHaveTextContent('')
+      expect(alert).toHaveAttribute('id', 'fieldTest-description')
+      expect(screen.queryByRole('alert')).toBeNull()
+    })
+
+    it('aria-invalid false when no error', () => {
+      render(<FieldWithHooks />)
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveAttribute('aria-invalid', 'false')
+    })
+
+    it('no aria-describedby when no error or description', () => {
+      render(<FieldWithHooks />)
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).not.toHaveAttribute('aria-describedby')
+    })
+
+    it('displays range value', () => {
+      render(
+        <FieldWithHooks value={{ start: defaultTestDate, end: new Date('2023-03-06') }} />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveTextContent('3/4/2023 - 3/6/2023')
+    })
+
+    it('description in aria-describedby', () => {
+      render(<FieldWithHooks labelProps={{ description: 'description' }} />)
+      const combobox = screen.getByRole('combobox')
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toHaveTextContent('description')
+      expect(combobox).toHaveAttribute('aria-describedby', 'fieldTest-description')
+    })
+
+    it('labelProps forwarded', () => {
+      render(<FieldWithHooks labelProps={{ className: 'className' }} />)
+
+      expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    })
   })
 
-  it('value', () => {
-    render(<FieldWithHooks value={{ start: defaultTestDate, end: new Date('2023-03-06') }} />)
-    const comboboxRole = screen.getByRole('combobox')
+  describe('Interaction', () => {
+    it('onChange fires on range selection', async () => {
+      const onChange = jest.fn()
+      render(
+        <FieldWithHooks
+          value={{ start: startOfDay(defaultTestDate), end: undefined }}
+          onChange={onChange}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
 
-    expect(comboboxRole).toHaveTextContent('4.3.2023 - 6.3.2023')
-  })
+      await act(async () => {
+        fireEvent.click(combobox)
+      })
 
-  it('description', () => {
-    render(<FieldWithHooks labelProps={{ description: 'description' }} />)
-    const comboboxRole = screen.getByRole('combobox')
-    const alertTestId = screen.getByTestId('Alert')
+      await act(async () => {
+        fireEvent.click(screen.getAllByRole('gridcell')[8])
+      })
 
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveTextContent('description')
-    expect(comboboxRole).toHaveAttribute('aria-describedby', 'fieldTest-description')
-  })
-
-  it('error', async () => {
-    render(<FieldWithHooks />)
-    const comboboxRole = screen.getByRole('combobox')
-    const alertRole = screen.getByTestId('Alert')
-
-    await act(async () => {
-      fireEvent.change(comboboxRole, {
-        target: {
-          value: '',
-        },
+      expect(onChange).toHaveBeenCalled()
+      expect(onChange).toHaveBeenCalledWith({
+        start: startOfDay(defaultTestDate),
+        end: startOfDay(new Date('2023-03-07')),
       })
     })
 
-    await act(async () => {
-      fireEvent.submit(screen.getByTestId('submitButton'))
+    it('error shown on invalid submit', async () => {
+      render(<FieldWithHooks />)
+      const combobox = screen.getByRole('combobox')
+      const alert = screen.getByTestId('Alert')
+
+      await act(async () => {
+        fireEvent.change(combobox, { target: { value: '' } })
+      })
+
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('submitButton'))
+      })
+
+      await waitFor(() => {
+        expect(alert).toBeInTheDocument()
+        expect(alert).toHaveTextContent('Required')
+        expect(alert).toHaveAttribute('role', 'alert')
+        expect(combobox).toHaveAttribute('aria-describedby', 'fieldTest-description')
+        expect(combobox).toHaveAttribute('aria-invalid', 'true')
+      })
     })
 
-    await waitFor(() => {
-      expect(alertRole).toBeInTheDocument()
-      expect(alertRole).toHaveTextContent('Required')
-      expect(alertRole).toHaveAttribute('role', 'alert')
-      expect(comboboxRole).toHaveAttribute('aria-describedby', 'fieldTest-description')
-      expect(comboboxRole).toHaveAttribute('aria-invalid', 'true')
-    })
-  })
+    it('form submit works', async () => {
+      const onSubmit = jest.fn()
+      render(<FieldWithHooks />)
+      screen.getByTestId('Form').onsubmit = onSubmit
 
-  it('onChange', async () => {
-    const spy = jest.fn()
-    render(
-      <FieldWithHooks
-        value={{ start: startOfDay(defaultTestDate), end: undefined }}
-        onChange={spy}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submitButton'))
+      })
 
-    await act(async () => {
-      fireEvent.click(comboboxRole)
-    })
-
-    const cellTestId = screen.getAllByRole('gridcell')
-
-    await act(async () => {
-      fireEvent.click(cellTestId[8])
-    })
-
-    expect(spy).toHaveBeenCalled()
-    expect(spy).toHaveBeenCalledWith({
-      start: startOfDay(defaultTestDate),
-      end: startOfDay(new Date('2023-03-07')),
+      // TODO beenCalledWith, spy return native event and not values
+      expect(onSubmit).toHaveBeenCalled()
     })
   })
 
-  it('labelProps', () => {
-    render(<FieldWithHooks labelProps={{ className: 'className' }} />)
-    const labelWrapTestId = screen.getByTestId('LabelWrap')
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<FieldWithHooks title="title" />)
 
-    expect(labelWrapTestId).toHaveClass('className')
-  })
-
-  it('onSubmit', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks />)
-    screen.getByTestId('Form').onsubmit = spy
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('submitButton'))
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
     })
-
-    // TODO beenCalledWith, spy return native event and not values
-    expect(spy).toHaveBeenCalled()
-  })
-
-  it('axe', async () => {
-    const { container } = render(<FieldWithHooks title="title" />)
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
   })
 })

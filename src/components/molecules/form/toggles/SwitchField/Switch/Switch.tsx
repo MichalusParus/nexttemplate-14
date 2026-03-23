@@ -20,13 +20,13 @@ export type SwitchProps = NativeInputProps &
   Pick<FieldProps, 'label'> &
   InputProps &
   StyleProps & {
-    /** value of input */
-    value?: string
+    /** value of input — identity string used by groups and onChange */
+    value: string
     /** optional element to display in label */
     content?: ReactNode
     /** optional checked status for Group use */
     isChecked: boolean
-    /** error state */
+    /** visual-only mode without input */
     fake?: boolean
     /** onChange function */
     onChange: (value: string) => void
@@ -44,7 +44,7 @@ export const Switch = forwardRef<HTMLInputElement | null, SwitchProps>(
       variant = 'outlined',
       color = 'primary',
       size = 'md',
-      isChecked = false,
+      isChecked,
       error,
       fake,
       disabled,
@@ -70,7 +70,7 @@ export const Switch = forwardRef<HTMLInputElement | null, SwitchProps>(
             'SwitchInputWrap',
             'relative flex',
             switchWrapClass,
-            isChecked && 'selected',
+            isChecked && !fake && 'selected',
             !fake && 'mr-2',
             switchSize[size],
             checkboxVariant[variant][color],
@@ -91,7 +91,9 @@ export const Switch = forwardRef<HTMLInputElement | null, SwitchProps>(
               name={name}
               value={value}
               onChange={e => onChange(e.target.value)}
+              role="switch"
               checked={isChecked}
+              aria-checked={isChecked}
               disabled={disabled}
               ref={ref}
               {...rest}

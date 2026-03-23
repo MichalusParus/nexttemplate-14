@@ -16,6 +16,7 @@ describe('ListBox', () => {
       <ListBox
         className="className"
         name="listboxTest"
+        labelId="listboxTest-label"
         value={[]}
         options={options}
         onClick={() => {}}
@@ -213,11 +214,163 @@ describe('ListBox', () => {
     focusMock.mockRestore()
   })
 
+  it('onSelectAll renders SelectAllOption', () => {
+    const spy = jest.fn()
+    render(
+      <ListBox
+        name="listboxTest"
+        value={[]}
+        options={options}
+        onClick={() => {}}
+        selectAllState={{ checked: false, indeterminate: false, disabled: false }}
+        onSelectAll={spy}
+      />,
+    )
+    const selectAll = screen.getByRole('option', { name: /select all/i })
+    expect(selectAll).toBeInTheDocument()
+    expect(selectAll).toHaveAttribute('role', 'option')
+    expect(selectAll).toHaveAttribute('aria-selected', 'false')
+    expect(selectAll).not.toHaveClass('selected')
+  })
+
+  it('onSelectAll not rendered when prop absent', () => {
+    render(
+      <ListBox
+        name="listboxTest"
+        value={[]}
+        options={options}
+        onClick={() => {}}
+      />,
+    )
+    expect(screen.queryByRole('option', { name: /select all/i })).not.toBeInTheDocument()
+  })
+
+  it('onSelectAll checked when all selected', () => {
+    render(
+      <ListBox
+        name="listboxTest"
+        value={options.map(o => o.value)}
+        options={options}
+        onClick={() => {}}
+        selectAllState={{ checked: true, indeterminate: false, disabled: false }}
+        onSelectAll={() => {}}
+      />,
+    )
+    const selectAll = screen.getByRole('option', { name: /select all/i })
+    expect(selectAll).toHaveAttribute('aria-selected', 'true')
+    expect(selectAll).toHaveClass('selected')
+  })
+
+  it('onSelectAll indeterminate when some selected', () => {
+    render(
+      <ListBox
+        name="listboxTest"
+        value={[options[0].value]}
+        options={options}
+        onClick={() => {}}
+        selectAllState={{ checked: false, indeterminate: true, disabled: false }}
+        onSelectAll={() => {}}
+      />,
+    )
+    const selectAll = screen.getByRole('option', { name: /select all/i })
+    expect(selectAll).toHaveAttribute('aria-selected', 'false')
+    expect(selectAll).not.toHaveClass('selected')
+    const minusIcon = screen.getByTestId('MinusIcon')
+    expect(minusIcon).toHaveClass('opacity-100')
+  })
+
+  it('onSelectAll click calls handler', () => {
+    const spy = jest.fn()
+    render(
+      <ListBox
+        name="listboxTest"
+        value={[]}
+        options={options}
+        onClick={() => {}}
+        selectAllState={{ checked: false, indeterminate: false, disabled: false }}
+        onSelectAll={spy}
+      />,
+    )
+    fireEvent.click(screen.getByRole('option', { name: /select all/i }))
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('onSelectAll with grouped options', () => {
+    const groupedOptions = getGroupedOptions('listboxTest')
+    const allValues = groupedOptions.flatMap(g => g.groupedOptions).map(o => o.value)
+    render(
+      <ListBox
+        name="listboxTest"
+        value={allValues}
+        options={groupedOptions}
+        isGrouped
+        onClick={() => {}}
+        selectAllState={{ checked: true, indeterminate: false, disabled: false }}
+        onSelectAll={() => {}}
+      />,
+    )
+    const selectAll = screen.getByRole('option', { name: /select all/i })
+    expect(selectAll).toBeInTheDocument()
+    expect(selectAll).toHaveAttribute('aria-selected', 'true')
+    expect(selectAll).toHaveClass('selected')
+  })
+
+  it('onSelectAll disabled when no options', () => {
+    render(
+      <ListBox
+        name="listboxTest"
+        value={[]}
+        options={[]}
+        onClick={() => {}}
+        selectAllState={{ checked: false, indeterminate: false, disabled: true }}
+        onSelectAll={() => {}}
+      />,
+    )
+    const selectAll = screen.getByRole('option', { name: /select all/i })
+    expect(selectAll).toHaveAttribute('aria-disabled', 'true')
+  })
+
+  it('onSelectAll disabled when all options disabled', () => {
+    const disabledOptions = options.slice(0, 3).map(o => ({ ...o, isDisabled: true }))
+    render(
+      <ListBox
+        name="listboxTest"
+        value={[]}
+        options={disabledOptions}
+        onClick={() => {}}
+        selectAllState={{ checked: false, indeterminate: false, disabled: true }}
+        onSelectAll={() => {}}
+      />,
+    )
+    const selectAll = screen.getByRole('option', { name: /select all/i })
+    expect(selectAll).toHaveAttribute('aria-disabled', 'true')
+  })
+
   it('axe', async () => {
     const { container } = render(
       <>
         <div id="listboxTest-label">Label</div>
-        <ListBox name="listboxTest" value={[]} options={options} onClick={() => {}} />
+        <ListBox name="listboxTest" labelId="listboxTest-label" value={[]} options={options} onClick={() => {}} />
+      </>,
+    )
+
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
+
+  it('axe with onSelectAll', async () => {
+    const { container } = render(
+      <>
+        <div id="listboxTest-label">Label</div>
+        <ListBox
+          name="listboxTest"
+          labelId="listboxTest-label"
+          value={[]}
+          options={options}
+          onClick={() => {}}
+          selectAllState={{ checked: false, indeterminate: false, disabled: false }}
+          onSelectAll={() => {}}
+        />
       </>,
     )
 

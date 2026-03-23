@@ -1,0 +1,103 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Popovers/Dialog/Def" />
+
+# Dialog
+
+> A modal dialog window — a fixed-position overlay panel centered on screen with focus trapping, keyboard dismissal, and open/close animation. Accepts custom content via `children`, optional `title`, action buttons via `dialogActions`, and a built-in close button. Used for confirmations, forms, and any content requiring user attention before interacting with the page.
+
+<br/>
+
+## Features
+
+- Optional title with auto-linked `aria-labelledby`
+- Close X button (hideable via `hideXButton`)
+- Close button in actions area
+- Custom dialog actions via `dialogActions`
+- Portal rendering with configurable container
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Outer `<div>` — `role="dialog"`, `aria-modal="true"`, `id={name}`, receives `className`, `width`, and native div props via rest spread
+- `aria-label` — from `label` prop or falls back to `useTranslations('Components')('dialog')` i18n string. Only set when `title` is absent (when `title` is present, `aria-labelledby` is used instead)
+- `aria-labelledby` — set to `${name}-title` when `title` prop is provided, linking the dialog to its heading
+- Inner structure: `<Paper>` (styled container with variant/color/paddingY) > title wrap with paddingX (`<Title>` + X button) + `<ScrollShadow>` (scrollable content with paddingX) + actions div with paddingX (close button + `dialogActions`)
+- `<Overlay>` rendered as a sibling after the dialog div — dark backdrop with click-to-close, sets `inert` on app root and `overflow: hidden` on body
+- Rendered into a React portal (`createPortal` to `document.body` or custom `portalContainerId`)
+
+### Keyboard Handling
+- **Tab / Shift+Tab** — Cycles focus within the dialog (focus trap — focus cannot leave)
+- **ArrowDown / ArrowUp** — Cycles focus through focusable children (wraps at boundaries)
+- **ArrowRight / ArrowLeft** — Cycles focus through focusable children (Cmd+Arrow jumps to end/start)
+- **Home / End** — Jumps to first/last focusable element
+- **Escape** — Closes dialog and restores focus to the previously focused element
+- Auto-focuses first focusable element on open via `requestAnimationFrame`
+- Focus is captured on open and restored on close via `useDismissModal`
+
+### Accessibility (WAI-ARIA)
+- Follows the [WAI-ARIA Dialog (Modal) pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
+- `role="dialog"` + `aria-modal="true"` on the outer div
+- `aria-labelledby` points to the title heading when `title` prop is present; `aria-label` set only when `title` is absent
+- Overlay sets `inert` on the `#__next` app root — prevents screen readers and keyboard from reaching content behind the dialog
+- X button has `aria-label` via i18n `t('close')`
+- Focus scope coordination via `useFocusScope` — nested modals (e.g., Dialog inside Dialog) correctly deactivate parent scopes
+
+### Visual States
+- **Open:** `scale-100 opacity-100` — fade in from center
+- **Closing:** `isOpen` becomes false, `opacity-0` fade plays over 150ms (no scale), then component unmounts
+- **Closed:** Both `isOpen` and `isVisible` false — returns `null`, no DOM presence
+- Fixed center positioning (`fixed left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]`) with `z-modal` z-index
+- Dark overlay backdrop (`bg-dark-950/25`) behind dialog
+
+### Interaction Behavior
+- **Controlled-only:** `isOpen` and `setIsOpen` are both required props — no internal open state
+- **X button:** Always visible unless `hideXButton` is true — calls `setIsOpen(false)`
+- **Close button:** Rendered in the actions area when `closeButton` is true — calls `setIsOpen(false)` with i18n label
+- **Overlay dismiss:** Clicking the dark overlay calls `setIsOpen(false)`
+- **Custom actions:** `dialogActions` ReactNode rendered after the close button in the actions area
+- **Close animation timing:** `useEffect` on `isOpen` — when false, starts 150ms `setTimeout` before setting `isVisible=false`. Cleanup clears the timer on unmount or rapid re-open.
+
+### Responsive & Layout
+- Width defaults to `w-full md:w-auto min-w-64` — full-width on mobile, auto-sized on desktop with minimum width
+- Max width capped at `max-w-[95vw]` via style classes
+- Content scroll containment via `<ScrollShadow>` with `max-h-[75vh]`
+- Padding props: `paddingX` controls horizontal padding for all three content sections — title wrap, scrollable content, and actions area (default `px-2 md:px-5`). `paddingY` controls Paper vertical padding (default `py-2 md:pb-3`)
+- Paper and Title accept additional props via `paperProps` and `titleProps` pass-throughs
+
+<br/>
+
+## Architecture Decisions
+- **`useImperativeHandle` with state setter, not useRef:** The dialog div's ref is captured via `useState` + `setComponentEl` as the `ref` callback. This is necessary because `useFocus` needs the portal element (`portalEl: componentEl`) to attach keyboard listeners, and a ref object change doesn't trigger re-renders — the state setter does, ensuring `useFocus` re-runs when the element mounts.
+- **Null containerRef pattern:** `containerRef` is a separate `useRef(null)` that stays null. Since Dialog has no external trigger element, `useFocus` receives this null ref as the container. The keyboard listener attaches to `portalEl` (the dialog div itself) instead. The trigger ref also defaults to `containerRef` (null), so Escape's `triggerRef.current?.focus()` is a no-op — focus restoration is handled by `useDismissModal` instead.
+- **Overlay as sibling, not wrapper:** The `<Overlay>` is rendered after the dialog div (not wrapping it), so clicking the overlay fires `onClose` without event propagation issues through the dialog's content.
+- **Paper + ScrollShadow composition:** Dialog delegates styling to `Paper` (variant, color, shadow) and scroll containment to `ScrollShadow`, keeping the dialog component focused on layout and behavior rather than visual styling.
+- **Conditional title wrap and actions area:** Title wrap applies `pb-8` only when `title || !hideXButton`. Actions area renders only when `closeButton || dialogActions`. Content-only dialogs have no wasted vertical space.
+- **`isOpen` / `isVisible` dual state:** `isOpen` drives the trigger logic, `isVisible` keeps the DOM present during the fade-out transition. The 150ms timeout between `isOpen=false` and `isVisible=false` matches the CSS transition duration — a deliberate convention shared across all popover components.
+
+<br/>
+
+## Known Bugs & Limitations
+- Issues with severity
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> This is a solid modal dialog that gets the fundamentals right — portal rendering, focus trapping, animated open/close, and proper ARIA labeling with fallback chains. The API feels well-considered: `title` drives both the visible heading and `aria-labelledby`, while `label` exists as an escape hatch for content-only dialogs, and the `devWarning` nudges you if you skip both. The `closeButton` + `dialogActions` split is a nice touch, giving you a quick "just add a close button" path without forcing you to wire up actions for simple confirmations.
+>
+> Radix Dialog is the natural comparison — its compound component approach (`Dialog.Trigger`, `Dialog.Content`, `Dialog.Close`) starts from an empty shell and lets you compose everything. This component takes the opposite path: built-in title, actions, scroll containment, and close buttons that you opt into via props. But strip those away — `hideXButton`, no title, zero padding — and you get the same clean empty modal with focus trap and overlay. One component scales from a quick confirmation to a fully custom layout, where Radix needs you to build the standard case every time.
+>
+> A capable dialog that scales from a simple confirmation to a custom layout without fighting its own API.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

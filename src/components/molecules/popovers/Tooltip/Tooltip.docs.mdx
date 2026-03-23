@@ -1,0 +1,101 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Popovers/Tooltip/Def" />
+
+# Tooltip
+
+> A small floating popover for displaying supplementary information — appears on hover, focus, or touch-and-hold. Wraps any child element and shows a positioned label with an optional pointer arrow, configurable delay, and automatic Popper.js positioning. Used for icon buttons, truncated text, and any element that benefits from a brief explanation without cluttering the UI.
+
+<br/>
+
+## Features
+
+- Normal (wrapper) or lazy (cloneElement) render modes
+- Configurable show delay
+- Touch delay
+- `beforeShow` conditional display
+- Hide pointer option
+- Popper.js positioning with configurable placement and offset
+- Auto-suppression when child has open dropdown
+- Portal rendering with configurable container
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- **Normal mode:** Outer `<div>` wrapper with class `TooltipWrap`, `group/tooltip relative max-w-max text-left`. Contains `children` and the portal. Receives `onMouseEnter`, `onMouseLeave`, `onFocus`, `onBlur`, `aria-describedby`, and `aria-owns` attributes
+- **Lazy mode:** No wrapper div. `cloneElement` attaches `onMouseEnter`, `onMouseLeave`, `onFocus`, `onBlur`, `aria-describedby`, `aria-owns`, and a merged `ref` directly to the single child element. Use when wrapper breaks flex/grid layout
+- **Tooltip popover:** `<div>` with `role="tooltip"`, `aria-hidden`, `aria-live="polite"`, `id={useId}-tooltip`. Receives `className` and native div props via rest spread
+- CSS pointer arrows via `::after` pseudo-elements — 12 placement variants (top/right/bottom/left with start/end). Auto placements render no pointer
+- Rendered into a React portal (`createPortal` to `document.body` or custom `portalContainerId`)
+
+### Keyboard Handling
+- **Escape** — Closes the tooltip (document-level `keydown` listener)
+- No arrow key navigation or Tab trapping — tooltip content is non-interactive supplementary text
+
+### Accessibility (WAI-ARIA)
+- Follows the [WAI-ARIA Tooltip pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)
+- `role="tooltip"` on the popover element
+- `aria-describedby` on the trigger/wrapper links to the tooltip `id` when open
+- `aria-owns` on the wrapper/child establishes DOM ownership of the portal tooltip element
+- `aria-hidden` reflects open state — `"false"` when visible, `"true"` when hidden
+- `aria-live="polite"` for screen reader announcements of tooltip content
+- Tooltip suppressed when child has `aria-expanded="true"` — prevents tooltip overlapping open dropdown/menu content
+
+### Visual States
+- **Opening:** `isOpen` becomes true, element mounts with `opacity-0`, then `opacity-100` applied via CSS transition
+- **Closing:** `isOpen` becomes false, `opacity-100` removed (fade out over 150ms), then `isVisible` becomes false and element unmounts
+- **Closed:** Both `isOpen` and `isVisible` false — portal returns `null`, no DOM presence
+- Pointer arrow positioned via Tailwind `::after` pseudo-element based on `adjustedPlacement` from Popper.js
+
+### Interaction Behavior
+- **Hover:** `mouseEnter` triggers show after configurable `delay` (default 500ms). `mouseLeave` hides immediately
+- **Focus:** `focus` triggers show after delay. `blur` hides immediately. Normal mode checks `relatedTarget` — focus moving between children within the wrapper does not dismiss the tooltip
+- **Touch:** Long-press shows tooltip (via `useTouch` hook with configurable `touchDelay`, defaults to `delay`). Touch outside dismisses. Mouse events suppressed on touch devices via `isTouchDevice` guard
+- **`beforeShow` callback:** Called before showing — return `false` to cancel. Use case: show tooltip only when text overflows (used by Ellipsis component)
+- **`aria-expanded` suppression:** If any child element has `aria-expanded="true"`, tooltip is suppressed via `anchorRef.current?.querySelector('[aria-expanded="true"]')` check
+- **Dismiss triggers:** Outside click (`mousedown`), Escape key (`keydown`), scroll (any scrollable ancestor via capture phase), window `resize` — all close the tooltip
+- **Rapid hover cancellation:** `mouseLeave` before delay expires calls `clearTimeout`, preventing the tooltip from showing
+
+### Responsive & Layout
+- Tooltip constrained to `max-w-xs` (320px)
+- Positioned absolutely by Popper.js via `usePopper` hook with configurable `placement` (default `top`) and `offset`
+- `z-modal` z-index class on the tooltip element
+
+<br/>
+
+## Architecture Decisions
+- **`useImperativeHandle` exposes the popover, not the wrapper:** The forwarded ref resolves to the portal tooltip element via `setPopoverEl` state setter. This lets consumers position or measure the actual tooltip. The wrapper div is an implementation detail.
+- **Two-mode design (normal vs lazy):** Normal mode wraps children in a positioned div — simpler but adds a DOM node that can break flex/grid layouts. Lazy mode uses `cloneElement` to attach events directly to the child, avoiding the wrapper. The `lazy` prop is the escape hatch for layout-sensitive contexts like `Ellipsis`.
+- **No `useFocus` — manual Escape listener:** Tooltip attaches its own document-level `keydown`/`mousedown` handlers for Escape and outside-click rather than using the shared `useFocus` hook. Tooltip has no arrow navigation and no focus trap, so the full focus system would be unnecessary weight.
+- **`isOpen` / `isVisible` dual state:** `isOpen` drives the trigger logic, `isVisible` keeps the DOM present during the fade-out transition. The 150ms timeout between `isOpen=false` and `isVisible=false` matches the CSS transition duration — a deliberate convention shared across all popover components.
+- **AbortController cleanup pattern:** The `useEffect` that attaches document/window listeners uses an `AbortController` for clean bulk teardown — same pattern used in Carousel, Gallery, and other components.
+- **`aria-expanded` suppression check:** `handleShow` queries the anchor for `[aria-expanded="true"]` to prevent tooltips from appearing over already-open popovers (e.g., a menu trigger button). This avoids z-index fights and visual noise.
+
+<br/>
+
+## Known Bugs & Limitations
+- Issues with severity
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> A tooltip that earns its complexity. The dual-mode design is the standout decision — most tooltips force a wrapper div and leave you to debug why your flex layout broke. Here, `lazy` mode clones events onto the child directly, and the ref forwarding handles both callback refs and object refs on the original child. The `aria-expanded="true"` suppression check is a nice piece of real-world polish — tooltips fighting with open menus for z-index is exactly the kind of bug that ships to production because it only shows up in specific interaction sequences.
+>
+> Radix Tooltip is the closest comparison. Radix splits into `Trigger`, `Content`, and `Portal` compound components, which means every tooltip is 4+ JSX lines of boilerplate. This single-component API with a `title` prop is dramatically less ceremony for the 90% case, and `lazy` mode covers the layout-sensitive 10% that Radix handles by making `Trigger` use `asChild`. For a tooltip — which is fundamentally "hover this, see text" — that ceremony buys nothing.
+>
+> The `beforeShow` callback returning a boolean to gate visibility is a useful escape hatch — conditional tooltips on text overflow are a real pattern that usually requires ugly imperative workarounds, and here it's just a prop.
+>
+> A practical tooltip that respects layout constraints and real interaction edge cases.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

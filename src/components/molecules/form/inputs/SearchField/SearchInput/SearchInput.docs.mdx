@@ -1,0 +1,74 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/inputs/SearchInput/Def" />
+
+# SearchInput
+
+> Search input with decorative search icon and conditional clear button. Wraps TextInput with `type="search"`, a leading SearchIcon, and a trailing clear Button that appears when the input has a value. For form integration with validation and labels, use SearchField.
+
+<br/>
+
+## Features
+
+- Decorative search icon
+- Conditional clear button — no layout shift
+- `onClear` callback
+- Error and disabled states
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+Inherits from [TextInput](?path=/docs/molecules-form-inputs-textinput-def--docs)
+- `type="search"` — changes implicit role from `textbox` to `searchbox`
+- `startIcon` renders a decorative `SearchIcon` with `aria-hidden` — not announced by screen readers
+- `endIcon` renders a clear Button that appears conditionally: `invisible` by default, `visible` when `value` or `inputRef.current.value` is truthy
+- Adds `onClear` optional callback — if provided, called on clear click instead of `onChange('')`
+- Clear button click also imperatively resets `inputRef.current.value = ''` — ensures the native input value is cleared even in uncontrolled scenarios
+- `useImperativeHandle` proxies the ref through an internal `inputRef` — enables both the clear button's imperative access and external ref forwarding
+- Native `[&::-webkit-search-cancel-button]:hidden` in `inputClass` hides the browser's native clear button — replaced by the custom clear Button
+
+### Keyboard Handling
+Inherits from [TextInput](?path=/docs/molecules-form-inputs-textinput-def--docs)
+- **Tab** — Focuses the input, then the clear button (two tab stops when clear is visible)
+- **Enter/Space** on clear button — Clears the input (native Button behavior)
+- Clear button blocked when disabled (Button's disabled handling)
+
+### Accessibility (WAI-ARIA)
+Inherits from [TextInput](?path=/docs/molecules-form-inputs-textinput-def--docs)
+- `role="searchbox"` — native from `type="search"`, announces as a search input to screen readers
+- SearchIcon has `aria-hidden` — decorative, not announced
+- Clear button has translated `aria-label` via `next-intl` — announces as "clear" action
+
+<br/>
+
+## Architecture Decisions
+- **Visibility via CSS, not conditional rendering**: The clear button uses `invisible`/`visible` classes rather than conditional rendering — prevents layout shift when the button appears/disappears since `invisible` preserves the element's space.
+- **`onClear` vs `onChange('')` fallback**: When `onClear` isn't provided, the clear button calls `onChange('')` as a sensible default — the consumer's existing `onChange` handler handles the empty state. `onClear` exists for cases where clearing has side effects beyond value change (e.g., resetting search results, closing dropdowns).
+- **Dual value check for clear button visibility**: `(value || inputRef?.current?.value)` checks both the controlled prop and the native DOM value. This is an intentional fix — in controlled usage the ref check is a timing safety net, in uncontrolled usage (no `value` prop) the ref check is the only way to detect typed text.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> SearchInput is a focused wrapper that locks down `type`, `startIcon`, and `endIcon` on TextInput, giving you a search field with a clear button out of the box. The interesting design choice is the clear button's dual-path behavior — `onClear` for side-effect-heavy clearing, silent fallback to `onChange('')` when you just need the value gone. That separation is clean and saves boilerplate in the common case.
+>
+> Comparing against Mantine's `SearchInput` (via `TextInput` with `rightSection` clear logic): Mantine leaves you wiring up the clear button, its visibility, and the value reset yourself. SearchInput bakes all of that in — the CSS visibility approach, the fallback clearing, the ref plumbing. Mantine gives more flexibility but at the cost of repeated boilerplate across every search field. For a copy-paste library where you own the code, having the opinionated version as the default and TextInput as the escape hatch is the better trade.
+>
+> Solid utility component. It does one thing, removes the right decisions from the consumer, and stays out of the way.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

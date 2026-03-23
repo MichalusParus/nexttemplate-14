@@ -110,12 +110,25 @@ export const useFocusableElements = (
       focusIndexRef.current = 0
     }
 
+    // Sync roving tabindex after list update
+    if (options.rovingTabindex && completeSelectableList.length > 0) {
+      completeSelectableList.forEach((el, i) =>
+        el.setAttribute('tabindex', i === focusIndexRef.current ? '0' : '-1'),
+      )
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEffectivelyActive, containerRef, options.triggerRef, selectors, options.portalEl, options.value])
 
   const focusElement = (index: number) => {
     const el = focusableElRef.current[index]
     if (el) {
+      // Roving tabindex: O(1) — only update previous and new element
+      if (options.rovingTabindex) {
+        const prev = focusableElRef.current[focusIndexRef.current]
+        if (prev && prev !== el) prev.setAttribute('tabindex', '-1')
+        el.setAttribute('tabindex', '0')
+      }
       focusIndexRef.current = index
       el.focus()
       preserveFocusRef.current = el

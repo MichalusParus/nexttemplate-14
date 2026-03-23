@@ -1,0 +1,85 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/comboboxes/RangeDatePicker/Def" />
+
+# RangeDatePicker
+
+> Two-step date range selection composed on top of DatePicker. First click sets the start date, second click sets the end — with automatic swap if the end date precedes the start. Incomplete ranges (start only) reset on close. For form integration with validation and labels, use RangeDatePickerField.
+
+<br/>
+
+## Features
+
+- Flexible value input — string, Date, or number
+- Locale-aware formatting via `Intl.DateTimeFormat`
+- Configurable placement
+- Min/max date boundaries via `calendarProps`
+- Unavailable dates via `calendarProps`
+- Week start configuration via `calendarProps`
+- Clear button via `onClear`
+- Value chips display via `displayChips`
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+Inherits from [DatePicker](?path=/docs/molecules-form-comboboxes-datepicker-def--docs)
+- `value: { start?: DateValue; end?: DateValue }` — range object instead of single date
+- Passes `calendarProps.range = rangeValue` to Calendar for range highlighting
+- Display format: locale-formatted `"start - end"` (e.g. "3/4/2023 - 3/6/2023") or `"start -"` (start only, awaiting end)
+- Internal `onClear` always provided — calls `onChange({})`
+
+### Keyboard Handling
+Inherits from [DatePicker](?path=/docs/molecules-form-comboboxes-datepicker-def--docs)
+- Dropdown stays open after each selection — no auto-close during range building
+
+### Accessibility (WAI-ARIA)
+Inherits from [DatePicker](?path=/docs/molecules-form-comboboxes-datepicker-def--docs)
+- Range visualized via [Calendar](?path=/docs/molecules-common-calendar-def--docs) gridcell `aria-selected` on dates within the range interval
+
+### Interaction Behavior
+Inherits from [DatePicker](?path=/docs/molecules-form-comboboxes-datepicker-def--docs)
+- **First click** (no start, or both start+end exist): sets new start, clears end → `onChange({ start: date, end: undefined })`
+- **Same-day click**: clicking the same day as start clears both → `onChange({ start: undefined, end: undefined })`
+- **Second click after start (date > start)**: sets end → `onChange({ start, end: date })`
+- **Second click before start**: auto-swaps → `onChange({ start: date, end: previousStart })`
+- **Close with incomplete range** (start but no end): `handleClose` resets to empty → `onChange({})`
+- **ClearButton**: always available via internal `onClear` → `onChange({})`
+- Dropdown stays open during selection (Calendar range mode prevents DatePicker auto-close)
+
+<br/>
+
+## Architecture Decisions
+- **Composition over duplication**: Short wrapper around DatePicker. Only adds `handleChange` (selection logic) and `handleClose` (incomplete range reset). All combobox, dropdown, focus management, and calendar integration comes from DatePicker.
+- **Internal `onClear` always provided**: Unlike base DatePicker where `onClear` is optional from the consumer, RangeDatePicker always passes `onClear={() => onChange({})}` — clearing a range always means clearing both dates.
+- **Omits `displayChips`/`chipProps` from type**: Range values (start/end pair) don't make sense as chips. Explicitly removed via `Omit` to prevent misuse.
+- **`handleClose` resets incomplete ranges**: When the user opens the picker, clicks a start date, then closes without selecting an end — `handleClose` detects `!rangeValue.end` and calls `onChange({})`. This prevents orphan start-only state in forms where both dates are required for validation.
+- **Auto-swap via `isBefore`/`isAfter`**: If the second click is before the start date, the dates are swapped automatically. Users don't need to think about click order — the earlier date always becomes the start.
+
+<br/>
+
+## Known Bugs & Limitations
+- **Button-based combobox without text input**: Uses `role="combobox"` on a `<Button>` — ARIA 1.2 expects combobox to be a text input element, so screen readers announce "combobox" but the user cannot type a date. Passes automated axe audits (valid role + required attributes) but doesn't match the spec's intended interaction model. Without a text input, dates can only be selected via the calendar grid — navigating to distant dates (birthdates, historical dates) requires many clicks through months/years. Most libraries (MUI, Mantine, Ant Design) use an `<input>` with calendar popup; React Aria uses segmented spinbuttons with `aria-haspopup="dialog"`. A `<button aria-haspopup="dialog">` would be more semantically accurate for a picker-only pattern. This is a library-wide convention shared with Select.
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> A clean, short wrapper that gets range selection right. The auto-swap logic is the kind of detail that separates usable date pickers from frustrating ones — users click two dates and the component figures out the order. Resetting incomplete ranges on close is equally thoughtful; no orphan start dates leaking into form state.
+>
+> React Aria's `useRangeDatePicker` takes a different path: it manages two separate input fields (start and end) with individual validation, and handles range highlighting at the calendar level. That's more powerful for complex scheduling UIs, but it also forces consumers to wire up significantly more markup. For a copy-paste library where the single-trigger combobox pattern already exists via DatePicker, wrapping it with range logic is the right call — you get the behavior with almost no new surface area.
+>
+> The selection state machine in `handleChange` covers all four cases (fresh pick, same-day toggle, forward range, backward range) and each branch is obvious at a glance. The `Omit` of chip-related props is a good type-level guardrail.
+>
+> Solid wrapper — minimal code, correct behavior, no unnecessary abstraction.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

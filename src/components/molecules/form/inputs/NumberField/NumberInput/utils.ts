@@ -8,14 +8,14 @@ export const getSeparators = (locale: Intl.LocalesArgument, options?: Intl.Numbe
 
 export const formatValue = (
   value: number | null,
-  allowDecimal?: number,
+  decimalPlaces?: number,
   formatOptions?: Intl.NumberFormatOptions,
   locale?: Intl.LocalesArgument,
 ) => {
   if (value === null) return ''
   const formatedValue = new Intl.NumberFormat(locale, {
     ...formatOptions,
-    maximumFractionDigits: allowDecimal,
+    maximumFractionDigits: decimalPlaces,
   }).format(value)
   return formatedValue
 }
@@ -42,7 +42,7 @@ export const validateValue = (
 
 export const cleanValue = (
   value: string,
-  allowDecimal: number,
+  decimalPlaces: number,
   allowNegative: boolean,
   groupSeparator: string,
   decimalSeparator: string,
@@ -57,7 +57,7 @@ export const cleanValue = (
   const escapedDecimalSeparator = decimalSeparator.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
   cleanValue = cleanValue.replace(new RegExp(escapedDecimalSeparator, 'g'), '.')
   const negativePattern = allowNegative ? '-?' : ''
-  const decimalPattern = allowDecimal > 0 ? `(\\.\\d{0,${allowDecimal}})?` : ''
+  const decimalPattern = decimalPlaces > 0 ? `(\\.\\d{0,${decimalPlaces}})?` : ''
   const regex = new RegExp(`^${negativePattern}(\\d*${decimalPattern}|\\.)?$`)
   if (!regex.test(cleanValue)) return null
   return cleanValue

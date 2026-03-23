@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom'
 
-window.HTMLElement.prototype.scrollIntoView = jest.fn()
-
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { act, createRef } from 'react'
 
@@ -12,217 +10,389 @@ import { DatePickerCombobox } from '.'
 expect.extend(toHaveNoViolations)
 
 describe('DatePickerCombobox', () => {
-  it('default', () => {
-    render(
-      <DatePickerCombobox
-        className="className"
-        isOpen={false}
-        name="datePickerTest"
-        placeholder="placeholder"
-        handleOpen={() => {}}
-        handleOnChange={() => {}}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
-    const calendarIcon = screen.getByTestId('CalendarIcon')
+  describe('Semantics', () => {
+    it('renders combobox role', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
 
-    expect(comboboxRole).toBeInTheDocument()
-    expect(comboboxRole).toHaveClass('className')
-    expect(comboboxRole).toHaveTextContent('placeholder')
-    expect(comboboxRole).toHaveAttribute('id', 'datePickerTest')
-    expect(comboboxRole).toHaveAttribute('name', 'datePickerTest')
-    expect(comboboxRole).toHaveAttribute('type', 'button')
-    expect(comboboxRole).toHaveAttribute('aria-expanded', 'false')
-    expect(comboboxRole).toHaveAttribute('aria-haspopup', 'true')
-    expect(comboboxRole).toHaveAttribute('aria-controls', 'datePickerTest-calendar')
-    expect(comboboxRole).toHaveAttribute('aria-owns', 'datePickerTest-calendar')
-    expect(calendarIcon).toBeInTheDocument()
-    comboboxRole.focus()
-    expect(document.activeElement).toBe(comboboxRole)
-  })
-
-  it('open', () => {
-    render(
-      <DatePickerCombobox
-        isOpen={true}
-        name="datePickerTest"
-        value={defaultTestDate}
-        handleOpen={() => {}}
-        handleOnChange={() => {}}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
-
-    expect(comboboxRole).toHaveAttribute('aria-expanded', 'true')
-    expect(comboboxRole).toHaveClass('selected')
-  })
-
-  it('value', () => {
-    render(
-      <DatePickerCombobox
-        isOpen={false}
-        name="datePickerTest"
-        value={defaultTestDate}
-        handleOpen={() => {}}
-        handleOnChange={() => {}}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
-
-    expect(comboboxRole).toHaveTextContent('4.3.2023')
-  })
-
-  it('displayChips', async () => {
-    const spy = jest.fn()
-    render(
-      <DatePickerCombobox
-        isOpen={false}
-        name="datePickerTest"
-        displayChips
-        calendarProps={{ multiValue: [defaultTestDate, new Date('2023-03-05')] }}
-        handleOpen={() => {}}
-        handleOnChange={spy}
-      />,
-    )
-    const chipTestIds = screen.getAllByTestId('Chip')
-    const clearTestIds = screen.getAllByTestId('ClearButton')
-
-    expect(chipTestIds).toHaveLength(2)
-    expect(chipTestIds[0]).toHaveTextContent('4.3.2023')
-    expect(chipTestIds[1]).toHaveTextContent('5.3.2023')
-    expect(clearTestIds).toHaveLength(2)
-
-    await act(async () => {
-      fireEvent.click(clearTestIds[0])
+      expect(combobox).toBeInTheDocument()
     })
 
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(defaultTestDate)
-  })
+    it('forwards className', () => {
+      render(
+        <DatePickerCombobox
+          className="className"
+          isOpen={false}
+          name="datePickerTest"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
 
-  it('error', () => {
-    render(
-      <DatePickerCombobox
-        isOpen={false}
-        name="datePickerTest"
-        error="error"
-        handleOpen={() => {}}
-        handleOnChange={() => {}}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
-
-    expect(comboboxRole).toHaveClass('error')
-  })
-
-  it('chipProps', () => {
-    render(
-      <DatePickerCombobox
-        isOpen={false}
-        name="datePickerTest"
-        displayChips
-        calendarProps={{ multiValue: [defaultTestDate, new Date('2023-03-05')] }}
-        chipProps={{ className: 'chipClass' }}
-        handleOpen={() => {}}
-        handleOnChange={() => {}}
-      />,
-    )
-    const chipTestIds = screen.getAllByTestId('Chip')
-
-    expect(chipTestIds[0]).toHaveClass('chipClass')
-  })
-
-  it('onClear', async () => {
-    const spy = jest.fn()
-    render(
-      <DatePickerCombobox
-        isOpen={false}
-        name="datePickerTest"
-        value={defaultTestDate}
-        onClear={spy}
-        handleOpen={() => {}}
-        handleOnChange={() => {}}
-      />,
-    )
-    const clearTestId = screen.getByTestId('ClearButton')
-
-    expect(clearTestId).toBeInTheDocument()
-
-    await act(async () => {
-      fireEvent.click(clearTestId)
+      expect(combobox).toHaveClass('className')
     })
 
-    expect(spy).toHaveBeenCalledTimes(1)
-  })
+    it('placeholder when no value', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          placeholder="placeholder"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
 
-  it('handleOpen', async () => {
-    const spy = jest.fn()
-    render(
-      <DatePickerCombobox
-        isOpen={false}
-        name="datePickerTest"
-        handleOpen={spy}
-        handleOnChange={() => {}}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
-
-    await act(async () => {
-      fireEvent.click(comboboxRole)
+      expect(combobox).toHaveTextContent('placeholder')
     })
 
-    expect(spy).toHaveBeenCalledTimes(1)
+    it('id and name from name prop', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveAttribute('id', 'datePickerTest')
+      expect(combobox).toHaveAttribute('name', 'datePickerTest')
+    })
+
+    it('type="button"', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveAttribute('type', 'button')
+    })
+
+    it('aria-expanded false when closed', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveAttribute('aria-expanded', 'false')
+    })
+
+    it('aria-expanded true when open', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={true}
+          name="datePickerTest"
+          value={defaultTestDate}
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveAttribute('aria-expanded', 'true')
+    })
+
+    it('aria-haspopup', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveAttribute('aria-haspopup', 'true')
+    })
+
+    it('aria-controls and aria-owns link to calendar', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveAttribute('aria-controls', 'datePickerTest-calendar')
+      expect(combobox).toHaveAttribute('aria-owns', 'datePickerTest-calendar')
+    })
+
+    it('selected class when open', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={true}
+          name="datePickerTest"
+          value={defaultTestDate}
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveClass('selected')
+    })
+
+    it('displays formatted date', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          value={defaultTestDate}
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveTextContent('3/4/2023')
+    })
+
+    it('locale changes date format', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          value={defaultTestDate}
+          locale="de-DE"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveTextContent('4.3.2023')
+    })
+
+    it('displays chips for multiValue', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          displayChips
+          calendarProps={{ multiValue: [defaultTestDate, new Date('2023-03-05')] }}
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const chips = screen.getAllByTestId('Chip')
+
+      expect(chips).toHaveLength(2)
+      expect(chips[0]).toHaveTextContent('3/4/2023')
+      expect(chips[1]).toHaveTextContent('3/5/2023')
+    })
+
+    it('chipProps forwarded', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          displayChips
+          calendarProps={{ multiValue: [defaultTestDate, new Date('2023-03-05')] }}
+          chipProps={{ className: 'chipClass' }}
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const chips = screen.getAllByTestId('Chip')
+
+      expect(chips[0]).toHaveClass('chipClass')
+    })
+
+    it('renders ClearButton when onClear and value', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          value={defaultTestDate}
+          onClear={() => {}}
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+
+      expect(screen.getByTestId('ClearButton')).toBeInTheDocument()
+    })
+
+    it('renders CalendarIcon', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+
+      expect(screen.getByTestId('CalendarIcon')).toBeInTheDocument()
+    })
+
+    it('error class', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          error="error"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveClass('error')
+    })
+
+    it('disabled sets aria-disabled', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          disabled
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      expect(combobox).toHaveAttribute('aria-disabled', 'true')
+    })
   })
 
-  it('disabled', () => {
-    render(
-      <DatePickerCombobox
-        isOpen={false}
-        name="datePickerTest"
-        disabled
-        handleOpen={() => {}}
-        handleOnChange={() => {}}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
+  describe('Keyboard', () => {
+    it('combobox is focusable', () => {
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
 
-    expect(comboboxRole).toHaveAttribute('aria-disabled', 'true')
+      combobox.focus()
+      expect(document.activeElement).toBe(combobox)
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLButtonElement>()
-    render(
-      <DatePickerCombobox
-        ref={ref}
-        isOpen={false}
-        name="datePickerTest"
-        handleOpen={() => {}}
-        handleOnChange={() => {}}
-      />,
-    )
+  describe('Interaction', () => {
+    it('handleOpen called on click', async () => {
+      const handleOpen = jest.fn()
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          handleOpen={handleOpen}
+          handleOnChange={() => {}}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
+      await act(async () => {
+        fireEvent.click(combobox)
+      })
 
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
+      expect(handleOpen).toHaveBeenCalledTimes(1)
+    })
 
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
+    it('onClear fires on clear button click', async () => {
+      const onClear = jest.fn()
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          value={defaultTestDate}
+          onClear={onClear}
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('ClearButton'))
+      })
+
+      expect(onClear).toHaveBeenCalledTimes(1)
+    })
+
+    it('chip clear fires handleOnChange', async () => {
+      const handleOnChange = jest.fn()
+      render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          displayChips
+          calendarProps={{ multiValue: [defaultTestDate, new Date('2023-03-05')] }}
+          handleOpen={() => {}}
+          handleOnChange={handleOnChange}
+        />,
+      )
+      const clearButtons = screen.getAllByTestId('ClearButton')
+
+      await act(async () => {
+        fireEvent.click(clearButtons[0])
+      })
+
+      expect(handleOnChange).toHaveBeenCalledTimes(1)
+      expect(handleOnChange).toHaveBeenCalledWith(defaultTestDate)
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(
-      <DatePickerCombobox
-        isOpen={false}
-        name="datePickerTest"
-        handleOpen={() => {}}
-        handleOnChange={() => {}}
-        title="title"
-      />,
-    )
+  describe('Ref', () => {
+    it('forwards ref to combobox', () => {
+      const ref = createRef<HTMLButtonElement>()
+      render(
+        <DatePickerCombobox
+          ref={ref}
+          isOpen={false}
+          name="datePickerTest"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+        />,
+      )
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      expect(ref.current).toBeInstanceOf(HTMLButtonElement)
+    })
+  })
+
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(
+        <DatePickerCombobox
+          isOpen={false}
+          name="datePickerTest"
+          handleOpen={() => {}}
+          handleOnChange={() => {}}
+          title="title"
+        />,
+      )
+
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

@@ -88,6 +88,8 @@ export type UseFocusOptions = {
     focusableElements: HTMLElement[]
     focusElement: (index: number) => void
   }) => void
+  /** Enable roving tabindex — focused element gets tabindex="0", others get "-1". */
+  rovingTabindex?: boolean
 }
 
 // ============================================================================
@@ -100,6 +102,7 @@ export type UseFocusableElementsOptions = {
   portalEl?: HTMLElement | null
   value?: unknown
   triggerNav?: boolean
+  rovingTabindex?: boolean
   onOpen?: (context: {
     focusableElements: HTMLElement[]
     focusElement: (index: number) => void

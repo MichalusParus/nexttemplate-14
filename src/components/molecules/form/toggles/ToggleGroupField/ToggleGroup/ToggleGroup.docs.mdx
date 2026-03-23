@@ -1,0 +1,101 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/toggles/ToggleGroup/Def" />
+
+# ToggleGroup
+
+> A button-based single-selection group rendered as a `<div role="group">` containing Button components with `aria-pressed` state. Supports keyboard navigation via `useFocus`, optional deselection (`allowEmpty`), per-option disabled, and multi-value mode for composition with MultiToggleGroup. Generic `<T = string>` supports string, number, or object values with deep equality via `isEqual`.
+
+<br/>
+
+## Features
+
+- Generic `<T>` typed values with deep equality
+- Toggle logic — clicking a selected option removes it, clicking unselected appends it
+- `allowEmpty` — controls whether the last selection can be cleared (default `true`), enforced in both single and multi-value modes
+- `onClear` callback — fires when the last selected option is deselected (instead of passing empty array to `onChange`)
+- Column layout — `column` prop (via ToggleGroup)
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- `<div>` wrapper with `role="group"`, `id={name}`, `aria-disabled`, receives `ref` (via `useImperativeHandle`) and `className`
+- Per-option `<Button>` with class `ToggleButton`, `aria-pressed={isSelected}`, rounded corners only on first/last items
+- No `<fieldset>` — uses `<div>` with explicit `role="group"` instead
+- `tabIndex` management: selected button (or first non-disabled if none selected) gets `tabIndex={0}`, all others get `tabIndex={-1}` — roving tabindex pattern
+
+### Keyboard Handling
+- **Tab** — Moves focus into the group (to the button with `tabIndex={0}`) and out of the group
+- **Arrow Down / Arrow Right** — Moves focus to next toggle button (via `useFocus`)
+- **Arrow Up / Arrow Left** — Moves focus to previous toggle button (via `useFocus`)
+- **Enter / Space** — Activates the focused toggle button (delegated to Button component)
+- **Disabled** — Group-level disabled sets `aria-disabled` on all buttons; per-option `isDisabled` disables individual buttons
+
+### Accessibility (WAI-ARIA)
+- Follows [Toolbar Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/) semantics — `role="group"` with roving tabindex
+- `aria-pressed` on each button indicates selected/unselected state
+- `aria-disabled` on group wrapper and individual buttons
+- Roving tabindex: only one button in the group is focusable via Tab at any time
+- `aria-labelledby` on group links to Label's legend for accessible group name (via ToggleGroupField). Standalone usage accepts `aria-label` via rest props; `devWarning` fires if neither is provided.
+
+### Visual States
+- **Unselected** — Default button styling, `tabIndex={-1}` (unless first non-disabled with no selection)
+- **Selected** — `selected` class on button, `aria-pressed="true"`, `tabIndex={0}`
+- **Error** — `error` class on group wrapper
+- **Disabled (group)** — `disabled` class and `aria-disabled="true"` on wrapper, all buttons disabled
+- **Disabled (per-option)** — Individual button disabled via `isDisabled` on option
+- **Focus** — Button's own `focus-visible:z-10` brings focused button above siblings
+
+### Interaction Behavior
+- Controlled component — `value` (optional, generic `T`, defaults to `string`) and `onChange` are props
+- Click unselected toggle: calls `onChange(toggleValue)` — selects it
+- Click selected toggle with `allowEmpty` (default): calls `onClear()` if provided, otherwise `onChange(undefined)` — deselects it
+- Click selected toggle without `allowEmpty`: no action
+- Multi-value mode: `multiValue` prop present → calls `onChange(toggleValue)` on click, with `allowEmpty` enforcement — if `allowEmpty` is false and only one item remains selected, clicking it does nothing
+- `buttonProps` spread after explicit props — allows per-group Button customization
+
+### Responsive & Layout
+- `w-max` on wrapper — shrinks to content width
+- Horizontal layout by default (`flex`), `column` prop adds `flex-col`
+- Connected segments: `rounded-none` on all buttons, `rounded-l-md` / `rounded-r-md` on first/last (or `rounded-t-md` / `rounded-b-md` in column mode)
+- `border-none` on buttons — group wrapper provides the outer border
+
+<br/>
+
+## Architecture Decisions
+- **`<div>` with `role="group"` instead of `<fieldset>`**: Uses a `<div>` because toggle buttons are `<button>` elements, not form inputs. A `<fieldset>` is semantically for form controls. The explicit `role="group"` provides the same grouping semantics.
+- **`useFocus` for roving tabindex**: The `useFocus` hook with `selectors: ['.ToggleButton']` manages arrow key navigation between toggle buttons. This creates the roving tabindex pattern where only one button is in the tab order at a time. `triggerRef: { current: null }` because there's no external trigger — the group is always active.
+- **`useImperativeHandle` for ref**: The component needs an internal ref (`componentRef`) for `useFocus`, so `useImperativeHandle` bridges the external `ref` to the internal one. This keeps `useFocus` working while still exposing the DOM element to consumers.
+- **`multiValue` dual-mode design**: Instead of separate components, ToggleGroup accepts both `value` (single) and `multiValue` (array). When `multiValue` is present, click handling delegates to the parent (MultiToggleGroup) for array logic, while still enforcing `allowEmpty` — if `allowEmpty` is false and the last item would be deselected, the click is ignored. The `isSelected` check uses `multiValue.some(isEqual)` vs `isEqual(value, toggleValue)` based on which prop is present.
+- **Generic `<T = string>` with `forwardRef` cast pattern**: The component function is generic, but `forwardRef` doesn't preserve generics. The `ToggleGroupComponentType` interface + `as` cast restores the generic signature.
+- **`isEqual` from lodash for deep value comparison**: Both `isSelected` checks (`isEqual(value, toggleValue)` for single, `multiValue.some(v => isEqual(v, toggleValue))` for multi) use `isEqual` to support object-typed values.
+- **`allowEmpty` with `onClear` fallback**: Deselection has two paths — `onClear` callback (for custom clear behavior) or `onChange(undefined)` (default). The `onChange` signature is `(value: T | undefined) => void`, matching the optional `value?: T` prop — deselection produces `undefined`, not an empty string cast.
+- **Per-option `isDisabled`**: `ToggleOption` extends `OptionType<T>` with `isDisabled`. Combined with the `tabIndex` logic (`isFirstNonDisabled`), disabled options are skipped in the initial tab target — the first non-disabled, non-selected button gets `tabIndex={0}` when nothing is selected.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+- [ ] Object array options — support passing a raw object array via `options` with `getLabel` / `getValue` extractors, removing the need to manually map data into `OptionType` shape (similar to React Select's `getOptionLabel` / `getOptionValue`)
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> The dual-mode design is the defining choice here — one component handles both single and multi selection through `value` vs `multiValue`, and it works because the click handler cleanly branches between the two paths without leaking complexity to the consumer. The `allowEmpty` guard that silently swallows the last-item deselect in multi mode is a nice touch; toggle groups that accidentally empty themselves are a real usability bug. The roving tabindex implementation is solid — `isFirstNonDisabled` as the fallback focus target when nothing is selected means keyboard users always land somewhere sensible.
+>
+> React Aria's `ToggleButtonGroup` is the strongest comparison here, and it takes a fundamentally different approach: selection state is managed internally with controlled/uncontrolled patterns, and multi-select is a `selectionMode` prop rather than a separate value type. That's more declarative, but it also means you're locked into their state model. This component's approach of just calling `onChange(toggleValue)` and letting the parent sort out array logic is more flexible for form library integrations — you wire it however your form state works.
+>
+> A practical toggle group that earns its dual-mode complexity.
+>
+> — *Claude, Opus 4.6, 2026-03-23*

@@ -47,8 +47,9 @@ export const Default: Story = {
     autoplay: undefined,
     autoplayInterval: undefined,
     hideArrows: false,
-    hideControlDotts: false,
+    hideControlDots: false,
     setCurrentPage: undefined,
+    onPageChange: undefined,
   },
 }
 
@@ -71,7 +72,7 @@ export const HideControls: Story = {
     ...Default.args,
     items: getCarouselItems(8),
     autoplay: 'on',
-    hideControlDotts: true,
+    hideControlDots: true,
     hideArrows: true,
   },
   render: args => <ControlledCarousel {...args} />,
@@ -110,7 +111,7 @@ export const WithChildren: Story = {
     ratio: 'aspect-video',
     autoplay: undefined,
     hideArrows: false,
-    hideControlDotts: false,
+    hideControlDots: false,
   },
   render: args => (
     <Carousel {...args}>

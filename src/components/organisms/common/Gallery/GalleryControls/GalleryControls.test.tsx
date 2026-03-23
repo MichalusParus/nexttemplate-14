@@ -8,7 +8,6 @@ import { GalleryControls } from '.'
 
 expect.extend(toHaveNoViolations)
 
-window.HTMLElement.prototype.scrollIntoView = jest.fn()
 
 describe('GalleryControls', () => {
   const items = getGalleryItems(18)

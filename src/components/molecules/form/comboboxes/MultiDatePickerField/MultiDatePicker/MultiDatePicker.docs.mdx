@@ -1,0 +1,83 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/comboboxes/MultiDatePicker/Def" />
+
+# MultiDatePicker
+
+> Multi-date selection composed on top of DatePicker with toggle-add/remove and automatic ascending sort. Clicking a selected date removes it, clicking an unselected date adds it. Dropdown stays open for continuous selection. For form integration with validation and labels, use MultiDatePickerField.
+
+<br/>
+
+## Features
+
+- Flexible value input — string, Date, or number
+- Locale-aware formatting via `Intl.DateTimeFormat`
+- Configurable placement
+- Min/max date boundaries via `calendarProps`
+- Unavailable dates via `calendarProps`
+- Week start configuration via `calendarProps`
+- Clear button via `onClear`
+- Value chips display via `displayChips`
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+Inherits from [DatePicker](?path=/docs/molecules-form-comboboxes-datepicker-def--docs)
+- `value: DateValue[]` — array of dates instead of single date
+- Passes `calendarProps.multiValue = dateValues` to Calendar for multi-selection highlighting
+- Display: comma-separated locale-formatted dates (e.g. "3/4/2023, 3/6/2023") or ValueChips when `displayChips=true`
+- Supports `displayChips` and `chipProps` for chip-based display
+- Internal `onClear` always provided — calls `onChange([])`
+
+### Keyboard Handling
+Inherits from [DatePicker](?path=/docs/molecules-form-comboboxes-datepicker-def--docs)
+- Dropdown stays open after each selection — allows continuous multi-date picking
+
+### Accessibility (WAI-ARIA)
+Inherits from [DatePicker](?path=/docs/molecules-form-comboboxes-datepicker-def--docs)
+- Multi-value selection communicated via [Calendar](?path=/docs/molecules-common-calendar-def--docs) gridcell `aria-selected` on each selected date independently
+
+### Interaction Behavior
+Inherits from [DatePicker](?path=/docs/molecules-form-comboboxes-datepicker-def--docs)
+- **Toggle selection**: clicking a selected date removes it (via `isSameDay` filter), clicking an unselected date adds it
+- Dates automatically sorted in ascending order via `compareAsc` after each addition
+- Dropdown stays open after selection — allows continuous multi-selection without reopening
+- `onClear` resets to empty array → `onChange([])`
+
+<br/>
+
+## Architecture Decisions
+- **Short wrapper**: All complexity lives in DatePicker and Calendar. MultiDatePicker only adds `handleChange` (toggle logic with sort) and passes `multiValue` to Calendar.
+- **Omits `onClear` from consumer type but provides internally**: Consumer never needs to provide `onClear` — it always means "clear all dates" → `onChange([])`. The internal `onClear` triggers the ClearButton in DatePickerCombobox.
+- **`compareAsc` for deterministic sort**: After every addition, the array is re-sorted. This ensures the displayed order and the `onChange` output are always chronological, regardless of click order.
+- **`isSameDay` for toggle detection**: Day-level granularity for matching — time components are ignored. A date added at midnight matches a click at any time on the same calendar day.
+- **`normalizeDateValue` with `.filter(v => v !== undefined)`**: Defensive against malformed input arrays. Invalid entries are silently dropped before reaching Calendar or the toggle logic.
+
+<br/>
+
+## Known Bugs & Limitations
+- **Button-based combobox without text input**: Uses `role="combobox"` on a `<Button>` — ARIA 1.2 expects combobox to be a text input element, so screen readers announce "combobox" but the user cannot type a date. Passes automated axe audits (valid role + required attributes) but doesn't match the spec's intended interaction model. Without a text input, dates can only be selected via the calendar grid — navigating to distant dates (birthdates, historical dates) requires many clicks through months/years. Most libraries (MUI, Mantine, Ant Design) use an `<input>` with calendar popup; React Aria uses segmented spinbuttons with `aria-haspopup="dialog"`. A `<button aria-haspopup="dialog">` would be more semantically accurate for a picker-only pattern. This is a library-wide convention shared with Select.
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> A short wrapper that does exactly one thing — toggle dates in a sorted array — and delegates everything else to DatePicker. That's a clean decomposition and it reads instantly.
+>
+> React Aria's `useCalendar` with `allowsMultipleSelection` handles multi-date state internally, but it also forces you into their controlled-value model and date object system. Here, the toggle-and-sort logic is five lines you own outright, and the chronological guarantee from `compareAsc` on every addition is something you'd have to layer on top of React Aria anyway. For a copy-paste library, explicit is better.
+>
+> The silent filtering of malformed values is a nice defensive touch. The `onClear` omission from the public type is well-judged — there's no scenario where clearing multi-select means anything other than emptying the array.
+>
+> Lean, obvious, and correctly sorted — this is wrapper code done right.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

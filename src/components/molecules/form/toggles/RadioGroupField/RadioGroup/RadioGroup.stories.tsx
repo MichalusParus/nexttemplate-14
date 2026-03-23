@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { getOptions, optionsWithContent } from '../../../../../../../.storybook/helpers'
 import { RadioGroup, RadioGroupProps } from './RadioGroup'
 
-const meta: Meta<typeof RadioGroup> = {
+const meta: Meta<typeof RadioGroup<string>> = {
   title: 'Molecules/Form/toggles/RadioGroup',
   component: RadioGroup,
   tags: ['autodocs'],
@@ -24,7 +24,7 @@ const RadioGroupWithHooks = (args: RadioGroupProps) => {
 }
 
 export default meta
-type Story = StoryObj<typeof RadioGroup>
+type Story = StoryObj<typeof RadioGroup<string>>
 
 export const PrimaryDefault: Story = {
   args: {

@@ -33,7 +33,6 @@ export const PrimaryDefault: Story = {
     exclusive: false,
     variant: 'outlined',
     color: 'primary',
-    gap: 'gap-4',
     disclosuresProps: undefined,
   },
 }

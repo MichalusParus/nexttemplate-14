@@ -67,6 +67,16 @@ export const Error: Story = {
   render: args => <InputWithHooks {...args} />,
 }
 
+export const Number: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'inputStory6',
+    type: 'number',
+    placeholder: 'Number',
+  },
+  render: args => <InputWithHooks {...args} />,
+}
+
 export const Disabled: Story = {
   args: {
     ...PrimaryDefault.args,

@@ -20,6 +20,7 @@ import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { XIcon } from '@/components/atoms/icons'
 import { Title } from '@/components/atoms/typography/Title'
 import { TitleProps } from '@/components/atoms/typography/Title/Title'
+import { devWarning } from '@/components/utils/devWarning'
 import { useFocus } from '@/components/utils/hooks/useFocus'
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
@@ -104,6 +105,8 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
       onToggle: setIsOpen,
     })
 
+    devWarning(!title && !label, 'Dialog: no title or label provided — dialog will only have a generic aria-label. Provide at least one for screen reader context.')
+
     const handleClose = () => {
       setIsOpen(false)
     }
@@ -138,7 +141,7 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
             className,
           )}
           role="dialog"
-          aria-label={label || t('dialog')}
+          aria-label={!title ? (label || t('dialog')) : undefined}
           aria-labelledby={title ? `${name}-title` : undefined}
           aria-modal="true"
           ref={setComponentEl}
@@ -151,7 +154,7 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
             padding={paddingY}
             {...restPaperProps}
           >
-            <div className={cn('DialogTitleWrap', 'relative', paddingX, 'pb-8')}>
+            <div className={cn('DialogTitleWrap', 'relative', paddingX, (title || !hideXButton) && 'pb-8')}>
               {title && (
                 <Title
                   id={`${name}-title`}
@@ -166,7 +169,7 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
               )}
               {!hideXButton && (
                 <Button
-                  className={cn('XButton', 'absolute right-0 top-0 border-none')}
+                  className={cn('XButton', 'absolute right-1 top-0 border-none px-0 py-0')}
                   variant={variant}
                   color={color}
                   size="lg"
@@ -181,21 +184,23 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
             <ScrollShadow height="max-h-[75vh]" padding={paddingX}>
               {children}
             </ScrollShadow>
-            <div className={cn('DialogActions', paddingX, 'flex justify-end gap-3 pt-8')}>
-              {closeButton && (
-                <Button
-                  className={cn('CloseButton', 'border-none')}
-                  variant={variant}
-                  color={color}
-                  hideShadow
-                  onClick={handleClose}
-                  data-testid="CloseButton"
-                >
-                  {t('close')}
-                </Button>
-              )}
-              {dialogActions}
-            </div>
+            {(closeButton || dialogActions) && (
+              <div className={cn('DialogActions', paddingX, 'flex justify-end gap-3 pt-8')}>
+                {closeButton && (
+                  <Button
+                    className={cn('CloseButton', 'border-none')}
+                    variant={variant}
+                    color={color}
+                    hideShadow
+                    onClick={handleClose}
+                    data-testid="CloseButton"
+                  >
+                    {t('close')}
+                  </Button>
+                )}
+                {dialogActions}
+              </div>
+            )}
           </Paper>
         </div>
         <Overlay isOpen={isOpen} onClose={handleClose} dark />

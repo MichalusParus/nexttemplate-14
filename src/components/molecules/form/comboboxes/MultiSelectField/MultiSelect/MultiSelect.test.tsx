@@ -4,7 +4,7 @@ import { axe, toHaveNoViolations } from 'jest-axe'
 import { act, createRef } from 'react'
 
 import { getGroupedOptions, getOptions } from '../../../../../../../.storybook/helpers'
-import { fireEvent, render, screen, waitFor } from '.././../../../../../../.jest/customRender'
+import { fireEvent, render, screen } from '.././../../../../../../.jest/customRender'
 import { MultiSelect } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -12,359 +12,783 @@ expect.extend(toHaveNoViolations)
 const options = getOptions('multiSelectTest', 5)
 
 describe('MultiSelect', () => {
-  it('default', async () => {
-    render(
-      <MultiSelect
-        className="className"
-        name="multiSelectTest"
-        placeholder="placeholder"
-        value={[]}
-        options={options}
-        onChange={() => {}}
-      />,
-    )
-    const multiSelectTestId = screen.getByTestId('Select')
-    const comboboxRole = screen.getByRole('combobox')
-
-    expect(multiSelectTestId).toBeInTheDocument()
-    expect(comboboxRole).toBeInTheDocument()
-    expect(comboboxRole).toBeInTheDocument()
-    expect(comboboxRole).toHaveClass('className')
-    expect(comboboxRole).toHaveTextContent('placeholder')
-    expect(comboboxRole).toHaveAttribute('id', 'multiSelectTest')
-    expect(comboboxRole).toHaveAttribute('name', 'multiSelectTest')
-    expect(comboboxRole).toHaveAttribute('type', 'button')
-    expect(comboboxRole).toHaveAttribute('aria-expanded', 'false')
-    expect(comboboxRole).toHaveAttribute('aria-haspopup', 'listbox')
-
-    await act(async () => {
-      fireEvent.click(comboboxRole)
+  describe('Semantics', () => {
+    it('wrapper div', () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+      expect(screen.getByTestId('Select')).toBeInTheDocument()
     })
 
-    const dropdownTestId = screen.getByTestId('Dropdown')
-    const listboxTestId = screen.getByTestId('ListBox')
-    const optionRoles = screen.getAllByRole('option')
+    it('className forwarded to combobox', () => {
+      render(
+        <MultiSelect
+          className="className"
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      expect(screen.getByRole('combobox')).toHaveClass('className')
+    })
 
-    expect(comboboxRole).toHaveAttribute('aria-controls', listboxTestId.getAttribute('id'))
-    expect(comboboxRole).toHaveAttribute('aria-owns', listboxTestId.getAttribute('id'))
-    expect(dropdownTestId).toBeInTheDocument()
-    expect(listboxTestId).toBeInTheDocument()
-    expect(listboxTestId).toHaveAttribute('id', comboboxRole.getAttribute('aria-controls'))
-    expect(listboxTestId).toHaveAttribute('aria-hidden')
-    expect(comboboxRole).toHaveAttribute('aria-expanded', 'true')
-    expect(listboxTestId).toHaveAttribute('aria-hidden', 'false')
-    expect(optionRoles).toHaveLength(options.length)
-    comboboxRole.focus()
-    expect(document.activeElement).toBe(comboboxRole)
+    it('id and name from name prop', () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+      const combobox = screen.getByRole('combobox')
+      expect(combobox).toHaveAttribute('id', 'multiSelectTest')
+      expect(combobox).toHaveAttribute('name', 'multiSelectTest')
+    })
+
+    it('type="button"', () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+      expect(screen.getByRole('combobox')).toHaveAttribute('type', 'button')
+    })
+
+    it('placeholder when empty', () => {
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          placeholder="placeholder"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      expect(screen.getByRole('combobox')).toHaveTextContent('placeholder')
+    })
+
+    it('displays first selected label', () => {
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[options[0].value, options[1].value]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      expect(screen.getByRole('combobox')).toHaveTextContent(options[0].label)
+    })
+
+    it('multiple selected options have selected class', async () => {
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[options[0].value, options[1].value]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      const optionElements = screen.getAllByRole('option')
+      expect(optionElements[0]).toHaveClass('selected')
+      expect(optionElements[1]).toHaveClass('selected')
+      expect(optionElements[2]).not.toHaveClass('selected')
+    })
+
+    it('aria-expanded false when closed', () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+      expect(screen.getByRole('combobox')).toHaveAttribute('aria-expanded', 'false')
+    })
+
+    it('aria-haspopup="listbox"', () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+      expect(screen.getByRole('combobox')).toHaveAttribute('aria-haspopup', 'listbox')
+    })
+
+    it('aria-expanded true when open', async () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      expect(screen.getByRole('combobox')).toHaveAttribute('aria-expanded', 'true')
+    })
+
+    it('aria-controls and aria-owns link to listbox', async () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      const combobox = screen.getByRole('combobox')
+      const listbox = screen.getByTestId('ListBox')
+      expect(combobox).toHaveAttribute('aria-controls', listbox.getAttribute('id'))
+      expect(combobox).toHaveAttribute('aria-owns', listbox.getAttribute('id'))
+    })
+
+    it('listbox aria-hidden false when open', async () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      expect(screen.getByTestId('ListBox')).toHaveAttribute('aria-hidden', 'false')
+    })
+
+    it('renders options', async () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      expect(screen.getAllByRole('option')).toHaveLength(options.length)
+    })
+
+    it('displayChips renders chips for each value', () => {
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[options[0].value, options[1].value]}
+          options={options}
+          displayChips
+          onChange={() => {}}
+        />,
+      )
+      const chips = screen.getAllByTestId('Chip')
+      expect(chips).toHaveLength(2)
+      expect(chips[0]).toHaveTextContent(options[0].label)
+      expect(chips[1]).toHaveTextContent(options[1].label)
+    })
+
+    it('grouped options render groups', async () => {
+      const groupedOptions = getGroupedOptions('selectTest')
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={groupedOptions} onChange={() => {}} />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      const groupLabels = screen.getAllByTestId('GroupLabel')
+      const optionElements = screen.getAllByRole('option')
+      expect(groupLabels).toHaveLength(groupedOptions.length)
+      expect(optionElements).toHaveLength(
+        groupedOptions.flatMap(group => group.groupedOptions).length,
+      )
+    })
+
+    it('error class', () => {
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          error="error"
+          onChange={() => {}}
+        />,
+      )
+      expect(screen.getByRole('combobox')).toHaveClass('error')
+    })
+
+    it('disabled sets aria-disabled', () => {
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          disabled
+          onChange={() => {}}
+        />,
+      )
+      expect(screen.getByRole('combobox')).toHaveAttribute('aria-disabled', 'true')
+    })
+
+    it('dropdownProps forwarded', async () => {
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+          dropdownProps={{ className: 'dropdownClass' }}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      expect(screen.getByTestId('Dropdown')).toHaveClass('dropdownClass')
+    })
+
+    it('listboxProps forwarded', async () => {
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+          listboxProps={{ className: 'listboxClass' }}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      expect(screen.getByTestId('ListBox')).toHaveClass('listboxClass')
+    })
+
+    it('chipProps forwarded', () => {
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[options[0].value]}
+          options={options}
+          displayChips
+          onChange={() => {}}
+          chipProps={{ className: 'chipClass' }}
+        />,
+      )
+      expect(screen.getAllByTestId('Chip')[0]).toHaveClass('chipClass')
+    })
+
+    it('children rendered in listbox', async () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}}>
+          <div data-testid="test">test</div>
+        </MultiSelect>,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      expect(screen.getByTestId('test')).toBeInTheDocument()
+    })
+
+    it('ClearAllButton rendered when values exist', () => {
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[options[0].value]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      expect(screen.getByTestId('ClearAllButton')).toBeInTheDocument()
+    })
+
+    it('object value selects correctly', async () => {
+      const objValueOptions = options.map(o => ({
+        ...o,
+        value: { key1: o.label, key2: o.value },
+      }))
+      render(
+        <MultiSelect<{ key1: string; key2: string }>
+          name="multiSelectTest"
+          value={[objValueOptions[1].value]}
+          options={objValueOptions}
+          onChange={() => {}}
+        />,
+      )
+      expect(screen.getByRole('combobox')).toHaveTextContent(objValueOptions[1].label)
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      const optionElements = screen.getAllByRole('option')
+      expect(optionElements[1]).toHaveClass('selected')
+      expect(optionElements[2]).not.toHaveClass('selected')
+    })
   })
 
-  it('value', async () => {
-    render(
-      <MultiSelect
-        name="multiSelectTest"
-        value={[options[0].value, options[1].value]}
-        options={options}
-        onChange={() => {}}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
-
-    expect(comboboxRole).toHaveTextContent(options[0].label)
-
-    await act(async () => {
-      fireEvent.click(comboboxRole)
+  describe('Keyboard', () => {
+    it('combobox is focusable', () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+      const combobox = screen.getByRole('combobox')
+      combobox.focus()
+      expect(document.activeElement).toBe(combobox)
     })
 
-    const optionRoles = screen.getAllByRole('option')
-    expect(optionRoles[0]).toHaveClass('selected')
-    expect(optionRoles[1]).toHaveClass('selected')
-    expect(optionRoles[2]).not.toHaveClass('selected')
-  })
+    it('ArrowDown on closed combobox opens dropdown', async () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+      const combobox = screen.getByRole('combobox')
 
-  it('displayChips', async () => {
-    const spy = jest.fn()
-    render(
-      <MultiSelect
-        name="multiSelectTest"
-        value={[options[0].value, options[1].value]}
-        options={options}
-        displayChips
-        onChange={spy}
-      />,
-    )
-    const chipTestIds = screen.getAllByTestId('Chip')
-    const clearTestIds = screen.getAllByTestId('ClearButton')
+      await act(async () => { combobox.focus() })
+      await act(async () => {})
 
-    expect(chipTestIds).toHaveLength(2)
-    expect(chipTestIds[0]).toHaveTextContent(options[0].label)
-    expect(chipTestIds[1]).toHaveTextContent(options[1].label)
-    expect(clearTestIds).toHaveLength(2)
+      await act(async () => {
+        fireEvent.keyDown(combobox, { key: 'ArrowDown', code: 'ArrowDown' })
+      })
 
-    await act(async () => {
-      fireEvent.click(clearTestIds[0])
+      expect(combobox).toHaveAttribute('aria-expanded', 'true')
     })
 
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith([options[1].value])
-  })
+    it('Escape closes dropdown', async () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+      const combobox = screen.getByRole('combobox')
 
-  it('groupedOptions', async () => {
-    const groupedOptions = getGroupedOptions('selectTest')
-    render(
-      <MultiSelect
-        name="multiSelectTest"
-        value={[]}
-        options={groupedOptions}
-        displayChips
-        onChange={() => {}}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
+      await act(async () => { fireEvent.click(combobox) })
+      await act(async () => {})
+      await act(async () => {})
 
-    await act(async () => {
-      fireEvent.click(comboboxRole)
+      expect(combobox).toHaveAttribute('aria-expanded', 'true')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'Escape', code: 'Escape' })
+      })
+
+      expect(combobox).toHaveAttribute('aria-expanded', 'false')
     })
 
-    const groupLabelTestIds = screen.getAllByTestId('GroupLabel')
-    const optionRoles = screen.getAllByRole('option')
+    it('selecting option does not close dropdown', async () => {
+      const onChange = jest.fn()
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[options[0].value]}
+          options={options}
+          onChange={onChange}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
 
-    expect(groupLabelTestIds).toHaveLength(groupedOptions.length)
-    expect(optionRoles).toHaveLength(groupedOptions.flatMap(group => group.groupedOptions).length)
-  })
+      await act(async () => { fireEvent.click(combobox) })
 
-  it('error', () => {
-    render(
-      <MultiSelect
-        name="multiSelectTest"
-        value={[]}
-        options={options}
-        error="error"
-        onChange={() => {}}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
+      const optionElements = screen.getAllByRole('option')
 
-    expect(comboboxRole).toHaveClass('error')
-  })
+      await act(async () => { fireEvent.click(optionElements[4]) })
 
-  it('dropdownProps/listboxProps/chipProps', async () => {
-    render(
-      <MultiSelect
-        name="multiSelectTest"
-        value={[options[0].value]}
-        options={options}
-        displayChips
-        onChange={() => {}}
-        dropdownProps={{ className: 'dropdownClass' }}
-        listboxProps={{ className: 'listboxClass' }}
-        chipProps={{ className: 'chipClass' }}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
-
-    await act(async () => {
-      fireEvent.click(comboboxRole)
-    })
-
-    const dropdownTestId = screen.getByTestId('Dropdown')
-    const listboxTestId = screen.getByTestId('ListBox')
-    const chipTestIds = screen.getAllByTestId('Chip')
-
-    expect(dropdownTestId).toHaveClass('dropdownClass')
-    expect(listboxTestId).toHaveClass('listboxClass')
-    expect(chipTestIds[0]).toHaveClass('chipClass')
-  })
-
-  it('onClear', async () => {
-    const spy = jest.fn()
-    render(
-      <MultiSelect
-        name="multiSelectTest"
-        value={[options[0].value, options[1].value]}
-        options={options}
-        onChange={spy}
-      />,
-    )
-    const clearTestId = screen.getByTestId('ClearAllButton')
-
-    expect(clearTestId).toBeInTheDocument()
-
-    await act(async () => {
-      fireEvent.click(clearTestId)
-    })
-
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith([])
-  })
-
-  it('onOpen/onClose', async () => {
-    const spyOpen = jest.fn()
-    const spyClose = jest.fn()
-
-    render(
-      <MultiSelect
-        name="multiSelectTest"
-        value={[]}
-        options={options}
-        onChange={() => {}}
-        onOpen={spyOpen}
-        onClose={spyClose}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
-
-    await act(async () => {
-      fireEvent.click(comboboxRole)
-    })
-
-    expect(spyOpen).toHaveBeenCalledTimes(1)
-    expect(spyClose).toHaveBeenCalledTimes(0)
-
-    spyOpen.mockClear()
-
-    fireEvent.click(comboboxRole)
-    expect(spyClose).toHaveBeenCalledTimes(1)
-    expect(spyOpen).toHaveBeenCalledTimes(0)
-  })
-
-  it('onChange', async () => {
-    const spy = jest.fn()
-    render(
-      <MultiSelect
-        name="multiSelectTest"
-        value={[options[0].value]}
-        options={options}
-        onChange={spy}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
-
-    expect(comboboxRole).toHaveTextContent(options[0].label)
-
-    await act(async () => {
-      fireEvent.click(comboboxRole)
-    })
-
-    const optionRoles = screen.getAllByRole('option')
-
-    await act(async () => {
-      fireEvent.click(optionRoles[4])
-    })
-
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith([options[0].value, options[4].value])
-
-    await act(async () => {
-      fireEvent.click(optionRoles[0])
-    })
-
-    expect(spy).toHaveBeenCalledTimes(2)
-    expect(spy).toHaveBeenNthCalledWith(2, [])
-  })
-
-  it('objValueonChange', async () => {
-    const spy = jest.fn()
-    const objValueOptions = options.map(o => ({ ...o, value: { key1: o.label, key2: o.value } }))
-    render(
-      <MultiSelect<{ key1: string; key2: string }>
-        name="multiSelectTest"
-        value={[objValueOptions[1].value]}
-        options={objValueOptions}
-        onChange={spy}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
-
-    expect(comboboxRole).toHaveTextContent(objValueOptions[1].label)
-
-    await act(async () => {
-      fireEvent.click(comboboxRole)
-    })
-
-    const optionRoles = screen.getAllByRole('option')
-
-    expect(optionRoles[1]).toHaveClass('selected')
-    expect(optionRoles[2]).not.toHaveClass('selected')
-
-    await act(async () => {
-      fireEvent.click(optionRoles[2])
-    })
-
-    expect(spy).toHaveBeenCalled()
-    expect(spy).toHaveBeenCalledWith([objValueOptions[1].value, objValueOptions[2].value])
-
-    waitFor(() => {
-      expect(optionRoles[2]).toHaveClass('selected')
-      expect(optionRoles[3]).not.toHaveClass('selected')
+      expect(onChange).toHaveBeenCalled()
+      expect(combobox).toHaveAttribute('aria-expanded', 'true')
     })
   })
 
-  it('disabled', () => {
-    render(
-      <MultiSelect
-        name="multiSelectTest"
-        value={[]}
-        options={options}
-        disabled
-        onChange={() => {}}
-      />,
-    )
-    const comboboxRole = screen.getByRole('combobox')
+  describe('Interaction', () => {
+    it('click opens dropdown', async () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+      const combobox = screen.getByRole('combobox')
 
-    expect(comboboxRole).toHaveAttribute('aria-disabled', 'true')
-  })
+      await act(async () => {
+        fireEvent.click(combobox)
+      })
 
-  it('children', async () => {
-    render(
-      <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}}>
-        <div data-testid="test">test</div>
-      </MultiSelect>,
-    )
-    const comboboxRole = screen.getByRole('combobox')
-
-    await act(async () => {
-      fireEvent.click(comboboxRole)
+      expect(combobox).toHaveAttribute('aria-expanded', 'true')
+      expect(screen.getByTestId('Dropdown')).toBeInTheDocument()
     })
 
-    const testId = screen.getByTestId('test')
+    it('onChange adds unselected option', async () => {
+      const onChange = jest.fn()
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[options[0].value]}
+          options={options}
+          onChange={onChange}
+        />,
+      )
 
-    expect(testId).toBeInTheDocument()
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.click(optionElements[4])
+      })
+
+      expect(onChange).toHaveBeenCalledWith([options[0].value, options[4].value])
+    })
+
+    it('onChange removes selected option', async () => {
+      const onChange = jest.fn()
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[options[0].value]}
+          options={options}
+          onChange={onChange}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.click(optionElements[0])
+      })
+
+      expect(onChange).toHaveBeenCalledWith([])
+    })
+
+    it('onChange with object values', async () => {
+      const onChange = jest.fn()
+      const objValueOptions = options.map(o => ({
+        ...o,
+        value: { key1: o.label, key2: o.value },
+      }))
+      render(
+        <MultiSelect<{ key1: string; key2: string }>
+          name="multiSelectTest"
+          value={[objValueOptions[1].value]}
+          options={objValueOptions}
+          onChange={onChange}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.click(optionElements[2])
+      })
+
+      expect(onChange).toHaveBeenCalledWith([objValueOptions[1].value, objValueOptions[2].value])
+    })
+
+    it('chip clear removes individual value', async () => {
+      const onChange = jest.fn()
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[options[0].value, options[1].value]}
+          options={options}
+          displayChips
+          onChange={onChange}
+        />,
+      )
+
+      const clearButtons = screen.getAllByTestId('ClearButton')
+
+      await act(async () => {
+        fireEvent.click(clearButtons[0])
+      })
+
+      expect(onChange).toHaveBeenCalledWith([options[1].value])
+    })
+
+    it('ClearAllButton clears all values', async () => {
+      const onChange = jest.fn()
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[options[0].value, options[1].value]}
+          options={options}
+          onChange={onChange}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('ClearAllButton'))
+      })
+
+      expect(onChange).toHaveBeenCalledWith([])
+    })
+
+    it('onOpen callback', async () => {
+      const onOpen = jest.fn()
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+          onOpen={onOpen}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      expect(onOpen).toHaveBeenCalledTimes(1)
+    })
+
+    it('onClose callback', async () => {
+      const onClose = jest.fn()
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+          onClose={onClose}
+        />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      await act(async () => {
+        fireEvent.click(combobox)
+      })
+
+      expect(onClose).toHaveBeenCalledTimes(0)
+
+      fireEvent.click(combobox)
+      expect(onClose).toHaveBeenCalledTimes(1)
+    })
   })
 
-  it('ref', () => {
-    const ref = createRef<HTMLButtonElement>()
-    render(
-      <MultiSelect
-        ref={ref}
-        name="multiSelectTest"
-        value={[]}
-        options={options}
-        onChange={() => {}}
-      />,
-    )
+  describe('SelectAll', () => {
+    it('selectAll renders SelectAllOption in dropdown', async () => {
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          selectAll
+          onChange={() => {}}
+        />,
+      )
 
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
 
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
+      expect(screen.getByRole('option', { name: /select all/i })).toBeInTheDocument()
+      expect(screen.getAllByRole('option')).toHaveLength(options.length + 1)
+    })
 
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
+    it('selectAll not rendered when prop absent', async () => {
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      expect(screen.queryByRole('option', { name: /select all/i })).not.toBeInTheDocument()
+    })
+
+    it('click SelectAllOption with none selected calls onChange with all values', async () => {
+      const onChange = jest.fn()
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          selectAll
+          onChange={onChange}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('option', { name: /select all/i }))
+      })
+
+      expect(onChange).toHaveBeenCalledWith(options.map(o => o.value))
+    })
+
+    it('click SelectAllOption with all selected calls onChange with empty', async () => {
+      const onChange = jest.fn()
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={options.map(o => o.value)}
+          options={options}
+          selectAll
+          onChange={onChange}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('option', { name: /select all/i }))
+      })
+
+      expect(onChange).toHaveBeenCalledWith([])
+    })
+
+    it('click SelectAllOption with some selected calls onChange with all values', async () => {
+      const onChange = jest.fn()
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[options[0].value]}
+          options={options}
+          selectAll
+          onChange={onChange}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('option', { name: /select all/i }))
+      })
+
+      expect(onChange).toHaveBeenCalledWith(options.map(o => o.value))
+    })
+
+    it('selectAll skips disabled options', async () => {
+      const onChange = jest.fn()
+      const optionsWithDisabled = [
+        { label: 'Option 1', value: 'opt1' },
+        { label: 'Option 2', value: 'opt2', isDisabled: true },
+        { label: 'Option 3', value: 'opt3' },
+      ]
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={optionsWithDisabled}
+          selectAll
+          onChange={onChange}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('option', { name: /select all/i }))
+      })
+
+      expect(onChange).toHaveBeenCalledWith(['opt1', 'opt3'])
+    })
+
+    it('selectAll works with object values', async () => {
+      const onChange = jest.fn()
+      const objOptions = options.map(o => ({ ...o, value: { key: o.value } }))
+      render(
+        <MultiSelect<{ key: string }>
+          name="multiSelectTest"
+          value={[]}
+          options={objOptions}
+          selectAll
+          onChange={onChange}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('option', { name: /select all/i }))
+      })
+
+      expect(onChange).toHaveBeenCalledWith(objOptions.map(o => o.value))
+    })
+
+    it('selectAll works with grouped options', async () => {
+      const onChange = jest.fn()
+      const groupedOptions = getGroupedOptions('selectTest')
+      render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={groupedOptions}
+          selectAll
+          onChange={onChange}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('combobox'))
+      })
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('option', { name: /select all/i }))
+      })
+
+      const allValues = groupedOptions.flatMap(g => g.groupedOptions).map(o => o.value)
+      expect(onChange).toHaveBeenCalledWith(allValues)
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(
-      <MultiSelect
-        name="multiSelectTest"
-        value={[]}
-        options={options}
-        onChange={() => {}}
-        title="title"
-      />,
-    )
+  describe('Ref', () => {
+    it('forwards ref to combobox button', () => {
+      const ref = createRef<HTMLButtonElement>()
+      render(
+        <MultiSelect
+          ref={ref}
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+        />,
+      )
+      expect(ref.current).toBeInstanceOf(HTMLButtonElement)
+    })
+  })
 
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          onChange={() => {}}
+          title="title"
+        />,
+      )
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
+
+    it('no axe violations with selectAll', async () => {
+      const { container } = render(
+        <MultiSelect
+          name="multiSelectTest"
+          value={[]}
+          options={options}
+          selectAll
+          onChange={() => {}}
+          title="title"
+        />,
+      )
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

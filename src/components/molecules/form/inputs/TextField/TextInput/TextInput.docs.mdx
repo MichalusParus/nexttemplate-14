@@ -1,0 +1,92 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/inputs/TextInput/Def" />
+
+# TextInput
+
+> Styled text input for single-line user input. The base input primitive used by PasswordInput, SearchInput, and NumberInput. Supports icons, variant/color/size theming, error and disabled states. For form integration with validation and labels, use TextField.
+
+<br/>
+
+## Features
+
+- Start and end icon slots
+- Simplified `onChange(string)`
+- Error and disabled states
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<input>` element — implicit `role="textbox"`, no ARIA role override needed
+- Default `type="text"`, also supports `"password"`, `"search"`, `"number"` (used internally by extension components)
+- Wrapped in a styled `<div>` (InputWrap) that carries variant/color/size/error/disabled styling
+- `id` and `name` set from the `name` prop — `id` connects to `<label htmlFor>` at Field level
+- `className` lands on the wrapper div, not the input — important for layout overrides
+
+### Keyboard Handling
+- All native `<input>` keyboard behavior — no custom `onKeyDown` handling
+- **Tab** — Focuses/unfocuses the input (native)
+- Standard text editing: Home/End, Ctrl+A, arrow keys, clipboard shortcuts
+- Native `disabled` attribute prevents focus entirely
+
+### Accessibility (WAI-ARIA)
+- Follows native [HTML input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/text) semantics
+- `aria-disabled="true"` on the wrapper div when disabled — wrapper communicates disabled state to assistive technology inspecting the container
+- Native `disabled` on the input itself — prevents interaction and removes from tab order
+- `aria-invalid` and `aria-describedby` are not set by default — TextField adds them via Controller. Standalone consumers can pass them directly through rest props
+- `startIcon` and `endIcon` are decorative (no `aria-hidden` needed on the span wrappers — they contain user-provided content)
+
+### Visual States
+- **Default** — Variant x color combination from the style system (text, outlined, contained x primary, secondary, terciary)
+- **Hover** — Background shift via `interactiveVariant`
+- **Focus-within** — Ring on wrapper via `:has(input:focus-visible)` CSS selector + `focusWithinVariant`
+- **Error** — `.error` class on wrapper, red border/shadow via `errorStateClass`
+- **Disabled** — `.disabled` class + `disabledVariant` on wrapper, `cursor-not-allowed` on input, `aria-disabled` on wrapper
+
+### Interaction Behavior
+- `onChange` fires with the extracted string value (`e.target.value`), not the native event
+- Icons are absolutely positioned within the wrapper — `startIcon` adds `pl-10`, `endIcon` adds `pr-10` to the input
+- Disabled state: native `disabled` on input blocks all interaction, wrapper gets both `.disabled` class and `aria-disabled`
+
+### Responsive & Layout
+- Wrapper is `w-full` block-level, fills container width
+- `relative` positioning context for absolute icon placement
+
+<br/>
+
+## Architecture Decisions
+- **Wrapper div pattern**: The wrapper carries all visual styling (variant, color, error, disabled) while the input stays unstyled (`bg-transparent`, `border-none`). This enables the focus-within ring effect on the wrapper and allows icons to be absolutely positioned within the same container.
+- **`onChange` string extraction**: `onChange(e.target.value)` instead of passing the native event — simplifies the API for consumers and matches the `(value: string) => void` contract used consistently across all input components.
+- **Styles shared with TextArea**: `TextInput.style.ts` exports `inputWrapClass`, `inputClass`, `inputVariant`, and `inputSize` — TextArea imports these directly for visual consistency. One style source, two HTML elements.
+- **`type` prop flexibility**: Accepting `'password' | 'search' | 'number'` in addition to `'text'` allows extension components (PasswordInput, SearchInput) to reuse TextInput directly rather than duplicating the wrapper/style logic. `type="number"` is the intended path for simple numeric inputs (quantity, age, count) — gives native browser spinners and ArrowUp/Down. For formatted numbers with locale-aware display (currency, large values), use NumberInput instead.
+- **No `aria-invalid`/`aria-describedby` by default**: These are form concerns handled by TextField via Controller. Standalone consumers can pass them through rest props — the input accepts all native `InputHTMLAttributes`.
+- **Native `disabled` on input, not `aria-disabled`**: Button uses `aria-disabled` to keep disabled buttons focusable for screen reader discovery. Inputs use native `disabled` instead — the standard across all major libraries (MUI, Mantine, Chakra, Radix, React Aria). Rationale: disabled inputs don't trigger actions, so keeping them in the tab order adds confusion without accessibility benefit. `aria-disabled` + `readOnly` would also introduce form submission semantics issues (`readOnly` values are submitted, `disabled` values aren't) and require manual `onChange` blocking. The `aria-disabled` on the wrapper div is a **styling hook** — the `disabled-aria:` Tailwind variant targets `.disabled[aria-disabled="true"]`, so the wrapper needs both for disabled styles to fire. It's not semantic (the wrapper is a non-interactive div).
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> The wrapper-div-carries-the-style approach is the detail that makes this component click. The input itself is transparent and borderless, just a text cursor floating inside a styled container — which means `focus-within` on the wrapper lights up the whole thing including the icons, and error/disabled states only need one class target.
+>
+> Compared to MUI's `InputBase` + `InputAdornment` system, this is dramatically simpler. MUI needs separate adornment components with `position` props and `startAdornment`/`endAdornment` slots that still render their own wrapper spans — here, `startIcon` and `endIcon` are just `ReactNode` props with absolute positioning and automatic sizing from the wrapper. MUI's approach gives you more granular control over adornment click handlers and ARIA, but in practice the ReactNode prop covers the same real uses (toggle buttons, clear buttons) without the ceremony. This wins on directness.
+>
+> The `onChange` string extraction is a good call — consumers never destructure `e.target.value` themselves. The `type` prop accepting `'password'`, `'search'`, and `'number'` alongside `'text'` turns this into a genuine base component — PasswordInput, SearchInput, and NumberInput all render a TextInput rather than duplicating the wrapper, which keeps the style system centralized.
+>
+> Clean, focused, does exactly what a base input should and nothing more.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

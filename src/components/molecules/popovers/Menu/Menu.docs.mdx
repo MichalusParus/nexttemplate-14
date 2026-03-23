@@ -1,0 +1,111 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Popovers/Menu/Def" />
+
+# Menu
+
+> A button-triggered dropdown popover that presents a list of actions, links, toggles, and nested submenus. Implements the WAI-ARIA Menu Button pattern with controlled and uncontrolled modes, composing Button, Dropdown, and MenuList with full keyboard navigation, typeahead search, and recursive submenu support via context.
+
+<br/>
+
+## Features
+
+- Dual rendering — `options` array and `children` compose together
+- Uncontrolled or controlled toggle
+- Six item types — Button, Link, Checkbox, Switch, RadioGroup, Submenu
+- Grouped options
+- Recursive submenus
+- Typeahead search
+- Hover-open mode
+- Modal or non-modal
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Outer `<div>` wrapper with `data-testid="MenuWrap"` — positioning container, receives `ref` and `className`
+- **Uncontrolled mode:** `<Button>` trigger with `id={nameId}-button`, `aria-expanded` (boolean), `aria-haspopup="menu"`, `aria-controls` and `aria-owns` linking to `{nameId}-menu`
+- **Controlled mode:** No internal Button rendered — pass `setIsOpen` and `anchorRef` for external trigger ownership
+- `<Dropdown>` portal containing `<MenuList>` — `<ul role="menu">` with `id={nameId}-menu` and `aria-labelledby` via `labelId` prop
+- Six menu item types, each wrapped in `<li role="presentation">`:
+  - **MenuItemButton** — `<Button role="menuitem" tabIndex={-1}>`
+  - **MenuItemLink** — `<Link role="menuitem" tabIndex={-1}>`
+  - **MenuItemCheckbox** — `<Button role="menuitemcheckbox" aria-checked tabIndex={-1}>` with decorative `<Checkbox aria-hidden>`
+  - **MenuItemSwitch** — `<Button role="menuitemcheckbox" aria-checked tabIndex={-1}>` with decorative `<Switch aria-hidden>`
+  - **MenuItemRadioGroup** — `<fieldset aria-label>` containing `<input type="radio" role="menuitemradio" aria-checked tabIndex={-1}>`
+  - **MenuItemSubmenu** — nested `<Menu>` with `<Button role="menuitem" aria-haspopup="menu">` and ChevronIcon
+- Grouped options: `<li role="presentation">` > `<ul role="group" aria-label={group.label}>` with a presentation label `<li>`
+
+### Keyboard Handling
+- **ArrowDown / ArrowUp** — Cycles focus through menu items (wraps at boundaries), managed by `useFocus` hook
+- **Enter / Space** — Activates focused menuitem; on submenu trigger, opens submenu and focuses first child item
+- **ArrowRight** — On submenu trigger, opens submenu and focuses first child item
+- **ArrowLeft** — Closes current submenu and restores focus to the parent trigger item
+- **Escape** — Closes current submenu (restores focus to parent trigger) or closes root menu (restores focus to trigger button)
+- **Typeahead** — Typing characters focuses the first matching menuitem by text content (via `useFocus` typeAhead)
+- **Tab** — Trapped within menu by focus scope in modal mode; not trapped in non-modal mode
+- All keyboard behavior blocked during disabled/loading states (delegated to Button/Link)
+
+### Accessibility (WAI-ARIA)
+- Follows [WAI-ARIA Menu Button Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/) and [Menu Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menubar/)
+- `aria-expanded` on trigger button reflects open/closed state
+- `aria-haspopup="menu"` on trigger buttons (root and submenu)
+- `aria-controls` links trigger to menu list; `aria-owns` reparents the portaled menu into the trigger's accessibility subtree
+- `aria-labelledby` on `<ul role="menu">` points to trigger button via `labelId` prop
+- `role="group"` with `aria-label` for grouped option sections
+- `role="presentation"` on wrapper `<li>` elements — semantically transparent
+- Decorative Checkbox and Switch components use `aria-hidden` — visual-only indicators
+- Focus management: first menuitem receives focus on open (non-hover mode) via `requestAnimationFrame`
+
+### Visual States
+- Trigger button receives `selected` and `z-combobox` classes when menu is open
+- Submenu trigger displays a chevron icon rotated -90deg (pointing right)
+
+### Interaction Behavior
+- **Uncontrolled mode:** Internal state via `useInternalOpenState`. Click on trigger toggles menu. `isOpen` prop without `setIsOpen` sets initial open state (default open).
+- **Controlled mode:** Pass `setIsOpen` — no internal button rendered. Requires `anchorRef` for Dropdown positioning. Requires `name` prop — external trigger must use `id={name}-button` for `aria-labelledby` association.
+- **onHoverOpen mode:** `mouseEnter` on MenuWrap opens menu; `mouseLeave` starts 150ms close timer. Portal hover events attached via `useLayoutEffect`. Parent-child hover coordination through `MenuContext` (`cancelHoverClose`, `onChildHoverClosed`).
+- **closeAll:** Propagates up the context tree to close the entire menu hierarchy. Used by options with `closeOnClick: true`.
+- **isModal:** Default `true` — renders Overlay behind Dropdown for outside-click dismiss. Submenus always non-modal (`modal={isModal && !isSubmenu}`).
+- **stopPropagation:** Button click calls `e.stopPropagation()` to prevent parent handlers from firing.
+
+### Responsive & Layout
+- `width` prop passed to Dropdown as inline style — controls menu panel width
+- Submenus default to `placement="right-start"` with `width="auto"` and offset `[0, -2]`
+
+<br/>
+
+## Architecture Decisions
+- **MenuContext for recursive submenu coordination:** Each Menu level provides context (`restoreFocusToItem`, `registerSubmenuActivateFocus`, `activateSubmenuFocus`, `closeAll`, hover methods) to children. `useMenuContext()` returns `null` at root level — `isSubmenu` detection is `!!parentContext`. This enables arbitrary nesting depth without prop drilling.
+- **useFocusScope with descendant tracking:** `scope: true, scopeType: 'dropdown'` creates a focus scope per menu level. `focusScope.deactivateDescendants()` cleans up nested scopes on `closeAll`. `getDescendantElements` is passed to Dropdown so non-modal dismiss excludes submenu portals from outside-click detection.
+- **useMenuFocus custom key handlers:** `ArrowLeft` and `Escape` close the current submenu and restore focus to the parent trigger via `parentContext.restoreFocusToItem()`. `ArrowRight`, `Enter`, and `Space` on submenu triggers call `click()` then `activateChildSubmenuFocus()`. A `submenuActivateFocusMap` ref maps trigger elements to their child menu's activate function.
+- **useMenuHover with useLayoutEffect:** Portal `mouseenter`/`mouseleave` listeners attach in `useLayoutEffect` (not `useEffect`) to catch the first mouseenter before the browser paints. Dual hover state tracking (`wrap` + `portal` booleans) prevents premature close when the mouse transitions between the MenuWrap and the portal element.
+- **onOpen focus skip for hover mode:** When `onHoverOpen` is `true`, the `onOpen` callback is `undefined` — no automatic focus of the first menuitem. This preserves hover-only interaction without keyboard stealing focus from the trigger.
+- **Generic MenuList:** `MenuListComponent<T>` is generic for typed radio option values, cast via `forwardRef as MenuListComponentType` to preserve the generic parameter through the ref wrapper.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> This is a genuinely well-architected menu system — the kind where you can feel that real submenu edge cases were hit and solved, not just anticipated. The recursive context pattern for submenu coordination is clean, and the dual hover-state tracking between wrap and portal elements solves the classic "diagonal mouse movement" problem that most custom menus get wrong. The discriminated union type system for options is thorough without being burdensome.
+>
+> Radix UI's menu is the strongest comparison here. Their `DropdownMenu` is purely composable — every item type is its own primitive, and you build menus from JSX. This component matches that with the same composable `children` pattern using exported MenuItem components, then adds a declarative `options` array with typed discriminated unions on top for the common case. You can use either or mix both. Radix gives you one path; this gives you two.
+>
+> The `closeAll` chain propagating up through parent contexts is smart, and the `submenuActivateFocusMap` ref pattern for coordinating focus activation across portal boundaries is something most implementations skip entirely. The `devWarning` pair catches the real foot-guns at dev time — controlled mode without `anchorRef` or `name`, both silent breakage that wouldn't show up visually.
+>
+> A production-grade menu that handles the hard problems — nested focus scopes, hover-to-portal transitions, and recursive close — without leaking complexity to the consumer.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

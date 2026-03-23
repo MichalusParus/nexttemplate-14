@@ -6,4 +6,4 @@ export const dialogPosition = cn(
 
 export const openClass = cn('scale-100 opacity-100')
 
-export const closeClass = cn('scale-90 opacity-0')
+export const closeClass = cn('opacity-0')

@@ -26,7 +26,7 @@ export type GalleryControlsProps = Pick<StyleProps, 'variant'> & {
   setCurrentPage: (value: number) => void
 }
 
-/** GalleryControls component can display multiple panels or images controled by arrows and dotts. RatioWrapProps supported. USE CLIENT */
+/** GalleryControls component can display multiple panels or images controlled by arrows and dots. RatioWrapProps supported. USE CLIENT */
 export const GalleryControls = ({
   items,
   currentPage,

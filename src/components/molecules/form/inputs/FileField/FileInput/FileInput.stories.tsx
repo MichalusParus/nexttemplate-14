@@ -46,6 +46,43 @@ const InputWithHooks = (args: FileInputProps) => {
   return <FileInput {...args} value={value} onDrop={mockDrop} onDelete={mockDelete} />
 }
 
+const InputWithProgress = (args: FileInputProps) => {
+  const [value, setValue] = useState<File[]>([])
+
+  const mockDropWithProgress = async (
+    file: File,
+    onProgress: (percent: number) => void,
+  ): Promise<File> => {
+    return new Promise(resolve => {
+      let progress = 0
+      onProgress(0)
+      const interval = setInterval(() => {
+        progress += 10
+        onProgress(progress)
+        if (progress >= 100) {
+          clearInterval(interval)
+          setValue(prev => [...prev, file])
+          resolve(file)
+        }
+      }, 300)
+    })
+  }
+
+  const mockDelete = async (file: File) => {
+    await new Promise((resolve: (value?: unknown) => void) => {
+      setTimeout(() => {
+        setValue(prev => prev.filter(p => p.name !== file.name))
+        resolve()
+      }, 2000)
+    })
+    return
+  }
+
+  return (
+    <FileInput {...args} value={value} onDrop={mockDropWithProgress} onDelete={mockDelete} />
+  )
+}
+
 export default meta
 type Story = StoryObj<typeof FileInput>
 
@@ -68,6 +105,14 @@ export const PrimaryDefault: Story = {
     onDropRejected: v => console.log('rejected' + v),
   },
   render: args => <InputWithHooks {...args} />,
+}
+
+export const WithProgress: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'inputStoryProgress',
+  },
+  render: args => <InputWithProgress {...args} />,
 }
 
 export const Error: Story = {

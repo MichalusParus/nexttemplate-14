@@ -1,0 +1,97 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Popovers/Dropdown/Def" />
+
+# Dropdown
+
+> A generic dropdown popover — a positioned floating panel anchored to a trigger element, rendered in a portal with Popper.js positioning, keyboard navigation, modal/non-modal dismiss, and open/close animation. Pair it with any trigger (Button, input, custom element) and manage `isOpen` state to create custom popovers, or use it as the foundation that Menu, Select, and Autocomplete build their specialized patterns on top of.
+
+<br/>
+
+## Features
+
+- Popper.js positioning with configurable placement and offset
+- Modal or non-modal dismiss modes
+- Auto-width from anchor element
+- Nested submenu support via `submenuRefs`
+- Portal rendering with configurable container
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Outer `<div>` — positioned by Popper.js, receives `className`, inline `width` style, `aria-label`, and native div props via rest spread
+- **Modal mode:** `role="dialog"` + `aria-modal="true"` on the outer div, `<Overlay>` rendered before the div for backdrop click dismiss
+- **Non-modal mode:** No `role` attribute on the outer div, dismiss handled by `useFocus` non-modal dismiss (focus-out + outside click detection)
+- `aria-label` — from `label` prop or falls back to `useTranslations('Components')('dropdown')` i18n string
+- Inner structure: `<Paper>` (styled container with variant/color/padding) > `<ScrollShadow>` (scroll containment with gradient indicators) > `children`
+- Rendered into a React portal (`createPortal` to `document.body` or custom `portalContainerId`), or inline when `disablePortal` is true
+
+### Keyboard Handling
+- **ArrowDown / ArrowUp** — Cycles focus through focusable children (wraps at boundaries)
+- **ArrowRight / ArrowLeft** — Cycles focus through focusable children (Cmd+Arrow jumps to end/start)
+- **Home / End** — Jumps to first/last focusable element
+- **Tab** — Non-modal: closes dropdown and restores focus to trigger. Modal: cycles focus within the dropdown (focus trap)
+- **Escape** — Closes dropdown and restores focus to trigger
+- **Non-modal dismiss:** outside click/touch and focus-out close the dropdown
+- **Modal dismiss:** Overlay click closes the dropdown
+
+### Accessibility (WAI-ARIA)
+- Modal mode follows the dialog pattern: `role="dialog"`, `aria-modal="true"`, Overlay manages `inert` on the app root to trap interaction
+- Non-modal mode has no role — the dropdown is a generic container, and the consumer's content (e.g., `role="menu"`, `role="listbox"`) provides semantic meaning
+- `aria-label` always present — either explicit via `label` prop or implicit via i18n fallback
+
+### Visual States
+- **Open:** `opacity-100` applied when both `isOpen` and `isVisible` are true
+- **Closing:** `isOpen` becomes false, `opacity-0` transition plays over 150ms, then `isVisible` becomes false and component unmounts (returns `null`)
+- **Closed:** Both `isOpen` and `isVisible` false — returns `null`, no DOM presence
+- Modal mode: transparent Overlay rendered behind dropdown to capture outside clicks
+
+### Interaction Behavior
+- **Controlled-only:** `isOpen` and `onClose` are both required props — no internal open state
+- **Modal dismiss:** Overlay `onClick` calls `onClose` directly
+- **Non-modal dismiss:** `useFocus` detects focus leaving the container+portal zone (via `focusout` event) and outside clicks (via `mousedown`/`touchstart`). `submenuRefs` callback allows excluding nested portal elements from outside-click detection.
+- **Close animation timing:** `useEffect` on `isOpen` — when false, starts 150ms `setTimeout` before setting `isVisible=false`. Cleanup clears the timer on unmount or rapid re-open.
+
+### Responsive & Layout
+- Width defaults to anchor element's `clientWidth` (`anchorRef.current?.clientWidth`), overridable with `width` prop (number or string)
+- Height controlled via Tailwind class on ScrollShadow (default `max-h-[40vh]`), enabling scroll containment for long content
+- Positioned absolutely by Popper.js with configurable `placement` (default `bottom`) and `offset` (default `[0, 5]`)
+- `z-modal` z-index class on the outer div
+
+<br/>
+
+## Architecture Decisions
+- **Controlled-only API:** No internal open state — `isOpen` and `onClose` are both required. This forces the consumer to own state, which avoids conflicts when specialized components (Menu, Select, Autocomplete) wrap Dropdown with their own state management.
+- **Modal mode auto-enables focus scope and trap:** `useFocus` derives `scope: true` and `trap: true` from `dismiss: 'modal'`. Modal dropdowns get focus trapping and scope coordination (for nested modals) without extra configuration. Non-modal dropdowns skip both.
+- **Width defaults to anchor width:** `anchorRef.current?.clientWidth` as fallback ensures the dropdown matches its trigger by default — the common case for combobox patterns. Explicit `width` prop overrides.
+- **`isOpen` / `isVisible` dual state:** `isOpen` drives the trigger logic, `isVisible` keeps the DOM present during the fade-out transition. The 150ms timeout between `isOpen=false` and `isVisible=false` matches the CSS transition duration — a deliberate convention shared across all popover components.
+
+<br/>
+
+## Known Bugs & Limitations
+- Issues with severity
+
+<br/>
+
+## Future Ideas
+- [ ] Potential improvements
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> A well-structured portal popover that does surprisingly much with a clean surface area. The `useFocus` integration is the real star — a single `dismiss` mode switch cleanly bifurcates modal and non-modal behavior without leaking focus-management complexity to the consumer. The fade-in/fade-out lifecycle via the `isVisible`/`isOpen` interplay is a nice touch that avoids unmounting mid-animation, though the hardcoded 150ms timeout is a silent contract with the CSS duration that could drift during maintenance.
+>
+> Radix's Popover is the closest comparison, and it takes the opposite path: a compound-component API (`Popover.Root`, `Popover.Trigger`, `Popover.Content`) where the trigger is co-owned by the library. That works well for standalone popovers but becomes friction when the dropdown is a building block inside a combobox or menu — you end up fighting the trigger abstraction. Dropdown's approach of taking an external `anchorRef` and `isOpen` is better suited to its role as infrastructure for higher-level components, since the wrapping component already owns the trigger and state.
+>
+> The `submenuRefs` callback is a thoughtful escape hatch for nested menus, solving the classic "click inside submenu closes parent" problem without coupling Dropdown to a specific menu implementation.
+>
+> Solid infrastructure component that earns its complexity.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

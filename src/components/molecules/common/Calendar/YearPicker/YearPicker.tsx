@@ -20,6 +20,7 @@ import { disabledVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
+import { CalendarState } from '../Calendar'
 import { scrollHeight } from '../Calendar.styles'
 
 export type YearPickerProps = StyleProps & {
@@ -32,7 +33,7 @@ export type YearPickerProps = StyleProps & {
   /** ref for the grid container (used by useCalendarFocus) */
   gridRef?: MutableRefObject<HTMLDivElement | null>
   /** set calendar state function */
-  setCalendarState: (state: 'days' | 'months' | 'years') => void
+  setCalendarState: (state: CalendarState) => void
   /** set current month function */
   setCurrentMonth: (date: Date) => void
 }
@@ -57,11 +58,11 @@ export const YearPicker = ({
       start: startOfYear(minMaxDate?.min || addYears(date, -30)),
       end: endOfYear(minMaxDate?.max || addYears(date, 30)),
     })
-    const rows = years.reduce((groups: Date[][], year: Date, index: number) => {
+    const rows = years.reduce((groups: Date[][], y: Date, index: number) => {
       if (index % 5 === 0) {
-        groups.push([year])
+        groups.push([y])
       } else {
-        groups[groups.length - 1].push(year)
+        groups[groups.length - 1].push(y)
       }
       return groups
     }, [])

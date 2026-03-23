@@ -42,167 +42,188 @@ const FieldWithHooks = (props: any) => {
 }
 
 describe('FileField', () => {
-  it('default', () => {
-    render(<FieldWithHooks />)
-    const fieldWrapTestId = screen.getByTestId('InputWrap')
-    const inputTestId = screen.getByTestId('FileInput')
-    const fileDetailTestId = screen.queryAllByTestId('FileDetail')
-    const labelTestId = screen.getByTestId('Label')
-    const alertTestId = screen.getByTestId('Alert')
-    const alertQuery = screen.queryByRole('alert')
+  describe('Semantics', () => {
+    it('renders FileInput with Label', () => {
+      render(<FieldWithHooks />)
 
-    expect(fieldWrapTestId).toBeInTheDocument()
-    expect(fieldWrapTestId).toHaveClass('className')
-    expect(inputTestId).toHaveAttribute('id', 'fieldTest')
-    expect(inputTestId).toHaveAttribute('name', 'fieldTest')
-    expect(inputTestId).toHaveAttribute('type', 'file')
-    expect(fileDetailTestId).toHaveLength(1)
-    expect(inputTestId).toHaveAttribute('aria-invalid', 'false')
-    expect(inputTestId).not.toHaveAttribute('aria-describedby')
-    expect(labelTestId).toBeInTheDocument()
-    expect(labelTestId).toHaveTextContent('Label')
-    expect(labelTestId).toHaveAttribute('for', 'fieldTest')
-    expect(labelTestId).toHaveAttribute('id', 'fieldTest-label')
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveTextContent('')
-    expect(alertTestId).toHaveAttribute('id', 'fieldTest-description')
-    expect(alertQuery).toBeNull()
+      expect(screen.getByTestId('InputWrap')).toBeInTheDocument()
+      expect(screen.getByTestId('FileInput')).toBeInTheDocument()
+    })
+
+    it('forwards className', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByTestId('InputWrap')).toHaveClass('className')
+    })
+
+    it('id and name from name prop', () => {
+      render(<FieldWithHooks />)
+      const input = screen.getByTestId('FileInput')
+
+      expect(input).toHaveAttribute('id', 'fieldTest')
+      expect(input).toHaveAttribute('name', 'fieldTest')
+      expect(input).toHaveAttribute('type', 'file')
+    })
+
+    it('displays file detail', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.queryAllByTestId('FileDetail')).toHaveLength(1)
+    })
+
+    it('label text with for attribute', () => {
+      render(<FieldWithHooks />)
+      const label = screen.getByTestId('Label')
+
+      expect(label).toBeInTheDocument()
+      expect(label).toHaveTextContent('Label')
+      expect(label).toHaveAttribute('for', 'fieldTest')
+      expect(label).toHaveAttribute('id', 'fieldTest-label')
+    })
+
+    it('alert with description id', () => {
+      render(<FieldWithHooks />)
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toBeInTheDocument()
+      expect(alert).toHaveTextContent('')
+      expect(alert).toHaveAttribute('id', 'fieldTest-description')
+      expect(screen.queryByRole('alert')).toBeNull()
+    })
+
+    it('aria-invalid false when no error', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByTestId('FileInput')).toHaveAttribute('aria-invalid', 'false')
+    })
+
+    it('no aria-describedby when no error or description', () => {
+      render(<FieldWithHooks />)
+
+      expect(screen.getByTestId('FileInput')).not.toHaveAttribute('aria-describedby')
+    })
+
+    it('description in aria-describedby', () => {
+      render(<FieldWithHooks labelProps={{ description: 'description' }} />)
+      const input = screen.getByTestId('FileInput')
+      const alert = screen.getByTestId('Alert')
+
+      expect(alert).toHaveTextContent('description')
+      expect(input).toHaveAttribute('aria-describedby', 'fieldTest-description')
+    })
+
+    it('labelProps forwarded', () => {
+      render(<FieldWithHooks labelProps={{ className: 'className' }} />)
+
+      expect(screen.getByTestId('LabelWrap')).toHaveClass('className')
+    })
   })
 
-  it('value', async () => {
-    render(<FieldWithHooks />)
-    const inputTestId = screen.getByTestId('FileInput')
-    const file = createMockFile()
+  describe('Interaction', () => {
+    it('default value renders FileDetail', () => {
+      render(<FieldWithHooks />)
 
-    await act(async () => {
-      fireEvent.change(inputTestId, {
-        target: {
-          files: [file],
-        },
+      expect(screen.queryAllByTestId('FileDetail')).toHaveLength(1)
+    })
+
+    it('onDrop fires with file', async () => {
+      const onDrop = jest.fn(async (file: File) => file)
+      render(<FieldWithHooks onDrop={onDrop} />)
+      const inputWrap = screen.getByTestId('InputWrap')
+      const file = createMockFile('test.pdf', 'application/pdf')
+
+      await act(async () => {
+        Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+          configurable: true,
+          value: 100,
+        })
+        Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
+          configurable: true,
+          value: 200,
+        })
+      })
+
+      await act(async () => {
+        const event = createEvent.drop(inputWrap)
+        Object.defineProperty(event, 'dataTransfer', {
+          value: {
+            files: [file],
+            types: ['Files'],
+          },
+        })
+        fireEvent(inputWrap, event)
+      })
+
+      expect(onDrop).toHaveBeenCalledTimes(1)
+      expect(onDrop).toHaveBeenCalledWith(file, expect.any(Function))
+    })
+
+    it('onDelete fires with file', async () => {
+      const onDelete = jest.fn()
+      const file = createMockFile()
+      render(<FieldWithHooks onDelete={onDelete} />)
+
+      await act(async () => {
+        Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+          configurable: true,
+          value: 100,
+        })
+        Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
+          configurable: true,
+          value: 200,
+        })
+        fireEvent.click(screen.getByTestId('DeleteButton'))
+      })
+
+      expect(onDelete).toHaveBeenCalledTimes(1)
+      expect(onDelete).toHaveBeenCalledWith(file)
+    })
+
+    it('error shown on invalid submit', async () => {
+      render(<FieldWithHooks noDefault />)
+      const input = screen.getByTestId('FileInput')
+
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('submitButton'))
+      })
+
+      const alert = screen.getByTestId('Alert')
+
+      await waitFor(() => {
+        expect(alert).toHaveTextContent('min 1 file')
+        expect(alert).toHaveAttribute('role', 'alert')
+        expect(input).toHaveAttribute('aria-describedby', 'fieldTest-description')
+        expect(input).toHaveAttribute('aria-invalid', 'true')
       })
     })
 
-    const fileDetailTestId = screen.queryAllByTestId('FileDetail')
+    it('form submit works', async () => {
+      const onSubmit = jest.fn()
+      render(<FieldWithHooks />)
+      screen.getByTestId('Form').onsubmit = onSubmit
 
-    waitFor(() => {
-      expect(fileDetailTestId).toHaveLength(1)
+      await act(async () => {
+        Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+          configurable: true,
+          value: 100,
+        })
+        Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
+          configurable: true,
+          value: 200,
+        })
+        fireEvent.click(screen.getByTestId('submitButton'))
+      })
+
+      expect(onSubmit).toHaveBeenCalled()
     })
   })
 
-  it('description', () => {
-    render(<FieldWithHooks labelProps={{ description: 'description' }} />)
-    const inputTestId = screen.getByTestId('FileInput')
-    const alertTestId = screen.getByTestId('Alert')
+  describe('Accessibility', () => {
+    it('no axe violations', async () => {
+      const { container } = render(<FieldWithHooks />)
 
-    expect(alertTestId).toBeInTheDocument()
-    expect(alertTestId).toHaveTextContent('description')
-    expect(inputTestId).toHaveAttribute('aria-describedby', 'fieldTest-description')
-  })
-
-  it('error', async () => {
-    render(<FieldWithHooks noDefault />)
-    const inputTestId = screen.getByTestId('FileInput')
-
-    await act(async () => {
-      fireEvent.submit(screen.getByTestId('submitButton'))
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
     })
-
-    const alertRole = screen.getByTestId('Alert')
-
-    await waitFor(() => {
-      expect(alertRole).toBeInTheDocument()
-      expect(alertRole).toHaveTextContent('min 1 file')
-      expect(alertRole).toHaveAttribute('role', 'alert')
-      expect(inputTestId).toHaveAttribute('aria-describedby', 'fieldTest-description')
-      expect(inputTestId).toHaveAttribute('aria-invalid', 'true')
-    })
-  })
-
-  it('onDrop', async () => {
-    const spy = jest.fn(async (file: File) => file)
-    render(<FieldWithHooks onDrop={spy} />)
-    const inputWrapTestId = screen.getByTestId('InputWrap')
-    const file = createMockFile('test.pdf', 'application/pdf')
-
-    await act(async () => {
-      Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
-        configurable: true,
-        value: 100,
-      })
-      Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
-        configurable: true,
-        value: 200,
-      })
-    })
-
-    await act(async () => {
-      const event = createEvent.drop(inputWrapTestId)
-      Object.defineProperty(event, 'dataTransfer', {
-        value: {
-          files: [file],
-          types: ['Files'],
-        },
-      })
-      fireEvent(inputWrapTestId, event)
-    })
-
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(file)
-  })
-
-  it('onDelete', async () => {
-    const spy = jest.fn()
-    const file = createMockFile()
-    render(<FieldWithHooks onDelete={spy} />)
-    const fileDeleteButtonTestId = screen.getByTestId('DeleteButton')
-
-    await act(async () => {
-      Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
-        configurable: true,
-        value: 100,
-      })
-      Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
-        configurable: true,
-        value: 200,
-      })
-      fireEvent.click(fileDeleteButtonTestId)
-    })
-
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(file)
-  })
-
-  it('labelProps', () => {
-    render(<FieldWithHooks labelProps={{ className: 'className' }} />)
-    const labelWrapTestId = screen.getByTestId('LabelWrap')
-
-    expect(labelWrapTestId).toHaveClass('className')
-  })
-
-  it('onSubmit', async () => {
-    const spy = jest.fn()
-    render(<FieldWithHooks />)
-    screen.getByTestId('Form').onsubmit = spy
-
-    await act(async () => {
-      Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
-        configurable: true,
-        value: 100,
-      })
-      Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
-        configurable: true,
-        value: 200,
-      })
-      fireEvent.click(screen.getByTestId('submitButton'))
-    })
-    // TODO beenCalledWith, spy return native event and not values
-    expect(spy).toHaveBeenCalled()
-  })
-
-  it('axe', async () => {
-    const { container } = render(<FieldWithHooks />)
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
   })
 })

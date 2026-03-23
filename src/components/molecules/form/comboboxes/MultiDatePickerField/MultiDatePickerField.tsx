@@ -36,7 +36,7 @@ export const MultiDatePickerField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size} error={errorMessage} {...labelProps}>
+        <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps}>
           <MultiDatePicker
             className={className}
             variant={variant || formVariant}
@@ -60,4 +60,4 @@ export const MultiDatePickerField = ({
   )
 }
 
-MultiDatePicker.displayName = 'MultiDatePicker'
+MultiDatePickerField.displayName = 'MultiDatePickerField'

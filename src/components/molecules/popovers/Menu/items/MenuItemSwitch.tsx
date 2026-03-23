@@ -50,6 +50,7 @@ export const MenuItemSwitch = forwardRef<HTMLButtonElement | null, MenuItemSwitc
               className={switchClassName}
               name=""
               label=""
+              value=""
               variant={variant}
               color={color}
               size={size}

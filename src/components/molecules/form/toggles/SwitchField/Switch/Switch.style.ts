@@ -1,4 +1,4 @@
-import { errorStateClass,textSize } from '@/components/utils/common.style'
+import { errorStateClass } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
 export const switchWrapClass = cn(
@@ -15,19 +15,16 @@ export const switchSize = {
     'h-sm-icon',
     '[&>.SwitchThumb]:h-sm-icon [&>.SwitchThumb]:w-sm-icon',
     'w-8',
-    textSize.sm,
   ),
   md: cn(
     'h-md-icon',
     '[&>.SwitchThumb]:h-md-icon [&>.SwitchThumb]:w-md-icon',
     'w-10',
-    textSize.md,
   ),
   lg: cn(
     'h-lg-icon',
     '[&>.SwitchThumb]:h-lg-icon [&>.SwitchThumb]:w-lg-icon',
     'w-12',
-    textSize.lg,
   ),
   none: '',
 }

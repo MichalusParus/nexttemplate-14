@@ -328,7 +328,7 @@ export const accordionOptions = [
   {
     title: 'Disclosure Title 1',
     content: textContent.slice(0, 500),
-    expanded: true,
+    defaultExpanded: true,
   },
   {
     title: 'Disclosure Title 2',

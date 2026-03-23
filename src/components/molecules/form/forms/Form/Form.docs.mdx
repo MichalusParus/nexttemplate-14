@@ -1,0 +1,105 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/forms/Form/Def" />
+
+# Form
+
+> Provider wrapper that connects react-hook-form's `FormProvider`, a `FormStyleContext` for variant/color/size propagation, and a native `<form>` element. All 20 Field components consume this context. For individual input documentation, see each Input's Def page. Field wrappers (TextField, SelectField, etc.) are identical boilerplate — the Field pattern is documented here once.
+
+<br/>
+
+## Features
+
+- Generic `<T>` typed form values
+- react-hook-form validation via `form.handleSubmit`
+- FormStyleContext cascade to all 20 Field types
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<form>` element — implicit `form` landmark role, no ARIA role override needed
+- `id` set from the `name` prop — enables external submit buttons via `<button form="formName">` and ARIA references
+- `data-testid="Form"` for testing
+- Three-layer provider stack: `FormProvider` (react-hook-form context) → `FormStyleContext.Provider` (style propagation) → native `<form>`
+- `onSubmit` wired through `form.handleSubmit(onSubmit)` — react-hook-form validates before calling the consumer callback
+- All native `FormHTMLAttributes` supported via rest props (`noValidate`, `autoComplete`, `action`, etc.)
+- `className` merged via `cn()` onto the form element
+
+### Keyboard Handling
+- No custom keyboard handling — Form is a container, not an interactive widget
+- **Enter** — Native browser behavior submits the form when focus is on a text input (standard HTML)
+
+### Accessibility (WAI-ARIA)
+- Native `<form>` element provides implicit [form landmark role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/form_role)
+- `id={name}` allows external buttons to target this form via the `form` HTML attribute
+- No `aria-label` or `aria-labelledby` set by default — consumers can pass these through rest props when a visible heading labels the form
+- Validation and error announcement are handled at the Field level (see Field Pattern below), not by Form itself
+
+### Visual States
+- No visual states — Form is unstyled infrastructure
+- Default layout classes: `flex w-full flex-col flex-wrap items-center justify-center`
+- `className` prop for consumer layout overrides
+
+### Interaction Behavior
+- `form.handleSubmit` intercepts native submit, runs react-hook-form validation, then calls `onSubmit` with typed values `T` only on success
+- On validation failure, errors populate `formState.errors` — Field components read these via `useFormContext()`
+- `form` prop accepts `UseFormReturn<T>` — the consumer owns form creation via `useForm()` and passes the return value
+
+### Responsive & Layout
+- Full-width flex column by default (`w-full flex-col`)
+- Consumer controls layout entirely via `className`
+
+<br/>
+
+## The Field Pattern
+
+All 20 Field components are thin wrappers connecting a presentational component to react-hook-form and FormStyleContext:
+
+1. `useFormContext()` — gets `control` and `formState.errors`
+2. `useContext(FormStyleContext)` — gets `formVariant`, `formColor`, `formSize`
+3. Error extraction: `get(errors, name)?.message as string | undefined` (lodash `get` handles nested paths like `"address.city"`)
+4. `Controller` from react-hook-form wraps the render function
+5. **Label wrapping** — most Fields wrap the component in `Label`. Group fields (RadioGroupField, CheckboxGroupField, ToggleGroupField, MultiToggleGroupField) use `variant="legend"` for fieldset/legend semantics. Toggle fields (CheckboxField, SwitchField) skip Label entirely — the component has a built-in label prop
+6. Style fallback chain: `variant || formVariant` — field-level prop overrides form-level context. Same chain applies to `color` and `size` on both the inner component and its Label wrapper
+7. ARIA: `aria-invalid={!!errorMessage}`, `aria-describedby` when error or description exists. Group fields add `aria-labelledby={name}-label` pointing to the legend. Toggle fields (CheckboxField, SwitchField) skip `aria-describedby` — their built-in label handles association
+8. `onChange` chain: `field.onChange(value)` then optional consumer `onChange?.(value)`. Exception: CheckboxField and SwitchField use identity-string toggle logic — `field.value === name ? '' : name` — storing the field name as the "on" value and empty string as "off"
+9. `displayName` set on every Field component
+
+<br/>
+
+## Architecture Decisions
+- **Three-layer provider stack**: `FormProvider` carries form state (values, errors, control). `FormStyleContext` carries style defaults. Keeping them separate means style propagation doesn't pollute react-hook-form's context, and `FormStyleContext` could theoretically be used independently.
+- **FormStyleContext as React Context (not props drilling)**: With 20 Field components, passing `variant`/`color`/`size` through each one would require consumers to repeat themselves on every field. Context makes `<Form variant="outlined">` cascade to all children automatically.
+- **Generic `<T extends FieldValues>`**: Form is generic over the schema type. The generic flows from `useForm<T>()` at the call site, giving full type safety on `onSubmit(values: T)`.
+- **No ref forwarding**: Form is a provider wrapper, not a leaf element. Consumers don't need to measure or imperatively manipulate the form element. If ref access is needed, a callback ref on a child or DOM query works.
+- **`name` as `id`**: The `name` prop serves double duty — form identifier for testing/debugging and `id` for the `form` HTML attribute on external buttons.
+- **Field pattern as boilerplate**: All Fields follow the same wiring. Documenting it once here avoids 20 duplicate docs pages that would say the same thing. Individual Input component docs cover the presentational component's behavior.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> The Form + Field system is a well-executed thin layer over react-hook-form that earns its existence by solving two real problems: style cascading across 20 field types via context, and eliminating the Controller/error/label boilerplate that makes raw react-hook-form tedious at scale. The generic `onSubmit` typing is a nice touch — you get full inference without manual casting.
+>
+> Compared to MUI's form story, which essentially doesn't exist (you wire `Controller` to each `TextField` yourself, manage error display manually, and have no style propagation mechanism), this is meaningfully better. MUI gives you beautiful individual inputs but zero opinion on form wiring, so every project reinvents this exact pattern. Having it built-in with consistent error handling and `aria-invalid` across all 20 fields is a real win.
+>
+> The Field pattern is impressively consistent — 20 wrappers that all follow the same structure without feeling forced. The style fallback chain (`variant || formVariant`) is a small detail that pays off immediately: one prop on Form and every field inherits it, but any field can still opt out.
+>
+> A clean, pragmatic form system that removes real boilerplate without over-abstracting.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

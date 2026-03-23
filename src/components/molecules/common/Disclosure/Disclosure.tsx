@@ -100,15 +100,16 @@ export const Disclosure = forwardRef<HTMLDivElement | null, PropsWithChildren<Di
           id={dropdownId}
           className={cn(
             'Dropdown',
-            'translate-y-1.5 overflow-hidden transition-max-height',
-            openState ? 'visible max-h-max opacity-100' : 'invisible max-h-0 opacity-50',
-            className,
+            'grid translate-y-1.5 transition-grid',
+            openState
+              ? 'visible grid-rows-[1fr] opacity-100'
+              : 'invisible grid-rows-[0fr] opacity-0',
           )}
-          hidden={!openState}
+          inert={!openState}
           data-testid="DisclosureDropdown"
         >
           <Paper
-            className={cn('overflow-hidden', paperClassName)}
+            className={cn('min-h-0 overflow-hidden', paperClassName)}
             variant={variant}
             color={color}
             hideShadow

@@ -5,19 +5,11 @@ import { forwardRef, useState } from 'react'
 import { Button } from '@/components/atoms/common/Button'
 import { CloseEyeIcon, OpenEyeIcon } from '@/components/atoms/icons'
 import { childrenIconSize } from '@/components/utils/common.style'
-import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { TextInput } from '../../TextField/TextInput'
+import { TextInput, TextInputProps } from '../../TextField/TextInput'
 
-export type PasswordInputProps = NativeInputProps &
-  InputProps &
-  StyleProps & {
-    /** value of input */
-    value?: string
-    /** onChange function */
-    onChange: (value: string) => void
-  }
+export type PasswordInputProps = Omit<TextInputProps, 'type' | 'endIcon'>
 
 /** Basic styled uncontroled PasswordInput. For form purposes use PasswordField. Native InputHTMLAttributes props supported. USE CLIENT */
 export const PasswordInput = forwardRef<HTMLInputElement | null, PasswordInputProps>(
@@ -28,6 +20,7 @@ export const PasswordInput = forwardRef<HTMLInputElement | null, PasswordInputPr
       variant = 'outlined',
       color = 'primary',
       size = 'md',
+      startIcon,
       error,
       disabled,
       onChange,
@@ -46,6 +39,7 @@ export const PasswordInput = forwardRef<HTMLInputElement | null, PasswordInputPr
         variant={variant}
         color={color}
         size={size}
+        startIcon={startIcon}
         endIcon={
           <Button
             className={cn('VisibilityButton', 'border-none', childrenIconSize[size])}

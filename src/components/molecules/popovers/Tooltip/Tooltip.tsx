@@ -16,6 +16,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 
+import { devWarning } from '@/components/utils/devWarning'
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { NativeDivProps } from '@/components/utils/types'
 import { usePopper } from '@/utils/hooks/usePopper'
@@ -88,6 +89,12 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
     )
     useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => popoverEl)
 
+    devWarning(title === undefined || title === null || title === '', 'Tooltip: title prop is empty — tooltip will render with no visible content.')
+    devWarning(
+      !!(lazy && Children.count(children) === 1 && !isValidElement(Children.only(children))),
+      'Tooltip: lazy mode requires a valid React element as child, not a string or number.',
+    )
+
     const handleShow = useCallback(
       () => {
         if (isTouchDevice) return
@@ -131,7 +138,7 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
 
         document.addEventListener('keydown', handleClickOutside, { signal })
         document.addEventListener('mousedown', handleClickOutside, { signal })
-        window.addEventListener('scroll', handleHide, { signal, passive: true })
+        window.addEventListener('scroll', handleHide, { signal, passive: true, capture: true })
         window.addEventListener('resize', handleHide, { signal, passive: true })
         return () => {
           controller.abort()
@@ -149,7 +156,7 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
     }, [isOpen])
 
     const portal =
-      !isOpen && !isVisible || !container
+      (!isOpen && !isVisible) || !container
         ? null
         : createPortal(
             <div
@@ -184,8 +191,13 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
             onMouseEnter: (e: React.MouseEvent) => { (child.props as Record<string, (e: React.MouseEvent) => void>).onMouseEnter?.(e); handleShow() },
             onMouseLeave: (e: React.MouseEvent) => { (child.props as Record<string, (e: React.MouseEvent) => void>).onMouseLeave?.(e); handleHide() },
             onFocus: (e: React.FocusEvent) => { (child.props as Record<string, (e: React.FocusEvent) => void>).onFocus?.(e); handleShow() },
-            onBlur: (e: React.FocusEvent) => { (child.props as Record<string, (e: React.FocusEvent) => void>).onBlur?.(e); handleHide() },
+            onBlur: (e: React.FocusEvent) => {
+              (child.props as Record<string, (e: React.FocusEvent) => void>).onBlur?.(e)
+              if ((e.currentTarget as Element).contains(e.relatedTarget as Node)) return
+              handleHide()
+            },
             'aria-describedby': isOpen ? `${id}-tooltip` : undefined,
+            'aria-owns': isOpen ? `${id}-tooltip` : undefined,
             ref: (node: HTMLElement | null) => {
               lazyRef.current = node
               const childRef =
@@ -208,7 +220,10 @@ export const Tooltip = forwardRef<HTMLDivElement | null, PropsWithChildren<Toolt
         onMouseEnter={handleShow}
         onMouseLeave={handleHide}
         onFocus={handleShow}
-        onBlur={handleHide}
+        onBlur={(e) => {
+          if (e.currentTarget.contains(e.relatedTarget as Node)) return
+          handleHide()
+        }}
         aria-describedby={isOpen ? `${id}-tooltip` : undefined}
         data-testid="TooltipWrap"
         ref={componentRef}

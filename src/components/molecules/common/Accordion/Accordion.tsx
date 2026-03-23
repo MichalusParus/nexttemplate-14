@@ -1,15 +1,15 @@
 'use client'
-import { forwardRef, ReactNode, useEffect, useState } from 'react'
+import { forwardRef, ReactNode, useCallback, useState } from 'react'
 
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
 import { Disclosure, DisclosureProps } from '../Disclosure/Disclosure'
 
-type DisclosureOption = {
+export type DisclosureOption = {
   title: ReactNode
   content: ReactNode
-  expanded?: boolean
+  defaultExpanded?: boolean
 }
 
 export type AccordionProps = Omit<StyleProps, 'size'> & {
@@ -19,10 +19,10 @@ export type AccordionProps = Omit<StyleProps, 'size'> & {
   options: DisclosureOption[]
   /** optional boolean for exclusive mode, when only one Disclosure can be open at a time */
   exclusive?: boolean
-  /** gap between Disclosures as tailwind class */
-  gap?: string
   /** for passing aditional props to all disclosures */
   disclosuresProps?: Partial<Omit<DisclosureProps, 'title' | 'expanded' | 'setIsOpen'>>
+  /** callback fired when a panel is toggled */
+  onToggle?: (index: number, isOpen: boolean) => void
 }
 
 /** Serves as set of Disclosures. DisclosureProps supported. USE CLIENT */
@@ -34,40 +34,55 @@ export const Accordion = forwardRef<HTMLDivElement | null, AccordionProps>(
       exclusive,
       variant = 'outlined',
       color = 'primary',
-      gap = 'gap-4',
+      onToggle,
       disclosuresProps = {},
     },
     ref,
   ) => {
-    const [openState, setOpenState] = useState<boolean[]>(
-      options.map(({ expanded }) => Boolean(expanded)),
+    const [openIndices, setOpenIndices] = useState<Set<number>>(() => {
+      const initial = new Set<number>()
+      options.forEach((o, i) => {
+        if (o.defaultExpanded) initial.add(i)
+      })
+      if (exclusive && initial.size > 1) {
+        const first = initial.values().next().value!
+        return new Set([first])
+      }
+      return initial
+    })
+
+    const handleToggle = useCallback(
+      (index: number) => {
+        let willBeOpen = false
+        setOpenIndices(prev => {
+          willBeOpen = !prev.has(index)
+          const next = exclusive ? new Set<number>() : new Set(prev)
+          if (willBeOpen) next.add(index)
+          else next.delete(index)
+          return next
+        })
+        onToggle?.(index, willBeOpen)
+      },
+      [exclusive, onToggle],
     )
-
-    useEffect(() => {
-      setOpenState(options.map(({ expanded }) => Boolean(expanded)))
-    }, [options])
-
-    const handleOpenStateChange = (index: number) => {
-      setOpenState(prev => prev.map((_, i) => i === index))
-    }
 
     return (
       <div
-        className={cn('Accordion', 'flex flex-col', gap, className)}
+        className={cn('Accordion', 'flex flex-col gap-4', className)}
         ref={ref}
         data-testid="Accordion"
       >
-        {options.map(({ content, title, expanded }, index) => (
+        {options.map((option, index) => (
           <Disclosure
+            {...disclosuresProps}
             key={`accordion-disclosure-${index}`}
-            title={title}
+            title={option.title}
             variant={variant}
             color={color}
-            expanded={exclusive ? openState[index] : expanded}
-            setIsOpen={exclusive ? () => handleOpenStateChange(index) : undefined}
-            {...disclosuresProps}
+            expanded={openIndices.has(index)}
+            setIsOpen={() => handleToggle(index)}
           >
-            {content}
+            {option.content}
           </Disclosure>
         ))}
       </div>

@@ -13,6 +13,7 @@ import {
 } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
+import { devWarning } from '@/components/utils/devWarning'
 import { useInternalOpenState } from '@/components/utils/hooks/useInternalOpenState'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
@@ -130,6 +131,9 @@ export const Menu = forwardRef<HTMLDivElement | null, PropsWithChildren<MenuProp
       [restoreFocusToItem, registerSubmenuActivateFocus, activateSubmenuFocus, closeAll, onHoverOpen, cancelHoverClose, onChildHoverClosed],
     )
 
+    devWarning(!!setIsOpen && !anchorRef, 'Menu: controlled mode (setIsOpen) requires anchorRef for positioning.')
+    devWarning(!!setIsOpen && !name, 'Menu: controlled mode (setIsOpen) requires name prop for aria-labelledby association. External trigger should use id={name}-button.')
+
     return (
       <MenuContext.Provider value={contextValue}>
         <div
@@ -184,6 +188,7 @@ export const Menu = forwardRef<HTMLDivElement | null, PropsWithChildren<MenuProp
           >
             <MenuList
               name={nameIdMenu}
+              labelId={`${nameId}-button`}
               options={options || []}
               variant={variant}
               color={color}

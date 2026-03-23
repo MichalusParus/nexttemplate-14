@@ -1,0 +1,91 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/inputs/NumberInput/Def" />
+
+# NumberInput
+
+> Formatted number input for currency, large values, and locale-aware display via `Intl.NumberFormat`. Wraps TextInput with `type="text"` and `inputMode="decimal"` — avoids native number input quirks (scroll-to-change, no formatting control, inconsistent validation). Supports min/max clamping, negative values, configurable decimal places, and locale-specific separators. For simple small numbers (quantity, age, count) use `TextInput type="number"` instead. For form integration with validation and labels, use NumberField.
+
+<br/>
+
+## Features
+
+- Locale-aware formatting via `Intl.NumberFormat`
+- Configurable decimal places
+- Min/max clamping on blur
+- Negative value support via `allowNegative`
+- Start and end icon slots
+- Error and disabled states
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+Inherits from [TextInput](?path=/docs/molecules-form-inputs-textinput-def--docs)
+- Renders TextInput with `type="text"` and `inputMode="decimal"` — NOT a native `type="number"` input
+- `inputMode="decimal"` triggers the numeric keyboard on mobile while keeping full formatting control
+- No `role="spinbutton"` — intentionally a textbox that accepts formatted numbers, not a WAI-ARIA spinbutton
+- No `aria-valuemin`/`aria-valuemax`/`aria-valuenow` — those belong to spinbutton role
+- `data-testid="NumberInput"` on the native input element
+
+### Keyboard Handling
+Inherits from [TextInput](?path=/docs/molecules-form-inputs-textinput-def--docs)
+- Invalid characters (letters, symbols) rejected via `cleanValue` regex in the change handler — the keystroke is silently dropped
+- Decimal separator key depends on locale (`.` or `,`)
+- Minus sign allowed only when `allowNegative` is true
+- No ArrowUp/ArrowDown increment/decrement — this is not a spinbutton
+
+### Accessibility (WAI-ARIA)
+Inherits from [TextInput](?path=/docs/molecules-form-inputs-textinput-def--docs)
+- No spinbutton semantics: no increment/decrement, no value announcements
+- Formatted display value alternates between "6,666.67" (blurred) and "6666.67" (focused) — screen readers see whichever is current
+
+### Visual States
+Inherits from [TextInput](?path=/docs/molecules-form-inputs-textinput-def--docs)
+- **Focus** — display switches from formatted value ("6,666.67") to raw editable value ("6666.67")
+- **Blur** — display reformats via `Intl.NumberFormat`
+
+### Interaction Behavior
+- `onChange` fires with `(value?: number) => void` — returns parsed number, not string. Returns `undefined` when input is cleared
+- **Focus**: switches to raw numeric value (with locale decimal separator) for editing
+- **Blur**: reformats the value via `Intl.NumberFormat`, fires `onBlur` if provided
+- `cleanValue` regex validation rejects input that doesn't match the allowed pattern (digits, optional decimal, optional negative)
+- `validateValue` clamps to min/max on blur — during typing, `onChange` fires with the unclamped value so users can build up multi-digit numbers (e.g., typing "5" when `min=100` stays "5" until blur clamps to 100)
+- External value changes while focused are ignored via `isFocusedRef` check in useEffect
+
+## Architecture Decisions
+- **`type="text"` over `type="number"`**: Native number inputs have scroll-to-change, no formatting control, inconsistent validation across browsers, and strip leading zeros. Using `type="text"` with `inputMode="decimal"` gives mobile numeric keyboard without the quirks.
+- **Focus/blur formatting cycle**: Users edit raw numbers (no group separators), see formatted numbers when done. The `isFocusedRef` prevents external value updates from overwriting the user's in-progress edit.
+- **`onChange(number | undefined)` contract**: Unlike TextInput's `(string) => void`, NumberInput returns the parsed and validated number directly. `undefined` signals a cleared input, not an empty string.
+- **Regex-based input filtering via `cleanValue`**: Instead of `onKeyDown` prevention, invalid input is caught during `onChange`. The internal value doesn't update for invalid input, so React re-renders with the previous valid value.
+- **`Intl.NumberFormat` for all formatting**: Locale-aware group separators, decimal separators, and number formatting. Currency and other `Intl.NumberFormatOptions` are supported via `formatOptions` prop.
+- **Clamping on blur, not on change**: `validateValue` applies min/max when the input loses focus, not during typing. This lets users build up multi-digit numbers — typing "5" when `min=100` stays as "5" until blur snaps it to 100. During typing, `onChange` fires with the raw unclamped value; on blur, if the value is out of range, `onChange` fires again with the clamped value.
+- **No step/increment buttons by design**: This is a formatting component for currency, prices, and large numbers — not a stepper. Increment buttons are visually noisy and irrelevant for these use cases. For simple small numbers where step/increment makes sense (quantity, age, count), use `TextInput type="number"` which gives native browser spinners and ArrowUp/Down for free.
+- **`max` defaults to `999999999999999`**: A safety guard against JavaScript floating-point precision loss. `Number.MAX_SAFE_INTEGER` is `9007199254740991` — above it, integer precision breaks silently (`9007199254740992 === 9007199254740993`). The default caps values well within the safe range, preventing users from typing numbers that `Number()` would parse incorrectly.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> The focus/blur formatting cycle is the heart of this component, and it's executed well — users edit clean numbers, see formatted output when they leave the field, and external value updates never stomp on an in-progress edit. The `onChange(number | undefined)` contract is a smart departure from string-based inputs; consumers never parse strings themselves, which eliminates an entire class of bugs. Clamping on blur rather than keystroke is the right call for currency and large-number inputs where partial values would constantly violate min/max during typing.
+>
+> Mantine's `NumberInput` is the strongest comparison here, offering step buttons, clamp-on-blur, and prefix/suffix support out of the box. But Mantine bundles increment controls as a core feature, which adds visual weight that's irrelevant for price fields and financial inputs. This component's leaner approach — formatting-first, no stepper — is a better fit for its stated purpose. Where Mantine wins is its `clampBehavior` prop that lets consumers choose between blur-clamping and strict-clamping; that flexibility would be a worthwhile addition here.
+>
+> The `Intl.NumberFormat` integration for locale-aware separators and currency formatting is genuinely useful and saves significant boilerplate.
+>
+> A focused, well-designed number input that picks the right tradeoffs for its formatting-heavy use case.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

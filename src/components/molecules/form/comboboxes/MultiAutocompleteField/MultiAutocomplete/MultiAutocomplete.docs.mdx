@@ -1,0 +1,84 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/comboboxes/MultiAutocomplete/Def" />
+
+# MultiAutocomplete
+
+> Multi-value selection wrapper over Autocomplete — clicking an unselected option adds it, clicking a selected option removes it. Dropdown stays open for continuous selection. Provides internal `onClear` to clear all values and input. For form integration with validation and labels, use MultiAutocompleteField.
+
+<br/>
+
+## Features
+
+- Generic `<T>` typed values with deep equality
+- Grouped options
+- Loading state with skeleton
+- Value chips display via `displayChips`
+- Clear button via `onClear`
+- Select all / deselect all via `selectAll` prop (operates on filtered/visible options)
+- Configurable placement
+- Dropdown `children` slot for custom option
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+Inherits from [Autocomplete](?path=/docs/molecules-form-comboboxes-autocomplete-def--docs)
+- `value: T[]` — array of selected values instead of single value
+- Passes `multiValue=\{value\}` to Autocomplete, enabling checkbox display on options and preventing auto-close
+- Passes `value=\{value[0]\}` as the "primary" display value for combobox text
+- Internal `onClear` always provided — ClearAllButton always visible when values exist
+- `selectedOptions` synced via `useEffect` when value array changes externally
+
+### Keyboard Handling
+Inherits from [Autocomplete](?path=/docs/molecules-form-comboboxes-autocomplete-def--docs)
+- Dropdown stays open after each selection (Autocomplete's `handleOnChange` checks `multiValue` and skips auto-close)
+
+### Accessibility (WAI-ARIA)
+Inherits from [Autocomplete](?path=/docs/molecules-form-comboboxes-autocomplete-def--docs)
+- Multi-value selection communicated via per-option `aria-selected` on each selected option independently
+
+### Interaction Behavior
+Inherits from [Autocomplete](?path=/docs/molecules-form-comboboxes-autocomplete-def--docs)
+- **Toggle selection**: clicking a selected option removes it from the array, clicking an unselected option adds it
+- `onChange` fires with the updated array after each toggle
+- `onClear` (internal) resets to empty array `[]`, clears `selectedOptions` state, and clears input value via `onInputChange('')`
+- Chip clear buttons (when `displayChips=true`) remove individual values via `handleOnChange`
+
+<br/>
+
+## Architecture Decisions
+- **Short wrapper**: All UI, keyboard, and accessibility complexity lives in Autocomplete. MultiAutocomplete only adds `handleOnChange` (toggle logic), `handleClear`, `handleSelectAll`, and `selectedOptions` sync.
+- **Omits `selectedOptions`, `multiValue`, and `onSelectAll` from consumer type**: `MultiAutocompleteProps` uses `Omit<AutocompleteProps, 'value' | 'onChange' | 'selectedOptions' | 'multiValue' | 'onSelectAll'>`. Consumers never provide `selectedOptions` (always derived internally) or `multiValue` (always `value`). The `onSelectAll` callback is computed internally from the `selectAll` boolean prop.
+- **Toggle via `isEqual`**: `handleOnChange` uses `isEqual` for both detection (`.some(val => isEqual(val, v))`) and removal (`.filter(val => !isEqual(val, v))`), ensuring consistent deep equality for object-typed values. Unlike MultiSelect's original implementation which used `!==` in the filter (a bug), this gets it right from the start.
+- **`selectedOptionsRef` for external vs internal change detection**: `selectedOptionsRef.current` tracks the actual value array (`T[]`). After each internal `handleOnChange`, the ref is updated to `newValues`. The `useEffect` re-syncs `selectedOptions` from `flatOptions` when `!isEqual(value, selectedOptionsRef.current)`, correctly detecting swaps, replacements, and any value mutation — not just length changes.
+- **`handleClear` clears input**: Unlike MultiSelect's `onClear` which only calls `onChange([])`, this also calls `onInputChange('')` to clear the text input — necessary because Autocomplete has a text input that Select doesn't.
+- **SelectAll**: `selectAll` prop enables a "Select All" checkbox row. MultiAutocomplete computes both `selectAllState` and `handleSelectAll` callback, threading them through Autocomplete to ListBox which renders purely from props. Filtered-aware — deselect removes only visible options, preserving hidden selections.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+- [ ] Object array options — support passing a raw object array via `options` with `getLabel` / `getValue` extractors, removing the need to manually map data into `OptionType` shape (similar to React Select's `getOptionLabel` / `getOptionValue`)
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> A clean toggle wrapper that knows exactly what it should own and what it should delegate. The entire component is essentially three callbacks and a sync effect, which is the right amount of logic for "Autocomplete but multi" — there's no temptation to reach inside and override internal behavior because there's barely any surface to misuse.
+>
+> Mantine's `MultiSelect` with `searchable` is the closest comparison, and it ships as a single monolithic component with dozens of props controlling tags, search, creatable items, and clear behavior all at once. This wrapper approach is leaner — by composing over an existing `Autocomplete` that already handles keyboard navigation, listbox rendering, and accessibility, you avoid the Mantine trap of a component that does everything but is hard to modify when you need one thing to work differently.
+>
+> The `selectedOptionsRef` tracking actual values with `isEqual` for distinguishing internal from external changes is a clean solution — swaps, replacements, and reorders all trigger the sync correctly without unnecessary re-computation on internal selections.
+>
+> A near-ideal thin wrapper that earns its simplicity.
+>
+> — *Claude, Opus 4.6, 2026-03-22*

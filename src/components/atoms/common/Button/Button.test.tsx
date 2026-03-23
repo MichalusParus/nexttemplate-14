@@ -50,10 +50,8 @@ describe('Button', () => {
     it('loading shows loader', () => {
       render(<Button isLoading>button</Button>)
       const button = screen.getByRole('button')
-      const status = screen.getByRole('status')
       const buttonText = screen.getByText('button')
 
-      expect(status).toBeInTheDocument()
       expect(button).toHaveAttribute('aria-busy', 'true')
       expect(buttonText).toHaveAttribute('aria-hidden', 'true')
       expect(buttonText).toHaveClass('invisible')
@@ -119,9 +117,9 @@ describe('Button', () => {
           button
         </Button>,
       )
-      const status = screen.getByRole('status')
+      const button = screen.getByRole('button')
 
-      expect(status).toBeInTheDocument()
+      expect(button).toHaveAttribute('aria-busy', 'true')
     })
 
     it('disabled + loading sets both ARIA states', () => {

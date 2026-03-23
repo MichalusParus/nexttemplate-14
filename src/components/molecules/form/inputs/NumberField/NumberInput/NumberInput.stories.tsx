@@ -29,7 +29,7 @@ export const PrimaryDefault: Story = {
     value: undefined,
     placeholder: 'NumberInput',
     allowNegative: false,
-    allowDecimal: 2,
+    decimalPlaces: 2,
     formatOptions: undefined,
     locale: undefined,
     min: undefined,
@@ -50,7 +50,7 @@ export const Integral: Story = {
   args: {
     ...PrimaryDefault.args,
     name: 'inputStory2',
-    allowDecimal: 0,
+    decimalPlaces: 0,
   },
   render: args => <InputWithHooks {...args} />,
 }

@@ -214,10 +214,13 @@
   }
 }
 
-/* Accessibility — disable all animations for reduced-motion users */
+/* Accessibility — disable all animations and transitions for reduced-motion users */
 @media (prefers-reduced-motion: reduce) {
   [class*='animate-'] {
     animation: none !important;
+  }
+  [class*='transition-'] {
+    transition: none !important;
   }
 }
 
@@ -248,7 +251,7 @@
 }
 
 @utility transition-position {
-  transition-property: top, left, bottom, right, transform, opacity;
+  transition-property: top, left, bottom, right, transform, translate, opacity;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -259,8 +262,8 @@
   transition-duration: 150ms;
 }
 
-@utility transition-max-height {
-  transition-property: max-height, opacity;
+@utility transition-grid {
+  transition-property: grid-template-rows, opacity, visibility;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
