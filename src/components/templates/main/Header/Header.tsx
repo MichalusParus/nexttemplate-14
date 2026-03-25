@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 
-import { ADMINROUTES, PRIVATEROUTES, PUBLICROUTES } from '@/utils/routes'
+import { PRIVATEROUTES, PUBLICROUTES } from '@/utils/routes'
 import { cn } from '@/utils/utils'
 
 import { Logo } from '../../common/Logo'
@@ -30,10 +30,6 @@ export const Header = ({ className }: HeaderProps) => {
     {
       slug: PUBLICROUTES.register,
       title: t('register'),
-    },
-    {
-      slug: ADMINROUTES.dashboard,
-      title: t('dashboard'),
     },
   ]
 

@@ -1,7 +1,3 @@
-import { Meta } from '@storybook/addon-docs/blocks'
-
-<Meta title="Hooks/useFocus" />
-
 # useFocus
 
 Hierarchical keyboard routing system using roving tabindex. Manages arrow key navigation, focus trapping, dismiss behavior, type-ahead search, and nested component coordination across all interactive components. Uses roving tabindex instead of `aria-activedescendant` because it works reliably across all screen readers and portal-rendered content.

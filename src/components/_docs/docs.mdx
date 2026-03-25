@@ -12,7 +12,7 @@ What started as a hobby challenge — can you build a full component library wit
 
 The goal is a balance between simplicity and robustness. Components are as simple as they can be while still being bulletproof — correct semantics, full keyboard navigation, screen reader support, and enough test coverage that you can customize with confidence. Deep focus on three things most libraries treat as afterthoughts: accessibility, documentation, and testing.
 
-Built on TailwindCSS, React Hook Form, Zod, and Popper — nothing else. No MUI, no Radix, no Chakra. Composed through props and children, never inheritance. Every element uses correct semantic HTML: Button is `<button>`, Link is `<a>` — no polymorphic shortcuts. You own every line.
+Built on TailwindCSS, React Hook Form, Zod, next-intl, and Popper — nothing else. No MUI, no Radix, no Chakra. Composed through props and children, never inheritance. Every element uses correct semantic HTML: Button is `<button>`, Link is `<a>` — no polymorphic shortcuts. You own every line.
 
 <br/>
 
@@ -33,7 +33,7 @@ Built on TailwindCSS, React Hook Form, Zod, and Popper — nothing else. No MUI,
 - **Custom Focus System** — one composable hook handles keyboard navigation for lists, menus, comboboxes, grids, modals, and calendars. Module-level scope tree coordinates nested components without React Context — no providers, no re-renders
 - **Touch Optimized** — custom `hoverable` variant prevents stuck hover states on touchscreens. Swipe gestures on Carousel and Gallery. Responsive alternatives for mobile screens
 
-**921 Tests as Contracts**
+**+2100 Tests as Contracts**
 - **5-Category Test Structure** — Semantics, Keyboard, Interaction, Ref, Accessibility. Every component follows the same structure. Tests double as a readable specification of what each component guarantees
 - **100% jest-axe Coverage** — automated accessibility audits on every single component. No exceptions
 - **Zero Snapshot Tests** — every assertion is explicit. Tests break when behavior changes, not when markup shifts
@@ -41,7 +41,7 @@ Built on TailwindCSS, React Hook Form, Zod, and Popper — nothing else. No MUI,
 **Full Documentation**
 - **Storybook Coverage** — every component has rich stories with all props connected to controls. Working examples for every implementation pattern
 - **Per-Component Definition** — structured specification covering semantics, keyboard, ARIA, visual states, architecture decisions, known limitations, and review
-- **25 Custom SVG Icons** — auto-sized, color-inheriting, `className`-customizable. No icon library dependency
+- **24 Custom SVG Icons** — auto-sized, color-inheriting, `className`-customizable. No icon library dependency
 
 **Integrated Form System**
 - **React Hook Form + Zod** — fully wired. Every input has a standalone version and a form-integrated Field version with automatic error wiring, Label, and `aria-describedby`
@@ -64,6 +64,8 @@ Two ways to use ParusUI today, with a monorepo package planned for the future.
 **Copy to Existing Project** — Copy `src/components/`, `src/utils/`, and `globals.css` into your existing Next.js project. Install the dependencies from `package.json`. The component system is self-contained — it doesn't import from the app layer, so it drops in cleanly. Currently Next.js only — a clean React version is planned.
 
 **Future: Monorepo Package** — The long-term plan is to ship the component library as an internal package in a monorepo. The codebase is already cleanly separated — no components import from the app layer, styling is framework-agnostic, tests and Storybook run independently. Extraction to a monorepo workspace requires minimal work.
+
+Once you have the components, restyle through the three-layer style system described in [Styling & Theming](#styling--theming) — change a color hue in `globals.css`, adjust shared maps in `common.style.ts`, or override individual components with `className`.
 
 <br/>
 
@@ -439,39 +441,57 @@ Two ways to use ParusUI today, with a monorepo package planned for the future.
 
 ## Styling & Theming
 
-Designed to be rewritten. The entire style system is built so you can copy these components into your project and reshape them without friction. No runtime CSS, no theme providers, no abstractions to learn — just TailwindCSS utility strings organized in plain TypeScript objects. Every design decision optimizes for one thing: making changes easy and predictable.
+Designed to be rewritten. No runtime CSS, no theme providers, no abstractions to learn — just TailwindCSS utility strings organized in plain TypeScript objects. The default design is deliberately minimal because every visual choice is shared. A Select trigger is a Button. A dropdown surface is a Paper. Every composite is assembled from the same building blocks that atoms use, which is why a single file — `common.style.ts` — can control the look of the entire library. You start with everything working, then add complexity only where your design requires it. No fighting an opinionated theme to get to your Figma. Clean baseline, then specialize.
 
 ### Architecture
 
-Three layers, each independently editable:
+Three file layers build the visual system — and every component can be overridden at the usage site with `className`, because `cn()` (clsx + tailwind-merge) ensures your classes always win for conflicting properties. Composite components expose inner parts through typed props (`buttonProps`, `paperProps`, `labelProps`, `scrollShadowProps`), each accepting the full prop interface including `className`, `variant`, `color`, and `size`.
 
-- **globals.css** — Design tokens. Colors, spacing, shadows, z-index, animations, custom variants. Change a variable here, the entire system updates.
-- **common.style.ts** — Shared style maps. Plain `variant × color` lookup objects that return Tailwind class strings. One map controls how every button hovers, every input focuses, every surface renders. Change one entry, all components update.
-- **Component `.style.ts` files** — Component-specific classes. Import from shared maps, add only what's unique to that component.
+**`src/app/globals.css`** — CSS custom properties. 8 color palettes (primary, secondary, terciary, dark, info, success, warning, error) x 11 oklch shades each (50–950), spacing tokens (sm/md/lg x y/x/icon), shadows (button, paper, modal, header, error, ring), z-index layers, custom Tailwind variants (`hoverable:`, `disabled-aria:`), transitions, and animations. For the full palette reference, see [Colors](?path=/story/colors--docs).
 
-No functions to trace, no conditional chains, no class inheritance. Every style is a string in an object — edit it, see the result. The three-layer split means you always know where to look: tokens for brand identity, shared maps for design patterns, component files for individual tweaks.
+**`src/components/utils/common.style.ts`** — The shared style maps that control the visual identity of the library. Grouped by role:
 
-Every component also accepts `className` on its root element, merged via `cn()` (tailwind-merge) — conflicts resolve automatically, no specificity fights. Composite components expose inner parts through typed props (`buttonProps`, `paperProps`, `labelProps`, `scrollShadowProps`), each accepting the full prop interface including `className`, `variant`, `color`, and `size`. `color="none"` and `size="none"` strip style-map classes for a blank canvas. Tailwind child selectors (`[&_input]:pl-8`, `[&_svg]:text-red-500`) reach nested elements directly.
+**Variant maps** (variant x color) — the core style system. Each map handles one visual concern, and components compose only the maps they need:
 
-### Color System
+- `baseVariant` — border, background, text color, gradient start. The foundation every styled component uses.
+- `interactiveVariant` — hover, active, and selected states. Uses `hoverable:` to prevent sticky touch hover.
+- `focusVisibleVariant` / `focusWithinVariant` — focus styling. Same visual treatment, different CSS selector — components that receive focus directly use `focus-visible:`, wrapper components that contain a focusable child use `focus-within:`.
+- `disabledVariant` — disabled state. Intentionally flat (variant only, no color) — every disabled component uses neutral dark-* regardless of its active color.
+- `textVariant` — text color per variant. Contained uses light shades, text/outlined use dark-on-light with dark mode flip.
 
-**OKLCH color space** — perceptually uniform, meaning equal numeric steps produce equal visual steps across all hues. No manual shade tuning needed. Adding a new color palette is one step: copy an existing palette in `globals.css` and change the hue angle. It will be visually consistent with everything else automatically.
+**Size maps** — spacing, typography, and icon dimensions tied to the sm/md/lg axis:
 
-**8 palettes × 11 shades** (50–950). Three brand palettes (Primary, Secondary, Terciary) fully wired into all style maps. Four semantic palettes (Info, Success, Warning, Error) for feedback. One neutral palette (Dark) for text, backgrounds, and borders with semantic aliases (`--color-text`, `--color-bg`, `--color-contrast`). Tailwind opacity modifiers work natively (`bg-primary-500/50`). For the full palette reference, see [Colors](?path=/story/colors--docs).
+- `paddingSize` — content padding, maps to custom spacing tokens (sm-y, sm-x, etc.).
+- `iconPaddingSize` — icon-only padding, uniform on all sides, plus inline variant.
+- `textSize` — font size classes, sm through 3xl.
 
-### Variants & Sizes
+**Shared utilities** — convenience constants reused across multiple components:
 
-**3 variants** — `text`, `outlined`, `contained`. The same pattern used by MUI and other major component libraries, because it works: three levels of visual emphasis cover virtually every UI need in a single application. `text` for low-emphasis actions, `outlined` for medium (default for form inputs), `contained` for primary actions with a filled surface. All three include dark mode via class-based strategy — add the `dark` class to any ancestor element and all components inside adapt automatically. `contained` uses the same dark shades in both modes since its surface is already dark. Every variant is just a set of Tailwind class strings per color in `common.style.ts` — adding a fourth variant means adding one more entry to each map.
+- `childrenIconSize` — descendant SVG sizing via `[&_svg]` selectors.
+- `errorStateClass` — form validation error styling. The `.error` class selector triggers border + shadow.
+- `toggleBaseBg` — shared background tint for checkboxes, radio buttons, switches.
 
-**3 component sizes** — `sm`, `md`, `lg`. Padding, font size, and icon dimensions are linked through spacing tokens so proportions stay consistent as size changes. Padding is asymmetric (`sm-y`/`sm-x`) — more horizontal breathing room by design. Typography has its own extended scale (`sm` through `3xl`) for finer control over text sizing independently from component dimensions.
+All variant x color maps use `satisfies` type assertions that catch missing keys at compile time when axes are extended.
 
-`size="none"` strips all size-related classes, giving you a blank canvas for fully custom sizing via `className`.
+**`src/components/[level]/[name]/[Name].style.ts`** — component-specific style files. Each imports the shared maps it needs from `common.style.ts` and composes them into component-level lookup tables. A static Paper surface pulls in `baseVariant` and nothing else. A Button composes base, focus, interactive, and disabled. You pay for exactly what you use. Within each map entry, light and dark mode classes are co-located in a single string — you see the full light + dark behavior of "outlined primary hover" without jumping between files.
 
-All variants include full interactive state coverage — hover, active, focus, selected, and disabled — handled through shared style maps. Hover uses the custom `hoverable` Tailwind variant (`@media (hover: hover)`) instead of standard `hover:`, preventing stuck hover states on touchscreens. Disabled strips brand color entirely so the disabled state looks the same regardless of color — universally recognizable.
+### How to Restyle
+
+Every restyle maps to one of five layers. Start at Layer 1 and go deeper only if needed. The copy-paste extension model means you never guess what a new entry requires — the existing entry you copy from shows every class, every dark mode override, every state.
+
+**Layer 1 — One component instance.** Override with `className` at the usage site. For full custom control, pass `color="none"` / `size="none"` to disable the style system entirely.
+
+**Layer 2 — One component type, globally.** Edit existing map entries in the component's `.style.ts` file. This is always safe — you are modifying values, not structure. All Buttons need pill shape — change `rounded-md` to `rounded-full` in `buttonClass`.
+
+**Layer 3 — One component needs a new variant.** Copy-paste an existing variant block in the component's `.style.ts`, give it a new name, change the classes. Add the new key to the `.tsx` file's prop type.
+
+**Layer 4 — A category of components.** Add a new shared map in `common.style.ts` alongside the existing ones, or create a category-specific style file. The components that need it import the new map, everything else stays untouched.
+
+**Layer 5 — Global design system change.** Token-level (swap a color hue, adjust spacing) — edit `globals.css`. Behavioral (change how hover or focus works) — rewrite the relevant map in `common.style.ts`. Structural (add a new color, size, or variant) — work bottom-up: `globals.css` → `types.ts` → `common.style.ts` → component `.style.ts` files. Components are built on top of each other — atoms compose into molecules, molecules into organisms. A new Button variant needs to propagate to Select triggers, DatePicker triggers, ToggleGroup — anything that renders a Button.
 
 ### Icons
 
-25 custom SVG icons — the most common set (chevrons, check, close, search, edit, plus, minus, status icons, etc.). No icon library dependency. Most are used internally by components (ChevronIcon in Select, Calendar, Menu; CheckIcon in Checkbox; status icons in Alert), so if you rebrand you'll want to replace them. Adding more follows the same pattern — an SVG component with `currentColor` stroke and a barrel export.
+24 custom SVG icons — the most common set (chevrons, check, close, search, edit, plus, minus, status icons, etc.). No icon library dependency. Most are used internally by components (ChevronIcon in Select, Calendar, Menu; CheckIcon in Checkbox; status icons in Alert), so if you rebrand you'll want to replace them. Adding more follows the same pattern — an SVG component with `currentColor` stroke and a barrel export.
 
 Icons inherit color from their parent via `currentColor` and are auto-sized by the parent component through CSS selectors (`[&_svg]`), so they scale with `sm`/`md`/`lg` without any size prop. Direct `className` customization works on every icon. For the full icon set, see [Iconography](?path=/story/iconography--docs).
 
@@ -505,13 +525,12 @@ Custom focus management system built around one composable hook — `useFocus`. 
 
 **Type-Ahead Search** — Typing characters in any list or menu searches by text content — 500ms keystroke buffer, circular search from current position, case-insensitive. One option to enable on any component.
 
-For detailed hook documentation, see [useFocus](?path=/story/hooks-usefocus--docs).
 
 <br/>
 
 ## Testing
 
-921 unit tests designed as component contracts. When you customize a component, these tests tell you exactly what behavior you need to preserve — and catch you when you don't. This isn't test coverage for the sake of metrics. It's a safety net built for a library meant to be rewritten.
++2100 unit tests designed as component contracts. When you customize a component, these tests tell you exactly what behavior you need to preserve — and catch you when you don't. This isn't test coverage for the sake of metrics. It's a safety net built for a library meant to be rewritten.
 
 **5-Category Structure** — Every component's test suite is organized into the same five describe blocks: Semantics (correct HTML elements, roles, attributes), Keyboard (Enter, Space, Escape, arrow keys), Interaction (click handlers, state changes, callbacks), Ref (forwarding works via `createRef`), and Accessibility (ARIA attributes, jest-axe audit). This mirrors the documentation structure — tests double as a readable specification of what each component guarantees.
 
@@ -527,7 +546,7 @@ For detailed hook documentation, see [useFocus](?path=/story/hooks-usefocus--doc
 
 Fully integrated with React Hook Form and Zod validation. Every input has a matching Field version that connects it to the form — Label, error messages, and description are wired automatically with `aria-invalid` and `aria-describedby`. Two contexts run through every form: a hook form context for state and validation, and a style context that lets the Form component theme all its fields at once — set `variant`, `color`, or `size` once on the Form, every field inside inherits it.
 
-**Field Pattern** — Each input exists as both a standalone component (TextInput, Select, Checkbox) and a form-integrated field (TextField, SelectField, CheckboxField). The field wraps the input with React Hook Form Controller, adds Label with error/description display, and pulls styling from the form context. Consistent pattern across all 22 form components.
+**Field Pattern** — Each input exists as both a standalone component (TextInput, Select, Checkbox) and a form-integrated field (TextField, SelectField, CheckboxField). The field wraps the input with React Hook Form Controller, adds Label with error/description display, and pulls styling from the form context. Consistent pattern across all 21 form components.
 
 **Form Component** — Pass your React Hook Form definition to Form and start adding fields. The wrapper handles FormProvider, Zod validation, error distribution, and style context in one component. No boilerplate setup per form.
 

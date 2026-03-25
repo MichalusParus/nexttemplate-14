@@ -1,8 +1,3 @@
-// WHY: This is a copy-paste library — developers modify components freely.
-// Tests protect the behavioral contract (ARIA, roles, a11y, ref, className)
-// so changes don't silently break what matters. Each test should catch a real
-// mistake a developer could make. Test the contract, not implementation details.
-//
 // Test Creation Guide
 //
 // 5 Describe Groups:
