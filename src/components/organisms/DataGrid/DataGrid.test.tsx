@@ -262,7 +262,6 @@ describe('DataGrid', () => {
           onSelectionChange={onSelectionChange}
         />,
       )
-      const gridcells = screen.getAllByRole('gridcell')
       const columnheaders = screen.getAllByRole('columnheader')
 
       // Navigate to a data cell

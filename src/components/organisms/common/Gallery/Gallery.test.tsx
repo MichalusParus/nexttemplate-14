@@ -182,7 +182,7 @@ describe('Gallery', () => {
         expect(buttons[1]).toHaveClass('selected')
       })
       expect(buttons[0]).not.toHaveClass('selected')
-      delete (window as any).ontouchstart
+      delete (window as unknown as Record<string, unknown>).ontouchstart
     })
 
     it('swipe backward returns to previous page', async () => {
@@ -213,7 +213,7 @@ describe('Gallery', () => {
         expect(buttons[0]).toHaveClass('selected')
       })
       expect(buttons[1]).not.toHaveClass('selected')
-      delete (window as any).ontouchstart
+      delete (window as unknown as Record<string, unknown>).ontouchstart
     })
 
     it('click ImageViewer opens dialog', () => {
