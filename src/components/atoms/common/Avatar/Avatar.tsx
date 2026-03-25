@@ -2,7 +2,7 @@
 import { useTranslations } from 'next-intl'
 import { forwardRef, useState } from 'react'
 
-import { childrenIconSize, paperVariant, textVariant } from '@/components/utils/common.style'
+import { baseVariant, childrenIconSize, textVariant } from '@/components/utils/common.style'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -72,7 +72,7 @@ export const Avatar = forwardRef<HTMLDivElement | null, AvatarProps>(
         className={cn(
           'Avatar',
           avatarClass,
-          paperVariant[variant][color],
+          baseVariant[variant][color],
           textVariant[variant][color],
           avatarSize[size],
           className,

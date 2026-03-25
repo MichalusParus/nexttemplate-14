@@ -34,6 +34,7 @@ export const PrimaryDefault: Story = {
     variant: 'outlined',
     color: 'primary',
     disclosuresProps: undefined,
+    onToggle: undefined,
   },
 }
 

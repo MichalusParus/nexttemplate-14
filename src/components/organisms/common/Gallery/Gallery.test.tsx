@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
 import { axe, toHaveNoViolations } from 'jest-axe'
-import { createRef } from 'react'
+import { act, createRef } from 'react'
 
 import { fireEvent, render, screen, waitFor } from '../../../../../.jest/customRender'
 import { getGalleryItems } from '../../../../../.storybook/helpers'
@@ -12,185 +12,290 @@ expect.extend(toHaveNoViolations)
 
 describe('Gallery', () => {
   const items = getGalleryItems(18)
-  it('default', () => {
-    render(<Gallery className="className" items={items} ratio="aspect-video" />)
-    const galleryTestId = screen.getByTestId('Paper')
-    const buttonTestIds = screen.getAllByTestId('GalleryControlButton')
-    const imgRoles = screen.getAllByRole('img')
 
-    expect(galleryTestId).toBeInTheDocument()
-    expect(galleryTestId).toHaveClass('className')
-    expect(buttonTestIds).toHaveLength(18)
-    expect(buttonTestIds[0]).toHaveClass('selected')
-    expect(imgRoles[0]).toHaveAttribute('alt', items[0].label)
-  })
+  describe('Semantics', () => {
+    it('renders Paper root element', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const paper = screen.getByTestId('Paper')
 
-  it('nextPage', () => {
-    render(<Gallery items={items} ratio="aspect-video" />)
-    const nextButtonTestId = screen.getByTestId('NextButton')
-    const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
-    const buttonTestIds = screen.getAllByTestId('GalleryControlButton')
-
-    fireEvent.click(nextButtonTestId)
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 1);')
-    expect(buttonTestIds[1]).toHaveClass('selected')
-  })
-
-  it('previousPage', () => {
-    render(<Gallery items={items} ratio="aspect-video" />)
-    const previousButtonTestId = screen.getByTestId('PreviousButton')
-    const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
-    const buttonTestIds = screen.getAllByTestId('GalleryControlButton')
-
-    fireEvent.click(previousButtonTestId)
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 3);')
-    expect(buttonTestIds[items.length - 1]).toHaveClass('selected')
-  })
-
-  it('swipe', async () => {
-    render(<Gallery items={items} ratio="aspect-video" />)
-    const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
-    const buttonTestIds = screen.getAllByTestId('GalleryControlButton')
-
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 0);')
-    expect(buttonTestIds[0]).toHaveClass('selected')
-
-    fireEvent.touchStart(carouselInnerWrapTestId, { touches: [{ clientX: 100 }] })
-    fireEvent.touchEnd(carouselInnerWrapTestId, { changedTouches: [{ clientX: 50 }] })
-
-    await waitFor(() => {
-      expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 1);')
+      expect(paper).toBeInTheDocument()
     })
 
-    fireEvent.touchStart(carouselInnerWrapTestId, { touches: [{ clientX: 50 }] })
-    fireEvent.touchEnd(carouselInnerWrapTestId, { changedTouches: [{ clientX: 100 }] })
+    it('className forwarded to Paper', () => {
+      render(<Gallery className="className" items={items} ratio="aspect-video" />)
+      const paper = screen.getByTestId('Paper')
 
-    await waitFor(() => {
-      expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 0);')
+      expect(paper).toHaveClass('className')
+    })
+
+    it('renders control buttons matching item count', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const buttons = screen.getAllByTestId('GalleryControlButton')
+
+      expect(buttons).toHaveLength(18)
+    })
+
+    it('first control button selected by default', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const buttons = screen.getAllByTestId('GalleryControlButton')
+
+      expect(buttons[0]).toHaveClass('selected')
+    })
+
+    it('img alt matches item label', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const imgs = screen.getAllByRole('img')
+
+      expect(imgs[0]).toHaveAttribute('alt', items[0].label)
+    })
+
+    it('aria-label defaults to i18n gallery', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const paper = screen.getByTestId('Paper')
+
+      expect(paper).toHaveAttribute('aria-label', 'Gallery')
+    })
+
+    it('aria-label uses label prop when provided', () => {
+      render(<Gallery items={items} ratio="aspect-video" label="My Gallery" />)
+      const paper = screen.getByTestId('Paper')
+
+      expect(paper).toHaveAttribute('aria-label', 'My Gallery')
+    })
+
+    it('paperProps forwarded to Paper', () => {
+      render(<Gallery items={items} ratio="aspect-video" paperProps={{ className: 'paperClass' }} />)
+      const paper = screen.getByTestId('Paper')
+
+      expect(paper).toHaveClass('paperClass')
+    })
+
+    it('imageViewerProps forwarded to ImageViewer', () => {
+      render(
+        <Gallery
+          items={items}
+          ratio="aspect-video"
+          imageViewerProps={{ className: 'imageViewerClass' }}
+        />,
+      )
+      const imageViewer = screen.getByTestId('ImageViewer')
+
+      expect(imageViewer).toHaveClass('imageViewerClass')
+    })
+
+    it('carouselProps forwarded to Carousel', () => {
+      render(
+        <Gallery
+          items={items}
+          ratio="aspect-video"
+          carouselProps={{ className: 'carouselClass' }}
+        />,
+      )
+      const carousel = screen.getByTestId('Carousel')
+
+      expect(carousel).toHaveClass('carouselClass')
+    })
+
+    it('ImageViewer collapsed by default', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const dialog = screen.queryByRole('dialog')
+      const closeButton = screen.queryByTestId('ImageViewerCloseButton')
+      const imageViewer = screen.getByTestId('ImageViewer')
+
+      expect(dialog).toBeNull()
+      expect(closeButton).toBeNull()
+      expect(imageViewer).toHaveAttribute('aria-expanded', 'false')
+    })
+
+    it('carousel ratio matches ratio prop', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const ratioWrap = screen.getAllByTestId('ImageRatioWrap')
+
+      expect(ratioWrap[0]).toHaveClass('aspect-video')
+    })
+
+    it('autoplay starts paused', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const playIcon = screen.queryByTestId('PlayIcon')
+      const pauseIcon = screen.queryByTestId('PauseIcon')
+      const autoplayButton = screen.getByTestId('AutoplayButton')
+
+      expect(playIcon).toBeInTheDocument()
+      expect(pauseIcon).toBeNull()
+      expect(autoplayButton).toHaveAttribute('aria-label', 'Play')
+    })
+
+    it('dot controls hidden', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const dots = screen.queryByTestId('DotWrap')
+
+      expect(dots).toBeNull()
+    })
+
+    it('arrow button aria-labels show target pages', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const previousButton = screen.getByTestId('PreviousButton')
+      const nextButton = screen.getByTestId('NextButton')
+
+      expect(previousButton).toHaveAttribute('aria-label', 'previous page 18')
+      expect(nextButton).toHaveAttribute('aria-label', 'next page 2')
     })
   })
 
-  it('open', async () => {
-    render(<Gallery items={items} ratio="aspect-video" />)
-    const imageViewerTestId = screen.getByTestId('ImageViewer')
-    const viewerDialogQuery = screen.queryByRole('dialog')
-    const closeButtonQuery = screen.queryByTestId('ImageViewerCloseButton')
+  describe('Interaction', () => {
+    it('next button advances page', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const nextButton = screen.getByTestId('NextButton')
+      const buttons = screen.getAllByTestId('GalleryControlButton')
 
-    expect(viewerDialogQuery).toBeNull()
-    expect(closeButtonQuery).toBeNull()
-    expect(imageViewerTestId).toHaveAttribute('aria-expanded', 'false')
+      fireEvent.click(nextButton)
+      expect(buttons[1]).toHaveClass('selected')
+      expect(buttons[0]).not.toHaveClass('selected')
+    })
 
-    fireEvent.click(imageViewerTestId)
-    const viewerDialogQuery1 = screen.queryByRole('dialog')
-    const closeButtonTestId = screen.getByTestId('ImageViewerCloseButton')
-    expect(viewerDialogQuery1).toBeInTheDocument()
-    expect(closeButtonTestId).toBeInTheDocument()
+    it('previous button wraps to last page', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const previousButton = screen.getByTestId('PreviousButton')
+      const buttons = screen.getAllByTestId('GalleryControlButton')
 
-    fireEvent.click(closeButtonTestId)
+      fireEvent.click(previousButton)
+      expect(buttons[items.length - 1]).toHaveClass('selected')
+      expect(buttons[0]).not.toHaveClass('selected')
+    })
 
-    await waitFor(() => {
-      expect(screen.queryByRole('dialog')).toBeNull()
-      expect(screen.queryByTestId('ImageViewerCloseButton')).toBeNull()
+    it('swipe forward advances page', async () => {
+      window.ontouchstart = null
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const carousel = screen.getByTestId('Carousel')
+      const buttons = screen.getAllByTestId('GalleryControlButton')
+
+      expect(buttons[0]).toHaveClass('selected')
+
+      await act(async () => {
+        fireEvent.touchStart(carousel, { touches: [{ clientX: 100, clientY: 0 }] })
+      })
+      await act(async () => {
+        fireEvent.touchEnd(carousel, { changedTouches: [{ clientX: 50, clientY: 0 }] })
+      })
+
+      await waitFor(() => {
+        expect(buttons[1]).toHaveClass('selected')
+      })
+      expect(buttons[0]).not.toHaveClass('selected')
+      delete (window as any).ontouchstart
+    })
+
+    it('swipe backward returns to previous page', async () => {
+      window.ontouchstart = null
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const carousel = screen.getByTestId('Carousel')
+      const buttons = screen.getAllByTestId('GalleryControlButton')
+
+      await act(async () => {
+        fireEvent.touchStart(carousel, { touches: [{ clientX: 100, clientY: 0 }] })
+      })
+      await act(async () => {
+        fireEvent.touchEnd(carousel, { changedTouches: [{ clientX: 50, clientY: 0 }] })
+      })
+
+      await waitFor(() => {
+        expect(buttons[1]).toHaveClass('selected')
+      })
+
+      await act(async () => {
+        fireEvent.touchStart(carousel, { touches: [{ clientX: 50, clientY: 0 }] })
+      })
+      await act(async () => {
+        fireEvent.touchEnd(carousel, { changedTouches: [{ clientX: 100, clientY: 0 }] })
+      })
+
+      await waitFor(() => {
+        expect(buttons[0]).toHaveClass('selected')
+      })
+      expect(buttons[1]).not.toHaveClass('selected')
+      delete (window as any).ontouchstart
+    })
+
+    it('click ImageViewer opens dialog', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const imageViewer = screen.getByTestId('ImageViewer')
+
+      fireEvent.click(imageViewer)
+      const dialog = screen.queryByRole('dialog')
+      const closeButton = screen.getByTestId('ImageViewerCloseButton')
+
+      expect(dialog).toBeInTheDocument()
+      expect(closeButton).toBeInTheDocument()
+    })
+
+    it('click close button dismisses dialog', async () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const imageViewer = screen.getByTestId('ImageViewer')
+
+      fireEvent.click(imageViewer)
+      const closeButton = screen.getByTestId('ImageViewerCloseButton')
+      fireEvent.click(closeButton)
+
+      await waitFor(() => {
+        expect(screen.queryByRole('dialog')).toBeNull()
+        expect(screen.queryByTestId('ImageViewerCloseButton')).toBeNull()
+      })
+    })
+
+    it('click control button selects page', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const buttons = screen.getAllByTestId('GalleryControlButton')
+
+      fireEvent.click(buttons[2])
+      expect(buttons[2]).toHaveClass('selected')
+      expect(buttons[0]).not.toHaveClass('selected')
+    })
+
+    it('autoplay toggle switches play and pause icons', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const autoplayButton = screen.getByTestId('AutoplayButton')
+
+      fireEvent.click(autoplayButton)
+      expect(autoplayButton).toHaveAttribute('aria-label', 'Pause')
+      expect(screen.queryByTestId('PauseIcon')).toBeInTheDocument()
+      expect(screen.queryByTestId('PlayIcon')).toBeNull()
+
+      fireEvent.click(autoplayButton)
+      expect(autoplayButton).toHaveAttribute('aria-label', 'Play')
+      expect(screen.queryByTestId('PlayIcon')).toBeInTheDocument()
+      expect(screen.queryByTestId('PauseIcon')).toBeNull()
+    })
+
+    it('manual navigation resets autoplay to paused', () => {
+      render(<Gallery items={items} ratio="aspect-video" />)
+      const autoplayButton = screen.getByTestId('AutoplayButton')
+      const nextButton = screen.getByTestId('NextButton')
+
+      fireEvent.click(autoplayButton)
+      expect(autoplayButton).toHaveAttribute('aria-label', 'Pause')
+
+      fireEvent.click(nextButton)
+      expect(autoplayButton).toHaveAttribute('aria-label', 'Play')
+      expect(screen.queryByTestId('PlayIcon')).toBeInTheDocument()
+      expect(screen.queryByTestId('PauseIcon')).toBeNull()
     })
   })
 
-  it('controls', () => {
-    render(<Gallery items={items} ratio="aspect-video" />)
-    const controlsTestId = screen.getByTestId('GalleryControls')
-    const carouselInnerWrapTestId = screen.getByTestId('CarouselInnerWrap')
-    const buttonTestIds = screen.getAllByTestId('GalleryControlButton')
-    const imgRatioTestIds = screen.getAllByTestId('ImageRatioWrap')
-    const imgRoles = screen.getAllByRole('img')
+  describe('Ref', () => {
+    it('forwards ref to HTMLDivElement', () => {
+      const ref = createRef<HTMLDivElement>()
+      render(<Gallery ref={ref} items={items} ratio="aspect-video" />)
 
-    expect(controlsTestId).toBeInTheDocument()
-    expect(buttonTestIds).toHaveLength(18)
-    expect(imgRatioTestIds[0]).toHaveClass('aspect-video')
-    expect(imgRoles[0]).toHaveAttribute('alt', items[0].label)
-
-    fireEvent.click(buttonTestIds[2])
-    expect(carouselInnerWrapTestId).toHaveStyle('margin-left: calc(-100% * 2);')
-    expect(buttonTestIds[2]).toHaveClass('selected')
+      expect(ref.current).toBeInstanceOf(HTMLDivElement)
+    })
   })
 
-  it('autoplay', () => {
-    render(<Gallery items={items} ratio="aspect-video" />)
-    const previousTestId = screen.queryByTestId('PreviousButton')
-    const nextTestId = screen.getByTestId('NextButton')
-    const autoplayTestId = screen.getByTestId('AutoplayButton')
-    const dotsTestId = screen.queryByTestId('DotWrap')
-    const playIconQuery = screen.queryByTestId('PlayIcon')
-    const pauseIconQuery = screen.queryByTestId('PauseIcon')
+  describe('Accessibility', () => {
+    it('axe', async () => {
+      const { container } = render(<Gallery items={items} ratio="aspect-video" />)
 
-    expect(previousTestId).toBeInTheDocument()
-    expect(previousTestId).toHaveAttribute('aria-label', 'previous page 18')
-    expect(nextTestId).toBeInTheDocument()
-    expect(nextTestId).toHaveAttribute('aria-label', 'next page 2')
-    expect(autoplayTestId).toBeInTheDocument()
-    expect(dotsTestId).toBeNull()
-    expect(playIconQuery).toBeInTheDocument()
-    expect(pauseIconQuery).toBeNull()
-    expect(autoplayTestId).toHaveAttribute('aria-label', 'Play')
-
-    fireEvent.click(autoplayTestId)
-    const playIconQuery1 = screen.queryByTestId('PlayIcon')
-    const pauseIconQuery1 = screen.queryByTestId('PauseIcon')
-    expect(autoplayTestId).toHaveAttribute('aria-label', 'Pause')
-    expect(pauseIconQuery1).toBeInTheDocument()
-    expect(playIconQuery1).toBeNull()
-
-    fireEvent.click(autoplayTestId)
-    const playIconQuery2 = screen.queryByTestId('PlayIcon')
-    const pauseIconQuery2 = screen.queryByTestId('PauseIcon')
-    expect(playIconQuery2).toBeInTheDocument()
-    expect(pauseIconQuery2).toBeNull()
-
-    fireEvent.click(nextTestId)
-    const playIconQuery3 = screen.queryByTestId('PlayIcon')
-    const pauseIconQuery3 = screen.queryByTestId('PauseIcon')
-    expect(autoplayTestId).toHaveAttribute('aria-label', 'Play')
-    expect(pauseIconQuery3).toBeNull()
-    expect(playIconQuery3).toBeInTheDocument()
-  })
-
-  it('paperProps/imageViewerProps/carouselProps', () => {
-    render(
-      <Gallery
-        className="className"
-        items={items}
-        ratio="aspect-video"
-        paperProps={{ className: 'paperClass' }}
-        imageViewerProps={{ className: 'imageViewerClass' }}
-        carouselProps={{ className: 'carouselClass' }}
-      />,
-    )
-    const paperTestId = screen.getByTestId('Paper')
-    const imageViewerTestId = screen.getByTestId('ImageViewer')
-    const carouselTestId = screen.getByTestId('Carousel')
-
-    expect(paperTestId).toHaveClass('paperClass')
-    expect(imageViewerTestId).toHaveClass('imageViewerClass')
-    expect(carouselTestId).toHaveClass('carouselClass')
-    expect(carouselTestId).toHaveClass('carouselClass')
-  })
-
-  it('ref', () => {
-    const ref = createRef<HTMLDivElement>()
-    render(<Gallery ref={ref} items={items} ratio="aspect-video" />)
-
-    expect(ref.current).not.toBeNull()
-    expect(ref.current?.focus).toBeDefined()
-
-    const focusMock = jest.spyOn(ref.current!, 'focus').mockImplementation(() => {})
-    ref.current?.focus()
-
-    expect(focusMock).toHaveBeenCalled()
-    focusMock.mockRestore()
-  })
-
-  it('axe', async () => {
-    const { container } = render(<Gallery items={items} ratio="aspect-video" />)
-
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
   })
 })

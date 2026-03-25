@@ -55,9 +55,6 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
   (
     {
       className,
-      allowedFileTypes = defaultAllowedFileTypes,
-      maxFileCount = 5,
-      maxFileSize = 5 * 1024 * 1024,
       name,
       value,
       variant = 'outlined',
@@ -65,6 +62,9 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
       size = 'md',
       error,
       disabled,
+      allowedFileTypes = defaultAllowedFileTypes,
+      maxFileCount = 5,
+      maxFileSize = 5 * 1024 * 1024,
       onDrop,
       onDelete,
       onDropAccepted,

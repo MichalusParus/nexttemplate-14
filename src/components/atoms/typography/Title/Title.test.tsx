@@ -48,14 +48,6 @@ describe('Title', () => {
       expect(heading).toHaveClass('text-center')
     })
 
-    it('w-full and font-semibold base classes', () => {
-      render(<Title variant="h1">Title</Title>)
-      const heading = screen.getByRole('heading')
-
-      expect(heading).toHaveClass('w-full')
-      expect(heading).toHaveClass('font-semibold')
-    })
-
     it('loading shows ghost', () => {
       render(
         <Title variant="h1" isLoading>

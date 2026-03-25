@@ -22,8 +22,8 @@ export const Default: Story = {
   args: {
     className: '',
     height: 'max-h-96',
-    color: 'from-bg',
     padding: undefined,
+    color: 'from-bg',
     shadowSize: '1.5rem',
     gutter: false,
     disableHorizontal: false,

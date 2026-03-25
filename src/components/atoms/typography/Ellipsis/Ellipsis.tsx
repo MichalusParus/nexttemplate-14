@@ -20,7 +20,7 @@ export type EllipsisProps = SpanProps & {
 export const Ellipsis = forwardRef<
   HTMLSpanElement | null,
   PropsWithChildren<EllipsisProps>
->(({ className, lineClamp, tooltipProps, variant = 'none', children, ...rest }, ref) => {
+>(({ className, lineClamp, variant = 'none', tooltipProps, children, ...rest }, ref) => {
   const componentRef = useRef<HTMLSpanElement>(null)
   useImperativeHandle<HTMLSpanElement | null, HTMLSpanElement | null>(
     ref,

@@ -22,13 +22,13 @@ type Story = StoryObj<typeof Link>
 export const PrimaryDefault: Story = {
   args: {
     className: '',
+    href: '#',
     variant: 'contained',
     color: 'primary',
     size: 'md',
     startIcon: undefined,
     endIcon: undefined,
     hideShadow: false,
-    href: '#',
     children: 'Link',
   },
 }

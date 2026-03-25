@@ -18,10 +18,10 @@ type Story = StoryObj<typeof Alert>
 export const SuccessDefault: Story = {
   args: {
     className: '',
+    title: '',
     variant: 'outlined',
     status: 'success',
     size: 'md',
-    title: '',
     startIcon: undefined,
     endIcon: undefined,
     children: 'Success alert',

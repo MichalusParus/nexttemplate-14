@@ -1,7 +1,9 @@
+import { Button } from '@/components/atoms/common/Button'
+import { Chip } from '@/components/atoms/common/Chip'
 import { Divider } from '@/components/atoms/common/Divider'
 import { Image } from '@/components/atoms/common/Image'
 import { Label } from '@/components/atoms/common/Label'
-import { PlusIcon, ProfileIcon } from '@/components/atoms/icons'
+import { DeleteIcon, EditIcon, PlusIcon, ProfileIcon } from '@/components/atoms/icons'
 import { CarouselItemType } from '@/components/molecules/common/Carousel'
 import { AutocompleteField } from '@/components/molecules/form/comboboxes/AutocompleteField'
 import { DatePickerField } from '@/components/molecules/form/comboboxes/DatePickerField'
@@ -12,6 +14,7 @@ import { RangeDatePickerField } from '@/components/molecules/form/comboboxes/Ran
 import { SelectField } from '@/components/molecules/form/comboboxes/SelectField'
 import { CheckboxField } from '@/components/molecules/form/toggles/CheckboxField'
 import { CheckboxGroupField } from '@/components/molecules/form/toggles/CheckboxGroupField'
+import { DateField } from '@/components/molecules/form/inputs/DateField'
 import { FileField } from '@/components/molecules/form/inputs/FileField'
 import { MultiToggleGroupField } from '@/components/molecules/form/toggles/MultiToggleGroupField'
 import { NumberField } from '@/components/molecules/form/inputs/NumberField'
@@ -648,6 +651,7 @@ export const InputFields = ({
     <>
       <TextField name="inputStory" label="TextInput:" placeholder="input" />
       <NumberField name="numberStory" label="NumberInput:" placeholder="number" />
+      <DateField name="dateInputStory" label="DateInput:" placeholder="date" />
       <PasswordField name="passwordStory" label="PasswordInput:" placeholder="password" />
       <SearchField
         name="searchStory"
@@ -769,6 +773,7 @@ export const ComboboxFields = ({
 export const inputFormDefaultValues = {
   inputStory: '',
   numberStory: undefined,
+  dateInputStory: undefined,
   searchStory: '',
   passwordStory: '',
   fileStory: [],
@@ -798,6 +803,7 @@ export const comboboxFormDefaultValues = {
 export const inputSchema = z.object({
   inputStory: z.string().min(1),
   numberStory: z.number().min(1),
+  dateInputStory: z.coerce.date(),
   searchStory: z.string().min(1),
   passwordStory: z.string().min(1),
   fileStory: z.array(z.instanceof(File)).min(1),
@@ -854,6 +860,7 @@ export const JestDataGridProvider = ({
   columns = gridCleanColsDef,
   columnsInRow,
   hideExport = false,
+  onExport,
   filter = {},
   setFilter = () => {},
   sorting = { key: null, value: 'none' as const },
@@ -869,6 +876,7 @@ export const JestDataGridProvider = ({
   columns?: ColumnDef[]
   columnsInRow?: ColumnDef[]
   hideExport?: boolean
+  onExport?: () => void
   filter?: FilterDef
   setFilter?: (filter: FilterDef) => void
   sorting?: { key: string | null; value: 'asc' | 'desc' | 'none' }
@@ -890,6 +898,7 @@ export const JestDataGridProvider = ({
           : [col],
       ),
     hideExport,
+    onExport,
     filter,
     setFilter,
     sorting,
@@ -1130,3 +1139,102 @@ export const gridData = Array.from({ length: 110 }, (_, i) => {
     department: departments[i % departments.length],
   }
 })
+
+const statusColorMap: Record<string, 'primary' | 'secondary' | 'terciary'> = {
+  active: 'primary',
+  inactive: 'secondary',
+  pending: 'terciary',
+}
+
+export const gridShowcaseColsDef: ColumnDef[] = [
+  {
+    label: 'Name',
+    name: 'name',
+    width: '250px',
+    grow: 1,
+    filter: { type: 'text' },
+  },
+  {
+    label: 'Age',
+    name: 'age',
+    width: '120px',
+    align: 'right',
+    filter: { type: 'number', operator: FilterOperator.EQUALS },
+  },
+  {
+    label: 'Status',
+    name: 'status',
+    width: '170px',
+    align: 'center',
+    filter: {
+      type: 'toggle',
+      options: [
+        { label: 'Active', value: 'active' },
+        { label: 'Inactive', value: 'inactive' },
+        { label: 'Pending', value: 'pending' },
+      ],
+    },
+    renderCell: (row: Record<string, unknown>) => (
+      <Chip
+        variant="contained"
+        color={statusColorMap[String(row.status)] || 'primary'}
+        size="sm"
+      >
+        {String(row.status)}
+      </Chip>
+    ),
+  },
+  {
+    label: 'Join Date',
+    name: 'joinDate',
+    width: '180px',
+    filter: { type: 'date', operator: FilterOperator.EQUALS },
+    renderCell: (row: Record<string, unknown>) => {
+      const date = new Date(String(row.joinDate))
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+    },
+  },
+  {
+    label: 'Department',
+    name: 'department',
+    width: '200px',
+    filter: {
+      type: 'select',
+      options: [
+        { label: 'Engineering', value: 'engineering' },
+        { label: 'Marketing', value: 'marketing' },
+        { label: 'Sales', value: 'sales' },
+        { label: 'HR', value: 'hr' },
+      ],
+    },
+  },
+  {
+    label: 'Actions',
+    name: 'actions',
+    width: '100px',
+    align: 'right',
+    hideSort: true,
+    renderCell: (row: Record<string, unknown>) => (
+      <div className="flex w-max gap-1">
+        <Button
+          variant="text"
+          color="primary"
+          size="sm"
+          startIcon={<EditIcon />}
+          aria-label={`Edit ${row.name}`}
+          hideShadow
+          onClick={() => console.log('Edit', row)}
+        />
+        <Button
+          variant="text"
+          color="error"
+          size="sm"
+          startIcon={<DeleteIcon />}
+          aria-label={`Delete ${row.name}`}
+          hideShadow
+          onClick={() => console.log('Delete', row)}
+        />
+      </div>
+    ),
+  },
+]

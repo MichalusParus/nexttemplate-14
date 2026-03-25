@@ -1,0 +1,135 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Organisms/Common/DataGrid/Def" />
+
+# DataGrid
+
+> Interactive data grid for displaying, filtering, sorting, paginating, exporting, and selecting tabular data. Renders as a CSS Grid with `role="grid"` semantics, supporting both client-side and server-side data operations. Supports multi-level nested column headers, five filter types, CSV export, row click handling, and multiselect with a select-all checkbox.
+
+<br/>
+
+## Features
+
+- Multi-level nested column headers with automatic grid positioning and colspan calculation
+- Five built-in filter types — text, number, date, select, toggle — each with multi-operator selection (EQUALS, CONTAINS, GT, LT, BETWEEN, IN, etc.) and automatic value clearing when operator shape changes
+- Column sorting — click to cycle ascending/descending/none
+- Client-side pagination with configurable rows-per-page, or server-side with `onPageChange`/`count`/`page`
+- Server-side filtering and sorting — `onFilterChange`/`onSortingChange` callbacks bypass client processing
+- Multiselect mode — row checkboxes, select-all with indeterminate state, Ctrl+Space per row, Ctrl+A select all
+- Row click handling — `onRowClick` for navigation/detail views, falls back to selection toggle in multiselect mode
+- Automatic Ellipsis on plain text cells with tooltip on overflow, respects column alignment
+- CSV export with `onExport` override for server-side or custom export flows
+- Loading ghost state — skeleton cells replace data during loading
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Root: `<div role="grid" aria-label={name}>` with `id="grid-{name}"`
+- Header: `<div role="rowgroup">` containing `<div role="columnheader">` cells with `aria-rowindex` and optionally `aria-sort` (sortable columns only)
+- Body: `<div role="rowgroup">` inside ScrollShadow, containing `<div role="row">` wrapping a presentation `<div>` with `<div role="gridcell">` cells
+- Footer: `<div role="toolbar" aria-label="Grid controls">` with rows-per-page Select, export Button, selection count `<P aria-live="polite">`, and MobilePagination
+- `aria-rowcount` = total data rows + header depth; `aria-colcount` = leaf columns + (1 if multiselect)
+- `aria-multiselectable="true"` when `onSelectionChange` is provided
+- `aria-busy={isLoading}` during loading state
+- `aria-selected` on rows when interactive (click or multiselect enabled), absent during loading and on non-interactive grids
+- Empty state: single row with gridcell spanning all columns (`gridColumn: '1 / -1'`) showing translated "no rows" message
+- Nested headers: parent columns render as `columnheader` cells spanning multiple grid columns via `gridColumn: "start / span N"`, with `aria-hidden="true"` spacer cells for the select-all column
+- Non-leaf column headers have `tabIndex={undefined}` — they are not part of the roving tabindex and are unreachable via keyboard. Only leaf columns get `tabIndex={-1}`
+
+### Keyboard Handling
+- **ArrowUp / ArrowDown / ArrowLeft / ArrowRight** — Move focus between cells in 2D grid (provided by `useFocus` with `columns` option). If currently in interaction mode (focused on an interactive element inside a cell), exits interaction mode first, then navigates
+- **Home** — Move focus to first cell in current row
+- **End** — Move focus to last cell in current row
+- **Ctrl+Home / Cmd+Home** — Move focus to first cell in entire grid
+- **Ctrl+End / Cmd+End** — Move focus to last cell in entire grid
+- **Enter** — If on a cell with interactive elements (buttons, links, inputs, textareas, selects, contenteditable): enters interaction mode, makes all interactive elements tabbable (`tabindex="0"`), and focuses the first one. If already in interaction mode, allows native behavior to fire. If cell has no interactive elements: no-op
+- **F2** — Alternative entry to interaction mode (same behavior as Enter, without the "already in interaction mode" pass-through)
+- **Tab / Shift+Tab** — In interaction mode with multiple interactive elements: cycles through them (wrapping). In navigation mode: exits grid entirely (browser default)
+- **Escape** — Exits interaction mode: resets interactive elements to `tabindex="-1"`, returns focus to the parent cell
+- **Ctrl+Space / Cmd+Space** — Toggles row selection (multiselect mode only). Only works on gridcells, not column headers
+- **Ctrl+A / Cmd+A** — Selects all rows (multiselect mode only). Equivalent to clicking select-all checkbox
+- Loading and disabled states block row click interaction but do not affect keyboard navigation at the grid level
+
+### Accessibility (WAI-ARIA)
+- Follows [WAI-ARIA Grid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)
+- `aria-sort` on sortable column headers only: `ascending`, `descending`, or `none`. Non-sortable columns omit `aria-sort` entirely
+- `aria-expanded` on filter buttons within column headers
+- `aria-haspopup="dialog"` on filter trigger buttons
+- Filter dropdowns use `Dropdown` component with `modal` mode for focus trapping
+- Selection count `<P>` has `aria-live="polite"` and `aria-atomic="true"` for screen reader announcements
+- Tooltip on select-all and export buttons for sighted keyboard users
+- SelectAllHead has `aria-label={t('selectAll')}` on both the `columnheader` and the button
+- Roving tabindex: one cell has `tabindex="0"`, all others `tabindex="-1"`. Tab returns to last focused cell
+
+### Visual States
+- **Selected row** — `selected` class on RowInnerWrap and individual gridcells, `aria-selected="true"` on the row
+- **Indeterminate selection** — Select-all checkbox shows indeterminate state when some (not all) rows are selected
+- **Loading** — Ghost `<P isLoading />` in every cell, loading rows have no `aria-selected`, row click is disabled
+- **Sort active** — Chevron icon `opacity-100` with `rotate-180` (ascending) or `rotate-0` (descending)
+- **Sort inactive** — Chevron `opacity-0`, appears on hover/focus at 40% opacity
+- **Filter active** — Filter icon `opacity-100` when filter is applied or dropdown is open
+- **Filter inactive** — Filter icon `opacity-0`, appears on group hover/focus at 50%
+- **Interactive row** — `cursor-pointer` with button variant hover/focus styling
+- **Non-interactive row** — `cursor-text` on cells for text selection
+- **Shadow** — `shadow-button` on contained variant (unless `hideShadow`)
+
+### Interaction Behavior
+- Sort: clicking the sort button in a column header calls `handleSorting(column.name)` which cycles the sort state
+- Filter: clicking the filter button opens a Dropdown with the appropriate filter control and operator Select. Operator changes clear the filter value when the shape is incompatible (IN requires array, BETWEEN requires `{start, end}` object — switching to/from these clears the value)
+- Row click: `onRowClick` fires with the full row object. Without `onRowClick` but with `onSelectionChange`, clicking a row toggles its selection
+- Select all: toggles between selecting all filtered/paged data and deselecting all
+- Rows-per-page: Select only renders when `filteredDataCount > 10` (the minimum option). Changing resets to page 1 and calls `onPageChange(1, newRowsPerPage)` in server mode
+- Export: button only renders when `!hideExport && filteredDataCount > 0` — hidden on empty data. When `onExport` is provided, calls it instead of built-in CSV export. Default generates CSV from filtered data using column labels as headers, `renderCell` output extracted as text via recursive `.children` traversal with fallback to `label`/`title`/`value`/`text` props
+- Selection count: always mounted in DOM with `aria-live="polite"` for screen reader announcements. Hidden via `sr-only` class when `selectedRowsCount === 0`, visible with text when rows are selected
+- Loading fully replaces the body — no data rows shown alongside skeleton rows
+
+### Responsive & Layout
+- Block-level grid layout, full width (`w-full`)
+- Horizontal overflow via `overflow-x-auto` on the root, `min-w-max` on header/body/footer to prevent column collapse
+- Vertical scroll via ScrollShadow on the body with configurable `maxHeight` (default `max-h-[80vh]`)
+- Footer uses MobilePagination (compact prev/next) regardless of screen size
+- Rounded corners: `rounded-md` on root, `rounded-t-md` on header, `rounded-b-md` on footer
+- Borders on each section (header, body, footer) create visual row separation
+
+<br/>
+
+## Architecture Decisions
+
+- **CSS Grid for layout, not `<table>`**: Uses `role="grid"` on `<div>` elements with CSS `grid-template-columns` for layout. This enables multi-level nested headers with `gridColumn` spanning, flexible column sizing (grow/shrink/fixed), and avoids the rigidity of HTML table elements. The trade-off is more verbose ARIA markup, but the flexibility is worth it for nested headers and custom sizing.
+- **Context-driven theming**: `DataGridContext` distributes `variant`/`color`/`size` plus filter/sorting state to all sub-components. This avoids prop drilling through 4+ levels (DataGrid → GridHeader → ColumnHead → GridFilter → filter controls) and keeps sub-component APIs focused on their own behavior.
+- **Client/server mode via callback detection**: The component detects server-side mode by checking for `onFilterChange`/`onSortingChange`/`onPageChange` callbacks. When present, client-side filtering/sorting/pagination is skipped (`skipFiltering`, `skipSorting`, empty array to `usePagination`). In server-side pagination mode, the component uses the raw `rows` array directly as `pagedData` — the consumer must pass only the current page's rows, not the full dataset. This means a single component API handles both modes without a separate `mode` prop.
+- **`useDataGridFocus` wraps `useFocus` with grid-specific handlers**: Rather than building custom keyboard navigation, the component extends the existing `useFocus` system with `customKeyHandlers` for Enter/F2 (interaction mode), Tab (widget cycling), Escape (exit interaction), Ctrl+Space (row selection), Ctrl+A (select all), Home/End (row/grid navigation). The `scope: true` option automatically suppresses grid navigation when child popovers are open.
+- **Filter operator drives component switching**: The filter system uses the operator value (EQUALS, IN, BETWEEN, etc.) to determine which input component to render. Changing the operator from EQUALS to IN switches a Select to a MultiSelect, or a DatePicker to a MultiDatePicker. The `OperatorSelect` component handles the shape mismatch by clearing the value when the operator changes to/from array or range types.
+- **`exitInteractionMode` on arrow keys**: When focused on an interactive element inside a cell (interaction mode), pressing any arrow key first exits interaction mode (resetting `tabindex` on widgets, refocusing the cell) then lets the normal grid navigation proceed. This is a UX decision — in the spec, arrow keys in interaction mode are consumed by the widget. Here, arrows always navigate the grid, which is more predictable for data grid usage where cells rarely contain multi-step widgets.
+- **`onRowClick` takes priority over selection**: When both `onRowClick` and `onSelectionChange` are provided, row clicks fire `onRowClick` only — selection toggle does not fire. This prevents double-action on click (navigating AND selecting). Users can still select via the checkbox column or Ctrl+Space keyboard shortcut.
+- **Pagination over virtualization**: The grid is designed around paginated data — `rowsPerPage` controls how many rows render at once (default 20). No row virtualization is needed because the rendered row count is always bounded by the page size. This keeps the implementation simple and avoids the complexity of virtual scroll libraries.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> This is an ambitious all-in-one grid that gets the hard parts right — the automatic client/server mode split via callback detection is genuinely clever, and the keyboard navigation with interaction mode for in-cell widgets is the kind of thing most teams never finish building.
+>
+> Compared to MUI DataGrid, this trades the massive feature surface (column grouping, tree data, virtualization) for a dramatically simpler mental model. MUI's `paginationMode="server"` prop is more explicit but also more error-prone — forgetting to set it silently breaks things. The callback-detection approach here is better for the common case, though it means you can't have client-side sorting with server-side pagination without workarounds. Where MUI needs virtualization for large flat datasets, this grid sidesteps the problem entirely by designing around pagination — the rendered row count is always bounded by `rowsPerPage`.
+>
+> The renderCell error boundary is a nice touch that prevents one bad cell from killing the whole grid. The arrow-keys-always-exit-interaction-mode deviation is pragmatic — it avoids the gnarly edge cases of trapping arrows inside cells.
+>
+> A production-quality data grid that covers 90% of real use cases without the configuration maze.
+>
+> — *Claude, Opus 4.6, 2026-03-24*

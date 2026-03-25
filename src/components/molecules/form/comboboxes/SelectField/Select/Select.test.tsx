@@ -304,12 +304,13 @@ describe('Select', () => {
   })
 
   describe('Keyboard', () => {
-    // Arrow key navigation and keyboard selection within the open dropdown are
-    // handled by useFocus with FOCUS_SELECTORS.select (tested in useFocus's own suite).
-    // In JSDOM, Dropdown's internal useFocus registers a competing keydown handler
-    // on the same container and portal elements as Select's useFocus, which prevents
-    // reliable arrow/selection testing at this integration level.
-    // Tests here cover: focusability, keyboard open, Escape dismiss, and click selection.
+    const openSelect = async () => {
+      const combobox = screen.getByRole('combobox')
+      await act(async () => { fireEvent.click(combobox) })
+      await act(async () => {})
+      await act(async () => {})
+      return combobox
+    }
 
     it('combobox is focusable', () => {
       render(
@@ -394,6 +395,65 @@ describe('Select', () => {
       expect(onChange).toHaveBeenCalledWith(options[0].value)
       expect(combobox).toHaveAttribute('aria-expanded', 'false')
       expect(document.activeElement).toBe(combobox)
+    })
+
+    // -- Arrow navigation --
+
+    it('ArrowDown focuses first option', async () => {
+      render(
+        <Select name="selectTest" value="" options={options} onChange={() => {}} />,
+      )
+
+      await openSelect()
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      expect(document.activeElement).toBe(optionElements[0])
+    })
+
+    it('ArrowDown moves to next option', async () => {
+      render(
+        <Select name="selectTest" value="" options={options} onChange={() => {}} />,
+      )
+
+      await openSelect()
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      await act(async () => {
+        fireEvent.keyDown(optionElements[0], { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      expect(document.activeElement).toBe(optionElements[1])
+    })
+
+    it('ArrowUp moves to previous option', async () => {
+      render(
+        <Select name="selectTest" value="" options={options} onChange={() => {}} />,
+      )
+
+      await openSelect()
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      await act(async () => {
+        fireEvent.keyDown(optionElements[0], { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      await act(async () => {
+        fireEvent.keyDown(optionElements[1], { key: 'ArrowUp', code: 'ArrowUp' })
+      })
+
+      expect(document.activeElement).toBe(optionElements[0])
     })
   })
 

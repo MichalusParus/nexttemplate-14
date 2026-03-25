@@ -15,6 +15,8 @@ export type DataGridContextValue<T extends Record<string, unknown> = Record<stri
   columnsInRow: ColDef<T>[]
   /** Optional for hiding export */
   hideExport?: boolean
+  /** Custom export handler - overrides built-in CSV export */
+  onExport?: () => void
   /** Component variant with default fallback */
   variant: NonNullable<StyleProps['variant']>
   /** Component color with default fallback */

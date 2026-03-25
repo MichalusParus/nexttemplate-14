@@ -1,0 +1,110 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Organisms/Common/Gallery/Def" />
+
+# Gallery
+
+> Fullscreen image gallery composing Carousel, ImageViewer, and a thumbnail strip. Wraps images in a Paper container with autoplay, swipe gestures, and a portal-switching architecture that moves controls between the inline view and the fullscreen dialog.
+
+<br/>
+
+## Features
+
+- Carousel-based image slideshow with arrow navigation, wrapping (last→first, first→last), and swipe/touch gestures
+- Autoplay with play/pause toggle — starts paused, manual navigation (arrow click, swipe, thumbnail click) resets to paused
+- Configurable autoplay interval via `carouselProps={{ autoplayInterval }}`
+- Fullscreen ImageViewer modal with scale/opacity open/close transition and Escape-to-close
+- Thumbnail strip (GalleryControls) with ScrollShadow overflow and auto-scroll-into-view on page change
+- Portal switching — Carousel controls render into the gallery container when closed, into the ImageViewer dialog when open
+- Dynamic aspect ratio — custom `ratio` prop when closed, forces `aspect-video` in fullscreen
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Root element: `Paper` (`<div>`) with `forwardRef`, `overflow-hidden`, `focus-within:ring`, `aria-label`
+- Inner structure: `<div id={controlsPortalId}>` wrapping `ImageViewer` (Button trigger + portal dialog) wrapping `Carousel`
+- Carousel: `role="region"`, `aria-roledescription="carousel"`, `aria-label`
+- Each slide: `role="group"`, `aria-roledescription="slide"`, `aria-current` on active slide, `aria-hidden` and `inert` on inactive slides (removes from both interactivity and accessibility tree)
+- ImageViewer trigger: `<button>` with `aria-haspopup="dialog"`, `aria-expanded`, `aria-controls`
+- ImageViewer dialog (when open): `role="dialog"`, `aria-modal="true"`, `aria-label`, close button with `aria-label="Close"`
+- GalleryControls: thumbnail `Button` elements with `tabIndex={-1}` and `aria-label="page N"`
+- Each thumbnail wraps an `Image` component with `alt` matching the item label
+
+### Keyboard Handling
+- Gallery delegates all keyboard handling to its composed children
+- **Carousel arrows** — Focusable buttons for previous/next navigation (Enter/Space activates, inherited from Button)
+- **Autoplay button** — Toggle play/pause via Enter/Space (inherited from Button)
+- **ImageViewer modal** — `useFocus` with `dismiss: 'modal'` provides Escape to close, focus returns to trigger
+- **Thumbnail buttons** — `tabIndex={-1}`, not in the keyboard tab order (mouse/touch only)
+- No custom keyboard handling at the Gallery level
+
+### Accessibility (WAI-ARIA)
+- Gallery root: `aria-label` from `label` prop or i18n `'Gallery'` default
+- Carousel: follows carousel pattern with `aria-roledescription="carousel"` on region, `aria-roledescription="slide"` on groups
+- ImageViewer: `role="dialog"`, `aria-modal="true"` — follows [Dialog (Modal) pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
+- ImageViewer trigger and dialog: `aria-label` defaults to `"Image Viewer"` via i18n
+- Arrow buttons: `aria-label="previous page N"` / `aria-label="next page N"` with computed target page
+- Autoplay button: `aria-label` toggles between "Play" and "Pause"
+- No specific WAI-ARIA gallery pattern exists — combines carousel and dialog patterns
+
+### Visual States
+- **Selected thumbnail** — `selected` class with outline styling per variant (text/outlined: `dark-950`, contained: `dark-50`)
+- **Open/Closed** — ImageViewer toggles between inline carousel view and fullscreen modal dialog with scale/opacity transition
+- **Focus-within** — Ring on Paper container matches variant/color combination via `focusWithinVariant`
+- **Autoplay** — Play/Pause icon reflects current autoplay state
+
+### Interaction Behavior
+- **Open fullscreen** — Click ImageViewer button opens the dialog with scale-up animation
+- **Close fullscreen** — Click close button or Escape dismisses dialog with fade-out (150ms transition)
+- **Arrow navigation** — Click next/previous arrows to advance or retreat slides (wraps around)
+- **Thumbnail click** — Jumps to selected page; `stopPropagation` prevents bubbling to ImageViewer toggle
+- **Swipe** — Touch left/right on the Carousel for mobile slide navigation
+- **Autoplay toggle** — Click autoplay button switches between play and pause; manual navigation (arrow click, swipe, thumbnail click) resets autoplay to paused
+- **Thumbnail auto-scroll** — Selected thumbnail scrolls into view on page change (smooth, centered)
+
+### Responsive & Layout
+- Width controlled via `width` prop (Tailwind class, default `w-full`)
+- Aspect ratio via `ratio` prop (default `aspect-video`), forced to `aspect-video` when fullscreen
+- Fullscreen: `max-h-gallery-inner-height` on CarouselRatioWrap constrains image height
+- GalleryControls: `h-24` fixed height, thumbnails `w-40 min-w-12 shrink-0`
+- GalleryControls in open state: absolutely positioned at bottom with `z-modal`
+
+<br/>
+
+## Architecture Decisions
+- **Portal switching for nested interactive elements**: The Carousel lives inside an ImageViewer `<button>` trigger, which would create invalid nested `<button>` elements for arrow/autoplay controls. `portalTargetId` renders Carousel controls into a portal outside the button. When the ImageViewer opens, the portal target switches to the dialog container — same mechanism, different target.
+- **`stopPropagation` on thumbnail clicks**: Without it, clicking a thumbnail would bubble up to the ImageViewer button and toggle the fullscreen dialog. Each thumbnail click should only change the current page, not open the viewer.
+- **`tabIndex={-1}` on all thumbnails**: With potentially 18+ thumbnail buttons, putting them in the Tab order would create an extremely long keyboard sequence. Carousel arrow buttons provide the same navigation with fewer keystrokes.
+- **Aspect ratio override in fullscreen**: The closed gallery might use a custom ratio (e.g., `aspect-square`), but fullscreen always forces `aspect-video` to maximize image display area within the viewport-constrained `max-h-gallery-inner-height`.
+- **`useId` with colon replacement**: React's `useId` generates IDs containing colons (e.g., `:r1:`), which are invalid in CSS selectors used by `getElementById`. The `replace(/:/g, '')` produces clean alphanumeric IDs while maintaining server/client stability.
+- **1-indexed `currentPage`**: Carousel uses 1-indexed pages throughout, matching user-facing "page N" aria-labels and the `setCurrentPage` callback values.
+- **`text`/`outlined` thumbnail variants share identical styles**: Both use `dark-950` outlines for selection/hover/focus because thumbnails need a visible indicator regardless of whether the parent Paper is text or outlined. Only `contained` differs — `dark-50` outlines for contrast on dark backgrounds. The Gallery variant affects Paper styling, not how thumbnails indicate selection.
+- **ImageViewer unmount/remount is safe**: Carousel remounts on open/close but `currentPage` is lifted to Gallery and survives. Autoplay correctly resets to paused on remount. The 150ms close transition double-renders children intentionally for the fade animation.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> A gallery that feels like one component despite being three. The portal-retargeting trick — swapping `portalTargetId` between the inline container and the fullscreen dialog — lets a single Carousel instance serve both views without duplicating state or DOM. The automatic variant switch to `contained` thumbnails in fullscreen is a nice touch: light outlines on a dark background without the consumer needing to think about it.
+>
+> Ant Design's `Image.PreviewGroup` covers similar ground — thumbnail collection opening into a fullscreen previewer with arrows. But PreviewGroup has no inline carousel: you get a static grid, then a modal. Gallery ships autoplay, swipe, and arrow navigation before the user ever opens fullscreen, which makes it a richer default experience. PreviewGroup wins on zero-config simplicity; Gallery wins on what the user actually interacts with before clicking.
+>
+> The `devWarning` for empty items, the `scrollIntoView` auto-centering on page change, and the `tabIndex={-1}` decision to avoid an 18-stop keyboard gauntlet are all good details. The passthrough prop objects (`carouselProps`, `imageViewerProps`, `paperProps`) give enough surface to customize without forking. Nothing here looks fragile — the lifted `currentPage` keeps everything synchronized, and `stopPropagation` on thumbnails is the right call inside an ImageViewer button.
+>
+> Solid composition where the portal architecture pulls its weight without leaking complexity to the consumer.
+
+> — *Claude, Opus 4.6, 2026-03-24*

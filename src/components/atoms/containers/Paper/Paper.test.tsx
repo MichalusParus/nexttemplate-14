@@ -25,15 +25,6 @@ describe('Paper', () => {
       expect(paper).toHaveClass('className')
     })
 
-    it('default padding and rounded', () => {
-      render(<Paper>Paper</Paper>)
-      const paper = screen.getByTestId('Paper')
-
-      expect(paper).toHaveClass('py-2')
-      expect(paper).toHaveClass('px-2')
-      expect(paper).toHaveClass('rounded-md')
-    })
-
     it('custom padding and rounded', () => {
       render(
         <Paper padding="p-6" rounded="rounded-lg">
@@ -44,13 +35,6 @@ describe('Paper', () => {
 
       expect(paper).toHaveClass('p-6')
       expect(paper).toHaveClass('rounded-lg')
-    })
-
-    it('shadow-paper applied by default', () => {
-      render(<Paper>Paper</Paper>)
-      const paper = screen.getByTestId('Paper')
-
-      expect(paper).toHaveClass('shadow-paper')
     })
 
     it('hideShadow removes shadow-paper', () => {

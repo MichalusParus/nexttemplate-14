@@ -26,11 +26,11 @@ export type SelectAllHeadProps = {
 /** SelectAllHeader component for multiselect DataGrid. USE CLIENT */
 export const SelectAllHead = ({
   className,
+  gridColumn,
+  gridRow,
   isChecked,
   isIndeterminate,
   handleAll,
-  gridColumn,
-  gridRow,
 }: SelectAllHeadProps) => {
   const t = useTranslations('Components')
   const { name, variant, color, size } = useDataGridContext()

@@ -29,10 +29,10 @@ export const Alert = forwardRef<HTMLDivElement | null, AlertProps>(
   (
     {
       className,
+      title,
       variant = 'outlined',
       status = 'success',
       size = 'md',
-      title,
       startIcon,
       endIcon,
       children,

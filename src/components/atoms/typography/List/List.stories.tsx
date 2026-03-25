@@ -31,11 +31,11 @@ type Story = StoryObj<typeof List>
 export const Default: Story = {
   args: {
     className: '',
+    content: listContent.slice(0, 6),
     type: 'ol',
     listStyleType: undefined,
     color: 'none',
     size: 'md',
-    content: listContent.slice(0, 6),
     icon: undefined,
     isLoading: false,
     expectedLines: 3,

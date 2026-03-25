@@ -19,9 +19,9 @@ export const Default: Story = {
   args: {
     className: '',
     variant: 'h3',
+    align: 'text-left',
     color: 'none',
     size: 'lg',
-    align: 'text-left',
     isLoading: false,
     ghostProps: {},
     children: 'Title',

@@ -223,8 +223,16 @@ const extractTextFromReactNode = (node: unknown): string => {
     return node.map(extractTextFromReactNode).join(' ')
   }
   if (isValidElement(node)) {
-    const children = (node.props as { children?: unknown }).children
-    return extractTextFromReactNode(children)
+    const props = node.props as Record<string, unknown>
+    const children = props.children
+    if (children != null) {
+      return extractTextFromReactNode(children)
+    }
+    // Fallback to common text-bearing props
+    if (isString(props.label)) return props.label
+    if (isString(props.title)) return props.title
+    if (isString(props.value)) return String(props.value)
+    if (isString(props.text)) return props.text
   }
 
   return ''

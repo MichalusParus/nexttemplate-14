@@ -1,9 +1,9 @@
 import {
+  baseVariant,
   errorStateClass,
   focusWithinVariant,
   interactiveVariant,
   paddingSize,
-  paperVariant,
   textSize,
 } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
@@ -20,19 +20,19 @@ export const inputClass = cn(
 export const inputVariant = {
   text: {
     primary: cn(
-      paperVariant.text.primary,
+      baseVariant.text.primary,
       'bg-transparent dark:bg-transparent',
       focusWithinVariant.text.primary,
       interactiveVariant.text.primary,
     ),
     secondary: cn(
-      paperVariant.text.secondary,
+      baseVariant.text.secondary,
       'bg-transparent dark:bg-transparent',
       focusWithinVariant.text.secondary,
       interactiveVariant.text.secondary,
     ),
     terciary: cn(
-      paperVariant.text.terciary,
+      baseVariant.text.terciary,
       'bg-transparent dark:bg-transparent',
       focusWithinVariant.text.terciary,
       interactiveVariant.text.terciary,
@@ -41,19 +41,19 @@ export const inputVariant = {
   },
   outlined: {
     primary: cn(
-      paperVariant.outlined.primary,
+      baseVariant.outlined.primary,
       'bg-transparent dark:bg-transparent',
       focusWithinVariant.outlined.primary,
       interactiveVariant.outlined.primary,
     ),
     secondary: cn(
-      paperVariant.outlined.secondary,
+      baseVariant.outlined.secondary,
       'bg-transparent dark:bg-transparent',
       focusWithinVariant.outlined.secondary,
       interactiveVariant.outlined.secondary,
     ),
     terciary: cn(
-      paperVariant.outlined.terciary,
+      baseVariant.outlined.terciary,
       'bg-transparent dark:bg-transparent',
       focusWithinVariant.outlined.terciary,
       interactiveVariant.outlined.terciary,
@@ -62,17 +62,17 @@ export const inputVariant = {
   },
   contained: {
     primary: cn(
-      paperVariant.contained.primary,
+      baseVariant.contained.primary,
       focusWithinVariant.contained.primary,
       interactiveVariant.contained.primary,
     ),
     secondary: cn(
-      paperVariant.contained.secondary,
+      baseVariant.contained.secondary,
       focusWithinVariant.contained.secondary,
       interactiveVariant.contained.secondary,
     ),
     terciary: cn(
-      paperVariant.contained.terciary,
+      baseVariant.contained.terciary,
       focusWithinVariant.contained.terciary,
       interactiveVariant.contained.terciary,
     ),

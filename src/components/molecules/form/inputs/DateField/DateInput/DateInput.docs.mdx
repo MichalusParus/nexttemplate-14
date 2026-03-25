@@ -1,0 +1,89 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/inputs/DateInput/Def" />
+
+# DateInput
+
+> Masked date input for locale-aware date entry via `Intl.DateTimeFormat`. Wraps TextInput with `type="text"` and `inputMode="numeric"` — avoids native date input quirks (inconsistent browser UIs, no formatting control, poor mobile support). Accepts only digits, auto-inserts locale-specific separators, and parses complete 8-digit input into a Date. For calendar-based date selection, use DatePicker. For form integration with validation and labels, use DateField.
+
+<br/>
+
+## Features
+
+- Locale-aware masked input via `Intl.DateTimeFormat.formatToParts()`
+- Auto-detects field order (MM/DD/YYYY, DD.MM.YYYY, YYYY/MM/DD) and separator per locale
+- Numbers-only input with auto-inserted separators
+- Auto-generated placeholder showing expected format
+- Validates day (1-31), month (1-12), and year ranges
+- Min/max date clamping on blur
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+Inherits from [TextInput](?path=/docs/molecules-form-inputs-textinput-def--docs)
+- Renders TextInput with `type="text"` and `inputMode="numeric"` — NOT a native `type="date"` input
+- `inputMode="numeric"` triggers the numeric keyboard on mobile while keeping full formatting control
+- `data-testid="DateInput"` on the native input element
+- Placeholder auto-derived from locale: "MM/DD/YYYY" (en-US), "DD.MM.YYYY" (de-DE)
+
+### Keyboard Handling
+Inherits from [TextInput](?path=/docs/molecules-form-inputs-textinput-def--docs)
+- Non-digit characters stripped via `stripToDigits` in the change handler — the keystroke is silently dropped
+- Separators auto-inserted at positions 2 and 4 (after day/month segments)
+- Input limited to 8 digits maximum (2+2+4 for day/month/year)
+
+### Accessibility (WAI-ARIA)
+Inherits from [TextInput](?path=/docs/molecules-form-inputs-textinput-def--docs)
+- No native date input semantics: no calendar popup, no step buttons
+- Formatted display value is consistent (always masked) — screen readers see the masked value at all times
+
+### Visual States
+Inherits from [TextInput](?path=/docs/molecules-form-inputs-textinput-def--docs)
+- **Focus** — display shows formatted date with separators, editable
+- **Blur** — reformats via `formatDateForInput`, reverts to empty if incomplete
+
+### Interaction Behavior
+- `onChange` fires with `(value?: Date) => void` — returns parsed Date, not string. Returns `undefined` when input is cleared
+- `stripToDigits` removes all non-digit characters, limits to 8 digits
+- `applyMask` auto-inserts locale separator after digit positions 2 and 4
+- `parseDigits` validates complete 8-digit input: checks day 1-31, month 1-12, year 1-9999, and verifies the constructed Date matches the input segments (catches Feb 30 etc.)
+- `onChange` only fires when all 8 digits are present and parse to a valid date — partial input does not trigger onChange
+- On blur: if value prop is set, clamps to min/max and reformats. If no value and input is complete+valid, clamps and fires onChange. Otherwise clears
+- `clampDate` applies min/max on blur — during typing, `onChange` fires with the unclamped value so users can build up the date freely
+- External value changes while focused are ignored via `isFocusedRef` check in useEffect
+
+## Architecture Decisions
+- **`type="text"` over `type="date"`**: Native date inputs have wildly inconsistent browser UIs, no formatting control, poor locale support, and no masked input behavior. Using `type="text"` with `inputMode="numeric"` gives mobile numeric keyboard without the quirks.
+- **Mask-based input**: Digits-only with auto-separators provides clear format guidance without the complexity of segmented fields. Users see the format in the placeholder and separators appear as they type.
+- **`Intl.DateTimeFormat.formatToParts()` for locale detection**: Automatically determines field order (month-first vs day-first) and separator character. No hardcoded format strings.
+- **`onChange(Date | undefined)` contract**: Unlike TextInput's `(string) => void`, DateInput returns the parsed Date directly. `undefined` signals a cleared input.
+- **Parse only on complete input**: 8 digits required before onChange fires. This prevents premature validation while the user is still typing.
+- **Clamping on blur, not on change**: `clampDate` applies min/max when the input loses focus, not during typing. This lets users type any date freely — on blur, if the date is out of range, `onChange` fires again with the clamped value. Same pattern as NumberInput's min/max.
+- **Blur reformats to `value` prop (controlled behavior)**: On blur, if `value` is set, the input always reformats to that value. The parent must update `value` in their `onChange` handler or the input snaps back to the previous value. This is standard controlled-component behavior, same as NumberInput.
+- **Follows NumberInput pattern**: Same `isFocusedRef` / `internalValue` / focus-blur cycle as NumberInput for consistency across the input component family.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> The locale-aware masking is genuinely elegant — `formatToParts` does the heavy lifting so there's zero hardcoded format logic, and the mask just works regardless of whether your locale puts year first or day first. That's a hard problem solved simply.
+>
+> React Aria's `DateField` takes a fundamentally different approach with segmented fields — separate editable spans for day, month, and year with individual arrow-key incrementing. That's more powerful for accessibility (each segment is independently navigable), but it's also dramatically more complex and brings a heavy dependency. The mask approach here trades that granular control for a simpler mental model: it's just a text input with auto-formatting. For most forms, that's the right call. Where React Aria wins is error feedback mid-entry — here, nothing happens until all 8 digits are in, so a user typing an invalid month gets no signal until they finish or blur.
+>
+> A clean, well-scoped date input that handles the locale problem correctly.
+>
+> — *Claude, Opus 4.6, 2026-03-23*

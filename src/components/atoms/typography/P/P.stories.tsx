@@ -23,9 +23,9 @@ type Story = StoryObj<typeof P>
 export const Default: Story = {
   args: {
     className: '',
+    align: 'text-left',
     color: 'none',
     size: 'md',
-    align: 'text-left',
     isLoading: false,
     expectedLines: 4,
     ghostProps: {},

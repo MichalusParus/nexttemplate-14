@@ -44,6 +44,12 @@ export const useKeyboardNavigation = (
         focusIndexRef.current = activeIndex
       }
 
+      // Guard: skip navigation when a specific element is focused but isn't in our focusable list.
+      // Allows navigation when focus is lost (body/null) — recovers focus to managed elements.
+      // Prevents conflicts when multiple useFocus instances share the same DOM element.
+      const active = document.activeElement
+      const isOwnedFocus = activeIndex !== -1 || active === document.body || active === null
+
       const { code, metaKey, shiftKey } = e
 
       if (keyHandlers) {
@@ -87,7 +93,7 @@ export const useKeyboardNavigation = (
           onToggle?.(true)
           return
         }
-        if (!focusable.length) return
+        if (!isOwnedFocus || !focusable.length) return
         e.preventDefault()
         e.stopPropagation()
         if (columns) {
@@ -104,7 +110,7 @@ export const useKeyboardNavigation = (
       }
 
       if (code === 'ArrowRight') {
-        if (!focusable.length) return
+        if (!isOwnedFocus || !focusable.length) return
         if (metaKey) {
           e.preventDefault()
           e.stopPropagation()
@@ -119,7 +125,7 @@ export const useKeyboardNavigation = (
       }
 
       if (code === 'ArrowUp') {
-        if (!focusable.length) return
+        if (!isOwnedFocus || !focusable.length) return
         e.preventDefault()
         e.stopPropagation()
         if (columns) {
@@ -137,7 +143,7 @@ export const useKeyboardNavigation = (
       }
 
       if (code === 'ArrowLeft') {
-        if (!focusable.length) return
+        if (!isOwnedFocus || !focusable.length) return
         if (metaKey) {
           e.preventDefault()
           e.stopPropagation()
@@ -153,7 +159,7 @@ export const useKeyboardNavigation = (
       }
 
       if (code === 'Home') {
-        if (!focusable.length) return
+        if (!isOwnedFocus || !focusable.length) return
         e.preventDefault()
         e.stopPropagation()
         focusElement(0)
@@ -161,7 +167,7 @@ export const useKeyboardNavigation = (
       }
 
       if (code === 'End') {
-        if (!focusable.length) return
+        if (!isOwnedFocus || !focusable.length) return
         e.preventDefault()
         e.stopPropagation()
         focusElement(focusable.length - 1)

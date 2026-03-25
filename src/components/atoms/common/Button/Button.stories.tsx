@@ -22,6 +22,7 @@ type Story = StoryObj<typeof Button>
 export const PrimaryDefault: Story = {
   args: {
     className: '',
+    type: 'button',
     variant: 'contained',
     color: 'primary',
     size: 'md',
@@ -29,6 +30,7 @@ export const PrimaryDefault: Story = {
     endIcon: undefined,
     isLoading: false,
     hideShadow: false,
+    disabled: false,
     onClick: () => console.log('Click'),
     children: 'Button',
   },

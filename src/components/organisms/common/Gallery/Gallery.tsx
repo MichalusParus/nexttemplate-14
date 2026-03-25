@@ -1,10 +1,11 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { forwardRef, useId, useState } from 'react'
+import { forwardRef, useId, useMemo, useState } from 'react'
 
 import { Image } from '@/components/atoms/common/Image'
 import { Paper, PaperProps } from '@/components/atoms/containers/Paper'
 import { focusWithinVariant } from '@/components/utils/common.style'
+import { devWarning } from '@/components/utils/devWarning'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -38,16 +39,20 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
       className,
       items,
       label,
-      variant = 'outlined',
-      color = 'primary',
       width = 'w-full',
       ratio = 'aspect-video',
+      variant = 'outlined',
+      color = 'primary',
       paperProps = {},
       imageViewerProps = {},
       carouselProps = {},
     },
     ref,
   ) => {
+    devWarning(
+      items.length === 0,
+      'Gallery: `items` array is empty. Gallery will render with no images.',
+    )
     const t = useTranslations('Components')
     const id = useId().replace(/:/g, '')
     const controlsPortalId = `${id}-galleryControlWrap`
@@ -56,14 +61,18 @@ export const Gallery = forwardRef<HTMLDivElement | null, GalleryProps>(
     const [currentPage, setCurrentPage] = useState(1)
     const { className: paperClassName, ...restPaperProps } = paperProps
     const { className: carouselClassName, ...restCarouselProps } = carouselProps
-    const carouselItems: CarouselItemType[] = items.map(item => ({
-      label: item.label,
-      content: <Image className="bg-transparent" src={item.src} alt={item.label} />,
-      carouselItemProps: {
-        className: 'flex items-center justify-center',
-        ...item.carouselItemProps,
-      },
-    }))
+    const carouselItems: CarouselItemType[] = useMemo(
+      () =>
+        items.map(item => ({
+          label: item.label,
+          content: <Image className="bg-transparent" src={item.src} alt={item.label} />,
+          carouselItemProps: {
+            className: 'flex items-center justify-center',
+            ...item.carouselItemProps,
+          },
+        })),
+      [items],
+    )
 
     return (
       <Paper

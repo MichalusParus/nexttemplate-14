@@ -1,8 +1,8 @@
 import {
+  baseVariant,
   errorStateClass,
   focusWithinVariant,
   interactiveVariant,
-  paperVariant,
   toggleBaseBg,
 } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
@@ -15,21 +15,21 @@ export const checkboxWrapClass = cn(
 export const checkboxVariant = {
   text: {
     primary: cn(
-      paperVariant.text.primary,
+      baseVariant.text.primary,
       toggleBaseBg,
       'group-hoverable:bg-primary-100 dark:group-hoverable:bg-primary-900',
       focusWithinVariant.text.primary,
       interactiveVariant.text.primary,
     ),
     secondary: cn(
-      paperVariant.text.secondary,
+      baseVariant.text.secondary,
       toggleBaseBg,
       'group-hoverable:bg-secondary-100 dark:group-hoverable:bg-secondary-900',
       focusWithinVariant.text.secondary,
       interactiveVariant.text.secondary,
     ),
     terciary: cn(
-      paperVariant.text.terciary,
+      baseVariant.text.terciary,
       toggleBaseBg,
       'group-hoverable:bg-terciary-100 dark:group-hoverable:bg-terciary-900',
       focusWithinVariant.text.terciary,
@@ -39,21 +39,21 @@ export const checkboxVariant = {
   },
   outlined: {
     primary: cn(
-      paperVariant.outlined.primary,
+      baseVariant.outlined.primary,
       toggleBaseBg,
       'group-hoverable:bg-primary-100 dark:group-hoverable:bg-primary-900',
       focusWithinVariant.outlined.primary,
       interactiveVariant.outlined.primary,
     ),
     secondary: cn(
-      paperVariant.outlined.secondary,
+      baseVariant.outlined.secondary,
       toggleBaseBg,
       'group-hoverable:bg-secondary-100 dark:group-hoverable:bg-secondary-900',
       focusWithinVariant.outlined.secondary,
       interactiveVariant.outlined.secondary,
     ),
     terciary: cn(
-      paperVariant.outlined.terciary,
+      baseVariant.outlined.terciary,
       toggleBaseBg,
       'group-hoverable:bg-terciary-100 dark:group-hoverable:bg-terciary-900',
       focusWithinVariant.outlined.terciary,
@@ -63,19 +63,19 @@ export const checkboxVariant = {
   },
   contained: {
     primary: cn(
-      paperVariant.contained.primary,
+      baseVariant.contained.primary,
       'group-hoverable:bg-primary-800',
       focusWithinVariant.contained.primary,
       interactiveVariant.contained.primary,
     ),
     secondary: cn(
-      paperVariant.contained.secondary,
+      baseVariant.contained.secondary,
       'group-hoverable:bg-secondary-800',
       focusWithinVariant.contained.secondary,
       interactiveVariant.contained.secondary,
     ),
     terciary: cn(
-      paperVariant.contained.terciary,
+      baseVariant.contained.terciary,
       'group-hoverable:bg-terciary-800',
       focusWithinVariant.contained.terciary,
       interactiveVariant.contained.terciary,

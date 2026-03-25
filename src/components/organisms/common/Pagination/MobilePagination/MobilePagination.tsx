@@ -64,7 +64,7 @@ export const MobilePagination = forwardRef<HTMLDivElement | null, MobilePaginati
 
     const handleNext = () => {
       const newPage = page + loadMoreCount + 1
-      if (newPage + loadMoreCount >= count && previousButtonRef.current) {
+      if (newPage >= count && previousButtonRef.current) {
         previousButtonRef.current.focus()
       }
       onChange(newPage)

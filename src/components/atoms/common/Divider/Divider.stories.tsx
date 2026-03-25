@@ -19,8 +19,8 @@ export const PrimaryDefault: Story = {
   args: {
     className: '',
     label: '',
-    color: 'primary',
     width: 2,
+    color: 'primary',
     vertical: false,
     decorative: false,
     spanProps: {},

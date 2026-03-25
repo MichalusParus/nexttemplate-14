@@ -16,6 +16,7 @@ import { MultiDatePickerField } from '../../comboboxes/MultiDatePickerField'
 import { MultiSelectField } from '../../comboboxes/MultiSelectField'
 import { RangeDatePickerField } from '../../comboboxes/RangeDatePickerField'
 import { SelectField } from '../../comboboxes/SelectField'
+import { DateField } from '../../inputs/DateField'
 import { FileField } from '../../inputs/FileField'
 import { NumberField } from '../../inputs/NumberField'
 import { PasswordField } from '../../inputs/PasswordField'
@@ -74,6 +75,7 @@ const FormWithHooks = (args: FormProps<object>) => {
       <Form {...args} form={form}>
         <TextField name="inputStory" label="TextInput:" placeholder="input" />
         <NumberField name="numberStory" label="NumberInput:" placeholder="number" />
+        <DateField name="dateInputStory" label="DateInput:" placeholder="date" />
         <PasswordField name="passwordStory" label="PasswordInput:" placeholder="password" />
         <SearchField
           name="searchStory"

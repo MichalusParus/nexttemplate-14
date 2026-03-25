@@ -33,7 +33,7 @@ export const TabListSelect = <T,>({
   const options = tabs.map(tab => ({
     ...tab,
     buttonProps: {
-      id: `${name}-${tab.value}-tab`,
+      id: `${name}-${tab.value}-tab-select`,
       'aria-controls': `${tab.value}-tabpanel`,
       disabled: tab.isDisabled,
     },
@@ -42,7 +42,7 @@ export const TabListSelect = <T,>({
   return (
     <Select<T>
       className={cn('TabListSelect', '[&_.Ellipsis]:text-current', selectClassName, className)}
-      name="select-tablist"
+      name={`select-${name}`}
       placeholder={selectedTab.label}
       value={selectedTab.value}
       options={options}

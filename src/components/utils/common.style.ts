@@ -1,5 +1,10 @@
 import { cn } from '@/utils/utils'
 
+type Variant = 'text' | 'outlined' | 'contained'
+type Color = 'primary' | 'secondary' | 'terciary' | 'none'
+type Size = 'sm' | 'md' | 'lg' | 'none'
+type StyleColor = Color | 'error'
+
 // TYPOGRAPHY
 
 export const textVariant = {
@@ -21,7 +26,7 @@ export const textVariant = {
     terciary: cn('text-terciary-100'),
     none: '',
   },
-}
+} satisfies Record<Variant, Record<Color, string>>
 
 export const textSize = {
   sm: 'text-sm',
@@ -31,7 +36,7 @@ export const textSize = {
   '2xl': 'text-2xl',
   '3xl': 'text-3xl',
   none: '',
-}
+} satisfies Record<Size | 'xl' | '2xl' | '3xl', string>
 
 export const errorStateClass = cn(
   '[&.error]:border-error-800 [&.error]:shadow-error',
@@ -46,7 +51,7 @@ export const paddingSize = {
   md: 'px-md-x py-md-y',
   lg: 'py-lg-y px-lg-x',
   none: '',
-}
+} satisfies Record<Size, string>
 
 export const iconPaddingSize = {
   sm: 'p-sm-y',
@@ -54,7 +59,7 @@ export const iconPaddingSize = {
   lg: 'p-lg-y',
   inline: 'p-0',
   none: '',
-}
+} satisfies Record<Size | 'inline', string>
 
 export const childrenIconSize = {
   sm: '[&_svg]:h-sm-icon [&_svg]:w-sm-icon [&_svg]:min-w-sm-icon',
@@ -62,12 +67,12 @@ export const childrenIconSize = {
   lg: '[&_svg]:h-lg-icon [&_svg]:w-lg-icon [&_svg]:min-w-lg-icon',
   inline: '[&_svg]:h-sm [&_svg]:w-sm [&_svg]:min-w-sm',
   none: '',
-}
+} satisfies Record<Size | 'inline', string>
 
 
 // STYLES
 
-export const paperVariant = {
+export const baseVariant = {
   text: {
     primary: 'border-transparent bg-bg dark:bg-dark-bg from-bg dark:from-dark-bg text-primary-800 dark:text-primary-100',
     secondary: 'border-transparent bg-bg dark:bg-dark-bg from-bg dark:from-dark-bg text-secondary-800 dark:text-secondary-100',
@@ -89,7 +94,7 @@ export const paperVariant = {
     error: 'border-error-800 bg-error-700 from-error-700 text-error-50',
     none: '',
   },
-}
+} satisfies Record<Variant, Record<StyleColor, string>>
 
 export const toggleBaseBg = 'bg-dark-500/10 dark:bg-dark-950/20'
 
@@ -176,10 +181,11 @@ export const interactiveVariant = {
     ),
     none: '',
   },
-}
+} satisfies Record<Variant, Record<StyleColor, string>>
 
 
-// DISABLED
+// DISABLED — intentionally flat (variant only, no color dimension).
+// Disabled state uses neutral dark-* colors regardless of component color.
 
 export const disabledVariant = {
   text: cn(
@@ -198,7 +204,7 @@ export const disabledVariant = {
     'disabled-aria:cursor-not-allowed disabled-aria:border-dark-500 disabled-aria:bg-dark-500 disabled-aria:text-dark-300 disabled-aria:opacity-50 disabled-aria:shadow-none',
     'disabled-aria:hoverable:bg-dark-500 disabled-aria:focus-within:bg-dark-500 disabled-aria:focus-within:ring-0 disabled-aria:focus-visible:bg-dark-500 disabled-aria:focus-visible:ring-0 disabled-aria:group-hoverable:bg-dark-500',
   ),
-}
+} satisfies Record<Variant, string>
 
 
 /** FOCUS */
@@ -281,7 +287,7 @@ export const focusVisibleVariant = {
     ),
     none: '',
   },
-}
+} satisfies Record<Variant, Record<StyleColor, string>>
 
 export const focusWithinVariant = {
   text: {
@@ -363,5 +369,5 @@ export const focusWithinVariant = {
     ),
     none: '',
   },
-}
+} satisfies Record<Variant, Record<StyleColor, string>>
 

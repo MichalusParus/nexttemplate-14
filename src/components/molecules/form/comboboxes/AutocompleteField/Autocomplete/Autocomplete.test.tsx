@@ -416,11 +416,13 @@ describe('Autocomplete', () => {
   })
 
   describe('Keyboard', () => {
-    // Arrow key navigation within the open dropdown is handled by useFocus with
-    // FOCUS_SELECTORS.autocomplete (tested in useFocus's own suite). In JSDOM,
-    // Dropdown's internal useFocus registers a competing keydown handler on the
-    // same container and portal elements, preventing reliable arrow navigation
-    // testing at this integration level.
+    const openAutocomplete = async () => {
+      const combobox = screen.getByRole('combobox')
+      await act(async () => { fireEvent.click(combobox) })
+      await act(async () => {})
+      await act(async () => {})
+      return combobox
+    }
 
     it('input is focusable', () => {
       render(
@@ -512,6 +514,83 @@ describe('Autocomplete', () => {
 
       expect(onChange).toHaveBeenCalledWith(options[4].value)
       expect(combobox).toHaveAttribute('aria-expanded', 'false')
+    })
+
+    // -- Arrow navigation --
+
+    it('ArrowDown focuses first option', async () => {
+      render(
+        <Autocomplete
+          name="autocompleteTest"
+          value={undefined}
+          options={options}
+          onInputChange={() => {}}
+          onChange={() => {}}
+        />,
+      )
+
+      await openAutocomplete()
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      expect(document.activeElement).toBe(optionElements[0])
+    })
+
+    it('ArrowDown moves to next option', async () => {
+      render(
+        <Autocomplete
+          name="autocompleteTest"
+          value={undefined}
+          options={options}
+          onInputChange={() => {}}
+          onChange={() => {}}
+        />,
+      )
+
+      await openAutocomplete()
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      await act(async () => {
+        fireEvent.keyDown(optionElements[0], { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      expect(document.activeElement).toBe(optionElements[1])
+    })
+
+    it('ArrowUp moves to previous option', async () => {
+      render(
+        <Autocomplete
+          name="autocompleteTest"
+          value={undefined}
+          options={options}
+          onInputChange={() => {}}
+          onChange={() => {}}
+        />,
+      )
+
+      await openAutocomplete()
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      await act(async () => {
+        fireEvent.keyDown(optionElements[0], { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      await act(async () => {
+        fireEvent.keyDown(optionElements[1], { key: 'ArrowUp', code: 'ArrowUp' })
+      })
+
+      expect(document.activeElement).toBe(optionElements[0])
     })
   })
 

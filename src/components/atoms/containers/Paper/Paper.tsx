@@ -1,6 +1,6 @@
 import { forwardRef, PropsWithChildren, ReactNode } from 'react'
 
-import { paperVariant } from '@/components/utils/common.style'
+import { baseVariant } from '@/components/utils/common.style'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -23,10 +23,10 @@ export const Paper = forwardRef<HTMLDivElement | null, PropsWithChildren<PaperPr
   (
     {
       className,
-      variant = 'text',
-      color = 'primary',
       padding = 'py-2 px-2 md:pt-2 md:pb-3 md:px-5',
       rounded = 'rounded-md',
+      variant = 'text',
+      color = 'primary',
       hideShadow,
       children,
       ...rest
@@ -38,7 +38,7 @@ export const Paper = forwardRef<HTMLDivElement | null, PropsWithChildren<PaperPr
         className={cn(
           'Paper',
           'border',
-          paperVariant[variant][color],
+          baseVariant[variant][color],
           padding,
           rounded,
           !hideShadow && 'shadow-paper',

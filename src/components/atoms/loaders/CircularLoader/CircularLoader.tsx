@@ -25,7 +25,7 @@ export type CircularLoaderProps = NativeCircularLoaderProps &
 /** Spinning circular loader. Native HTMLAttributes props supported. */
 export const CircularLoader = forwardRef<HTMLSpanElement | null, CircularLoaderProps>(
   (
-    { className, color = 'primary', size = 'md', label = 'Loading...', hideLabel, ...rest },
+    { className, label = 'Loading...', color = 'primary', size = 'md', hideLabel, ...rest },
     ref,
   ) => {
     return (

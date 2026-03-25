@@ -30,9 +30,9 @@ export const P = forwardRef<HTMLParagraphElement | null, PropsWithChildren<PProp
   (
     {
       className,
+      align = 'text-left',
       color = 'none',
       size = 'md',
-      align = 'text-left',
       isLoading,
       expectedLines = 1,
       ghostProps = {},

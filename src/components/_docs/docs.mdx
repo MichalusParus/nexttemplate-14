@@ -19,7 +19,7 @@ Built on TailwindCSS, React Hook Form, Zod, and Popper — nothing else. No MUI,
 ## Why ParusUI
 
 **Complete Component System**
-- **58 Production Components** — from buttons and inputs to data grids, date pickers, and multi-step forms. Everything you need to build a real application, not a demo
+- **59 Production Components** — from buttons and inputs to data grids, date pickers, and multi-step forms. Everything you need to build a real application, not a demo
 - **Zero UI Library Dependencies** — no MUI, no Radix, no Chakra. Every component, every style, every behavior is yours to read, modify, and own
 - **Connected, Not Scattered** — components share a unified style system, consistent accessibility patterns, and a single focus management hook. This is a designed system, not a collection of copy-pasted primitives
 
@@ -195,7 +195,7 @@ Two ways to use ParusUI today, with a monorepo package planned for the future.
 </ComponentSection>
 <br/>
 
-<ComponentSection title="Molecules" count={34}>
+<ComponentSection title="Molecules" count={35}>
 
 ### Common (5)
 
@@ -242,7 +242,7 @@ Two ways to use ParusUI today, with a monorepo package planned for the future.
   />
 </ComponentGrid>
 
-### Form - Inputs (7)
+### Form - Inputs (8)
 
 <ComponentGrid>
   <ComponentCard
@@ -254,6 +254,11 @@ Two ways to use ParusUI today, with a monorepo package planned for the future.
     name="NumberInput"
     path="molecules-form-inputs-numberinput"
     description="String based formatted number input"
+  />
+  <ComponentCard
+    name="DateInput"
+    path="molecules-form-inputs-dateinput"
+    description="Masked date input with locale formatting"
   />
   <ComponentCard
     name="PasswordInput"

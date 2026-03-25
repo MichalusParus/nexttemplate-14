@@ -28,11 +28,11 @@ export const List = forwardRef<HTMLOListElement | null, ListProps>(
   (
     {
       className,
+      content,
       type = 'ol',
       listStyleType = 'list-none',
       color = 'none',
       size = 'md',
-      content,
       icon,
       isLoading = false,
       expectedLines = 3,

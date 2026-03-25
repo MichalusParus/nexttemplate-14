@@ -2,12 +2,13 @@
 import { memo } from 'react'
 
 import { buttonVariant, iconOnlySize } from '@/components/atoms/common/Button/Button.style'
+import { Ellipsis } from '@/components/atoms/typography/Ellipsis'
 import { P } from '@/components/atoms/typography/P'
 import { Checkbox } from '@/components/molecules/form/toggles/CheckboxField/Checkbox'
 import { paddingSize, textSize } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
-import { alignColumn, cellOverflow } from '../../GridHeader/ColumnHead/ColumnHead.style'
+import { alignColumn } from '../../GridHeader/ColumnHead/ColumnHead.style'
 import { useDataGridContext } from '../../utils/DataGridContext'
 
 export type GridRowProps<T extends Record<string, unknown> = Record<string, unknown>> = {
@@ -36,9 +37,9 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
   className,
   row,
   rowIndex,
+  gridTemplateColumns,
   isSelected = false,
   multiselect,
-  gridTemplateColumns,
   isLoading = false,
   getRowId,
   handleRowClick,
@@ -54,17 +55,24 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
     }
     if (!row) return null
     if (col.renderCell) {
-      return col.renderCell(row)
+      try {
+        return col.renderCell(row)
+      } catch (error) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.error(`[DataGrid] renderCell failed for column "${col.name}":`, error)
+        }
+        return null
+      }
     }
     const value = row[col.name]
     if (value == null) return null
     if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-      return value
+      return <Ellipsis className={col.align && alignColumn[col.align]}>{String(value)}</Ellipsis>
     }
     if (typeof value === 'object' && 'type' in value && 'props' in value) {
       return value as React.ReactNode
     }
-    return String(value)
+    return <Ellipsis className={col.align && alignColumn[col.align]}>{String(value)}</Ellipsis>
   }
 
   const renderCell = (
@@ -77,7 +85,7 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
       key={cellKey}
       role="gridcell"
       className={cn(
-        'GridCell focus-visible:ring ring-current focus:outline-none',
+        'GridCell flex items-center focus-visible:ring ring-current focus:outline-none',
         cellClasses,
         isSelected && 'selected',
       )}
@@ -119,8 +127,7 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
           renderCellContent(col),
           `${rowId}-${col.name}`,
           cn(
-            'font-normal',
-            cellOverflow,
+            'font-normal overflow-hidden',
             col.align && alignColumn[col.align],
             paddingSize[size],
             textSize[size],
@@ -150,7 +157,7 @@ const GridRowComponent = <T extends Record<string, unknown> = Record<string, unk
       <div
         className={cn(
           'RowInnerWrap',
-          'grid w-full',
+          'grid w-full items-center',
           isRowInteractive &&
             !isLoading && [
               'cursor-pointer',

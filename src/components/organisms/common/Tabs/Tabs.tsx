@@ -2,6 +2,7 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ForwardedRef, forwardRef, PropsWithChildren, useCallback } from 'react'
 
+import { devWarning } from '@/components/utils/devWarning'
 import { cn } from '@/utils/utils'
 
 import { TabList } from './TabList'
@@ -24,10 +25,10 @@ function TabsComponent<T extends string | number = string>(
     name = 'tab',
     tabs,
     selectedValue,
+    fullWidth,
     variant = 'text',
     color = 'primary',
     size = 'md',
-    fullWidth,
     tabButtonProps = {},
     selectProps = {},
     onTabChange,
@@ -67,6 +68,12 @@ function TabsComponent<T extends string | number = string>(
 
   if (!tabs.length || selectedValue === undefined || selectedValue === null) return null
 
+  devWarning(
+    !tabs.find(tab => tab.value === selectedValue),
+    `Tabs: selectedValue '${selectedValue}' not found in tabs. Falling back to first tab.`,
+  )
+
+
   return (
     <div
       className={cn('TabsWrap', 'relative flex flex-col items-start gap-4', className)}
@@ -75,19 +82,17 @@ function TabsComponent<T extends string | number = string>(
     >
       <TabList<T> className={cn('hidden md:block')} fullWidth={fullWidth} {...tablistProps} />
       <TabListSelect<T> className={'md:hidden'} selectProps={selectProps} {...tablistProps} />
-      {tabs.map(tab => (
-        <div
-          id={`${tab.value}-tabpanel`}
-          key={`${tab.value}-tabpanel`}
-          className={cn('TabPanel', 'w-full')}
-          role="tabpanel"
-          tabIndex={tab.value === selectedTab.value ? 0 : -1}
-          aria-labelledby={`${name}-${tab.value}-tab`}
-          hidden={tab.value !== selectedTab.value}
-        >
-          {tab.component}
-        </div>
-      ))}
+      <div
+        id={`${selectedTab.value}-tabpanel`}
+        key={`${selectedTab.value}-tabpanel`}
+        className={cn('TabPanel', 'w-full')}
+        role="tabpanel"
+        tabIndex={0}
+        aria-labelledby={selectedTab.isHidden ? undefined : `${name}-${selectedTab.value}-tab`}
+        aria-label={selectedTab.isHidden ? selectedTab.label : undefined}
+      >
+        {selectedTab.component}
+      </div>
     </div>
   )
 }

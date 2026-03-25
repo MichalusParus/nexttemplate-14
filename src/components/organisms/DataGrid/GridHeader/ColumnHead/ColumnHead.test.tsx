@@ -24,151 +24,224 @@ jest.mock('next/navigation', () => {
 })
 
 describe('ColumnHead', () => {
-  it('default', () => {
-    render(
-      <JestDataGridProvider>
-        <ColumnHead className="className" column={gridColsDef[0]} />
-      </JestDataGridProvider>,
-    )
-    const columnHeader = screen.getByTestId('ColumnHeader')
-    const ellipsis = screen.getByTestId('Ellipsis')
-    const sortButton = columnHeader.querySelector('button')
-    const filterButton = screen.getByTestId('FilterButton')
+  describe('Semantics', () => {
+    it('renders columnheader with label', () => {
+      render(
+        <JestDataGridProvider>
+          <ColumnHead column={gridColsDef[0]} />
+        </JestDataGridProvider>,
+      )
+      const columnHeader = screen.getByTestId('ColumnHeader')
 
-    expect(columnHeader).toBeInTheDocument()
-    expect(columnHeader).toHaveClass('className')
-    expect(columnHeader).toHaveTextContent('Name')
-    expect(columnHeader).toHaveAttribute('role', 'columnheader')
-    expect(columnHeader).toHaveAttribute('aria-sort', 'none')
-    expect(ellipsis).toBeInTheDocument()
-    expect(sortButton).toBeInTheDocument()
-    expect(sortButton).toHaveAttribute('aria-label', 'sort in Name')
-    expect(filterButton).toBeInTheDocument()
-  })
-
-  it('parent col no sort no filter', () => {
-    render(
-      <JestDataGridProvider>
-        <ColumnHead column={gridColsDef[0]} canSort={false} canFilter={false} />
-      </JestDataGridProvider>,
-    )
-
-    const columnHeader = screen.getByTestId('ColumnHeader')
-    const chevron = columnHeader.querySelector('svg')
-    const sortButtonTestId = screen.queryByTestId('ColumnHeadSortButton')
-    const filterButton = screen.queryByTestId('FilterButton')
-
-    expect(filterButton).not.toBeInTheDocument()
-    expect(sortButtonTestId).toBeNull()
-    expect(chevron).toBeNull()
-    expect(columnHeader).toHaveAttribute('aria-sort', 'none')
-  })
-
-  it('coldef hideSort', () => {
-    const columnWithHideSort = { ...gridColsDef[0], hideSort: true }
-    render(
-      <JestDataGridProvider>
-        <ColumnHead column={columnWithHideSort} />
-      </JestDataGridProvider>,
-    )
-    const columnHeader = screen.getByTestId('ColumnHeader')
-    const sortButtonTestId = screen.queryByTestId('ColumnHeadSortButton')
-
-    expect(sortButtonTestId).toBeNull()
-    expect(columnHeader).toHaveAttribute('aria-sort', 'none')
-  })
-
-  it('asc', () => {
-    render(
-      <JestDataGridProvider sorting={{ key: 'name', value: 'asc' }}>
-        <ColumnHead column={gridColsDef[0]} />
-      </JestDataGridProvider>,
-    )
-    const columnHeader = screen.getByTestId('ColumnHeader')
-    const chevron = columnHeader.querySelector('svg')
-
-    expect(columnHeader).toHaveAttribute('aria-sort', 'ascending')
-    expect(chevron).toHaveClass('opacity-100')
-    expect(chevron).toHaveClass('rotate-180')
-  })
-
-  it('desc', () => {
-    render(
-      <JestDataGridProvider sorting={{ key: 'name', value: 'desc' }}>
-        <ColumnHead column={gridColsDef[0]} />
-      </JestDataGridProvider>,
-    )
-    const columnHeader = screen.getByTestId('ColumnHeader')
-    const chevron = columnHeader.querySelector('svg')
-
-    expect(columnHeader).toHaveAttribute('aria-sort', 'descending')
-    expect(chevron).toHaveClass('opacity-100')
-    expect(chevron).toHaveClass('rotate-0')
-  })
-
-  it('sort click', () => {
-    const spy = jest.fn()
-    render(
-      <JestDataGridProvider handleSorting={spy}>
-        <ColumnHead column={gridColsDef[0]} />
-      </JestDataGridProvider>,
-    )
-    const sortButton = screen.getByLabelText('sort in Name')
-
-    fireEvent.click(sortButton)
-
-    expect(spy).toHaveBeenCalledWith('name')
-  })
-
-  it('coldef no filter', () => {
-    render(
-      <JestDataGridProvider>
-        <ColumnHead column={gridCleanColsDef[0]} />
-      </JestDataGridProvider>,
-    )
-    const filterButton = screen.queryByTestId('FilterButton')
-
-    expect(filterButton).not.toBeInTheDocument()
-  })
-
-  it('open filter', async () => {
-    render(
-      <JestDataGridProvider>
-        <ColumnHead column={gridColsDef[0]} canFilter />
-      </JestDataGridProvider>,
-    )
-    const filterButton = screen.getByTestId('FilterButton')
-
-    expect(screen.queryByTestId('Dropdown')).not.toBeInTheDocument()
-
-    await act(async () => {
-      fireEvent.click(filterButton)
+      expect(columnHeader).toBeInTheDocument()
+      expect(columnHeader).toHaveAttribute('role', 'columnheader')
+      expect(columnHeader).toHaveTextContent('Name')
+      expect(screen.getByTestId('Ellipsis')).toBeInTheDocument()
     })
 
-    expect(screen.getByTestId('Dropdown')).toBeInTheDocument()
+    it('className lands on columnheader', () => {
+      render(
+        <JestDataGridProvider>
+          <ColumnHead className="className" column={gridColsDef[0]} />
+        </JestDataGridProvider>,
+      )
+
+      expect(screen.getByTestId('ColumnHeader')).toHaveClass('className')
+    })
+
+    it('aria-sort none when unsorted', () => {
+      render(
+        <JestDataGridProvider>
+          <ColumnHead column={gridColsDef[0]} />
+        </JestDataGridProvider>,
+      )
+
+      expect(screen.getByTestId('ColumnHeader')).toHaveAttribute('aria-sort', 'none')
+    })
+
+    it('aria-sort ascending', () => {
+      render(
+        <JestDataGridProvider sorting={{ key: 'name', value: 'asc' }}>
+          <ColumnHead column={gridColsDef[0]} />
+        </JestDataGridProvider>,
+      )
+      const columnHeader = screen.getByTestId('ColumnHeader')
+      const chevron = columnHeader.querySelector('svg')
+
+      expect(columnHeader).toHaveAttribute('aria-sort', 'ascending')
+      expect(chevron).toHaveClass('opacity-100')
+      expect(chevron).toHaveClass('rotate-180')
+    })
+
+    it('aria-sort descending', () => {
+      render(
+        <JestDataGridProvider sorting={{ key: 'name', value: 'desc' }}>
+          <ColumnHead column={gridColsDef[0]} />
+        </JestDataGridProvider>,
+      )
+      const columnHeader = screen.getByTestId('ColumnHeader')
+      const chevron = columnHeader.querySelector('svg')
+
+      expect(columnHeader).toHaveAttribute('aria-sort', 'descending')
+      expect(chevron).toHaveClass('opacity-100')
+      expect(chevron).toHaveClass('rotate-0')
+    })
+
+    it('sort button with aria-label', () => {
+      render(
+        <JestDataGridProvider>
+          <ColumnHead column={gridColsDef[0]} />
+        </JestDataGridProvider>,
+      )
+      const sortButton = screen.getByTestId('ColumnHeadSortButton')
+
+      expect(sortButton).toBeInTheDocument()
+      expect(sortButton).toHaveAttribute('aria-label', 'sort in Name')
+    })
+
+    it('no sort button and no aria-sort when canSort false', () => {
+      render(
+        <JestDataGridProvider>
+          <ColumnHead column={gridColsDef[0]} canSort={false} canFilter={false} />
+        </JestDataGridProvider>,
+      )
+      const columnHeader = screen.getByTestId('ColumnHeader')
+
+      expect(screen.queryByTestId('ColumnHeadSortButton')).not.toBeInTheDocument()
+      expect(columnHeader.querySelector('svg')).toBeNull()
+      expect(columnHeader).not.toHaveAttribute('aria-sort')
+    })
+
+    it('no sort button when hideSort in coldef', () => {
+      const columnWithHideSort = { ...gridColsDef[0], hideSort: true }
+      render(
+        <JestDataGridProvider>
+          <ColumnHead column={columnWithHideSort} />
+        </JestDataGridProvider>,
+      )
+
+      expect(screen.queryByTestId('ColumnHeadSortButton')).not.toBeInTheDocument()
+    })
+
+    it('filter button present when column has filter config', () => {
+      render(
+        <JestDataGridProvider>
+          <ColumnHead column={gridColsDef[0]} />
+        </JestDataGridProvider>,
+      )
+
+      expect(screen.getByTestId('FilterButton')).toBeInTheDocument()
+    })
+
+    it('no filter button when column has no filter config', () => {
+      render(
+        <JestDataGridProvider>
+          <ColumnHead column={gridCleanColsDef[0]} />
+        </JestDataGridProvider>,
+      )
+
+      expect(screen.queryByTestId('FilterButton')).not.toBeInTheDocument()
+    })
+
+    it('gridColumn and gridRow props set inline styles', () => {
+      render(
+        <JestDataGridProvider>
+          <ColumnHead column={gridColsDef[0]} gridColumn="2 / span 3" gridRow="1" />
+        </JestDataGridProvider>,
+      )
+      const columnHeader = screen.getByTestId('ColumnHeader')
+
+      expect(columnHeader).toHaveStyle({ gridColumn: '2 / span 3', gridRow: '1' })
+    })
+
+    it('non-leaf column has no tabIndex', () => {
+      const parentColumn = { ...gridColsDef[0], columns: [gridColsDef[1]] }
+      render(
+        <JestDataGridProvider>
+          <ColumnHead column={parentColumn} canSort={false} canFilter={false} />
+        </JestDataGridProvider>,
+      )
+      const columnHeader = screen.getByTestId('ColumnHeader')
+
+      expect(columnHeader).not.toHaveAttribute('tabindex')
+    })
+
+    it('leaf column has tabIndex -1', () => {
+      render(
+        <JestDataGridProvider>
+          <ColumnHead column={gridColsDef[0]} />
+        </JestDataGridProvider>,
+      )
+
+      expect(screen.getByTestId('ColumnHeader')).toHaveAttribute('tabindex', '-1')
+    })
   })
 
-  it('axe', async () => {
-    const { container } = render(
-      <JestDataGridProvider>
-        <table>
-          <thead>
-            <tr>
-              <th>
-                <ColumnHead column={gridColsDef[0]} />
-              </th>
-            </tr>
-          </thead>
-        </table>
-      </JestDataGridProvider>,
-    )
+  describe('Interaction', () => {
+    it('sort click calls handleSorting with column name', () => {
+      const handleSorting = jest.fn()
+      render(
+        <JestDataGridProvider handleSorting={handleSorting}>
+          <ColumnHead column={gridColsDef[0]} />
+        </JestDataGridProvider>,
+      )
 
-    const results = await axe(container, {
-      rules: {
-        'button-name': { enabled: false },
-        'aria-required-parent': { enabled: false }, // ColumnHead is used within DataGrid which provides proper table structure
-      },
+      fireEvent.click(screen.getByLabelText('sort in Name'))
+      expect(handleSorting).toHaveBeenCalledWith('name')
     })
-    expect(results).toHaveNoViolations()
+
+    it('filter button opens dropdown', async () => {
+      render(
+        <JestDataGridProvider>
+          <ColumnHead column={gridColsDef[0]} canFilter />
+        </JestDataGridProvider>,
+      )
+
+      expect(screen.queryByTestId('Dropdown')).not.toBeInTheDocument()
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('FilterButton'))
+      })
+
+      expect(screen.getByTestId('Dropdown')).toBeInTheDocument()
+    })
+  })
+
+  describe('Ref', () => {
+    it('columnheader is accessible in DOM', () => {
+      render(
+        <JestDataGridProvider>
+          <ColumnHead column={gridColsDef[0]} />
+        </JestDataGridProvider>,
+      )
+
+      expect(screen.getByTestId('ColumnHeader')).toBeInstanceOf(HTMLDivElement)
+    })
+  })
+
+  describe('Accessibility', () => {
+    it('axe', async () => {
+      const { container } = render(
+        <JestDataGridProvider>
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <ColumnHead column={gridColsDef[0]} />
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </JestDataGridProvider>,
+      )
+
+      const results = await axe(container, {
+        rules: {
+          'button-name': { enabled: false },
+          'aria-required-parent': { enabled: false },
+        },
+      })
+      expect(results).toHaveNoViolations()
+    })
   })
 })

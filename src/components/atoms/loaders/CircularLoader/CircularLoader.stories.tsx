@@ -15,5 +15,5 @@ export default meta
 type Story = StoryObj<typeof CircularLoader>
 
 export const Default: Story = {
-  args: { className: '', color: 'primary', size: 'md', label: 'Loading...', hideLabel: false },
+  args: { className: '', label: 'Loading...', color: 'primary', size: 'md', hideLabel: false },
 }

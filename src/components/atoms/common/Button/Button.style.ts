@@ -1,10 +1,10 @@
 import {
+  baseVariant,
   errorStateClass,
   focusVisibleVariant,
   iconPaddingSize,
   interactiveVariant,
   paddingSize,
-  paperVariant,
   textSize,
 } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
@@ -17,25 +17,25 @@ export const buttonClass = cn(
 export const buttonVariant = {
   text: {
     primary: cn(
-      paperVariant.text.primary,
+      baseVariant.text.primary,
       'bg-transparent dark:bg-transparent',
       focusVisibleVariant.text.primary,
       interactiveVariant.text.primary,
     ),
     secondary: cn(
-      paperVariant.text.secondary,
+      baseVariant.text.secondary,
       'bg-transparent dark:bg-transparent',
       focusVisibleVariant.text.secondary,
       interactiveVariant.text.secondary,
     ),
     terciary: cn(
-      paperVariant.text.terciary,
+      baseVariant.text.terciary,
       'bg-transparent dark:bg-transparent',
       focusVisibleVariant.text.terciary,
       interactiveVariant.text.terciary,
     ),
     error: cn(
-      paperVariant.text.error,
+      baseVariant.text.error,
       'bg-transparent dark:bg-transparent',
       focusVisibleVariant.text.error,
       interactiveVariant.text.error,
@@ -44,25 +44,25 @@ export const buttonVariant = {
   },
   outlined: {
     primary: cn(
-      paperVariant.outlined.primary,
+      baseVariant.outlined.primary,
       'bg-transparent dark:bg-transparent',
       focusVisibleVariant.outlined.primary,
       interactiveVariant.outlined.primary,
     ),
     secondary: cn(
-      paperVariant.outlined.secondary,
+      baseVariant.outlined.secondary,
       'bg-transparent dark:bg-transparent',
       focusVisibleVariant.outlined.secondary,
       interactiveVariant.outlined.secondary,
     ),
     terciary: cn(
-      paperVariant.outlined.terciary,
+      baseVariant.outlined.terciary,
       'bg-transparent dark:bg-transparent',
       focusVisibleVariant.outlined.terciary,
       interactiveVariant.outlined.terciary,
     ),
     error: cn(
-      paperVariant.outlined.error,
+      baseVariant.outlined.error,
       'bg-transparent dark:bg-transparent',
       focusVisibleVariant.outlined.error,
       interactiveVariant.outlined.error,
@@ -71,22 +71,22 @@ export const buttonVariant = {
   },
   contained: {
     primary: cn(
-      paperVariant.contained.primary,
+      baseVariant.contained.primary,
       focusVisibleVariant.contained.primary,
       interactiveVariant.contained.primary,
     ),
     secondary: cn(
-      paperVariant.contained.secondary,
+      baseVariant.contained.secondary,
       focusVisibleVariant.contained.secondary,
       interactiveVariant.contained.secondary,
     ),
     terciary: cn(
-      paperVariant.contained.terciary,
+      baseVariant.contained.terciary,
       focusVisibleVariant.contained.terciary,
       interactiveVariant.contained.terciary,
     ),
     error: cn(
-      paperVariant.contained.error,
+      baseVariant.contained.error,
       focusVisibleVariant.contained.error,
       interactiveVariant.contained.error,
     ),

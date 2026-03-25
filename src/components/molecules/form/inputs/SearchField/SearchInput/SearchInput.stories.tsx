@@ -31,8 +31,8 @@ export const PrimaryDefault: Story = {
     size: 'md',
     error: '',
     disabled: false,
-    onClear: undefined,
     onChange: v => console.log(v),
+    onClear: undefined,
   },
   render: args => <InputWithHooks {...args} />,
 }

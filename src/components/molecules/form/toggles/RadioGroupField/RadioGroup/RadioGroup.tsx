@@ -34,8 +34,8 @@ function RadioGroupComponent<T = string>(
     variant = 'outlined',
     color = 'primary',
     size = 'md',
-    disabled,
     error,
+    disabled,
     radioProps = {},
     onChange,
     ...rest

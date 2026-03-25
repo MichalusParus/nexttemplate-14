@@ -29,6 +29,7 @@ export const PrimaryDefault: Story = {
     variant: 'outlined',
     color: 'primary',
     size: 'md',
+    startIcon: undefined,
     error: '',
     disabled: false,
     onChange: v => console.log(v),

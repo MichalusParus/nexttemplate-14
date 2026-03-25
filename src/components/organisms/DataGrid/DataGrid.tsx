@@ -2,6 +2,7 @@
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
+import { devWarning } from '@/components/utils/devWarning'
 import { StyleProps } from '@/components/utils/types'
 import { FilterDef, SortingState, useFilterData } from '@/utils/hooks/useFilterData'
 import { usePagination } from '@/utils/hooks/usePagination'
@@ -55,6 +56,8 @@ export type DataGridProps<T extends Record<string, unknown> = Record<string, unk
     page?: number
     /** callback when page or rowsPerPage changes - enables server-side pagination */
     onPageChange?: (page: number, rowsPerPage: number) => void
+    /** custom export handler - overrides built-in CSV export when provided */
+    onExport?: () => void
   }
 
 /** Grid "table" for displaying data in rows with filter, sort, pagination, data export, onClick and multiselection. USE CLIENT */
@@ -64,14 +67,16 @@ function DataGridComponent<T extends Record<string, unknown> = Record<string, un
     name,
     columns,
     rows,
-    rowsPerPage = 20,
+    count,
+    page,
+    maxHeight = 'max-h-[80vh]',
     variant,
     color,
     size,
     isLoading,
-    maxHeight = 'max-h-[80vh]',
     hideShadow,
     hideExport,
+    rowsPerPage = 20,
     defaultSelectedRows,
     getRowId,
     onSelectionChange,
@@ -79,11 +84,13 @@ function DataGridComponent<T extends Record<string, unknown> = Record<string, un
     onFilterChange,
     onSortingChange,
     onPageChange,
-    count,
-    page,
+    onExport,
   }: DataGridProps<T>,
   ref: React.ForwardedRef<HTMLDivElement | null>,
 ) {
+  devWarning(Boolean(onPageChange) && (count == null || page == null), 'DataGrid: `onPageChange` requires both `count` and `page` props for server-side pagination.')
+  devWarning(Boolean(onPageChange) && !getRowId, 'DataGrid: Server-side pagination without `getRowId` will lose row identity across fetches. Server responses create new objects, so the WeakMap UUID cache misses. Provide `getRowId`.')
+
   const componentRef = useRef<HTMLDivElement>(null)
   const rowIdCacheRef = useRef(new WeakMap<T, string>())
   useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => componentRef.current)
@@ -175,22 +182,13 @@ function DataGridComponent<T extends Record<string, unknown> = Record<string, un
 
   const gridTemplateColumns = useMemo(() => buildGridTemplateColumns(columnsInRow), [columnsInRow])
 
-  useDataGridFocus({
-    gridRef: componentRef,
-    gridColumns: columnsInRow.length + (onSelectionChange ? 1 : 0),
-    onRowSelect: rowIndex => {
-      const dataRowIndex = rowIndex - maxDepth - 1
-      const row = pagedData[dataRowIndex]
-      if (row) {
-        handleSelect(row)
-      }
-    },
-  })
-
-  const allSelected = useMemo(
-    () => selectableData.length > 0 && selectedRows.length === selectableData.length,
-    [selectedRows.length, selectableData.length],
-  )
+  const allSelected = useMemo(() => {
+    if (selectableData.length === 0 || selectedRows.length !== selectableData.length) {
+      return false
+    }
+    const selectedIds = new Set(selectedRows.map(r => handleRowId(r)))
+    return selectableData.every(row => selectedIds.has(handleRowId(row)))
+  }, [selectedRows, selectableData, handleRowId])
 
   const isIndeterminate = useMemo(
     () => selectedRows.length > 0 && selectedRows.length < selectableData.length,
@@ -232,12 +230,26 @@ function DataGridComponent<T extends Record<string, unknown> = Record<string, un
     [onRowClick, onSelectionChange, handleSelect],
   )
 
+  useDataGridFocus({
+    componentRef: componentRef,
+    gridColumns: columnsInRow.length + (onSelectionChange ? 1 : 0),
+    onRowSelect: rowIndex => {
+      const dataRowIndex = rowIndex - maxDepth - 1
+      const row = pagedData[dataRowIndex]
+      if (row) {
+        handleSelect(row)
+      }
+    },
+    onSelectAll: onSelectionChange ? handleAll : undefined,
+  })
+
   const contextValue = useMemo<DataGridContextValue<T>>(
     () => ({
       name,
       columns,
       columnsInRow,
       hideExport,
+      onExport,
       variant: variant || 'outlined',
       color: color || 'primary',
       size: size || 'md',
@@ -253,6 +265,7 @@ function DataGridComponent<T extends Record<string, unknown> = Record<string, un
       columns,
       columnsInRow,
       hideExport,
+      onExport,
       variant,
       color,
       size,

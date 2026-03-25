@@ -74,11 +74,11 @@ function AutocompleteComponent<T = string>(
     dropdownProps = {},
     listboxProps = {},
     chipProps = {},
+    onOpen,
+    onClose,
     onInputChange,
     onChange,
     onSelectAll,
-    onOpen,
-    onClose,
     onClear,
     children,
     ...rest

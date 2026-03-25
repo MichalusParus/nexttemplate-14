@@ -30,8 +30,8 @@ export const ScrollShadow = forwardRef<HTMLDivElement | null, ScrollShadowProps>
     {
       className,
       height = 'h-full',
-      color = 'from-inherit',
       padding,
+      color = 'from-inherit',
       shadowSize = '1.5rem',
       gutter,
       disableHorizontal,

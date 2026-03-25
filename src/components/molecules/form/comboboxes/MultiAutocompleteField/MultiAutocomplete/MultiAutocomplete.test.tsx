@@ -392,8 +392,13 @@ describe('MultiAutocomplete', () => {
   })
 
   describe('Keyboard', () => {
-    // Arrow key navigation within the open dropdown is handled by useFocus with
-    // FOCUS_SELECTORS.autocomplete (tested in useFocus's own suite).
+    const openMultiAutocomplete = async () => {
+      const combobox = screen.getByRole('combobox')
+      await act(async () => { fireEvent.click(combobox) })
+      await act(async () => {})
+      await act(async () => {})
+      return combobox
+    }
 
     it('input is focusable', () => {
       render(
@@ -479,6 +484,83 @@ describe('MultiAutocomplete', () => {
 
       expect(onChange).toHaveBeenCalled()
       expect(combobox).toHaveAttribute('aria-expanded', 'true')
+    })
+
+    // -- Arrow navigation --
+
+    it('ArrowDown focuses first option', async () => {
+      render(
+        <MultiAutocomplete
+          name="multiAutocompleteTest"
+          value={[options[0].value]}
+          options={options}
+          onInputChange={() => {}}
+          onChange={() => {}}
+        />,
+      )
+
+      await openMultiAutocomplete()
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      expect(document.activeElement).toBe(optionElements[0])
+    })
+
+    it('ArrowDown moves to next option', async () => {
+      render(
+        <MultiAutocomplete
+          name="multiAutocompleteTest"
+          value={[options[0].value]}
+          options={options}
+          onInputChange={() => {}}
+          onChange={() => {}}
+        />,
+      )
+
+      await openMultiAutocomplete()
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      await act(async () => {
+        fireEvent.keyDown(optionElements[0], { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      expect(document.activeElement).toBe(optionElements[1])
+    })
+
+    it('ArrowUp moves to previous option', async () => {
+      render(
+        <MultiAutocomplete
+          name="multiAutocompleteTest"
+          value={[options[0].value]}
+          options={options}
+          onInputChange={() => {}}
+          onChange={() => {}}
+        />,
+      )
+
+      await openMultiAutocomplete()
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      await act(async () => {
+        fireEvent.keyDown(optionElements[0], { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      await act(async () => {
+        fireEvent.keyDown(optionElements[1], { key: 'ArrowUp', code: 'ArrowUp' })
+      })
+
+      expect(document.activeElement).toBe(optionElements[0])
     })
   })
 

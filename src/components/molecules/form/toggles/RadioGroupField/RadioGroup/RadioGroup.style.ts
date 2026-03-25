@@ -1,8 +1,8 @@
 import {
+  baseVariant,
   errorStateClass,
   focusVisibleVariant,
   interactiveVariant,
-  paperVariant,
   textSize,
   toggleBaseBg,
 } from '@/components/utils/common.style'
@@ -17,7 +17,7 @@ export const radioClass = cn(
 export const radioVariant = {
   text: {
     primary: cn(
-      paperVariant.text.primary,
+      baseVariant.text.primary,
       toggleBaseBg,
       'after:bg-primary-800 dark:after:bg-primary-50',
       focusVisibleVariant.text.primary,
@@ -25,7 +25,7 @@ export const radioVariant = {
       'checked:bg-primary-100 dark:checked:bg-primary-900',
     ),
     secondary: cn(
-      paperVariant.text.secondary,
+      baseVariant.text.secondary,
       toggleBaseBg,
       'after:bg-secondary-800 dark:after:bg-secondary-100',
       focusVisibleVariant.text.secondary,
@@ -33,7 +33,7 @@ export const radioVariant = {
       'checked:bg-secondary-100 dark:checked:bg-secondary-900',
     ),
     terciary: cn(
-      paperVariant.text.terciary,
+      baseVariant.text.terciary,
       toggleBaseBg,
       'after:bg-terciary-800 dark:after:bg-terciary-100',
       focusVisibleVariant.text.terciary,
@@ -44,7 +44,7 @@ export const radioVariant = {
   },
   outlined: {
     primary: cn(
-      paperVariant.outlined.primary,
+      baseVariant.outlined.primary,
       toggleBaseBg,
       'after:bg-primary-800 dark:after:bg-primary-50',
       focusVisibleVariant.outlined.primary,
@@ -52,7 +52,7 @@ export const radioVariant = {
       'checked:bg-primary-100 dark:checked:bg-primary-900',
     ),
     secondary: cn(
-      paperVariant.outlined.secondary,
+      baseVariant.outlined.secondary,
       toggleBaseBg,
       'after:bg-secondary-800 dark:after:bg-secondary-100',
       focusVisibleVariant.outlined.secondary,
@@ -60,7 +60,7 @@ export const radioVariant = {
       'checked:bg-secondary-100 dark:checked:bg-secondary-900',
     ),
     terciary: cn(
-      paperVariant.outlined.terciary,
+      baseVariant.outlined.terciary,
       toggleBaseBg,
       'after:bg-terciary-800 dark:after:bg-terciary-100',
       focusVisibleVariant.outlined.terciary,
@@ -71,21 +71,21 @@ export const radioVariant = {
   },
   contained: {
     primary: cn(
-      paperVariant.contained.primary,
+      baseVariant.contained.primary,
       'after:bg-primary-50',
       focusVisibleVariant.contained.primary,
       interactiveVariant.contained.primary,
       'checked:bg-primary-800',
     ),
     secondary: cn(
-      paperVariant.contained.secondary,
+      baseVariant.contained.secondary,
       'after:bg-secondary-50',
       focusVisibleVariant.contained.secondary,
       interactiveVariant.contained.secondary,
       'checked:bg-secondary-800',
     ),
     terciary: cn(
-      paperVariant.contained.terciary,
+      baseVariant.contained.terciary,
       'after:bg-terciary-50',
       focusVisibleVariant.contained.terciary,
       interactiveVariant.contained.terciary,

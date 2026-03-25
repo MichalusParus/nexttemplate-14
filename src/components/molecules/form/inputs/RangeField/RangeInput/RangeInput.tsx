@@ -25,7 +25,7 @@ export type RangeProps = NativeInputProps &
 /** Basic styled uncontroled RangeInput. For form purposes use RangeField. Native InputHTMLAttributes props supported. */
 export const RangeInput = forwardRef<HTMLInputElement | null, RangeProps>(
   (
-    { className, name, color = 'primary', size = 'md', value, error, disabled, onChange, ...rest },
+    { className, name, value, color = 'primary', size = 'md', error, disabled, onChange, ...rest },
     ref,
   ) => {
     return (

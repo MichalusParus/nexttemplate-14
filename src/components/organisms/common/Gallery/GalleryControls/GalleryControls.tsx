@@ -1,6 +1,6 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import { useEffect, useRef } from 'react'
+import { forwardRef, useEffect, useRef } from 'react'
 
 import { Button } from '@/components/atoms/common/Button'
 import { Image } from '@/components/atoms/common/Image'
@@ -27,13 +27,8 @@ export type GalleryControlsProps = Pick<StyleProps, 'variant'> & {
 }
 
 /** GalleryControls component can display multiple panels or images controlled by arrows and dots. RatioWrapProps supported. USE CLIENT */
-export const GalleryControls = ({
-  items,
-  currentPage,
-  isOpen,
-  variant = 'outlined',
-  setCurrentPage,
-}: GalleryControlsProps) => {
+export const GalleryControls = forwardRef<HTMLDivElement | null, GalleryControlsProps>(
+  ({ items, currentPage, variant = 'outlined', isOpen, setCurrentPage }, ref) => {
   const t = useTranslations('Components')
   const galleryControlsRef = useRef<HTMLDivElement>(null)
 
@@ -50,6 +45,7 @@ export const GalleryControls = ({
         isOpen && 'absolute bottom-0 left-0 z-modal',
       )}
       data-testid="GalleryControls"
+      ref={ref}
     >
       <ScrollShadow>
         <div
@@ -83,6 +79,7 @@ export const GalleryControls = ({
       </ScrollShadow>
     </div>
   )
-}
+},
+)
 
 GalleryControls.displayName = 'GalleryControls'

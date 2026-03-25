@@ -1,0 +1,105 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Organisms/Common/Tabs/Def" />
+
+# Tabs
+
+> Responsive tab navigation component that switches between content panels. Renders a horizontal button list on desktop and a Select dropdown on mobile. Supports URL query parameter routing by default with an optional callback override.
+
+<br/>
+
+## Features
+
+- Responsive dual-view — desktop TabList (horizontal buttons in Paper) and mobile TabListSelect (Select dropdown), switched at `md` breakpoint
+- URL query parameter navigation by default via Next.js router, optional `onTabChange` callback for controlled mode
+- Hidden tabs — `isHidden` removes tabs from the tab list while keeping their tabpanel in the DOM (reachable by URL)
+- Generic type support — `TabsProps<T>` for type-safe tab values (`string | number`)
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Wrapper is a `<div>` with no semantic role
+- Desktop: `<ul role="tablist" aria-orientation="horizontal">` containing `<li role="presentation">` wrapping `<button role="tab">`
+- Each tab button has `id="{name}-{value}-tab"`, `aria-controls="{value}-tabpanel"`, `aria-selected`
+- Tab panels: `<div role="tabpanel" id="{value}-tabpanel" aria-labelledby="{name}-{value}-tab">`
+- Roving tabindex: selected tab has `tabIndex="0"`, others `tabIndex="-1"`
+- Only the selected panel is visible (`hidden` attribute on others); selected panel has `tabIndex="0"` for keyboard access
+- Mobile: reuses Select with `role="tablist"` on the listbox and `role="tab"` on option buttons
+
+### Keyboard Handling
+- **ArrowRight / ArrowDown** — Focus next tab (wraps from last to first)
+- **ArrowLeft / ArrowUp** — Focus previous tab (wraps from first to last)
+- **Home** — Focus first tab
+- **End** — Focus last tab
+- **Tab** — Exits the tablist (roving tabindex keeps only selected tab in tab order)
+- Disabled tabs receive focus during keyboard navigation but cannot be activated (click, Enter, and Space are blocked). This follows the `aria-disabled` pattern — disabled tabs remain discoverable by keyboard users
+- Note: focusing a tab does not activate it — activation requires a click. This is the "manual activation" pattern per WAI-ARIA (appropriate when tab panels have significant content to load)
+
+### Accessibility (WAI-ARIA)
+- Follows [WAI-ARIA Tabs Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/)
+- `aria-selected="true"` on active tab, `"false"` on others
+- `aria-controls` / `aria-labelledby` link tabs to their panels bidirectionally
+- `aria-orientation="horizontal"` on the tablist
+- Hidden panels are removed from the tab sequence via `hidden` attribute and `tabIndex="-1"`
+- Desktop tab buttons are semantic `<button>` elements inside `<li role="presentation">`
+
+### Visual States
+- **Selected** — `selected` class and `aria-selected="true"` on the active tab button
+- **Disabled** — `aria-disabled` on tab buttons via `isDisabled` per tab option (remains focusable)
+- **Focus** — `focus-visible:z-10` ensures focused tab overlaps neighbors in the Paper container
+- **Full width** — `fullWidth` prop stretches tabs and their `<li>` wrappers to fill available space
+
+### Interaction Behavior
+- Clicking a tab activates it — fires `onTabChange` callback or pushes a URL query parameter update
+- URL mode: `handleTabChange` creates `URLSearchParams`, sets `name=value`, pushes via `router.push`
+- Callback mode: when `onTabChange` is provided, URL routing is bypassed entirely
+- Returns `null` when tabs array is empty or `selectedValue` is nullish
+- Falls back to `tabs[0]` when `selectedValue` doesn't match any tab
+
+### Responsive & Layout
+- Block-level flex column layout with `gap-4` between tablist and tab panels
+- Desktop TabList: hidden below `md` breakpoint (`hidden md:block`)
+- Mobile TabListSelect: hidden at `md` and above (`md:hidden`)
+- Tab panels are `w-full` within the wrapper
+- Desktop tabs wrapped in Paper with configurable variant/color, no shadow
+
+<br/>
+
+## Architecture Decisions
+
+- **Responsive dual-view via Tailwind breakpoints**: TabList and TabListSelect render simultaneously but are visibility-toggled with `hidden md:block` / `md:hidden`. This avoids JS-based breakpoint detection and keeps both views in the DOM for SSR hydration.
+- **URL-first navigation**: Default behavior pushes tab changes to URL query parameters via Next.js router. This gives deep-linkable tabs, browser back/forward support, and shareable URLs for free. The `onTabChange` prop opts out for cases where URL state isn't wanted (modals, embedded tabs).
+- **`useFocus` with null trigger**: TabList passes a stable `useRef(null)` as `triggerRef` because there's no separate trigger element — the tablist itself contains the focusable items. This makes `useFocus` always-active with the keyboard listener on the `<ul>` container.
+- **Paper wrapper on desktop**: Wrapping desktop tabs in Paper gives consistent variant/color styling (text, outlined, contained) and rounded corners. Individual tab buttons have `rounded-none` with first/last getting `rounded-l-md`/`rounded-r-md` to form a seamless strip.
+- **Only selected panel renders**: Only the active tabpanel mounts in the DOM. Inactive panels are not rendered — no `hidden` attribute, no wasted component trees. `aria-controls` on inactive tabs points to nothing, which is the accepted pattern used by React Aria and Headless UI. Hidden tabs (`isHidden: true`) get `aria-label` instead of `aria-labelledby` since their tab button doesn't exist in the tab list.
+- **Null guard with early return**: Returns `null` for empty tabs or nullish `selectedValue`, preventing render errors when tab data is loading or conditional.
+- **Mobile reuses Select with role overrides**: Rather than building a custom mobile tab picker, TabListSelect wraps the existing Select component with `role="tablist"` on the listbox and `role="tab"` on options. This reuses Select's dropdown behavior, keyboard navigation, and styling while maintaining tab semantics.
+
+<br/>
+
+## Known Bugs & Limitations
+- None
+
+<br/>
+
+## Future Ideas
+
+<br/>
+
+## Developer Notes
+> Drop notes here — gotchas, context, suggestions or ideas
+<br/>
+
+## Review
+
+> The dual-view approach — a real tablist on desktop, a select dropdown on mobile — is a genuinely smart responsive pattern that most tab implementations leave to the consumer. URL-synced tabs as the default with an `onTabChange` escape hatch gets the priority right; most tabs should be deep-linkable, and the ones that shouldn't can opt out cleanly. The `devWarning` for mismatched `selectedValue` with a silent fallback to the first tab is good defensive design.
+>
+> React Aria's tabs are the strongest comparison here. The key architectural difference: React Aria separates tab declaration from panel rendering, letting consumers control panel layout and add shared wrapper markup around panels. This component couples them by requiring `component` inside each tab option, which is simpler to consume but means you can't render panels in a different DOM location or wrap them collectively. Both only mount the selected panel — the right default.
+>
+> The hidden-tab handling is well thought out — hidden tabs skip the tablist but their panels still get `aria-label` instead of `aria-labelledby`. The prop split is clean: `tabButtonProps` targets the `role="tab"` buttons in both views, while `selectProps` gives separate control over the mobile Select trigger — no overlap, no ambiguity.
+>
+> A solid tab system that gets the hard parts right — responsive behavior, URL state, keyboard navigation — and keeps the API simple by coupling tabs to their panels in one data structure.
+>
+> — *Claude, Opus 4.6, 2026-03-23*

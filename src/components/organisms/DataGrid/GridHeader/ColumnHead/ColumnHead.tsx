@@ -39,17 +39,17 @@ export type ColumnHeadProps = {
 /** ColumnHeader component for DataGrid - non-interactive container with separate sort and filter buttons. USE CLIENT */
 const ColumnHeadComponent = ({
   className,
-  gridColumn,
-  gridRow,
   ariaRowIndex,
   column,
+  gridColumn,
+  gridRow,
   canSort = true,
   canFilter = true,
 }: ColumnHeadProps) => {
   const t = useTranslations('Components')
   const { variant, color, size, sorting, handleSorting } = useDataGridContext()
-  const ariaSorted = AriaSort[sorting?.key === column.name ? sorting?.value : 'none']
   const canSortColumn = canSort && !column.hideSort
+  const ariaSorted = canSortColumn ? AriaSort[sorting?.key === column.name ? sorting?.value : 'none'] : undefined
   const canFilterColumn = canFilter && column.filter
   const isSorted = sorting?.key === column.name
   const isLeafColumn = !column.columns || column.columns.length === 0
@@ -71,7 +71,7 @@ const ColumnHeadComponent = ({
   return (
     <div
       className={cn(
-        'ColumnHeader group grid items-center overflow-hidden focus-visible:ring focus-visible:z-10 ring-current focus:outline-none',
+        'ColumnHeader group grid items-center overflow-hidden font-semibold focus-visible:ring focus-visible:z-10 ring-current focus:outline-none',
         className,
       )}
       style={{
@@ -91,7 +91,7 @@ const ColumnHeadComponent = ({
       {canSortColumn ? (
         <Button
           className={cn(
-            'group w-full min-w-0 gap-1 rounded-none border-none focus-visible:ring-0',
+            'group w-full min-w-0 gap-1 rounded-none border-none font-[inherit] focus-visible:ring-0',
             align === 'right' ? 'flex-row-reverse justify-start pl-0.5' : cn('pr-0.5', alignColumn[align]),
           )}
           variant={variant}

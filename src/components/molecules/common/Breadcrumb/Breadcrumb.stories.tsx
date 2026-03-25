@@ -23,5 +23,7 @@ export const Default: Story = {
     className: 'className',
     options: breadcrumbOptions,
     color: 'none',
+    linkProps: {},
+    spanProps: {},
   },
 }

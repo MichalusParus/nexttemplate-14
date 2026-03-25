@@ -32,9 +32,9 @@ export const Title = forwardRef<HTMLHeadingElement | null, TitleProps>(
     {
       className,
       variant,
+      align = 'text-left',
       color = 'none',
       size = 'lg',
-      align = 'text-left',
       isLoading,
       ghostProps = {},
       children,

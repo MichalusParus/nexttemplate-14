@@ -36,19 +36,20 @@ export const TabList = <T,>({
   name = 'tab',
   selectedTab,
   tabs,
+  fullWidth,
   variant,
   color,
   size,
-  fullWidth,
   tabButtonProps = {},
   onTabChange,
   children,
 }: PropsWithChildren<TabListProps<T>>) => {
   const { className: buttonClassName, ...restButtonProps } = tabButtonProps
   const componentRef = useRef<HTMLUListElement>(null)
+  const nullRef = useRef(null)
 
   useFocus(true, componentRef, {
-    triggerRef: { current: null },
+    triggerRef: nullRef,
     selectors: ['.Tab'],
   })
 
@@ -71,7 +72,7 @@ export const TabList = <T,>({
       >
         {tabs.map((tab, index) => (
           <li
-            key={tab.label}
+            key={String(tab.value)}
             className={cn(fullWidth && 'w-full')}
             role="presentation"
             data-testid="tabLi"
@@ -103,7 +104,7 @@ export const TabList = <T,>({
             </Button>
           </li>
         ))}
-        {children}
+        {children && <li role="presentation">{children}</li>}
       </ul>
     </Paper>
   )

@@ -1,14 +1,21 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import type { Meta, StoryObj } from '@storybook/nextjs'
 import { useEffect, useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
+import z from 'zod'
 
+import { Button } from '@/components/atoms/common/Button'
+import { Form } from '@/components/molecules/form/forms/Form'
+import { NumberField } from '@/components/molecules/form/inputs/NumberField'
+import { TextField } from '@/components/molecules/form/inputs/TextField'
 import { ColumnDef } from '@/components/organisms/DataGrid/utils/types'
 import { FilterDef, SortingState } from '@/utils/hooks/useFilterData'
 
 import {
   gridCleanColsDef,
-  gridColsDef,
   gridData,
   gridMultiColsDef,
+  gridShowcaseColsDef,
 } from '../../../../.storybook/helpers'
 import { DataGrid, DataGridProps } from '.'
 
@@ -99,6 +106,86 @@ const DataGridWithFetch = (args: DataGridProps) => {
   )
 }
 
+const editableSchema = z.object(
+  Object.fromEntries(
+    gridData.slice(0, 10).flatMap(row => [
+      [`name-${row.id}`, z.string().min(1, 'Required')],
+      [`age-${row.id}`, z.number().min(0, 'Must be positive')],
+    ]),
+  ),
+)
+
+const EditableFormGrid = (args: DataGridProps) => {
+  const rows = gridData.slice(0, 10)
+
+  const defaultValues = Object.fromEntries(
+    rows.flatMap(row => [
+      [`name-${row.id}`, row.name],
+      [`age-${row.id}`, row.age],
+    ]),
+  )
+
+  const form = useForm<z.infer<typeof editableSchema>>({
+    resolver: zodResolver(editableSchema),
+    defaultValues,
+  })
+
+  const editableColumns: ColumnDef[] = [
+    {
+      label: 'Name',
+      name: 'name',
+      width: '200px',
+      grow: 1,
+      hideSort: true,
+      renderCell: (row: Record<string, unknown>) => (
+        <TextField
+          name={`name-${row.id}`}
+          label="Name"
+          placeholder="Name"
+          className="border-transparent dark:border-transparent"
+          labelProps={{ hideLabel: true, hideError: true }}
+        />
+      ),
+    },
+    {
+      label: 'Age',
+      name: 'age',
+      width: '120px',
+      align: 'right',
+      hideSort: true,
+      renderCell: (row: Record<string, unknown>) => (
+        <NumberField
+          name={`age-${row.id}`}
+          label="Age"
+          placeholder="Age"
+          className="border-transparent dark:border-transparent"
+          labelProps={{ hideLabel: true, hideError: true }}
+        />
+      ),
+    },
+    { label: 'Status', name: 'status', width: '150px', hideSort: true },
+    { label: 'Department', name: 'department', width: '180px', hideSort: true },
+  ]
+
+  return (
+    <Form
+      name="editableGridForm"
+      form={form}
+      variant={args.variant}
+      color={args.color}
+      size={args.size}
+      onSubmit={values => console.log('Form submitted:', values)}
+    >
+      <DataGrid {...args} columns={editableColumns} rows={rows} />
+      <div className="mt-4 flex justify-end">
+        <Button type="submit" variant="contained" color="primary">
+          Save Changes
+        </Button>
+      </div>
+    </Form>
+  )
+}
+
 const meta: Meta<typeof DataGrid> = {
   title: 'Organisms/Common/DataGrid',
   component: DataGrid,
@@ -120,14 +207,14 @@ export const PrimaryDefault: Story = {
   args: {
     className: '',
     name: 'dataGridDefaultStory',
-    columns: gridColsDef,
-    rows: gridData.slice(0, 10),
+    columns: gridShowcaseColsDef,
+    rows: gridData,
+    maxHeight: 'max-h-[80vh]',
     variant: 'outlined',
     color: 'primary',
     size: 'md',
     isLoading: false,
     rowsPerPage: 20,
-    maxHeight: 'max-h-[80vh]',
     hideShadow: false,
     hideExport: false,
     defaultSelectedRows: undefined,
@@ -187,4 +274,13 @@ export const ServerSide: Story = {
     hideExport: true,
   },
   render: args => <DataGridWithFetch {...args} />,
+}
+
+export const EditableForm: Story = {
+  args: {
+    ...PrimaryDefault.args,
+    name: 'dataGridEditableStory',
+    hideExport: true,
+  },
+  render: args => <EditableFormGrid {...args} />,
 }

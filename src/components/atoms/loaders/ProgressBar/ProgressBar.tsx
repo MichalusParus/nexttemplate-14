@@ -20,7 +20,7 @@ export type ProgressBarProps = NativeDivProps & {
 
 /** Progress bar for displaying loading state or visual representation of data. Native HTMLAttributes props supported. USE CLIENT */
 export const ProgressBar = forwardRef<HTMLDivElement | null, ProgressBarProps>(
-  ({ className, progress, color = 'primary', height = 'h-3', ...rest }, ref) => {
+  ({ className, progress, height = 'h-3', color = 'primary', ...rest }, ref) => {
     const t = useTranslations('Components')
     const isDeterminate = progress !== undefined
     const min = 0

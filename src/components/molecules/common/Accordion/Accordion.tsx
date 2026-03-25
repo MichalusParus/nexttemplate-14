@@ -34,8 +34,8 @@ export const Accordion = forwardRef<HTMLDivElement | null, AccordionProps>(
       exclusive,
       variant = 'outlined',
       color = 'primary',
-      onToggle,
       disclosuresProps = {},
+      onToggle,
     },
     ref,
   ) => {

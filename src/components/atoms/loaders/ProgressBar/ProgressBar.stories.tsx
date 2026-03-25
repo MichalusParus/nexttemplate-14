@@ -15,7 +15,7 @@ export default meta
 type Story = StoryObj<typeof ProgressBar>
 
 export const Default: Story = {
-    args: { className: '', progress: undefined, color: 'primary', height: 'h-3' },
+    args: { className: '', progress: undefined, height: 'h-3', color: 'primary' },
 }
 
 export const Determinate: Story = {

@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl'
 
 import { ScrollShadow } from '@/components/atoms/containers/ScrollShadow'
 import { P } from '@/components/atoms/typography/P'
-import { paperVariant, textVariant } from '@/components/utils/common.style'
+import { baseVariant, textVariant } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
 import { useDataGridContext } from '../utils/DataGridContext'
@@ -36,10 +36,10 @@ export type GridBodyProps<T extends Record<string, unknown> = Record<string, unk
 export const GridBody = <T extends Record<string, unknown> = Record<string, unknown>>({
   pagedData,
   selectedRowIds,
-  isLoading,
-  rowsPerPage,
   maxHeight,
   multiselect,
+  isLoading,
+  rowsPerPage,
   headerDepth,
   gridTemplateColumns,
   getRowId,
@@ -53,7 +53,7 @@ export const GridBody = <T extends Record<string, unknown> = Record<string, unkn
       className={cn(
         'GridBody',
         'min-w-max border',
-        paperVariant[variant][color],
+        baseVariant[variant][color],
         textVariant[variant][color],
       )}
       role="rowgroup"
@@ -84,8 +84,21 @@ export const GridBody = <T extends Record<string, unknown> = Record<string, unkn
             />
           ))}
         {!isLoading && pagedData.length === 0 && (
-          <div role="row" aria-rowindex={headerDepth + 1}>
-            <div role="gridcell" aria-colindex={1}>
+          <div
+            role="row"
+            aria-rowindex={headerDepth + 1}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: multiselect
+                ? `max-content ${gridTemplateColumns}`
+                : gridTemplateColumns,
+            }}
+          >
+            <div
+              role="gridcell"
+              aria-colindex={1}
+              style={{ gridColumn: '1 / -1' }}
+            >
               <P className="my-6 text-center" color="none" size={size}>
                 {t('noRows')}
               </P>

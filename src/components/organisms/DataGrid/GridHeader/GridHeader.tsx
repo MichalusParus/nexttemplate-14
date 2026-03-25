@@ -1,7 +1,7 @@
 'use client'
 import { useMemo } from 'react'
 
-import { paperVariant, textVariant } from '@/components/utils/common.style'
+import { baseVariant, textVariant } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
 import { useDataGridContext } from '../utils/DataGridContext'
@@ -45,7 +45,7 @@ export const GridHeader = ({
       className={cn(
         'DataGridHeader',
         'relative grid min-w-max rounded-t-md border pr-2',
-        paperVariant[variant][color],
+        baseVariant[variant][color],
         textVariant[variant][color],
         className,
       )}

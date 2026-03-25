@@ -27,6 +27,7 @@ export const PrimaryDefault: Story = {
     className: 'w-96',
     name: 'inputStory',
     value: '',
+    type: 'text',
     placeholder: 'TextInput',
     variant: 'outlined',
     color: 'primary',

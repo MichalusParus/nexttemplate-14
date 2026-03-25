@@ -17,10 +17,10 @@ type Story = StoryObj<typeof Paper>
 export const PrimaryDefault: Story = {
   args: {
     className: 'min-w-64 min-h-52',
-    variant: 'text',
-    color: 'primary',
     padding: 'py-2 px-2 md:pt-2 md:pb-3 md:px-5',
     rounded: 'rounded-md',
+    variant: 'text',
+    color: 'primary',
     hideShadow: false,
     children: undefined,
   },

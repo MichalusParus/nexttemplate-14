@@ -1,4 +1,4 @@
-import { errorStateClass,paperVariant, toggleBaseBg } from '@/components/utils/common.style'
+import { baseVariant, errorStateClass,toggleBaseBg } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
 export const toggleWrapClass = cn(
@@ -9,43 +9,43 @@ export const toggleWrapClass = cn(
 export const toggleVariant = {
   text: {
     primary: cn(
-      paperVariant.text.primary,
+      baseVariant.text.primary,
       toggleBaseBg,
     ),
     secondary: cn(
-      paperVariant.text.secondary,
+      baseVariant.text.secondary,
       toggleBaseBg,
     ),
     terciary: cn(
-      paperVariant.text.terciary,
+      baseVariant.text.terciary,
       toggleBaseBg,
     ),
     none: '',
   },
   outlined: {
     primary: cn(
-      paperVariant.outlined.primary,
+      baseVariant.outlined.primary,
       toggleBaseBg,
     ),
     secondary: cn(
-      paperVariant.outlined.secondary,
+      baseVariant.outlined.secondary,
       toggleBaseBg,
     ),
     terciary: cn(
-      paperVariant.outlined.terciary,
+      baseVariant.outlined.terciary,
       toggleBaseBg,
     ),
     none: '',
   },
   contained: {
     primary: cn(
-      paperVariant.contained.primary,
+      baseVariant.contained.primary,
     ),
     secondary: cn(
-      paperVariant.contained.secondary,
+      baseVariant.contained.secondary,
     ),
     terciary: cn(
-      paperVariant.contained.terciary,
+      baseVariant.contained.terciary,
     ),
     none: '',
   },

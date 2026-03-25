@@ -6,6 +6,7 @@ import {
   PageSpread,
   useResponsivePageSpread,
 } from '@/components/organisms/common/Pagination/useResponsivePageSpread'
+import { devWarning } from '@/components/utils/devWarning'
 
 import { MobilePagination } from './MobilePagination'
 import { MobilePaginationProps } from './MobilePagination/MobilePagination'
@@ -41,6 +42,10 @@ export const Pagination = forwardRef<HTMLDivElement | null, PaginationProps>(
     },
     ref,
   ) => {
+    devWarning(page < 1, 'Pagination: `page` must be >= 1.')
+    devWarning(count < 0, 'Pagination: `count` must be >= 0.')
+    devWarning(page > count && count > 0, 'Pagination: `page` exceeds `count`.')
+
     const pageSpread = useResponsivePageSpread(maxSpread)
 
     return pageSpread === 0 ? (

@@ -1,6 +1,6 @@
 import { forwardRef, ReactNode } from 'react'
 
-import { paperVariant, textVariant } from '@/components/utils/common.style'
+import { baseVariant, textVariant } from '@/components/utils/common.style'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -24,10 +24,10 @@ export const Chip = forwardRef<HTMLDivElement | null, ChipProps>(
   (
     {
       className,
+      title,
       variant = 'contained',
       color = 'primary',
       size = 'md',
-      title,
       startIcon,
       endIcon,
       children,
@@ -40,7 +40,7 @@ export const Chip = forwardRef<HTMLDivElement | null, ChipProps>(
         className={cn(
           'Chip',
           chipClass,
-          paperVariant[variant][color],
+          baseVariant[variant][color],
           textVariant[variant][color],
           chipSize[size],
           className,

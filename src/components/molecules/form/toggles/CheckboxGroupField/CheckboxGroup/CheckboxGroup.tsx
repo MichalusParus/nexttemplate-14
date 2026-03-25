@@ -38,8 +38,8 @@ function CheckboxGroupComponent<T = string>(
     variant = 'outlined',
     color = 'primary',
     size = 'md',
-    disabled,
     error,
+    disabled,
     checkboxProps = {},
     onChange,
     ...rest

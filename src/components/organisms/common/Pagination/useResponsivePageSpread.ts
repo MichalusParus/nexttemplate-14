@@ -24,7 +24,8 @@ const getPageSpreadFromWidth = (width: number): PageSpread => {
 export const useResponsivePageSpread = (maxSpread?: PageSpread): PageSpread => {
   const [pageSpread, setPageSpread] = useState<PageSpread>(() => {
     if (typeof window === 'undefined') return 0
-    return getPageSpreadFromWidth(window.innerWidth)
+    const spread = getPageSpreadFromWidth(window.innerWidth)
+    return maxSpread && maxSpread < spread ? maxSpread : spread
   })
 
   useEffect(() => {

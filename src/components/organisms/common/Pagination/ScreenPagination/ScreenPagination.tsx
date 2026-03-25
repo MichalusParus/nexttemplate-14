@@ -128,9 +128,9 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               size={size}
               startIcon={<ChevronIcon />}
               disabled={isLoading}
-              onClick={() => onChange(page - 1)}
+              onClick={() => onChange(Math.max(1, page - 1))}
               tabIndex={-1}
-              aria-label={t('previousPage', { page: page - 1 })}
+              aria-label={t('previousPage', { page: Math.max(1, page - 1) })}
               {...restButtonProps}
             />
           )}
@@ -231,10 +231,10 @@ export const ScreenPagination = forwardRef<HTMLDivElement | null, ScreenPaginati
               size={size}
               startIcon={<ChevronIcon />}
               disabled={isLoading}
-              onClick={() => onChange(page + loadMoreCount + 1)}
+              onClick={() => onChange(Math.min(count, page + loadMoreCount + 1))}
               tabIndex={-1}
               aria-label={t('nextPage', {
-                page: page + loadMoreCount + 1,
+                page: Math.min(count, page + loadMoreCount + 1),
               })}
               {...restButtonProps}
             />

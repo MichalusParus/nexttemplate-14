@@ -7,7 +7,7 @@ import { SignInIcon } from '@/components/atoms/icons'
 import { P } from '@/components/atoms/typography/P'
 import { Select } from '@/components/molecules/form/comboboxes/SelectField/Select'
 import { Tooltip } from '@/components/molecules/popovers/Tooltip'
-import { paperVariant } from '@/components/utils/common.style'
+import { baseVariant } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
 import { MobilePagination } from '../../common/Pagination/MobilePagination'
@@ -50,6 +50,7 @@ export const GridFooter = <T extends Record<string, unknown> = Record<string, un
     name,
     columnsInRow,
     hideExport,
+    onExport,
     selectedRowsCount,
     filteredDataCount,
   } = useDataGridContext()
@@ -72,13 +73,16 @@ export const GridFooter = <T extends Record<string, unknown> = Record<string, un
   )
 
   const handleExport = useCallback(() => {
-    const filename = `${name}-export.csv`
-    exportToCSV(filteredData, columnsInRow, filename)
-  }, [name, filteredData, columnsInRow])
+    if (onExport) {
+      onExport()
+    } else {
+      exportToCSV(filteredData, columnsInRow, `${name}-export.csv`)
+    }
+  }, [onExport, name, filteredData, columnsInRow])
 
   return (
     <div
-      className={cn('GridFooter', 'min-w-max rounded-b-md border pr-2', paperVariant[variant][color])}
+      className={cn('GridFooter', 'min-w-max rounded-b-md border pr-2', baseVariant[variant][color])}
       role="toolbar"
       aria-label="Grid controls"
     >
@@ -123,18 +127,18 @@ export const GridFooter = <T extends Record<string, unknown> = Record<string, un
             </Tooltip>
           )}
         </div>
-        {selectedRowsCount > 0 && (
-          <P
-            size={size}
-            color="none"
-            className="whitespace-nowrap"
-            aria-live="polite"
-            aria-atomic="true"
-            data-testid="GridSelectionCount"
-          >
-            {t('selectedOf', { count: selectedRowsCount, total: filteredDataCount })}
-          </P>
-        )}
+        <P
+          size={size}
+          color="none"
+          className={cn('whitespace-nowrap', selectedRowsCount === 0 && 'sr-only')}
+          aria-live="polite"
+          aria-atomic="true"
+          data-testid="GridSelectionCount"
+        >
+          {selectedRowsCount > 0
+            ? t('selectedOf', { count: selectedRowsCount, total: filteredDataCount })
+            : ''}
+        </P>
         <MobilePagination
           count={pages.length}
           page={selectedPage}

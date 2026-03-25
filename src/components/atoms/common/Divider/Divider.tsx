@@ -25,7 +25,7 @@ export type DividerProps = NativeDivProps & {
 
 /** Serves as visual divider with optional middle label. Native HTMLAttributes props supported. */
 export const Divider = forwardRef<HTMLDivElement | null, DividerProps>(
-  ({ className, label, color = 'primary', width = 2, vertical, decorative, spanProps = {}, ...rest }, ref) => {
+  ({ className, label, width = 2, color = 'primary', vertical, decorative, spanProps = {}, ...rest }, ref) => {
     const dividerStyle = vertical
       ? { height: '100%', width: width }
       : { height: width, width: '100%' }

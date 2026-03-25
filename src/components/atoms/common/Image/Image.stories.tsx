@@ -42,6 +42,7 @@ export const Default: Story = {
     ratio: 'aspect-video',
     objectFit: 'object-contain',
     objectPosition: 'object-center',
+    sizes: '100vw',
   },
 }
 

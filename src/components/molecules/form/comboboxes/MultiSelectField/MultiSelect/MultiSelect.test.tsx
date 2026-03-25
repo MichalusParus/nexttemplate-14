@@ -321,6 +321,14 @@ describe('MultiSelect', () => {
   })
 
   describe('Keyboard', () => {
+    const openMultiSelect = async () => {
+      const combobox = screen.getByRole('combobox')
+      await act(async () => { fireEvent.click(combobox) })
+      await act(async () => {})
+      await act(async () => {})
+      return combobox
+    }
+
     it('combobox is focusable', () => {
       render(
         <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
@@ -385,6 +393,65 @@ describe('MultiSelect', () => {
 
       expect(onChange).toHaveBeenCalled()
       expect(combobox).toHaveAttribute('aria-expanded', 'true')
+    })
+
+    // -- Arrow navigation --
+
+    it('ArrowDown focuses first option', async () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+
+      await openMultiSelect()
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      expect(document.activeElement).toBe(optionElements[0])
+    })
+
+    it('ArrowDown moves to next option', async () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+
+      await openMultiSelect()
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      await act(async () => {
+        fireEvent.keyDown(optionElements[0], { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      expect(document.activeElement).toBe(optionElements[1])
+    })
+
+    it('ArrowUp moves to previous option', async () => {
+      render(
+        <MultiSelect name="multiSelectTest" value={[]} options={options} onChange={() => {}} />,
+      )
+
+      await openMultiSelect()
+      const optionElements = screen.getAllByRole('option')
+
+      await act(async () => {
+        fireEvent.keyDown(screen.getByTestId('Dropdown'), { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      await act(async () => {
+        fireEvent.keyDown(optionElements[0], { key: 'ArrowDown', code: 'ArrowDown' })
+      })
+
+      await act(async () => {
+        fireEvent.keyDown(optionElements[1], { key: 'ArrowUp', code: 'ArrowUp' })
+      })
+
+      expect(document.activeElement).toBe(optionElements[0])
     })
   })
 
