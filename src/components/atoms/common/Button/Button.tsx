@@ -58,21 +58,6 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(
     const buttonFlex = size === 'inline' ? 'inline-flex' : 'flex'
     const iconOnly = (startIcon || endIcon) && Children.toArray(children).length === 0
 
-    const renderLoadingState = () => (
-      <>
-        {iconOnly ? (
-          <CircularLoader color="none" size={size === 'inline' ? 'sm' : size} hideLabel className="absolute inset-0 justify-center" />
-        ) : (
-          <InlineLoader hideStatus className="absolute inset-0 justify-center" size={size} />
-        )}
-        <span className={cn('ContentInnerWrap', 'invisible flex gap-2 items-center')} aria-hidden={true}>
-          {startIcon && startIcon}
-          {children}
-          {endIcon && endIcon}
-        </span>
-      </>
-    )
-
     devWarning(
       !!(iconOnly && !rest['aria-label'] && !rest['aria-labelledby']),
       'Icon-only buttons should have an aria-label for accessibility.',
@@ -106,15 +91,25 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(
         ref={ref}
         {...rest}
       >
-        {isLoading ? (
-          renderLoadingState()
-        ) : (
-          <>
-            {startIcon && startIcon}
-            {children}
-            {endIcon && endIcon}
-          </>
-        )}
+        {isLoading &&
+          (iconOnly ? (
+            <CircularLoader
+              color="none"
+              size={size === 'inline' ? 'sm' : size}
+              hideLabel
+              className="absolute inset-0 justify-center"
+            />
+          ) : (
+            <InlineLoader hideStatus className="absolute inset-0 justify-center" size={size} />
+          ))}
+        <span
+          className={cn('ContentInnerWrap', 'contents', isLoading && 'invisible')}
+          aria-hidden={isLoading || undefined}
+        >
+          {startIcon && startIcon}
+          {children}
+          {endIcon && endIcon}
+        </span>
       </button>
     )
   },

@@ -8,6 +8,7 @@ import { Nav } from '../../common/Nav'
 import { HamburgerMenu } from './HamburgerMenu'
 import { containerSize, headerClass, mainXPadding } from './Header.style'
 import { OnScrollWrap } from './OnScrollWrap'
+import { SkipToContent } from './SkipToContent'
 
 export type HeaderProps = {
   /** for passing custom tailwind classes */
@@ -35,6 +36,7 @@ export const Header = ({ className }: HeaderProps) => {
 
   return (
     <OnScrollWrap>
+      <SkipToContent />
       <header className={cn('Header', headerClass, mainXPadding, className)} data-testid="Header">
         <div
           className={cn(
@@ -48,7 +50,7 @@ export const Header = ({ className }: HeaderProps) => {
             <Logo />
             <Nav className="hidden md:flex" navLinks={navLinks} />
           </div>
-          <div className={cn('RightWrap', 'flex')}></div>
+          <div className={cn('RightWrap', 'flex items-center')}></div>
         </div>
       </header>
     </OnScrollWrap>

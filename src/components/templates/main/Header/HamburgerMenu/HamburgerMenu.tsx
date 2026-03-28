@@ -58,7 +58,7 @@ export const HamburgerMenu = ({ className, navLinks }: HamburgerMenuProps) => {
         name="hamburgerMainMenu"
         isOpen={isOpen}
         anchorRef={anchorRef}
-        offsetY="top-sm-header-height bottom-0"
+        offsetY="top-sm-header bottom-0"
         width="w-2/3"
         paperProps={{ className: 'dark:border-primary-950 rounded-none' }}
         onClose={() => setIsOpen(false)}

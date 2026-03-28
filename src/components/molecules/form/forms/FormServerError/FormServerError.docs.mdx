@@ -1,0 +1,37 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Molecules/Form/forms/FormServerError/Def" />
+
+# FormServerError
+
+> Zero-config server error display for react-hook-form. Reads `errors.root.serverError` from form context and renders it inside an Alert. Drop it anywhere inside a `<Form>` — no props required.
+
+<br/>
+
+## Features
+
+- Automatic error extraction from `root.serverError` in react-hook-form context
+- Forces remount on each submit via `key={submitCount}` so screen readers re-announce
+- Conditional render — returns `null` when no error, no hidden elements in the DOM
+- Accepts all `AlertProps` for full customization
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Wraps the `Alert` component — inherits `role="alert"` from Alert's error status
+- `data-testid="FormServerError"` for testing
+- Must be placed inside a `<Form>` or `<FormProvider>` — uses `useFormContext()` to read errors
+- All native `HTMLDivAttributes` supported via rest props spread to Alert
+
+### Accessibility
+- `role="alert"` (inherited from Alert with `status="error"`) — assertive live region, screen readers announce immediately
+- `key={submitCount}` forces React to unmount/remount on each form submission — ensures repeated identical errors are re-announced rather than silently ignored
+- Conditional render over visibility toggle — no hidden error elements pollute the accessibility tree when there's no error
+
+### Architecture
+- Convention: server errors are stored at `root.serverError` in react-hook-form's error object
+- Set via `form.setError('root.serverError', { message: '...' })` from your submit handler
+- Single responsibility — only reads and displays, never sets or clears errors
+- `forwardRef` support for external DOM access

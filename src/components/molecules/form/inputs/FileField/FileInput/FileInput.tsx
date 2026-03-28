@@ -94,7 +94,7 @@ export const FileInput = forwardRef<HTMLDivElement | null, FileInputProps>(
 
     useEffect(() => {
       updateFileList(
-        value ? value.map(f => ({ file: f, isLoading: false })) : [],
+        (Array.isArray(value) ? value : []).map(f => ({ file: f, isLoading: false })),
       )
     }, [value])
 

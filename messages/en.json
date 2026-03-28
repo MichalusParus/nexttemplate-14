@@ -61,6 +61,7 @@
       "showPassword": "Show password",
       "drawer": "Drawer",
       "dropdown": "Dropdown",
+      "skipToContent": "Skip to content",
       "fileMessage": "Drag 'n' drop some files here, or click to select files",
       "fileDropMessage": "Drop the files here ...",
       "days": {

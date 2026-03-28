@@ -29,6 +29,7 @@ import { CheckboxGroupField } from '../../toggles/CheckboxGroupField'
 import { MultiToggleGroupField } from '../../toggles/MultiToggleGroupField'
 import { RadioGroupField } from '../../toggles/RadioGroupField'
 import { ToggleGroupField } from '../../toggles/ToggleGroupField'
+import { FormServerError } from '../FormServerError'
 import { Form } from '.'
 import { FormProps } from './Form'
 
@@ -49,7 +50,7 @@ const meta: Meta<typeof Form> = {
 export default meta
 type Story = StoryObj<typeof Form>
 
-const FormWithHooks = (args: FormProps<object>) => {
+const FormWithHooks = ({ onSubmit: argsOnSubmit, ...args }: FormProps<object>) => {
   const optionsRef = useRef(getOptions('formStory', 20))
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,7 +73,16 @@ const FormWithHooks = (args: FormProps<object>) => {
 
   return (
     <div className="px-40">
-      <Form {...args} form={form}>
+      <Form
+        {...args}
+        form={form}
+        onSubmit={(values) => {
+          form.setError('root.serverError', {
+            message: 'Something went wrong. Please try again.',
+          })
+          argsOnSubmit?.(values)
+        }}
+      >
         <TextField name="inputStory" label="TextInput:" placeholder="input" />
         <NumberField name="numberStory" label="NumberInput:" placeholder="number" />
         <DateField name="dateInputStory" label="DateInput:" placeholder="date" />
@@ -166,6 +176,7 @@ const FormWithHooks = (args: FormProps<object>) => {
             setMultiAutocompleteFilter({ label: { value: value, operator: FilterOperator.CONTAINS } })
           }
         />
+        <FormServerError />
         <Button type="submit">Submit</Button>
       </Form>
     </div>
@@ -180,7 +191,7 @@ export const Default: Story = {
     variant: 'outlined',
     color: 'primary',
     size: 'md',
-    onSubmit: values => console.log(values),
+    onSubmit: (values) => console.log(values),
   },
   render: args => <FormWithHooks {...args} />,
 }
