@@ -170,7 +170,7 @@ export const Menu = forwardRef<HTMLDivElement | null, PropsWithChildren<MenuProp
               ref={menuButtonRef}
               {...restButtonProps}
             >
-              {title || buttonChildren || ''}
+              {title || buttonChildren}
             </Button>
           )}
           <Dropdown

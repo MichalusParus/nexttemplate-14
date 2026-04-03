@@ -23,7 +23,7 @@ describe('TabListSelect', () => {
       const combobox = screen.getByRole('combobox')
 
       expect(combobox).toBeInTheDocument()
-      expect(combobox).toHaveClass('className')
+      expect(screen.getByTestId('TabListSelect')).toHaveClass('className')
     })
 
     it('combobox shows selected tab label', () => {

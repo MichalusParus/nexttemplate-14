@@ -52,11 +52,15 @@ export type AutocompleteProps<T = string> = Omit<
     onSelectAll?: () => void
     /** onChange function */
     onChange: (value: T) => void
+    /** test id for the outer wrapper */
+    'data-testid'?: string
   }
 
 /** Basic custom uncontroled Autocomplete. For form purposes use AutocompleteField. Button, TextInput, Dropdown and ListBox props supported. USE CLIENT */
 function AutocompleteComponent<T = string>(
   {
+    className,
+    'data-testid': dataTestId,
     name,
     value,
     multiValue,
@@ -167,8 +171,8 @@ function AutocompleteComponent<T = string>(
 
   return (
     <div
-      className={cn('Autocomplete', 'relative flex w-full', isOpen && 'z-combobox')}
-      data-testid="Autocomplete"
+      className={cn('Autocomplete', 'min-w-0 relative flex w-full', isOpen && 'z-combobox', className)}
+      data-testid={dataTestId ?? 'Autocomplete'}
     >
       <AutocompleteCombobox<T>
         name={name}

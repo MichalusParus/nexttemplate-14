@@ -47,11 +47,15 @@ export type SelectProps<T = string> = Omit<
   onChange: (value: T) => void
   /** callback for select all action, renders select all row when provided */
   onSelectAll?: () => void
+  /** test id for the outer wrapper */
+  'data-testid'?: string
 }
 
 /** Basic custom uncontroled Select. For form purposes use SelectField. Button, Dropdown and ListBox props supported. USE CLIENT */
 function SelectComponent<T = string>(
   {
+    className,
+    'data-testid': dataTestId,
     name,
     value,
     multiValue,
@@ -125,7 +129,7 @@ function SelectComponent<T = string>(
   )
 
   return (
-    <div className={cn('Select', 'relative w-full')} data-testid="Select">
+    <div className={cn('Select', 'min-w-0 relative w-full', className)} data-testid={dataTestId ?? 'Select'}>
       <SelectCombobox<T>
         isOpen={isOpen}
         name={name}

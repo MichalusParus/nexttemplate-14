@@ -77,6 +77,7 @@ function SelectComboboxComponent<T = string>(
         'w-full justify-between',
         isOpen && 'selected z-combobox',
         error && 'error',
+        displayChips && selectedOptions.length && 'h-auto items-start whitespace-normal',
         className,
       )}
       name={name}
@@ -85,7 +86,7 @@ function SelectComboboxComponent<T = string>(
       color={color}
       size={size}
       endIcon={
-        <div className="relative flex gap-2">
+        <div className="relative flex shrink-0 gap-2">
           {!!(selectedOptions?.length && onClear) && (
             <ClearButton onClick={onClear} data-testid="ClearAllButton" />
           )}
@@ -108,15 +109,17 @@ function SelectComboboxComponent<T = string>(
           {comboboxTitle}
         </Ellipsis>
       ) : (
-        <ValueChips
-          selectedOptions={selectedOptions}
-          multiValue={multiValue}
-          variant={variant}
-          color={color}
-          size={size}
-          chipProps={chipProps}
-          handleOnChange={handleOnChange}
-        />
+        <div className="min-w-0 flex-1">
+          <ValueChips
+            selectedOptions={selectedOptions}
+            multiValue={multiValue}
+            variant={variant}
+            color={color}
+            size={size}
+            chipProps={chipProps}
+            handleOnChange={handleOnChange}
+          />
+        </div>
       )}
     </Button>
   )

@@ -38,14 +38,14 @@ export const Nav = forwardRef<HTMLDivElement | null, NavProps>(
               key={slug}
               className={cn('NavOption', 'flex justify-center')}
               role="option"
-              aria-selected={pathName === slug}
+              aria-selected={slug === '/' ? pathName === '/' : !!pathName?.startsWith(slug)}
             >
               <Link
                 className={cn(
                   'Navlink',
                   navLinkClass,
                   menu ? 'w-full' : 'rounded-md px-3 py-1',
-                  pathName === slug && 'selected',
+                  (slug === '/' ? pathName === '/' : !!pathName?.startsWith(slug)) && 'selected',
                   linkClassName,
                 )}
                 href={slug}

@@ -30,7 +30,7 @@ describe('MultiSelect', () => {
           onChange={() => {}}
         />,
       )
-      expect(screen.getByRole('combobox')).toHaveClass('className')
+      expect(screen.getByTestId('Select')).toHaveClass('className')
     })
 
     it('id and name from name prop', () => {

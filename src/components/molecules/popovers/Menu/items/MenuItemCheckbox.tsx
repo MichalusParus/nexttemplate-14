@@ -40,6 +40,7 @@ export const MenuItemCheckbox = forwardRef<HTMLButtonElement | null, MenuItemChe
         <Button
           className={cn(
             'w-full justify-start rounded-none border-transparent dark:border-transparent',
+            isChecked && 'selected',
             className,
           )}
           variant={variant}

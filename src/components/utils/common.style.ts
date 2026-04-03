@@ -3,7 +3,7 @@ import { cn } from '@/utils/utils'
 type Variant = 'text' | 'outlined' | 'contained'
 type Color = 'primary' | 'secondary' | 'terciary' | 'none'
 type Size = 'sm' | 'md' | 'lg' | 'none'
-type StyleColor = Color | 'error'
+// error/success/dark colors are inlined in Button.style.ts only
 
 // TYPOGRAPHY
 
@@ -77,24 +77,21 @@ export const baseVariant = {
     primary: 'border-transparent bg-bg dark:bg-dark-bg from-bg dark:from-dark-bg text-primary-800 dark:text-primary-100',
     secondary: 'border-transparent bg-bg dark:bg-dark-bg from-bg dark:from-dark-bg text-secondary-800 dark:text-secondary-100',
     terciary: 'border-transparent bg-bg dark:bg-dark-bg from-bg dark:from-dark-bg text-terciary-800 dark:text-terciary-100',
-    error: 'border-transparent bg-bg dark:bg-dark-bg from-bg dark:from-dark-bg text-error-800 dark:text-error-100',
     none: '',
   },
   outlined: {
     primary: 'border-primary-800 dark:border-primary-100 bg-bg dark:bg-dark-bg from-bg dark:from-dark-bg text-primary-800 dark:text-primary-100',
     secondary: 'border-secondary-800 dark:border-secondary-100 bg-bg dark:bg-dark-bg from-bg dark:from-dark-bg text-secondary-800 dark:text-secondary-100',
     terciary: 'border-terciary-800 dark:border-terciary-100 bg-bg dark:bg-dark-bg from-bg dark:from-dark-bg text-terciary-800 dark:text-terciary-100',
-    error: 'border-error-800 dark:border-error-100 bg-bg dark:bg-dark-bg from-bg dark:from-dark-bg text-error-800 dark:text-error-100',
     none: '',
   },
   contained: {
     primary: 'border-primary-800 bg-primary-700 from-primary-700 text-primary-50',
     secondary: 'border-secondary-800 bg-secondary-700 from-secondary-700 text-secondary-50',
     terciary: 'border-terciary-800 bg-terciary-700 from-terciary-700 text-terciary-50',
-    error: 'border-error-800 bg-error-700 from-error-700 text-error-50',
     none: '',
   },
-} satisfies Record<Variant, Record<StyleColor, string>>
+} satisfies Record<Variant, Record<Color, string>>
 
 export const toggleBaseBg = 'bg-dark-500/10 dark:bg-dark-950/20'
 
@@ -122,13 +119,6 @@ export const interactiveVariant = {
       'hoverable:[&.selected]:bg-terciary-200 dark:hoverable:[&.selected]:bg-terciary-800',
       '[&.selected]:active:bg-terciary-300 dark:[&.selected]:active:bg-terciary-700',
     ),
-    error: cn(
-      'hoverable:bg-error-100 dark:hoverable:bg-error-900',
-      'active:bg-error-200 dark:active:bg-error-800',
-      '[&.selected]:bg-error-100 dark:[&.selected]:bg-error-900',
-      'hoverable:[&.selected]:bg-error-200 dark:hoverable:[&.selected]:bg-error-800',
-      '[&.selected]:active:bg-error-300 dark:[&.selected]:active:bg-error-700',
-    ),
     none: '',
   },
   outlined: {
@@ -153,13 +143,6 @@ export const interactiveVariant = {
       'hoverable:[&.selected]:bg-terciary-200 dark:hoverable:[&.selected]:bg-terciary-800',
       '[&.selected]:active:bg-terciary-300 dark:[&.selected]:active:bg-terciary-700',
     ),
-    error: cn(
-      'hoverable:bg-error-100 dark:hoverable:bg-error-900',
-      'active:bg-error-200 dark:active:bg-error-800',
-      '[&.selected]:bg-error-100 dark:[&.selected]:bg-error-900',
-      'hoverable:[&.selected]:bg-error-200 dark:hoverable:[&.selected]:bg-error-800',
-      '[&.selected]:active:bg-error-300 dark:[&.selected]:active:bg-error-700',
-    ),
     none: '',
   },
   contained: {
@@ -175,13 +158,9 @@ export const interactiveVariant = {
       'hoverable:bg-terciary-800 active:bg-terciary-900',
       '[&.selected]:bg-terciary-800 hoverable:[&.selected]:bg-terciary-900 [&.selected]:active:bg-terciary-950',
     ),
-    error: cn(
-      'hoverable:bg-error-800 active:bg-error-900',
-      '[&.selected]:bg-error-800 hoverable:[&.selected]:bg-error-900 [&.selected]:active:bg-error-950',
-    ),
     none: '',
   },
-} satisfies Record<Variant, Record<StyleColor, string>>
+} satisfies Record<Variant, Record<Color, string>>
 
 
 // DISABLED — intentionally flat (variant only, no color dimension).
@@ -229,12 +208,6 @@ export const focusVisibleVariant = {
       'group-focus-visible:bg-terciary-100 dark:group-focus-visible:bg-terciary-900',
       '[&.selected]:focus-visible:bg-terciary-200 dark:[&.selected]:focus-visible:bg-terciary-800',
     ),
-    error: cn(
-      'focus-visible:bg-error-100 focus-visible:ring-error-800',
-      'dark:focus-visible:bg-error-900 dark:focus-visible:ring-error-100',
-      'group-focus-visible:bg-error-100 dark:group-focus-visible:bg-error-900',
-      '[&.selected]:focus-visible:bg-error-200 dark:[&.selected]:focus-visible:bg-error-800',
-    ),
     none: '',
   },
   outlined: {
@@ -256,12 +229,6 @@ export const focusVisibleVariant = {
       'group-focus-visible:bg-terciary-100 dark:group-focus-visible:bg-terciary-900',
       '[&.selected]:focus-visible:bg-terciary-200 dark:[&.selected]:focus-visible:bg-terciary-800',
     ),
-    error: cn(
-      'focus-visible:bg-error-100 focus-visible:ring-error-800',
-      'dark:focus-visible:bg-error-900 dark:focus-visible:ring-error-100',
-      'group-focus-visible:bg-error-100 dark:group-focus-visible:bg-error-900',
-      '[&.selected]:focus-visible:bg-error-200 dark:[&.selected]:focus-visible:bg-error-800',
-    ),
     none: '',
   },
   contained: {
@@ -280,14 +247,9 @@ export const focusVisibleVariant = {
       'group-focus-visible:bg-terciary-800',
       '[&.selected]:focus-visible:bg-terciary-900',
     ),
-    error: cn(
-      'focus-visible:bg-error-800 focus-visible:ring-error-900',
-      'group-focus-visible:bg-error-800',
-      '[&.selected]:focus-visible:bg-error-900',
-    ),
     none: '',
   },
-} satisfies Record<Variant, Record<StyleColor, string>>
+} satisfies Record<Variant, Record<Color, string>>
 
 export const focusWithinVariant = {
   text: {
@@ -308,12 +270,6 @@ export const focusWithinVariant = {
       'dark:focus-within:bg-terciary-900 dark:focus-within:ring-terciary-100',
       'group-focus-within:bg-terciary-100 dark:group-focus-within:bg-terciary-900',
       '[&.selected]:focus-within:bg-terciary-200 dark:[&.selected]:focus-within:bg-terciary-800',
-    ),
-    error: cn(
-      'focus-within:bg-error-100 focus-within:ring-error-800',
-      'dark:focus-within:bg-error-900 dark:focus-within:ring-error-100',
-      'group-focus-within:bg-error-100 dark:group-focus-within:bg-error-900',
-      '[&.selected]:focus-within:bg-error-200 dark:[&.selected]:focus-within:bg-error-800',
     ),
     none: '',
   },
@@ -337,12 +293,6 @@ export const focusWithinVariant = {
       'group-focus-within:bg-terciary-100 dark:group-focus-within:bg-terciary-900',
       '[&.selected]:focus-within:bg-terciary-200 dark:[&.selected]:focus-within:bg-terciary-800',
     ),
-    error: cn(
-      'focus-within:bg-error-100 focus-within:ring-error-800',
-      'dark:focus-within:bg-error-900 dark:focus-within:ring-error-100',
-      'group-focus-within:bg-error-100 dark:group-focus-within:bg-error-900',
-      '[&.selected]:focus-within:bg-error-200 dark:[&.selected]:focus-within:bg-error-800',
-    ),
     none: '',
   },
 
@@ -362,12 +312,7 @@ export const focusWithinVariant = {
       'group-focus-within:bg-terciary-800 group-focus-within:ring-terciary-900',
       '[&.selected]:focus-within:bg-terciary-900',
     ),
-    error: cn(
-      'focus-within:bg-error-800 focus-within:ring-error-900',
-      'group-focus-within:bg-error-800 group-focus-within:ring-error-900',
-      '[&.selected]:focus-within:bg-error-900',
-    ),
     none: '',
   },
-} satisfies Record<Variant, Record<StyleColor, string>>
+} satisfies Record<Variant, Record<Color, string>>
 

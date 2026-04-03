@@ -9,15 +9,15 @@ import { FieldProps } from '@/components/utils/types'
 import { FormStyleContext } from '../../forms/Form/Form'
 import { MultiToggleGroup, MultiToggleGroupProps } from './MultiToggleGroup/MultiToggleGroup'
 
-export type MultiToggleGroupFieldProps = Omit<
-  MultiToggleGroupProps,
+export type MultiToggleGroupFieldProps<T = string> = Omit<
+  MultiToggleGroupProps<T>,
   'value' | 'error' | 'onChange'
 > &
-  Partial<Pick<MultiToggleGroupProps, 'onChange'>> &
+  Partial<Pick<MultiToggleGroupProps<T>, 'onChange'>> &
   FieldProps
 
 /** Form and style context wrapper for MultiToggleGroup inside fake Label component. Native InputHTMLAttributes and Label props supported. USE CLIENT */
-export const MultiToggleGroupField = ({
+export const MultiToggleGroupField = <T = string,>({
   className,
   name,
   label,
@@ -27,7 +27,7 @@ export const MultiToggleGroupField = ({
   labelProps = {},
   onChange,
   ...rest
-}: MultiToggleGroupFieldProps) => {
+}: MultiToggleGroupFieldProps<T>) => {
   const {
     control,
     formState: { errors },
@@ -41,7 +41,7 @@ export const MultiToggleGroupField = ({
       control={control}
       render={({ field }) => (
         <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps} variant="legend">
-          <MultiToggleGroup
+          <MultiToggleGroup<T>
             className={className}
             variant={variant || formVariant}
             color={color || formColor}

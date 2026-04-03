@@ -115,7 +115,7 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
 
     return (
       <div
-        className={cn('DatePicker', 'relative w-full')}
+        className={cn('DatePicker', 'min-w-0 relative w-full')}
         ref={componentRef}
         data-testid="DatePicker"
       >

@@ -143,8 +143,8 @@ function MenuListComponent<T = string>(
       {...rest}
     >
       {isGrouped
-        ? (options as MenuOptionGroupType<T>[]).map(group => (
-            <li role="presentation" key={group.label}>
+        ? (options as MenuOptionGroupType<T>[]).map((group, groupIndex) => (
+            <li role="presentation" key={group.label || groupIndex}>
               <ul role="group" aria-label={group.label}>
                 <li
                   className={cn('GroupLabel', 'text-center text-inherit', buttonSize[size])}

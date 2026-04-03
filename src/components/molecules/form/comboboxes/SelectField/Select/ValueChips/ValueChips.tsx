@@ -37,7 +37,7 @@ export const ValueChips = <T,>({
       {selectedOptions.map(option => (
         <Chip
           key={String(option.value)}
-          className={cn('border-none', multiValue && 'bg-dark-950/10')}
+          className={cn('max-w-full border-none', multiValue && 'bg-dark-950/10')}
           variant={variant}
           color={color}
           size={size}

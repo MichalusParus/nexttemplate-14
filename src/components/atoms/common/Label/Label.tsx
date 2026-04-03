@@ -54,7 +54,7 @@ export const Label = forwardRef<HTMLLabelElement | null, LabelProps>(
 
     return (
       <div
-        className={cn('LabelWrap', 'relative flex flex-col items-start gap-0.5', width, className)}
+        className={cn('LabelWrap', 'min-w-0 relative flex flex-col items-start gap-0.5', width, className)}
         data-testid="LabelWrap"
       >
         {variant !== 'label' ? (

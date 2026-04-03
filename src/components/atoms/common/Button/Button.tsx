@@ -15,12 +15,14 @@ type NativeButtonProps = Omit<
   'className' | 'color' | 'onClick' | 'size'
 >
 
+export type ButtonColor = StyleProps['color'] | 'error' | 'success' | 'dark'
+
 export type ButtonProps = NativeButtonProps &
   Pick<StyleProps, 'variant'> & {
     /** for passing custom tailwind classes */
     className?: string
     /** theme color of component, none disable styles for custom styling via className */
-    color?: StyleProps['color'] | 'error'
+    color?: ButtonColor
     /** size of component, none disable sizes for custom styling via className */
     size?: StyleProps['size'] | 'inline'
     /** pass svg icon before children, without children becomes iconOnly button */

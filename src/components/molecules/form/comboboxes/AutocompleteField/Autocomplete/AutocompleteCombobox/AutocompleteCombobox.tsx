@@ -12,7 +12,7 @@ import { ChevronIcon } from '@/components/atoms/icons'
 import { Ellipsis } from '@/components/atoms/typography/Ellipsis'
 import { ClearButton } from '@/components/molecules/form/comboboxes/SelectField/Select/ClearButton'
 import { TextInput, TextInputProps } from '@/components/molecules/form/inputs/TextField/TextInput'
-import { disabledVariant,focusWithinVariant } from '@/components/utils/common.style'
+import { childrenIconSize, disabledVariant, focusWithinVariant } from '@/components/utils/common.style'
 import { FOCUS_SELECTORS } from '@/components/utils/hooks/useFocus'
 import { InputProps, NativeDivProps, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
@@ -132,6 +132,7 @@ function AutocompleteComboboxComponent<T = string>(
         buttonVariant[variant][color],
         focusWithinVariant[variant][color],
         buttonSize[size],
+        childrenIconSize[size],
         disabled && 'disabled ' + disabledVariant[variant],
         className,
       )}
@@ -152,7 +153,7 @@ function AutocompleteComboboxComponent<T = string>(
         className={cn(
           'AutocompleteInnerWrap',
           'flex min-w-0 flex-1 items-center gap-2',
-          displayChips && 'flex-wrap',
+          displayChips && 'overflow-hidden',
         )}
       >
         {!!multiValue?.length &&
@@ -170,7 +171,7 @@ function AutocompleteComboboxComponent<T = string>(
           id={name}
           className={cn(
             'AutocompleteInput',
-            'w-auto min-w-[30%] shrink border-none outline-none [&:has(input:focus-visible)]:ring-0',
+            'w-auto min-w-[30%] shrink border-0 outline-none [&_input]:p-0 [&:has(input:focus-visible)]:ring-0',
             inputClassName,
           )}
           name={name}

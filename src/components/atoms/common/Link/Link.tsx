@@ -7,6 +7,7 @@ import { devWarning } from '@/components/utils/devWarning'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
+import { ButtonColor } from '../Button'
 import { buttonSize, buttonVariant, iconOnlySize } from '../Button/Button.style'
 import { linkClass } from './Link.style'
 
@@ -18,7 +19,7 @@ export type LinkProps = NativeAnchorProps &
     /** for passing custom tailwind classes */
     className?: string
     /** theme color of component, none disable styles for custom styling via className */
-    color?: StyleProps['color'] | 'error'
+    color?: ButtonColor | 'none'
     /** size of component, none disable sizes for custom styling via className */
     size?: StyleProps['size'] | 'inline'
     /** pass svg icon before children, without children becomes iconOnly button */

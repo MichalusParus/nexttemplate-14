@@ -11,7 +11,6 @@ import { useInternalOpenState } from '@/components/utils/hooks/useInternalOpenSt
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { cn } from '@/utils/utils'
 
-import { controlClass } from '../../common/Carousel/CarouselControls/CarouselControls.style'
 import {
   closeButtonClass,
   viewerButtonClass,
@@ -105,9 +104,9 @@ export const ImageViewer = forwardRef<
             >
               <div className={cn('ViewerInnerWrap', viewerInnerWrapClass)}>{children}</div>
               <Button
-                className={cn('CloseButton', closeButtonClass, controlClass)}
-                variant="text"
-                color="none"
+                className={cn('CloseButton', closeButtonClass)}
+                variant="contained"
+                color="dark"
                 size="none"
                 startIcon={<XIcon className="h-8 w-8" />}
                 aria-label={t('close')}

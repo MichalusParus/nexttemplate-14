@@ -50,7 +50,7 @@ export const Chip = forwardRef<HTMLDivElement | null, ChipProps>(
         {...rest}
       >
         {startIcon && startIcon}
-        <div className="ChipInnerWrap flex flex-col">
+        <div className="ChipInnerWrap min-w-0 flex flex-col">
           {title && <Span variant="bold">{title}</Span>}
           <Span className="overflow-hidden text-ellipsis whitespace-nowrap" variant="none">
             {children}

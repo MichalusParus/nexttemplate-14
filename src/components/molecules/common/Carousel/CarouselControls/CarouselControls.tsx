@@ -8,7 +8,7 @@ import { ChevronIcon, PauseIcon } from '@/components/atoms/icons'
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { cn } from '@/utils/utils'
 
-import { arrowClass, controlClass, dotWrapClass } from './CarouselControls.style'
+import { arrowClass, dotWrapClass } from './CarouselControls.style'
 
 export type CarouselControlsProps = {
   /** selected page */
@@ -54,8 +54,9 @@ export const CarouselControls = ({
       {!hideArrows && pages > 1 && (
         <>
           <Button
-            className={cn('PreviousButton', 'left-0 border-none', arrowClass, controlClass)}
-            color="none"
+            className={cn('PreviousButton', 'left-0', arrowClass)}
+            variant="contained"
+            color="dark"
             size="none"
             startIcon={<ChevronIcon className={'h-8 w-8 rotate-90'} />}
             hideShadow
@@ -69,8 +70,9 @@ export const CarouselControls = ({
             data-testid="PreviousButton"
           />
           <Button
-            className={cn('NextButton', 'right-0 border-none', arrowClass, controlClass)}
-            color="none"
+            className={cn('NextButton', 'right-0', arrowClass)}
+            variant="contained"
+            color="dark"
             size="none"
             startIcon={<ChevronIcon className={'h-8 w-8 -rotate-90'} />}
             hideShadow
@@ -87,10 +89,10 @@ export const CarouselControls = ({
         <Button
           className={cn(
             'AutoplayButton',
-            'absolute left-1/2 top-0 -translate-x-1/2 rounded-md border-none bg-dark-950/25 opacity-0 focus-visible:opacity-100 group-hover:opacity-100',
-            controlClass,
+            'absolute left-1/2 top-0 -translate-x-1/2 rounded-md opacity-0 focus-visible:opacity-100 group-hover:opacity-100',
           )}
-          color="none"
+          variant="contained"
+          color="dark"
           size="none"
           startIcon={
             isPaused ? (
@@ -119,11 +121,11 @@ export const CarouselControls = ({
               key={`ControlDot${index}`}
               className={cn(
                 'ControlDot',
-                'border-none p-1.5',
+                'p-1.5',
                 selectedPage === index + 1 && 'selected [&>div]:scale-150',
-                controlClass,
               )}
-              color="none"
+              variant="text"
+              color="dark"
               size="none"
               hideShadow
               tabIndex={-1}

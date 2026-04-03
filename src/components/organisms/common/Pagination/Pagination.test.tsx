@@ -5,7 +5,6 @@ import { createRef } from 'react'
 
 import { fireEvent, render, screen } from '../../../../../.jest/customRender'
 import { Pagination } from '.'
-import { Breakpoints } from './useResponsivePageSpread'
 
 expect.extend(toHaveNoViolations)
 
@@ -14,7 +13,7 @@ describe('Pagination', () => {
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
       configurable: true,
-      value: Breakpoints.lg,
+      value: 1024,
     })
   })
 
@@ -87,7 +86,7 @@ describe('Pagination', () => {
       Object.defineProperty(window, 'innerWidth', {
         writable: true,
         configurable: true,
-        value: Breakpoints.xs,
+        value: 480,
       })
 
       render(<Pagination count={5} page={3} onChange={() => {}} />)
@@ -100,7 +99,7 @@ describe('Pagination', () => {
       Object.defineProperty(window, 'innerWidth', {
         writable: true,
         configurable: true,
-        value: Breakpoints.sm,
+        value: 640,
       })
 
       render(<Pagination count={5} page={3} onChange={() => {}} />)
@@ -113,7 +112,7 @@ describe('Pagination', () => {
       Object.defineProperty(window, 'innerWidth', {
         writable: true,
         configurable: true,
-        value: Breakpoints.md,
+        value: 768,
       })
 
       render(<Pagination count={5} page={3} onChange={() => {}} />)
@@ -126,7 +125,7 @@ describe('Pagination', () => {
       Object.defineProperty(window, 'innerWidth', {
         writable: true,
         configurable: true,
-        value: Breakpoints.xl,
+        value: 1280,
       })
 
       render(<Pagination count={5} page={3} onChange={() => {}} />)
@@ -139,7 +138,7 @@ describe('Pagination', () => {
       Object.defineProperty(window, 'innerWidth', {
         writable: true,
         configurable: true,
-        value: Breakpoints['2xl'],
+        value: 1536,
       })
 
       render(<Pagination count={5} page={3} onChange={() => {}} />)

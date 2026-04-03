@@ -9,7 +9,7 @@ import {
 import { cn } from '@/utils/utils'
 
 export const inputWrapClass = cn(
-  'relative w-full rounded-md border transition-activity [&:has(input:focus-visible)]:ring-1 [&:has(textarea:focus-visible)]:ring-1',
+  'min-w-0 relative w-full rounded-md border transition-activity [&:has(input:focus-visible)]:ring-1 [&:has(textarea:focus-visible)]:ring-1',
   errorStateClass,
 )
 

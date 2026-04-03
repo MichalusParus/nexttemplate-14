@@ -9,12 +9,15 @@ import { FieldProps } from '@/components/utils/types'
 import { FormStyleContext } from '../../forms/Form/Form'
 import { ToggleGroup, ToggleGroupProps } from './ToggleGroup/ToggleGroup'
 
-export type ToggleGroupFieldProps = Omit<ToggleGroupProps, 'value' | 'error' | 'onChange'> &
-  Partial<Pick<ToggleGroupProps, 'onChange'>> &
+export type ToggleGroupFieldProps<T = string> = Omit<
+  ToggleGroupProps<T>,
+  'value' | 'error' | 'onChange'
+> &
+  Partial<Pick<ToggleGroupProps<T>, 'onChange'>> &
   FieldProps
 
 /** Form and style context wrapper for ToggleGroup inside fake Label component. Native InputHTMLAttributes and Label props supported. USE CLIENT */
-export const ToggleGroupField = ({
+export const ToggleGroupField = <T = string,>({
   className,
   name,
   label,
@@ -24,7 +27,7 @@ export const ToggleGroupField = ({
   labelProps = {},
   onChange,
   ...rest
-}: ToggleGroupFieldProps) => {
+}: ToggleGroupFieldProps<T>) => {
   const {
     control,
     formState: { errors },
@@ -38,7 +41,7 @@ export const ToggleGroupField = ({
       control={control}
       render={({ field }) => (
         <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps} variant="legend">
-          <ToggleGroup
+          <ToggleGroup<T>
             className={className}
             variant={variant || formVariant}
             color={color || formColor}

@@ -12,6 +12,4 @@ export const viewerButtonClass = cn(
   'w-full shrink-0 cursor-zoom-in overflow-hidden rounded-md border-none focus-visible:outline-1 focus-visible:outline-dark-950',
 )
 
-export const closeButtonClass = cn(
-  'fixed right-0 top-0 z-modal border-0 bg-dark-950/25 transition-colors',
-)
+export const closeButtonClass = cn('z-modal fixed right-0 top-0')

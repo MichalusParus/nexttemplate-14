@@ -19,10 +19,12 @@ export const useSearchParamsFilter = <T extends Record<string, FilterValue>>(
 
   const getValueFromParam = useCallback(
     (key: KeyType<FilterValue>) => {
-      const paramValue = searchParams.get(key.key)
       if (Array.isArray(key.defaultValue)) {
-        return paramValue?.split('-').filter(Boolean) || []
-      } else if (typeof key.defaultValue === 'number') {
+        const values = searchParams.getAll(key.key)
+        return values.length ? values : []
+      }
+      const paramValue = searchParams.get(key.key)
+      if (typeof key.defaultValue === 'number') {
         return paramValue ? Number(paramValue) : key.defaultValue
       } else if (typeof key.defaultValue === 'boolean') {
         return paramValue === 'true'
@@ -46,12 +48,9 @@ export const useSearchParamsFilter = <T extends Record<string, FilterValue>>(
         const value = newFilters[key.key]
 
         if (Array.isArray(key.defaultValue) && Array.isArray(value)) {
+          params.delete(key.key)
           const arrayValue = value.map(v => String(v))
-          if (arrayValue && arrayValue.length > 0) {
-            params.set(key.key, arrayValue.join('-'))
-          } else {
-            params.delete(key.key)
-          }
+          arrayValue.forEach(v => params.append(key.key, v))
         } else if (key.defaultValue instanceof Date) {
           const dateValue = value as Date
           if (!isSameDay(dateValue, key.defaultValue)) {

@@ -54,7 +54,7 @@ describe('AutocompleteField', () => {
     it('forwards className', () => {
       render(<FieldWithHooks />)
 
-      expect(screen.getByRole('combobox')).toHaveClass('className')
+      expect(screen.getByTestId('Autocomplete')).toHaveClass('className')
     })
 
     it('id and name from name prop', () => {

@@ -37,7 +37,7 @@ describe('MultiAutocomplete', () => {
           onChange={() => {}}
         />,
       )
-      expect(screen.getByRole('combobox')).toHaveClass('className')
+      expect(screen.getByTestId('Autocomplete')).toHaveClass('className')
     })
 
     it('combobox id from name prop', () => {
