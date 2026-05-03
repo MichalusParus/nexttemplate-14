@@ -1,20 +1,31 @@
 'use client'
-import { eachDayOfInterval, endOfWeek, format, getDay, isSameDay, startOfWeek } from 'date-fns'
-import { useTranslations } from 'next-intl'
-import { MutableRefObject, useMemo } from 'react'
+import { format, isSameDay } from 'date-fns'
+import { Fragment, MutableRefObject } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
-import { P } from '@/components/atoms/typography/P'
 import { disabledVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-export type DateButtonType = {
-  day: Date
-  isSelected?: boolean
-  isCurrent?: boolean
-  isDisabled?: boolean
-}
+import type { CalendarCellProps, DateButtonType, RenderCalendarCell } from '../types'
+import { WeekdayHeader } from './WeekdayHeader'
+
+const buildCellProps = (
+  { day, isSelected, isDisabled }: DateButtonType,
+  onSelect: () => void,
+): CalendarCellProps => ({
+  role: 'gridcell',
+  tabIndex: -1,
+  'data-date': day.toISOString(),
+  'data-selected': isSelected || undefined,
+  'aria-label': format(day, 'EEEE, MMMM do, yyyy'),
+  'aria-selected': !!isSelected,
+  'aria-current': isSameDay(day, new Date()) ? 'date' : undefined,
+  'aria-disabled': isDisabled || undefined,
+  onClick: () => {
+    if (!isDisabled) onSelect()
+  },
+})
 
 export type DayPickerProps = StyleProps & {
   /** days in current month */
@@ -25,6 +36,10 @@ export type DayPickerProps = StyleProps & {
   buttonProps?: Partial<ButtonProps>
   /** ref for the grid container (used by useCalendarFocus) */
   gridRef?: MutableRefObject<HTMLDivElement | null>
+  /** show the row of weekday-name column headers above the day cells (default true) */
+  showWeekdayHeader?: boolean
+  /** custom render-prop for each day cell — receives selection state + a spreadable cellProps bag */
+  renderCell?: RenderCalendarCell
   /** onChange function */
   onChange: (date: Date) => void
 }
@@ -38,65 +53,70 @@ export const DayPicker = ({
   weekStart,
   buttonProps = {},
   gridRef,
+  showWeekdayHeader = true,
+  renderCell,
   onChange,
 }: DayPickerProps) => {
-  const t = useTranslations('Components')
   const { className: buttonClassName, ...restButtonProps } = buttonProps
-  const daysInWeek = useMemo(
-    () =>
-      eachDayOfInterval({
-        start: startOfWeek(new Date(), { weekStartsOn: weekStart }),
-        end: endOfWeek(new Date(), { weekStartsOn: weekStart }),
-      }),
-    [weekStart],
-  )
-
   return (
-    <div className={cn('DayPicker', 'grid grid-cols-7 gap-1')} role="grid" data-testid="DayPicker" ref={gridRef}>
-      <div className="contents" role="row">
-        {daysInWeek.map(day => (
-          <div
-            key={day.toDateString()}
-            className="flex items-center justify-center px-0.5 font-semibold"
-            role="columnheader"
-          >
-            <P className={cn(variant === 'contained' && 'text-contrast')} size={size}>
-              {t(`days.${getDay(day)}` as Parameters<typeof t>[0]).slice(0, 3)}
-            </P>
-          </div>
-        ))}
-      </div>
+    <div
+      className={cn('DayPicker', 'grid grid-cols-7 gap-1')}
+      role="grid"
+      data-testid="DayPicker"
+      ref={gridRef}
+    >
+      {showWeekdayHeader && <WeekdayHeader variant={variant} size={size} weekStart={weekStart} />}
       {daysInMonth.map((week, i) => (
         <div key={`week-${i}`} className="contents" role="row">
-          {week.map(({ day, isSelected, isCurrent, isDisabled }) => (
-            <Button
-              key={day.toDateString()}
-              id={day.toDateString()}
-              className={cn(
-                'DateButton',
-                'w-full border-none font-normal',
-                isDisabled && 'disabled',
-                disabledVariant[variant],
-                isSelected && 'selected shadow-ring',
-                !isCurrent && 'opacity-50',
-                buttonClassName,
-              )}
-              variant={variant}
-              color={color}
-              size={size}
-              startIcon={format(day, 'd')}
-              aria-label={format(day, 'EEEE, MMMM do, yyyy')}
-              hideShadow
-              tabIndex={-1}
-              role="gridcell"
-              data-date={day.toISOString()}
-              aria-selected={isSelected}
-              aria-current={isSameDay(day, new Date()) ? 'date' : undefined}
-              aria-disabled={isDisabled || undefined}
-              onClick={() => !isDisabled && onChange(day)}
-              {...restButtonProps}
-            />
-          ))}
+          {week.map(dateButton => {
+            const { day, isSelected, isCurrent, isDisabled } = dateButton
+            const cellProps = buildCellProps(dateButton, () => onChange(day))
+            if (renderCell) {
+              return (
+                <Fragment key={day.toDateString()}>
+                  {renderCell({
+                    ...dateButton,
+                    isCurrent: isCurrent ?? true,
+                    isToday: isSameDay(day, new Date()),
+                    variant,
+                    color,
+                    size,
+                    cellProps,
+                  })}
+                </Fragment>
+              )
+            }
+            return (
+              <Button
+                key={day.toDateString()}
+                id={day.toDateString()}
+                className={cn(
+                  'DateButton',
+                  'w-full font-normal',
+                  variant !== 'contained' && 'text-text dark:text-contrast',
+                  isDisabled && cn('disabled', disabledVariant[variant]),
+                  !isCurrent && 'opacity-50',
+                  buttonClassName,
+                )}
+                variant={variant}
+                color={color}
+                size={size}
+                startIcon={format(day, 'd')}
+                aria-label={cellProps['aria-label']}
+                hideShadow
+                hideBorder={!isSelected}
+                tabIndex={-1}
+                role="gridcell"
+                data-selected={cellProps['data-selected']}
+                data-date={cellProps['data-date']}
+                aria-selected={cellProps['aria-selected']}
+                aria-current={cellProps['aria-current']}
+                aria-disabled={cellProps['aria-disabled']}
+                onClick={cellProps.onClick}
+                {...restButtonProps}
+              />
+            )
+          })}
         </div>
       ))}
     </div>

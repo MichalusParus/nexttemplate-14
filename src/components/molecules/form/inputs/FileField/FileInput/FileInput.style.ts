@@ -7,7 +7,7 @@ import {
 import { cn } from '@/utils/utils'
 
 export const fileInputWrapClass = cn(
-  'flex w-full cursor-pointer items-center justify-center gap-6 overflow-hidden rounded-md border border-dashed transition-activity focus-within:ring-1 focus:outline-hidden',
+  'text-text dark:text-contrast transition-activity flex w-full cursor-pointer items-center justify-center gap-6 overflow-hidden rounded-md border border-dashed focus-within:ring-1 focus:outline-hidden',
   errorStateClass,
 )
 
@@ -57,16 +57,19 @@ export const fileInputVariant = {
   contained: {
     primary: cn(
       baseVariant.contained.primary,
+      'text-contrast',
       interactiveVariant.contained.primary,
       focusWithinVariant.contained.primary,
     ),
     secondary: cn(
       baseVariant.contained.secondary,
+      'text-contrast',
       interactiveVariant.contained.secondary,
       focusWithinVariant.contained.secondary,
     ),
     terciary: cn(
       baseVariant.contained.terciary,
+      'text-contrast',
       interactiveVariant.contained.terciary,
       focusWithinVariant.contained.terciary,
     ),

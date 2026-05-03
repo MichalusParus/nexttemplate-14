@@ -9,12 +9,15 @@ import { FieldProps } from '@/components/utils/types'
 import { FormStyleContext } from '../../forms/Form/Form'
 import { RadioGroup, RadioGroupProps } from './RadioGroup/RadioGroup'
 
-export type RadioGroupFieldProps = Omit<RadioGroupProps, 'value' | 'error' | 'onChange'> &
-  Partial<Pick<RadioGroupProps, 'onChange'>> &
+export type RadioGroupFieldProps<T = string> = Omit<
+  RadioGroupProps<T>,
+  'value' | 'error' | 'onChange'
+> &
+  Partial<Pick<RadioGroupProps<T>, 'onChange'>> &
   FieldProps
 
 /** Form and style context wrapper for RadioGroup inside fake Label component. Native InputHTMLAttributes and Label props supported. USE CLIENT */
-export const RadioGroupField = ({
+export function RadioGroupField<T = string>({
   className,
   name,
   label,
@@ -24,7 +27,7 @@ export const RadioGroupField = ({
   labelProps = {},
   onChange,
   ...rest
-}: RadioGroupFieldProps) => {
+}: RadioGroupFieldProps<T>) {
   const {
     control,
     formState: { errors },
@@ -37,8 +40,15 @@ export const RadioGroupField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps} variant="legend">
-          <RadioGroup
+        <Label
+          name={name}
+          label={label}
+          size={size || formSize}
+          error={errorMessage}
+          {...labelProps}
+          variant="legend"
+        >
+          <RadioGroup<T>
             className={className}
             variant={variant || formVariant}
             color={color || formColor}

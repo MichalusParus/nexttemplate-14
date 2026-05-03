@@ -75,7 +75,7 @@ describe('RangeInput', () => {
       render(<RangeInput name="rangeTest" error="error" onChange={() => {}} />)
       const slider = screen.getByRole('slider')
 
-      expect(slider).toHaveClass('error')
+      expect(slider).toHaveAttribute('data-error')
     })
 
     it('disabled sets native disabled', () => {

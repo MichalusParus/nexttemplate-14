@@ -110,7 +110,7 @@ function SelectComponent<T = string>(
     onOpen: ({ focusableElements, focusElement }) => {
       requestAnimationFrame(() => {
         const selectedIndex = focusableElements.findIndex(
-          el => el.classList.contains('selected') && el.role !== 'combobox',
+          el => el.hasAttribute('data-selected') && el.role !== 'combobox',
         )
         focusElement(selectedIndex !== -1 ? selectedIndex : 0)
       })
@@ -129,8 +129,10 @@ function SelectComponent<T = string>(
   )
 
   return (
-    <div className={cn('Select', 'min-w-0 relative w-full', className)} data-testid={dataTestId ?? 'Select'}>
+    <>
       <SelectCombobox<T>
+        className={cn('Select', 'min-w-0', className)}
+        data-testid={dataTestId ?? 'Select'}
         isOpen={isOpen}
         name={name}
         multiValue={multiValue}
@@ -173,7 +175,7 @@ function SelectComponent<T = string>(
           {children}
         </ListBox>
       </Dropdown>
-    </div>
+    </>
   )
 }
 

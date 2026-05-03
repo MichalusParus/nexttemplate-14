@@ -70,9 +70,9 @@ function RadioGroupComponent<T = string>(
               radioVariant[variant][color],
               radioDisabledVariant[variant],
               afterClass,
-              error && 'error',
               radioClassName,
             )}
+            data-error={error || undefined}
             name={name}
             type="radio"
             value={String(index)}

@@ -78,14 +78,14 @@ describe('Switch', () => {
       expect(label).not.toHaveTextContent('label')
     })
 
-    it('off state positions thumb at -left-1', () => {
+    it('off state positions thumb at translate-x-0', () => {
       render(
         <Switch name="switchTest" label="label" value="switchTest" isChecked={false} onChange={() => {}} />,
       )
       const thumb = screen.getByTestId('SwitchThumb')
 
       expect(thumb).toBeInTheDocument()
-      expect(thumb).toHaveClass('-left-1')
+      expect(thumb).toHaveClass('translate-x-0')
     })
 
     it('on state positions thumb at checked position', () => {
@@ -96,7 +96,7 @@ describe('Switch', () => {
       const thumb = screen.getByTestId('SwitchThumb')
 
       expect(checkbox).toHaveAttribute('checked')
-      expect(thumb).toHaveClass('left-4')
+      expect(thumb).toHaveClass('translate-x-4')
     })
 
     it('on state applies selected class to track', () => {
@@ -105,7 +105,7 @@ describe('Switch', () => {
       )
       const inputWrap = screen.getByTestId('SwitchInputWrap')
 
-      expect(inputWrap).toHaveClass('selected')
+      expect(inputWrap).toHaveAttribute('data-selected')
     })
 
     it('error applies error class to input wrap', () => {
@@ -114,7 +114,7 @@ describe('Switch', () => {
       )
       const inputWrap = screen.getByTestId('SwitchInputWrap')
 
-      expect(inputWrap).toHaveClass('error')
+      expect(inputWrap).toHaveAttribute('data-error')
     })
 
     it('disabled sets native disabled and aria-disabled', () => {
@@ -135,7 +135,7 @@ describe('Switch', () => {
       )
       const inputWrap = screen.getByTestId('SwitchInputWrap')
 
-      expect(inputWrap).toHaveClass('error')
+      expect(inputWrap).toHaveAttribute('data-error')
       expect(inputWrap).toHaveClass('disabled')
     })
 
@@ -155,7 +155,7 @@ describe('Switch', () => {
       const inputWrap = screen.getByTestId('SwitchInputWrap')
 
       expect(screen.getByTestId('SwitchThumb')).toBeInTheDocument()
-      expect(inputWrap).not.toHaveClass('selected')
+      expect(inputWrap).not.toHaveAttribute('data-selected')
     })
   })
 

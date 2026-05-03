@@ -56,7 +56,7 @@ export const CarouselControls = ({
           <Button
             className={cn('PreviousButton', 'left-0', arrowClass)}
             variant="contained"
-            color="dark"
+            color="ghost"
             size="none"
             startIcon={<ChevronIcon className={'h-8 w-8 rotate-90'} />}
             hideShadow
@@ -72,7 +72,7 @@ export const CarouselControls = ({
           <Button
             className={cn('NextButton', 'right-0', arrowClass)}
             variant="contained"
-            color="dark"
+            color="ghost"
             size="none"
             startIcon={<ChevronIcon className={'h-8 w-8 -rotate-90'} />}
             hideShadow
@@ -92,7 +92,7 @@ export const CarouselControls = ({
             'absolute left-1/2 top-0 -translate-x-1/2 rounded-md opacity-0 focus-visible:opacity-100 group-hover:opacity-100',
           )}
           variant="contained"
-          color="dark"
+          color="ghost"
           size="none"
           startIcon={
             isPaused ? (
@@ -122,13 +122,15 @@ export const CarouselControls = ({
               className={cn(
                 'ControlDot',
                 'p-1.5',
-                selectedPage === index + 1 && 'selected [&>div]:scale-150',
+                selectedPage === index + 1 && '[&>div]:scale-150',
               )}
+              data-selected={selectedPage === index + 1 || undefined}
               variant="text"
-              color="dark"
+              color="ghost"
               size="none"
               hideShadow
               tabIndex={-1}
+              aria-current={selectedPage === index + 1 ? 'true' : undefined}
               aria-label={t('page', { page: index + 1 })}
               onClick={e => {
                 e?.stopPropagation()

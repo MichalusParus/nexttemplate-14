@@ -3,24 +3,20 @@ import '@testing-library/jest-dom'
 import { addYears } from 'date-fns'
 import { axe, toHaveNoViolations } from 'jest-axe'
 
-import { defaultTestDate } from '@/components/molecules/form/comboboxes/DatePickerField/DatePicker/DatePicker.test'
-
 import { fireEvent, render, screen, within } from '../../../../../../.jest/customRender'
+import { defaultTestDate } from '../../../form/comboboxes/DatePickerField/DatePicker/DatePicker.test'
 import { YearPicker } from '.'
 
 expect.extend(toHaveNoViolations)
 
-
 describe('YearPicker', () => {
   describe('Semantics', () => {
     it('renders grid with rows and cells', () => {
-      render(
-        <YearPicker year={defaultTestDate} setCalendarState={() => {}} setCurrentMonth={() => {}} />,
-      )
+      render(<YearPicker year={defaultTestDate} onSelect={() => {}} />)
       const grid = screen.getByRole('grid')
       const rows = screen.getAllByRole('row')
       const cells = screen.getAllByRole('gridcell')
-      const selected = screen.getByText('2023')
+      const selected = screen.getByRole('gridcell', { name: '2023' })
 
       expect(grid).toBeInTheDocument()
       expect(grid).toHaveClass('grid grid-cols-5')
@@ -31,7 +27,7 @@ describe('YearPicker', () => {
         }
       })
       expect(cells.length).toBeGreaterThan(0)
-      expect(selected).toHaveClass('selected')
+      expect(selected).toHaveAttribute('data-selected')
       expect(selected).toHaveAttribute('aria-selected')
     })
 
@@ -40,8 +36,7 @@ describe('YearPicker', () => {
         <YearPicker
           year={defaultTestDate}
           minMaxDate={{ min: addYears(defaultTestDate, -1), max: addYears(defaultTestDate, 1) }}
-          setCalendarState={() => {}}
-          setCurrentMonth={() => {}}
+          onSelect={() => {}}
         />,
       )
       const previousYear = screen.queryByText('2021')
@@ -55,8 +50,7 @@ describe('YearPicker', () => {
       render(
         <YearPicker
           year={defaultTestDate}
-          setCalendarState={() => {}}
-          setCurrentMonth={() => {}}
+          onSelect={() => {}}
           buttonProps={{ className: 'className' }}
         />,
       )
@@ -68,23 +62,20 @@ describe('YearPicker', () => {
   })
 
   describe('Interaction', () => {
-    it('click sets year and switches to months', () => {
-      const spy = jest.fn()
-      render(<YearPicker year={defaultTestDate} setCalendarState={spy} setCurrentMonth={spy} />)
+    it('click calls onSelect with the year date', () => {
+      const onSelect = jest.fn()
+      render(<YearPicker year={defaultTestDate} onSelect={onSelect} />)
       const currentYear = screen.getByText('2023')
 
       fireEvent.click(currentYear)
-      expect(spy).toHaveBeenCalledTimes(2)
-      expect(spy).toHaveBeenCalledWith(defaultTestDate)
-      expect(spy).toHaveBeenCalledWith('months')
+      expect(onSelect).toHaveBeenCalledTimes(1)
+      expect(onSelect).toHaveBeenCalledWith(defaultTestDate)
     })
   })
 
   describe('Accessibility', () => {
     it('no axe violations', async () => {
-      const { container } = render(
-        <YearPicker year={defaultTestDate} setCalendarState={() => {}} setCurrentMonth={() => {}} />,
-      )
+      const { container } = render(<YearPicker year={defaultTestDate} onSelect={() => {}} />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })

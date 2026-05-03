@@ -89,7 +89,7 @@ describe('Menu', () => {
         fireEvent.click(menuButton)
       })
 
-      expect(menuButton).toHaveClass('selected')
+      expect(menuButton).toHaveAttribute('data-selected')
     })
 
     it('renders dropdown when open', async () => {

@@ -1,16 +1,31 @@
 import { useCallback, useEffect, useRef } from 'react'
 
+import { devWarning } from '@/components/utils/devWarning'
+
 type SwipeVector = {
   x: number
   y: number
 }
 
 type TouchOptions = {
-  /** external ref to attach touch listeners to — when provided, useTouch skips creating its own ref */
+  /** External ref to attach touch listeners to. Use for always-mounted elements. Mutually exclusive with `element`. */
   ref?: React.RefObject<HTMLElement | null>
+  /** Element to attach touch listeners to. Use when the element is tracked in state (e.g. lazily-mounted portals like Dialog). Mutually exclusive with `ref`. */
+  element?: HTMLElement | null
   onTouch?: (e: TouchEvent) => void
   onTouchOutside?: () => void
+  /** Raw swipe vector callback. Fires on every touchend that meets `swipeThreshold`. */
   onSwipe?: (value: SwipeVector) => void
+  /** Fires when an upward swipe past `swipeThreshold` dominates the cross axis. */
+  onSwipeUp?: () => void
+  /** Fires when a downward swipe past `swipeThreshold` dominates the cross axis. */
+  onSwipeDown?: () => void
+  /** Fires when a leftward swipe past `swipeThreshold` dominates the cross axis. */
+  onSwipeLeft?: () => void
+  /** Fires when a rightward swipe past `swipeThreshold` dominates the cross axis. */
+  onSwipeRight?: () => void
+  /** Minimum displacement on the dominant axis for any swipe callback to fire. Default: 30. */
+  swipeThreshold?: number
   touchDelay?: number
 }
 
@@ -20,12 +35,18 @@ type useTouchReturn = {
   handleTouch: (e: TouchEvent) => void
 }
 
-/** useTouch hook is used for checking if touch device is used and handling touch and swipe behaviour. Passed onTouch function is called after touch delay. Passed onSwipe function is called with value {x,y}. Negative or positive values indicates swipe vector. */
+/** useTouch hook for detecting touch device and handling touch + swipe. Pass `element` (state-tracked DOM node) instead of `ref` for lazily-mounted consumers like portals. */
 export const useTouch = ({
   ref: externalRef,
+  element,
   onTouch,
   onTouchOutside,
   onSwipe,
+  onSwipeUp,
+  onSwipeDown,
+  onSwipeLeft,
+  onSwipeRight,
+  swipeThreshold = 30,
   touchDelay = 500,
 }: TouchOptions): useTouchReturn => {
   const internalRef = useRef<HTMLDivElement | null>(null)
@@ -34,20 +55,29 @@ export const useTouch = ({
   const touchStartTimeRef = useRef(0)
   const touchEndTimeRef = useRef(0)
   const swipeStartRef = useRef({ x: 0, y: 0 })
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
+
+  devWarning(
+    externalRef != null && element !== undefined,
+    'useTouch: pass either `ref` or `element`, not both. `element` takes precedence when both are provided.',
+  )
+
+  const hasSwipeListener = Boolean(
+    onSwipe || onSwipeUp || onSwipeDown || onSwipeLeft || onSwipeRight,
+  )
 
   const handleTouch = useCallback(
     (e: TouchEvent) => {
       if (!isTouchDevice.current) return
 
       e.stopPropagation()
-      const target = e.target as HTMLElement
-
-      if (!componentRef.current?.contains(target)) return
+      const targetEl = element ?? componentRef.current
+      const eventTarget = e.target as HTMLElement
+      if (!targetEl?.contains(eventTarget)) return
 
       if (e.type === 'touchstart') {
         touchStartTimeRef.current = e.timeStamp
-        if (onSwipe) {
+        if (hasSwipeListener) {
           swipeStartRef.current = {
             x: e.touches[0].clientX,
             y: e.touches[0].clientY,
@@ -65,27 +95,53 @@ export const useTouch = ({
           clearTimeout(timeoutRef.current)
         }
 
-        if (onSwipe) {
-          const swipeVector = {
-            x: e.changedTouches[0].clientX - swipeStartRef.current.x,
-            y: e.changedTouches[0].clientY - swipeStartRef.current.y,
-          }
-          onSwipe(swipeVector)
+        if (!hasSwipeListener) return
+
+        const swipeVector = {
+          x: e.changedTouches[0].clientX - swipeStartRef.current.x,
+          y: e.changedTouches[0].clientY - swipeStartRef.current.y,
+        }
+        const absX = Math.abs(swipeVector.x)
+        const absY = Math.abs(swipeVector.y)
+
+        if (Math.max(absX, absY) < swipeThreshold) return
+
+        onSwipe?.(swipeVector)
+
+        if (absX > absY) {
+          if (swipeVector.x > 0) onSwipeRight?.()
+          else onSwipeLeft?.()
+        } else {
+          if (swipeVector.y > 0) onSwipeDown?.()
+          else onSwipeUp?.()
         }
       }
     },
-    [componentRef, onTouch, onSwipe, touchDelay],
+    [
+      element,
+      componentRef,
+      hasSwipeListener,
+      onTouch,
+      onSwipe,
+      onSwipeUp,
+      onSwipeDown,
+      onSwipeLeft,
+      onSwipeRight,
+      swipeThreshold,
+      touchDelay,
+    ],
   )
 
   const handleTouchOutside = useCallback(
     (e: TouchEvent) => {
       e?.stopPropagation()
-      const target = e.target as HTMLDivElement
-      if (!componentRef.current?.contains(target)) {
+      const targetEl = element ?? componentRef.current
+      const eventTarget = e.target as HTMLDivElement
+      if (!targetEl?.contains(eventTarget)) {
         onTouchOutside?.()
       }
     },
-    [componentRef, onTouchOutside],
+    [element, componentRef, onTouchOutside],
   )
 
   useEffect(() => {
@@ -93,21 +149,21 @@ export const useTouch = ({
   }, [])
 
   useEffect(() => {
-    if (!componentRef.current) return
+    const target = element ?? componentRef.current
+    if (!target) return
     const controller = new AbortController()
     const { signal } = controller
-    const element = componentRef.current
 
     if (isTouchDevice.current) {
-      element.addEventListener('contextmenu', e => e.preventDefault(), { signal })
-      element.addEventListener('touchstart', handleTouch, { signal, passive: true })
-      element.addEventListener('touchend', handleTouch, { signal, passive: true })
+      target.addEventListener('contextmenu', e => e.preventDefault(), { signal })
+      target.addEventListener('touchstart', handleTouch, { signal, passive: true })
+      target.addEventListener('touchend', handleTouch, { signal, passive: true })
     }
     return () => {
       controller.abort()
       clearTimeout(timeoutRef.current)
     }
-  }, [componentRef, handleTouch])
+  }, [element, componentRef, handleTouch])
 
   useEffect(() => {
     if (isTouchDevice.current && onTouchOutside) {

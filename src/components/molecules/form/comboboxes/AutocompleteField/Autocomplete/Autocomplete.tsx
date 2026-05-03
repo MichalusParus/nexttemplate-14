@@ -38,6 +38,8 @@ export type AutocompleteProps<T = string> = Omit<
     options: OptionType<T>[] | OptionGroupType<T>[]
     /** loading state for options fetching, loading is delayed for 1 second to prevent flickering */
     isLoading?: boolean
+    /** when true (single mode only), the typed input value becomes the field value per keystroke. Selecting an option still works. Only meaningful when T = string. */
+    freeSolo?: boolean
     /** state for select all checkbox */
     selectAllState?: SelectAllState
     /** for passing aditional props to dropdown */
@@ -78,6 +80,7 @@ function AutocompleteComponent<T = string>(
     dropdownProps = {},
     listboxProps = {},
     chipProps = {},
+    freeSolo = false,
     onOpen,
     onClose,
     onInputChange,
@@ -102,19 +105,23 @@ function AutocompleteComponent<T = string>(
   const handleToggle = useCallback(
     (open?: boolean) => {
       const nextState = open ?? !isOpen
-      if (!nextState) {
+      if (!nextState && !freeSolo) {
         requestAnimationFrame(() => {
           const selectedLabel = flatOptions.find(option => isEqual(option.value, value))?.label
           if (inputValue !== '' && inputValue !== selectedLabel && !multiValue) {
             setInputValue(selectedLabel || '')
-            onInputChange(selectedLabel || '')
+            onInputChange?.(selectedLabel || '')
           }
         })
       }
       setIsOpen(nextState)
-      nextState ? onOpen?.() : onClose?.()
+      if (nextState) {
+        onOpen?.()
+      } else {
+        onClose?.()
+      }
     },
-    [isOpen, flatOptions, value, inputValue, multiValue, onInputChange, onOpen, onClose],
+    [isOpen, freeSolo, flatOptions, value, inputValue, multiValue, onInputChange, onOpen, onClose],
   )
 
   const focusValue = useMemo(
@@ -131,7 +138,7 @@ function AutocompleteComponent<T = string>(
           flatOptions.find(({ value }) => isEqual(value, target)) || flatOptions[0]
         const label = selectedOption?.label || ''
         setInputValue(label)
-        onInputChange(label)
+        onInputChange?.(label)
         setIsOpen(false)
       }
     },
@@ -144,10 +151,14 @@ function AutocompleteComponent<T = string>(
         setIsOpen(true)
         onOpen?.()
       }
-      setInputValue(String(v).trimStart())
-      onInputChange(String(v).trimStart())
+      const trimmed = String(v).trimStart()
+      setInputValue(trimmed)
+      onInputChange?.(trimmed)
+      if (freeSolo && !multiValue) {
+        onChange(trimmed as unknown as T)
+      }
     },
-    [isOpen, onInputChange, onOpen],
+    [isOpen, freeSolo, multiValue, onChange, onInputChange, onOpen],
   )
 
   useAutocompleteFocus({
@@ -163,18 +174,15 @@ function AutocompleteComponent<T = string>(
   useEffect(() => {
     if (multiValue) return
     if (!value) return setInputValue('')
-    setInputValue(prev => {
-      if (selectedLabel !== prev) return selectedLabel
-      return prev
-    })
-  }, [value, multiValue, selectedLabel])
+    const next = freeSolo ? selectedLabel || String(value ?? '') : selectedLabel
+    setInputValue(prev => (prev === next ? prev : next))
+  }, [value, multiValue, selectedLabel, freeSolo])
 
   return (
-    <div
-      className={cn('Autocomplete', 'min-w-0 relative flex w-full', isOpen && 'z-combobox', className)}
-      data-testid={dataTestId ?? 'Autocomplete'}
-    >
+    <>
       <AutocompleteCombobox<T>
+        className={cn('Autocomplete', 'min-w-0', isOpen && 'z-combobox', className)}
+        data-testid={dataTestId ?? 'Autocomplete'}
         name={name}
         isOpen={isOpen}
         value={value}
@@ -231,7 +239,7 @@ function AutocompleteComponent<T = string>(
         />
         {children}
       </Dropdown>
-    </div>
+    </>
   )
 }
 

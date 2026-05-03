@@ -142,6 +142,46 @@ describe('Avatar', () => {
     })
   })
 
+  describe('Hue', () => {
+    it('applies inline hue styles when hue provided', () => {
+      render(<Avatar hue={200} username="Test" />)
+      const avatar = screen.getByTestId('Avatar')
+
+      expect(avatar.style.getPropertyValue('--av-text')).toContain('200')
+    })
+
+    it('does not apply baseVariant classes when hue provided', () => {
+      render(<Avatar hue={200} variant="contained" color="primary" username="Test" />)
+      const avatar = screen.getByTestId('Avatar')
+
+      expect(avatar.className).not.toContain('bg-primary')
+    })
+
+    it('applies contained hue styles', () => {
+      render(<Avatar hue={100} variant="contained" username="Test" />)
+      const avatar = screen.getByTestId('Avatar')
+
+      expect(avatar.style.getPropertyValue('--av-bg')).toContain('100')
+      expect(avatar.style.getPropertyValue('--av-border')).toContain('100')
+      expect(avatar.style.getPropertyValue('--av-text')).toContain('100')
+    })
+
+    it('merges user style with hue style', () => {
+      render(<Avatar hue={100} username="Test" style={{ margin: '4px' }} />)
+      const avatar = screen.getByTestId('Avatar')
+
+      expect(avatar.style.margin).toBe('4px')
+      expect(avatar.style.getPropertyValue('--av-text')).toContain('100')
+    })
+
+    it('does not apply hue styles without hue prop', () => {
+      render(<Avatar variant="outlined" color="primary" username="Test" />)
+      const avatar = screen.getByTestId('Avatar')
+
+      expect(avatar.style.getPropertyValue('--av-text')).toBe('')
+    })
+  })
+
   describe('Accessibility', () => {
     it('no axe violations', async () => {
       const { container } = render(<Avatar username="Accessibility Test" src="/src" />)

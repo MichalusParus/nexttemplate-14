@@ -20,7 +20,7 @@ describe('OptionItem', () => {
     expect(optionRole).toHaveTextContent(options[0].label)
     expect(optionRole).toHaveAttribute('tabIndex', '-1')
     expect(optionRole).toHaveAttribute('aria-selected', 'false')
-    expect(optionRole).not.toHaveClass('selected')
+    expect(optionRole).not.toHaveAttribute('data-selected')
     expect(checkIconTestId).toBeInTheDocument()
   })
 
@@ -29,7 +29,7 @@ describe('OptionItem', () => {
     const optionRole = screen.getByRole('option')
 
     expect(optionRole).toHaveAttribute('aria-selected', 'true')
-    expect(optionRole).toHaveClass('selected')
+    expect(optionRole).toHaveAttribute('data-selected')
   })
 
   it('hideCheckbox', () => {

@@ -51,9 +51,9 @@ describe('Calendar', () => {
 
     it('selected date marked', () => {
       render(<Calendar date={defaultTestDate} onChange={() => {}} />)
-      const selected = screen.getByText('4')
+      const selected = screen.getByRole('gridcell', { name: /March 4th/ })
 
-      expect(selected).toHaveClass('selected')
+      expect(selected).toHaveAttribute('data-selected')
       expect(selected).toHaveAttribute('aria-selected')
     })
 
@@ -84,19 +84,19 @@ describe('Calendar', () => {
         />,
       )
       const cells = screen.getAllByRole('gridcell')
-      const selected1 = screen.getByText('3')
-      const selected2 = screen.getByText('4')
-      const selected3 = screen.getByText('5')
+      const selected1 = screen.getByRole('gridcell', { name: /March 3rd/ })
+      const selected2 = screen.getByRole('gridcell', { name: /March 4th/ })
+      const selected3 = screen.getByRole('gridcell', { name: /March 5th/ })
 
-      expect(cells[0]).not.toHaveClass('selected')
+      expect(cells[0]).not.toHaveAttribute('data-selected')
       expect(cells[0]).toHaveAttribute('aria-selected', 'false')
-      expect(selected1).toHaveClass('selected')
+      expect(selected1).toHaveAttribute('data-selected')
       expect(selected1).toHaveAttribute('aria-selected')
-      expect(selected2).toHaveClass('selected')
+      expect(selected2).toHaveAttribute('data-selected')
       expect(selected2).toHaveAttribute('aria-selected')
-      expect(selected3).toHaveClass('selected')
+      expect(selected3).toHaveAttribute('data-selected')
       expect(selected3).toHaveAttribute('aria-selected')
-      expect(cells[20]).not.toHaveClass('selected')
+      expect(cells[20]).not.toHaveAttribute('data-selected')
       expect(cells[20]).toHaveAttribute('aria-selected', 'false')
     })
 
@@ -109,19 +109,19 @@ describe('Calendar', () => {
         />,
       )
       const cells = screen.getAllByRole('gridcell')
-      const selected1 = screen.getByText('7')
-      const selected2 = screen.getByText('10')
-      const selected3 = screen.getByText('13')
+      const selected1 = screen.getByRole('gridcell', { name: /April 7th/ })
+      const selected2 = screen.getByRole('gridcell', { name: /April 10th/ })
+      const selected3 = screen.getByRole('gridcell', { name: /April 13th/ })
 
-      expect(cells[0]).not.toHaveClass('selected')
+      expect(cells[0]).not.toHaveAttribute('data-selected')
       expect(cells[0]).toHaveAttribute('aria-selected', 'false')
-      expect(selected1).toHaveClass('selected')
+      expect(selected1).toHaveAttribute('data-selected')
       expect(selected1).toHaveAttribute('aria-selected')
-      expect(selected2).toHaveClass('selected')
+      expect(selected2).toHaveAttribute('data-selected')
       expect(selected2).toHaveAttribute('aria-selected')
-      expect(selected3).toHaveClass('selected')
+      expect(selected3).toHaveAttribute('data-selected')
       expect(selected3).toHaveAttribute('aria-selected')
-      expect(cells[20]).not.toHaveClass('selected')
+      expect(cells[20]).not.toHaveAttribute('data-selected')
       expect(cells[20]).toHaveAttribute('aria-selected', 'false')
     })
 
@@ -134,9 +134,9 @@ describe('Calendar', () => {
         />,
       )
       const cells = screen.getAllByRole('gridcell')
-      const selected1 = screen.getByText('7')
-      const selected2 = screen.getByText('10')
-      const selected3 = screen.getByText('13')
+      const selected1 = screen.getByRole('gridcell', { name: /April 7th/ })
+      const selected2 = screen.getByRole('gridcell', { name: /April 10th/ })
+      const selected3 = screen.getByRole('gridcell', { name: /April 13th/ })
 
       expect(cells[0]).not.toHaveAttribute('aria-disabled')
       expect(selected1).toHaveAttribute('aria-disabled', 'true')

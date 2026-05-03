@@ -51,7 +51,7 @@ describe('TextArea', () => {
       render(<TextArea name="test" error="required" onChange={() => {}} />)
       const wrapper = screen.getByTestId('TextAreaWrap')
 
-      expect(wrapper).toHaveClass('error')
+      expect(wrapper).toHaveAttribute('data-error')
     })
 
     it('disabled sets native disabled and aria-disabled on wrapper', () => {

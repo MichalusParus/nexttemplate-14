@@ -1,0 +1,73 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Common/Rating/Def" />
+
+# Rating
+
+> Read-only row of icons (stars by default) that visually represents a numeric value in `0..max`. A **visual indicator**, not an input — use it to display a recipe's rating, a difficulty level, a tier badge, or any "X out of N" score. For collecting a rating from the user, reach for a dedicated input component instead.
+
+<br/>
+
+## Features
+
+- Default 5 stars; any icon can be substituted via `icon`
+- Fractional fills via clip-path on the active star (e.g. `value={3.5}` shows a half-filled third star)
+- Single `hue` for one color, or `[fromHue, toHue]` to interpolate hues across the row
+- `compact` mode: renders one icon + a small superscript number, opacity scaled by value — for tight attribute chips
+- oklch-based coloring — any hue angle works without registering Tailwind tokens
+- Automatic dark-mode color via paired CSS custom properties
+- Forwards a ref to the underlying `<div>` and spreads native div props
+- Auto-generated readable `aria-label` from `value`/`max`, overridable
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Native `<div>` with `role="img"` — the row communicates a single value, not a set of independently meaningful children
+- **Row mode:** each star is a `<span>` containing two stacked copies of the icon: a 25%-opacity outline base and a clip-path-clipped overlay at full color (the fill ratio is the inverse of the right-side `inset()`)
+- **Compact mode:** one `<span>` with the icon at full color, `opacity = clampedInt / max`, plus a `<sup>` showing `Math.round(value)`
+- All decorative icon markup is `aria-hidden` — the parent `aria-label` carries the entire semantic payload
+- Color is applied via CSS custom properties `--r-color` (light) / `--r-dark` (dark), set on the root and re-set per star when a hue tuple is used in row mode
+
+### Keyboard Handling
+- None — Rating is non-interactive and not focusable. It does not participate in the tab order.
+
+### Accessibility (WAI-ARIA)
+- `role="img"` — treats the component as a single graphical unit; screen readers announce the `aria-label` and stop, instead of walking through nameless `<span>`s
+- Default `aria-label`:
+  - Row mode: `"Rating: {value} of {max}"` (rounded to one decimal)
+  - Compact mode: `"Level: {value} of {max}"` (rounded to integer)
+- Override either default by passing `aria-label` directly — useful for i18n: `<Rating aria-label={t('rating.label', { value, max })} />`
+- All decorative icon markup is hidden from assistive technology with `aria-hidden`
+
+### Visual States
+- Non-interactive — no hover, focus, active, or disabled states. The component is purely declarative output.
+- Out-of-range or non-finite values are silently coerced (`NaN` → `0`, value `< 0` → `0`, value `> max` → `max`) — no error or warning
+
+### Interaction Behavior
+- None. There are no event handlers and no internal state. Re-rendering with a new `value` prop is the only way to change what's displayed.
+
+### Responsive & Layout
+- `inline-flex` row, `gap-1` between stars (row mode) or `gap-0.5` between icon and superscript (compact mode)
+- Icon size driven by `size` (`sm` / `md` / `lg` / `none`) via `childrenIconSize`; the superscript follows a parallel `ratingSupSize` map
+- `none` disables size styling so a parent can override via `className`
+- Container shrinks to content; no overflow handling
+
+<br/>
+
+## Architecture Decisions
+- **Visual, not interactive — by design.** A star rating is conceptually two separate components: a *display* (read-only, decorative, lives anywhere in the page) and an *input* (focusable, keyboard-navigable, validates via a form library). Rating is the *display* half. When interaction is needed, build a dedicated `RatingInput`/`RatingField` molecule alongside it.
+- **`role="img"` instead of `role="meter"` or per-star roles.** A star rating is a single graphical value, not a progress bar and not a list. `role="img"` + a sentence-shaped `aria-label` matches what screen reader users actually want to hear.
+- **oklch from hue, not preset colors.** Hue is the only color knob; saturation and lightness are hard-coded inside the oklch template strings so callers can't accidentally make stars unreadable.
+- **Two-icon clip-path fill, not dual SVG assets.** Stack two copies of the same icon (one dimmed, one full color) and clip the top one with `inset(0 N% 0 0)`. Works for any icon shape the consumer passes in.
+- **Compact mode uses `opacity`, not lightness stepping.** Compact mode just sets `style={{ opacity: clampedInt / max }}` on the icon. The icon's hue stays consistent across levels.
+- **Per-star `text-(--r-color)` re-application for hue tuples.** CSS resolves `var()` at the point where the property is set, so setting `--r-color` on a child span does nothing unless that child also has `color: var(--r-color)` declared.
+- **`NaN` collapses to `0` before clamping.** `Number.isFinite(value) ? value : 0` before the `[0, max]` clamp so a `NaN` upstream renders as an empty row instead of an `aria-label` reading `"Rating: NaN of 5"`.
+- **i18n via the existing `aria-label` override.** Localizing is one line at the call site — no dedicated `formatLabel` prop needed.
+- **RTL via `rtl:-scale-x-100` per star, not direction detection.** `clipPath: inset(0 N% 0 0)` clips from the physical right; each star span carries `rtl:-scale-x-100` so the entire star (including its right-side clip) is mirrored horizontally in RTL contexts.
+
+<br/>
+
+## Known Bugs & Limitations
+- None

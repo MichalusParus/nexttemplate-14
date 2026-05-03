@@ -109,13 +109,13 @@ describe('MultiToggleGroupField', () => {
       render(<FieldWithHooks />)
       const buttons = within(screen.getByRole('group')).getAllByRole('button')
 
-      expect(buttons[0]).not.toHaveClass('selected')
+      expect(buttons[0]).not.toHaveAttribute('data-selected')
 
       await act(async () => {
         fireEvent.click(buttons[0])
       })
 
-      expect(buttons[0]).toHaveClass('selected')
+      expect(buttons[0]).toHaveAttribute('data-selected')
     })
 
     it('onChange fires with value', async () => {

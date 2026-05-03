@@ -2,7 +2,7 @@
 import { forwardRef, ReactNode, useCallback } from 'react'
 
 import { CheckIcon, MinusIcon } from '@/components/atoms/icons'
-import { disabledVariant, textSize, textVariant } from '@/components/utils/common.style'
+import { disabledVariant, textSize } from '@/components/utils/common.style'
 import { FieldProps, InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -79,13 +79,13 @@ export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
             'CheckboxInputWrap',
             'relative flex',
             checkboxWrapClass,
-            (isChecked || isIndeterminate) && !fake && 'selected',
             !fake && 'mr-2',
             checkboxVariant[variant][color],
             checkboxIconSize[size],
-            error && 'error',
-            disabled && 'disabled ' + disabledVariant[variant],
+            disabled && cn('disabled', disabledVariant[variant]),
           )}
+          data-error={error || undefined}
+          data-selected={((isChecked || isIndeterminate) && !fake) || undefined}
           aria-disabled={disabled}
           data-testid="CheckboxInputWrap"
         >
@@ -101,6 +101,7 @@ export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
               value={value}
               onChange={e => onChange(e.target.value)}
               checked={isChecked}
+              aria-invalid={!!error || undefined}
               disabled={disabled}
               ref={setRef}
               {...rest}
@@ -110,9 +111,8 @@ export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
             <MinusIcon
               className={cn(
                 'MinusIcon',
-                'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
+                'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-inherit',
                 disabled && 'disabled',
-                textVariant[variant][color],
                 checkIconDisabledVariant[variant],
                 checkboxIconSize[size],
                 checkVisibility,
@@ -123,9 +123,8 @@ export const Checkbox = forwardRef<HTMLInputElement | null, CheckboxProps>(
             <CheckIcon
               className={cn(
                 'CheckIcon',
-                'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
+                'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-inherit',
                 disabled && 'disabled',
-                textVariant[variant][color],
                 checkIconDisabledVariant[variant],
                 checkboxIconSize[size],
                 checkVisibility,

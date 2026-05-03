@@ -53,7 +53,7 @@ describe('SelectCombobox', () => {
     const comboboxRole = screen.getByRole('combobox')
 
     expect(comboboxRole).toHaveAttribute('aria-expanded', 'true')
-    expect(comboboxRole).toHaveClass('selected')
+    expect(comboboxRole).toHaveAttribute('data-selected')
   })
 
   it('value', () => {
@@ -109,7 +109,7 @@ describe('SelectCombobox', () => {
     )
     const comboboxRole = screen.getByRole('combobox')
 
-    expect(comboboxRole).toHaveClass('error')
+    expect(comboboxRole).toHaveAttribute('data-error')
   })
 
   it('chipProps', () => {

@@ -106,7 +106,7 @@ export const ImageViewer = forwardRef<
               <Button
                 className={cn('CloseButton', closeButtonClass)}
                 variant="contained"
-                color="dark"
+                color="ghost"
                 size="none"
                 startIcon={<XIcon className="h-8 w-8" />}
                 aria-label={t('close')}

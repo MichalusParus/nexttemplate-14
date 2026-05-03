@@ -8,6 +8,11 @@ import { Ellipsis } from '@/components/atoms/typography/Ellipsis'
 import { CalendarProps } from '@/components/molecules/common/Calendar/Calendar'
 import { ClearButton } from '@/components/molecules/form/comboboxes/SelectField/Select/ClearButton'
 import { ValueChips } from '@/components/molecules/form/comboboxes/SelectField/Select/ValueChips'
+import {
+  inputSize,
+  inputVariant,
+} from '@/components/molecules/form/inputs/TextField/TextInput/TextInput.style'
+import { childrenIconSize } from '@/components/utils/common.style'
 import { InputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -105,25 +110,28 @@ export const DatePickerCombobox = forwardRef<HTMLButtonElement | null, DatePicke
         id={name}
         className={cn(
           'DatePickerCombobox',
-          'w-full justify-between',
-          isOpen && 'selected z-combobox',
-          error && 'error',
+          inputVariant[variant][color],
+          inputSize[size],
+          childrenIconSize[size],
+          'w-full min-w-0 justify-between font-normal',
+          isOpen && 'z-combobox',
           className,
         )}
+        data-selected={isOpen || undefined}
+        data-error={error || undefined}
         name={name}
         type="button"
         variant={variant}
-        color={color}
-        size={size}
+        color="none"
+        size="none"
+        hideShadow
+        disabled={disabled}
         endIcon={
-          <div className="flex gap-2">
+          <div className="flex shrink-0 gap-2">
             {!!value && onClear && <ClearButton onClick={onClear} />}
             <CalendarIcon aria-hidden data-testid="CalendarIcon" />
           </div>
         }
-        disabled={disabled}
-        tabIndex={disabled ? -1 : 0}
-        hideShadow
         role="combobox"
         aria-expanded={isOpen}
         aria-haspopup="true"

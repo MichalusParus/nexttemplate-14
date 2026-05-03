@@ -9,12 +9,12 @@ import {
 import { cn } from '@/utils/utils'
 
 export const inputWrapClass = cn(
-  'min-w-0 relative w-full rounded-md border transition-activity [&:has(input:focus-visible)]:ring-1 [&:has(textarea:focus-visible)]:ring-1',
+  'text-text dark:text-contrast transition-activity relative flex w-full min-w-0 items-center gap-2 rounded-md border [&:has(input:focus-visible)]:ring-1 [&:has(textarea:focus-visible)]:ring-1',
   errorStateClass,
 )
 
 export const inputClass = cn(
-  'focus:outline-hidden w-full appearance-none border-none bg-transparent font-semibold placeholder:text-placeholder disabled:cursor-not-allowed [&::-webkit-search-cancel-button]:hidden',
+  'placeholder:text-placeholder min-w-0 flex-1 appearance-none border-none bg-transparent font-normal focus:outline-hidden disabled:cursor-not-allowed [&::-webkit-search-cancel-button]:hidden',
 )
 
 export const inputVariant = {
@@ -24,18 +24,24 @@ export const inputVariant = {
       'bg-transparent dark:bg-transparent',
       focusWithinVariant.text.primary,
       interactiveVariant.text.primary,
+      "after:bg-primary-800 dark:after:bg-primary-400 after:absolute after:inset-x-1 after:-bottom-px after:h-0.5 after:rounded-full after:content-['']",
+      '[&:has(input:focus-visible)]:ring-0 [&:has(textarea:focus-visible)]:ring-0',
     ),
     secondary: cn(
       baseVariant.text.secondary,
       'bg-transparent dark:bg-transparent',
       focusWithinVariant.text.secondary,
       interactiveVariant.text.secondary,
+      "after:bg-secondary-800 dark:after:bg-secondary-400 after:absolute after:inset-x-1 after:-bottom-px after:h-0.5 after:rounded-full after:content-['']",
+      '[&:has(input:focus-visible)]:ring-0 [&:has(textarea:focus-visible)]:ring-0',
     ),
     terciary: cn(
       baseVariant.text.terciary,
       'bg-transparent dark:bg-transparent',
       focusWithinVariant.text.terciary,
       interactiveVariant.text.terciary,
+      "after:bg-terciary-800 dark:after:bg-terciary-400 after:absolute after:inset-x-1 after:-bottom-px after:h-0.5 after:rounded-full after:content-['']",
+      '[&:has(input:focus-visible)]:ring-0 [&:has(textarea:focus-visible)]:ring-0',
     ),
     none: '',
   },
@@ -63,16 +69,19 @@ export const inputVariant = {
   contained: {
     primary: cn(
       baseVariant.contained.primary,
+      'text-contrast',
       focusWithinVariant.contained.primary,
       interactiveVariant.contained.primary,
     ),
     secondary: cn(
       baseVariant.contained.secondary,
+      'text-contrast',
       focusWithinVariant.contained.secondary,
       interactiveVariant.contained.secondary,
     ),
     terciary: cn(
       baseVariant.contained.terciary,
+      'text-contrast',
       focusWithinVariant.contained.terciary,
       interactiveVariant.contained.terciary,
     ),

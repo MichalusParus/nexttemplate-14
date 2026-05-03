@@ -11,8 +11,8 @@ import {
 import { axe, toHaveNoViolations } from 'jest-axe'
 
 import { fireEvent, render, screen, within } from '../../../../../../.jest/customRender'
+import type { DateButtonType } from '../types'
 import { DayPicker } from '.'
-import { DateButtonType } from '.'
 
 expect.extend(toHaveNoViolations)
 
@@ -72,7 +72,7 @@ describe('DayPicker', () => {
       const cells = screen.getAllByRole('gridcell')
 
       expect(cells[0]).toHaveTextContent('26')
-      expect(cells[0]).toHaveClass('selected')
+      expect(cells[0]).toHaveAttribute('data-selected')
       expect(cells[0]).toHaveAttribute('aria-selected')
       expect(cells[1]).toHaveAttribute('aria-selected', 'false')
     })

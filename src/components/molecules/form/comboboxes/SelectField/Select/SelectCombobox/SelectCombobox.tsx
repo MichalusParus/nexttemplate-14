@@ -6,6 +6,11 @@ import { ChipProps } from '@/components/atoms/common/Chip'
 import { ChevronIcon } from '@/components/atoms/icons'
 import { Ellipsis } from '@/components/atoms/typography/Ellipsis'
 import { ClearButton } from '@/components/molecules/form/comboboxes/SelectField/Select/ClearButton'
+import {
+  inputSize,
+  inputVariant,
+} from '@/components/molecules/form/inputs/TextField/TextInput/TextInput.style'
+import { childrenIconSize } from '@/components/utils/common.style'
 import { InputProps, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -74,17 +79,23 @@ function SelectComboboxComponent<T = string>(
       id={name}
       className={cn(
         'SelectCombobox',
-        'w-full justify-between',
-        isOpen && 'selected z-combobox',
-        error && 'error',
+        inputVariant[variant][color],
+        inputSize[size],
+        childrenIconSize[size],
+        'w-full min-w-0 justify-between font-normal',
+        isOpen && 'z-combobox',
         displayChips && selectedOptions.length && 'h-auto items-start whitespace-normal',
         className,
       )}
+      data-selected={isOpen || undefined}
+      data-error={error || undefined}
       name={name}
       type="button"
       variant={variant}
-      color={color}
-      size={size}
+      color="none"
+      size="none"
+      hideShadow
+      disabled={disabled}
       endIcon={
         <div className="relative flex shrink-0 gap-2">
           {!!(selectedOptions?.length && onClear) && (
@@ -93,8 +104,6 @@ function SelectComboboxComponent<T = string>(
           <ChevronIcon className={cn('transition-transform', isOpen && 'rotate-180')} />
         </div>
       }
-      disabled={disabled}
-      hideShadow
       role="combobox"
       aria-expanded={isOpen}
       aria-haspopup="listbox"

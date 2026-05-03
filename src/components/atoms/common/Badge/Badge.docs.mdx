@@ -1,0 +1,63 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Atoms/Common/Badge/Def" />
+
+# Badge
+
+> Wraps any child and overlays a small notification dot or count badge at a corner. Use cases: avatar with unread indicator, filter button with active count, icon button with new-item badge.
+
+<br/>
+
+## Features
+
+- Empty dot mode (no `value`) for binary indicators
+- Numeric value with overflow cap (`value={150} max={99}` → `"+99"`)
+- String value for short tags (`"NEW"`, `"BETA"`)
+- `show` prop for explicit on/off — works in any mode (dot, number, string)
+- Smart default: numeric `value={0}` auto-hides — convenient for count badges
+- `position` prop accepts tailwind positioning classes — default top-right
+- Default red — override via `className`
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Wrapper `<div>` with `position: relative inline-flex` — purely structural, no consumer props
+- Badge `<span>` is absolutely positioned at the corner — default `top-0 right-0 translate-x-1/2 -translate-y-1/2` (top-right) — overridable via the `position` prop
+- Receives `className` and all native HTML attributes (`aria-*`, `role`, `data-*`, etc.) — consumer themes color/animation through `className`
+- `pointer-events-none select-none` so the badge does not intercept clicks meant for the child
+- Mode auto-detected: no `value` → empty circular dot; `value` set → pill with text/number
+
+### Accessibility (WAI-ARIA)
+- No default ARIA — visible content (number/text) is announced inline with the child
+- For meaningful counts pass `aria-label="3 unread"` and `role="status"` so screen readers announce the count alongside the child
+- For decorative badges pass `aria-hidden="true"`
+
+### Visibility
+- `show?: boolean` controls visibility universally — works in dot, number, and string modes
+- Default: visible, except numeric `value={0}` auto-hides (count-badge convenience)
+- Override either way: `show={true}` forces render even at `0`, `show={false}` hides any badge
+- The `'hidden'` Tailwind class is applied to the always-rendered span, so DOM structure stays stable for consumers wiring `aria-live` regions externally
+
+### Responsive & Layout
+- Wrapper `inline-flex` — sits naturally next to inline content; for block-level wrapping, parent layout controls width
+- Two size scales: dot (`h-2 / 2.5 / 3`) and pill (`h-3.5 / 4 / 5` with `min-width` equal to height so single digits stay circular)
+
+<br/>
+
+## Architecture Decisions
+
+- **Wrapper component, not a prop on Avatar/Button**: Composes onto any rectangular child without bloating individual atom APIs.
+- **Single `className` on the badge, no wrapper className**: The wrapper is structural; the badge is what consumers want to style.
+- **No `color` prop — color via `className`**: Default red is one Tailwind override away from any brand color.
+- **`position` as a free-form tailwind string, not an enum**: Consumers occasionally want offsets, fractional translates, or arbitrary placement.
+- **Default red, no `status` enum**: Notification badges are conventionally red across iOS/Android/Gmail/Slack.
+- **`show` prop separate from `value`**: Visibility is a different concern from content. Splitting visibility into `show` makes the rule explicit and uniform.
+- **Auto-hide-on-numeric-zero kept as smart default**: Count badges hide when there's nothing to count, zero-config.
+- **Always-rendered span with `hidden` class**: Single render path — easier to reason about and consistent DOM structure.
+
+<br/>
+
+## Known Bugs & Limitations
+- None

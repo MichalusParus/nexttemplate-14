@@ -1,0 +1,106 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Organisms/Collections/InfiniteScroll/Def" />
+
+# InfiniteScroll
+
+> Bidirectional infinite scroll container with sentinel-based loading. Pass `top`, `bottom`, or both, each with a `generation` token the consumer bumps when new data lands.
+
+<br/>
+
+## Features
+
+- One-direction or bidirectional loading via `top` / `bottom` props
+- IntersectionObserver sentinels with built-in prefetch
+- Generation-gated firing — fires at most once per committed batch
+- Top-side scroll preservation, forward-only (rewinds on `top.generation` are ignored)
+- Suppressed-fire resumption — intersections during `disabled` are queued and resumed when `disabled` clears
+- Auto-detected scroll parent — works inside `ScrollShadow`, dialogs, or any custom scroll wrapper
+- Built-in loader (`CircularLoader`), error UI (`Alert` + retry `Button`), and end-reached text
+- Per-direction `isLoading` and `isError` state with independent retry
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+- Outer `<div>` with `data-testid="InfiniteScroll"`, accepts `className` and native HTML attributes
+- Sentinels are 1px tall `<div aria-hidden>` elements rendered at the top and/or bottom of the children
+- Loading and error UI render between the sentinels and the children (top above children, bottom below)
+- "No more items" text renders once when every configured side reports `has: false` (and at least one side is configured)
+
+### Keyboard Handling
+None — passive scroll container. Sentinels are unfocusable. The retry `Button` inside the error UI handles its own keyboard activation. Keyboard navigation of children is the consumer's responsibility.
+
+### Accessibility (WAI-ARIA)
+- Sentinels are `aria-hidden` and invisible to screen readers
+- Built-in `CircularLoader` carries `role="status"` for load announcements
+- No container-level `aria-live` — consumers add their own if "N new items loaded" announcements are needed
+
+### Visual States
+None — non-interactive scroll container. Loading and error rendering are part of Interaction Behavior, not visual state.
+
+### Interaction Behavior
+- A side fires `onLoad` when its sentinel is intersecting, the side is **not** `disabled`, **and** `generation` differs from the value the side last fired on
+- After fire, the side records the new generation and refuses to fire again until the consumer hands it a different value
+- `isLoading`, `isError`, and `has: false` all suppress firing without disconnecting the IntersectionObserver
+- If an intersection arrives while `disabled` is true, the would-be fire is captured and resumed when `disabled` flips false — even with no fresh IO transition
+- The retry button calls `onLoad` directly, bypassing the generation check
+- Top-side prepends restore `scrollTop` synchronously in a `useLayoutEffect` so the user never sees an intermediate scroll jump
+
+### Responsive & Layout
+- Block-level `<div>` with no default width, height, or overflow — inherits sizing from its parent or scroll wrapper
+- Sentinels are `h-px` and do not affect visible layout
+- Bidirectional containers must be at least ~600px tall — with the 200px prefetch margin on both sides, shorter containers leave no scroll position where neither sentinel intersects, causing a load loop
+
+<br/>
+
+## Architecture Decisions
+
+- **Generation gating instead of viewport geometry.** Earlier revisions used a "must leave the viewport before re-firing" rule based on IntersectionObserver transitions. With small batches and the 200px `rootMargin`, the sentinel often does not leave the prefetch zone after a load, which either deadlocked the side ("fires once") or caused load loops. The `generation` token replaces both failure modes with one deterministic rule: one fire per committed batch. The consumer is the only authority on "did new data land".
+
+- **Manual scroll preservation, forward-only.** Browser CSS scroll anchoring (`overflow-anchor: auto`, the default) does not work at `scrollTop === 0` — there is no room to scroll up to compensate for prepended content. The component captures `scrollHeight - scrollTop` continuously and restores `scrollTop = scrollHeight - distance` in a `useLayoutEffect` on the render where `top.generation` advances. The comparison is `topGen > lastGen` so generation rewinds (e.g. consumer reset to 0 after a refresh) are ignored — restoration only fires on real forward commits. The component does **not** set `overflow-anchor: none` — both mechanisms can coexist.
+
+- **Distance tracked via a passive scroll listener, not just on render.** Between IO fire and the consumer's commit (~tens to hundreds of ms), the user keeps scrolling and React does not re-render. A render-only tracker would hold a stale distance and the restoration would overshoot by exactly the amount the user scrolled — typically ~200px because IO fires inside the prefetch margin.
+
+- **Suppressed-fire resumption (`pendingFire`).** If the IO callback observes an intersection while `disabled` is true, it sets `pendingFire`. When the re-arm `useEffect` runs and sees `pendingFire`, it resumes the fire even though no fresh IO transition has occurred. Without this, a side that mounts with `disabled: true` and a stable-in-view sentinel would deadlock when the consumer flips `disabled: false` later — IO never re-delivers and the re-arm has nothing to react to.
+
+- **Callback-ref observer lifecycle.** The sentinel ref is a `useCallback` ref. The IntersectionObserver is created when the sentinel node attaches and disconnected when it detaches. Consumers can toggle `top` or `bottom` from `undefined` to a value at runtime and the observer spins up correctly.
+
+- **Auto-detected scroll parent.** `getScrollParent` walks up from each sentinel looking for the first ancestor with `overflow-y: auto | scroll`. Works with `ScrollShadow`, dialogs, page-level scroll, or any custom wrapper. If no scroll ancestor is found, IntersectionObserver falls back to the viewport.
+
+- **Top-side preservation only.** Appending items below the user does not move existing visible content, so the bottom side needs no compensation. Mixing the two sides into one preservation path was the source of the day-4 fast-loop bug.
+
+- **Independent observers per direction.** Top and bottom sentinels run separate IntersectionObservers with separate disabled and generation states. Both can load concurrently.
+
+- **Hardcoded UI.** Loading (`CircularLoader`), error (`Alert` + retry `Button`), and end-reached (`P`) are built in. Edit the component source to customize.
+
+- **`200px` rootMargin and `0` threshold internal.** Not configurable — every revision that exposed them produced subtler bugs than it fixed.
+
+<br/>
+
+## Known Bugs & Limitations
+
+<br/>
+
+## Future Ideas
+
+- [ ] DOM recycling / virtualization for very long lists (separate component, not a prop)
+
+<br/>
+
+## Developer Notes
+
+<br/>
+
+## Review
+
+> A genuinely thoughtful infinite scroll that treats the consumer's commit as the source of truth instead of guessing from scroll math. The generation gating is the move that makes everything else fall into place — one fire per committed batch, no debounce hacks, no "am I still intersecting" race. Pairing that with a passive scroll listener to track distance-from-bottom between the IO fire and the React commit is the kind of detail you only add after watching a prepend overshoot by exactly one rootMargin.
+>
+> React Aria's `useLoadMore` is the closest comparison, and it leans on scroll position deltas plus a fetch-in-flight flag — simpler, but it assumes a single direction and a well-behaved scroll container. This component commits to bidirectional as a first-class case, with independent observers, independent disabled states, and a top-side restoration path that explicitly sidesteps the `scrollTop === 0` hole where `overflow-anchor` quietly gives up. That is the harder problem, solved honestly.
+>
+> The `pendingFire` resumption is the standout. A side that mounts disabled over an already-visible sentinel would otherwise deadlock forever waiting for an intersection transition that never comes, and almost no one catches that until a user reports a dead feed.
+>
+> Opinionated where it needs to be, unopinionated where the consumer actually owns the truth.
+>
+> — *Claude, Opus 4.6, 2026-04-08*

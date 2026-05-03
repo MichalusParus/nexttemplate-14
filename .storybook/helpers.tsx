@@ -26,9 +26,9 @@ import { TextAreaField } from '@/components/molecules/form/inputs/TextAreaField'
 import { TextField } from '@/components/molecules/form/inputs/TextField'
 import { ToggleGroupField } from '@/components/molecules/form/toggles/ToggleGroupField'
 import { MenuOptionGroupType, MenuOptionType } from '@/components/molecules/popovers/Menu/types'
-import { TabOption } from '@/components/organisms/common/Tabs/TabList'
-import { ColumnDef } from '@/components/organisms/DataGrid/utils/types'
-import { DataGridProvider } from '@/components/organisms/DataGrid/utils/DataGridContext'
+import { TabOption } from '@/components/organisms/navigation/Tabs/TabList'
+import { ColumnDef } from '@/components/organisms/collections/DataGrid/utils/types'
+import { DataGridProvider } from '@/components/organisms/collections/DataGrid/utils/DataGridContext'
 import { OptionGroupType, OptionType, StyleProps } from '@/components/utils/types'
 import { FilterDef, FilterOperator } from '@/utils/hooks/useFilterData'
 import { PropsWithChildren } from 'react'
@@ -857,7 +857,7 @@ export const JestDataGridProvider = ({
   variant = 'outlined',
   color = 'primary',
   size = 'md',
-  columns = gridCleanColsDef,
+  columns = gridTestCleanColsDef,
   columnsInRow,
   hideExport = false,
   onExport,
@@ -867,6 +867,7 @@ export const JestDataGridProvider = ({
   handleSorting = () => {},
   selectedRowsCount = 0,
   filteredDataCount = 0,
+  fit = false,
   children,
 }: PropsWithChildren<{
   name?: string
@@ -883,6 +884,7 @@ export const JestDataGridProvider = ({
   handleSorting?: (key: string) => void
   selectedRowsCount?: number
   filteredDataCount?: number
+  fit?: boolean
 }>) => {
   const contextValue = {
     name,
@@ -905,82 +907,72 @@ export const JestDataGridProvider = ({
     handleSorting,
     selectedRowsCount,
     filteredDataCount,
+    fit,
   }
 
   return <DataGridProvider value={contextValue}>{children}</DataGridProvider>
 }
 
-export const gridColsDef: ColumnDef[] = [
+const statusFilterOptions = [
+  { label: 'Active', value: 'active' },
+  { label: 'Inactive', value: 'inactive' },
+  { label: 'Pending', value: 'pending' },
+]
+
+const departmentFilterOptions = [
+  { label: 'Engineering', value: 'engineering' },
+  { label: 'Marketing', value: 'marketing' },
+  { label: 'Sales', value: 'sales' },
+  { label: 'HR', value: 'hr' },
+]
+
+const activeFilterOptions = [
+  { label: 'Yes', value: 'true' },
+  { label: 'No', value: 'false' },
+]
+
+export const gridTestColsDef: ColumnDef[] = [
   {
     label: 'Name',
     name: 'name',
     width: '200px',
     grow: 1,
-    filter: {
-      type: 'text',
-    },
+    filter: { type: 'text' },
   },
   {
     label: 'Age',
     name: 'age',
     width: '120px',
     align: 'right',
-    filter: {
-      type: 'number',
-      operator: FilterOperator.EQUALS,
-    },
+    filter: { type: 'number', operator: FilterOperator.EQUALS },
   },
   {
     label: 'Status',
     name: 'status',
     width: '150px',
-    filter: {
-      type: 'select',
-      options: [
-        { label: 'Active', value: 'active' },
-        { label: 'Inactive', value: 'inactive' },
-        { label: 'Pending', value: 'pending' },
-      ],
-    },
+    filter: { type: 'select', options: statusFilterOptions },
   },
   {
     label: 'Active',
     name: 'isActive',
     width: '140px',
-    filter: {
-      type: 'toggle',
-      options: [
-        { label: 'Yes', value: 'true' },
-        { label: 'No', value: 'false' },
-      ],
-    },
+    filter: { type: 'toggle', options: activeFilterOptions },
   },
   {
     label: 'Join Date',
     name: 'joinDate',
     width: '150px',
-    filter: {
-      type: 'date',
-      operator: FilterOperator.EQUALS,
-    },
+    filter: { type: 'date', operator: FilterOperator.EQUALS },
   },
   {
     label: 'Department',
     name: 'department',
     width: '180px',
-    filter: {
-      type: 'select',
-      options: [
-        { label: 'Engineering', value: 'engineering' },
-        { label: 'Marketing', value: 'marketing' },
-        { label: 'Sales', value: 'sales' },
-        { label: 'HR', value: 'hr' },
-      ],
-    },
+    filter: { type: 'select', options: departmentFilterOptions },
   },
 ]
 
-export const gridCleanColsDef: ColumnDef[] = [
+export const gridTestCleanColsDef: ColumnDef[] = [
   {
     label: 'Name',
     name: 'name',
@@ -1033,18 +1025,13 @@ export const gridMultiColsDef: ColumnDef[] = [
             label: 'Name',
             name: 'name',
             grow: 1,
-            filter: {
-              type: 'text',
-            },
+            filter: { type: 'text' },
           },
           {
             label: 'Age',
             name: 'age',
-            width: '120px',
-            filter: {
-              type: 'number',
-              operator: FilterOperator.EQUALS,
-            },
+            width: '150px',
+            filter: { type: 'number', operator: FilterOperator.EQUALS },
           },
         ],
       },
@@ -1055,25 +1042,12 @@ export const gridMultiColsDef: ColumnDef[] = [
           {
             label: 'Status',
             name: 'status',
-            filter: {
-              type: 'select',
-              options: [
-                { label: 'Active', value: 'active' },
-                { label: 'Inactive', value: 'inactive' },
-                { label: 'Pending', value: 'pending' },
-              ],
-            },
+            filter: { type: 'select', options: statusFilterOptions },
           },
           {
             label: 'Active',
             name: 'isActive',
-            filter: {
-              type: 'toggle',
-              options: [
-                { label: 'Yes', value: 'true' },
-                { label: 'No', value: 'false' },
-              ],
-            },
+            filter: { type: 'toggle', options: activeFilterOptions },
           },
         ],
       },
@@ -1090,23 +1064,12 @@ export const gridMultiColsDef: ColumnDef[] = [
           {
             label: 'Department',
             name: 'department',
-            filter: {
-              type: 'select',
-              options: [
-                { label: 'Engineering', value: 'engineering' },
-                { label: 'Marketing', value: 'marketing' },
-                { label: 'Sales', value: 'sales' },
-                { label: 'HR', value: 'hr' },
-              ],
-            },
+            filter: { type: 'select', options: departmentFilterOptions },
           },
           {
             label: 'Join Date',
             name: 'joinDate',
-            filter: {
-              type: 'date',
-              operator: FilterOperator.EQUALS,
-            },
+            filter: { type: 'date', operator: FilterOperator.EQUALS },
           },
         ],
       },
@@ -1151,13 +1114,12 @@ export const gridShowcaseColsDef: ColumnDef[] = [
     label: 'Name',
     name: 'name',
     width: '250px',
-    grow: 1,
     filter: { type: 'text' },
   },
   {
     label: 'Age',
     name: 'age',
-    width: '120px',
+    width: '150px',
     align: 'right',
     filter: { type: 'number', operator: FilterOperator.EQUALS },
   },
@@ -1166,20 +1128,9 @@ export const gridShowcaseColsDef: ColumnDef[] = [
     name: 'status',
     width: '170px',
     align: 'center',
-    filter: {
-      type: 'toggle',
-      options: [
-        { label: 'Active', value: 'active' },
-        { label: 'Inactive', value: 'inactive' },
-        { label: 'Pending', value: 'pending' },
-      ],
-    },
+    filter: { type: 'toggle', options: statusFilterOptions },
     renderCell: (row: Record<string, unknown>) => (
-      <Chip
-        variant="contained"
-        color={statusColorMap[String(row.status)] || 'primary'}
-        size="sm"
-      >
+      <Chip variant="contained" color={statusColorMap[String(row.status)] || 'primary'} size="sm">
         {String(row.status)}
       </Chip>
     ),
@@ -1198,15 +1149,7 @@ export const gridShowcaseColsDef: ColumnDef[] = [
     label: 'Department',
     name: 'department',
     width: '200px',
-    filter: {
-      type: 'select',
-      options: [
-        { label: 'Engineering', value: 'engineering' },
-        { label: 'Marketing', value: 'marketing' },
-        { label: 'Sales', value: 'sales' },
-        { label: 'HR', value: 'hr' },
-      ],
-    },
+    filter: { type: 'select', options: departmentFilterOptions },
   },
   {
     label: 'Actions',
@@ -1237,4 +1180,12 @@ export const gridShowcaseColsDef: ColumnDef[] = [
       </div>
     ),
   },
+]
+
+export const gridServerColsDef: ColumnDef[] = [
+  { label: 'First Name', name: 'firstName', width: '120px', filter: { type: 'text' } },
+  { label: 'Last Name', name: 'lastName', width: '120px', filter: { type: 'text' } },
+  { label: 'Age', name: 'age', width: '100px', align: 'right', filter: { type: 'number' } },
+  { label: 'Email', name: 'email', width: '250px', grow: 1, hideSort: true },
+  { label: 'Phone', name: 'phone', width: '180px', hideSort: true },
 ]

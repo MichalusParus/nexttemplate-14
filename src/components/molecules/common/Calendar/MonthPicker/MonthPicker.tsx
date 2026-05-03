@@ -19,8 +19,6 @@ import { disabledVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { CalendarState } from '../Calendar'
-
 export type MonthPickerProps = StyleProps & {
   /** current month */
   month: Date
@@ -30,10 +28,8 @@ export type MonthPickerProps = StyleProps & {
   buttonProps?: Partial<ButtonProps>
   /** ref for the grid container (used by useCalendarFocus) */
   gridRef?: MutableRefObject<HTMLDivElement | null>
-  /** set calendar state function */
-  setCalendarState: (state: CalendarState) => void
-  /** set current month function */
-  setCurrentMonth: (date: Date) => void
+  /** callback when a month is selected — Calendar decides whether this fires onChange or navigates the state machine */
+  onSelect: (date: Date) => void
 }
 
 /** Month picker subcomponent for calendar. USE CLIENT */
@@ -45,8 +41,7 @@ export const MonthPicker = ({
   size = 'md',
   buttonProps = {},
   gridRef,
-  setCalendarState,
-  setCurrentMonth,
+  onSelect,
 }: MonthPickerProps) => {
   const t = useTranslations('Components')
   const { className: buttonClassName, ...restButtonProps } = buttonProps
@@ -59,21 +54,21 @@ export const MonthPicker = ({
     (m: Date) => {
       const newDate = startOfDay(setMonth(month, getMonth(m)))
       if (minMaxDate?.min && isBefore(newDate, startOfDay(minMaxDate?.min))) {
-        setCurrentMonth(minMaxDate?.min)
+        onSelect(minMaxDate?.min)
       } else if (minMaxDate?.max && isAfter(newDate, startOfDay(minMaxDate?.max))) {
-        setCurrentMonth(minMaxDate?.max)
+        onSelect(minMaxDate?.max)
       } else {
-        setCurrentMonth(newDate)
+        onSelect(newDate)
       }
-      setCalendarState('days')
     },
-    [month, minMaxDate, setCalendarState, setCurrentMonth],
+    [month, minMaxDate, onSelect],
   )
 
   return (
     <div
       className={cn('MonthPicker', 'grid grid-cols-3 gap-x-1 gap-y-6 py-6')}
       role="grid"
+      aria-label={t('selectMonth')}
       data-testid="MonthPicker"
       ref={gridRef}
     >
@@ -88,10 +83,9 @@ export const MonthPicker = ({
                 key={m.toDateString()}
                 className={cn(
                   'DateButton',
-                  'w-full border-none font-normal',
-                  isDisabled && 'disabled',
-                  disabledVariant[variant],
-                  isSameMonth(m, month) && 'selected shadow-ring',
+                  'w-full font-normal',
+                  variant !== 'contained' && 'text-text dark:text-contrast',
+                  isDisabled && cn('disabled', disabledVariant[variant]),
                   buttonClassName,
                 )}
                 variant={variant}
@@ -100,9 +94,11 @@ export const MonthPicker = ({
                 startIcon={t(`months.${getMonth(m)}` as Parameters<typeof t>[0])}
                 aria-label={t(`months.${getMonth(m)}` as Parameters<typeof t>[0])}
                 hideShadow
+                hideBorder={!isSameMonth(m, month)}
                 aria-disabled={isDisabled || undefined}
                 tabIndex={-1}
                 role="gridcell"
+                data-selected={isSameMonth(m, month) || undefined}
                 aria-selected={isSameMonth(m, month)}
                 aria-current={isSameMonth(m, new Date()) ? 'date' : undefined}
                 onClick={() => !isDisabled && handleMonthChange(m)}

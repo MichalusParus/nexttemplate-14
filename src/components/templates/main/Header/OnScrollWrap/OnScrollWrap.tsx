@@ -19,6 +19,15 @@ export const OnScrollWrap = ({ className, children }: PropsWithChildren<OnScroll
     const delta = currentY - lastScrollY.current
     const headerH = ref.current?.offsetHeight ?? 80
 
+    // Large single-frame delta (fast momentum flick on a short page, scroll restoration,
+    // layout-shift jump) — snap the header to the end matching the scroll direction.
+    // Resetting to visible here would pop the header in at the end of a fast downward flick.
+    if (Math.abs(delta) > headerH) {
+      lastScrollY.current = currentY
+      setTranslateY(delta < 0 ? 0 : -headerH)
+      return
+    }
+
     setTranslateY(prev => Math.max(-headerH, Math.min(0, prev - delta)))
     lastScrollY.current = currentY
   }, [])

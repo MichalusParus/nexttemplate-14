@@ -103,7 +103,7 @@ describe('Checkbox', () => {
       const minusIcon = screen.getByTestId('MinusIcon')
       const checkIcon = screen.queryByTestId('CheckIcon')
 
-      expect(inputWrap).toHaveClass('selected')
+      expect(inputWrap).toHaveAttribute('data-selected')
       expect(minusIcon).toBeInTheDocument()
       expect(minusIcon).toHaveClass('opacity-100')
       expect(checkIcon).toBeNull()
@@ -161,7 +161,7 @@ describe('Checkbox', () => {
       const inputWrap = screen.getByTestId('CheckboxInputWrap')
       const minusIcon = screen.getByTestId('MinusIcon')
 
-      expect(inputWrap).toHaveClass('selected')
+      expect(inputWrap).toHaveAttribute('data-selected')
       expect(inputWrap).toHaveClass('disabled')
       expect(minusIcon).toHaveClass('disabled')
     })
@@ -179,7 +179,7 @@ describe('Checkbox', () => {
       )
       const inputWrap = screen.getByTestId('CheckboxInputWrap')
 
-      expect(inputWrap).toHaveClass('error')
+      expect(inputWrap).toHaveAttribute('data-error')
     })
 
     it('disabled sets native disabled and aria-disabled', () => {
@@ -215,7 +215,7 @@ describe('Checkbox', () => {
       )
       const inputWrap = screen.getByTestId('CheckboxInputWrap')
 
-      expect(inputWrap).toHaveClass('error')
+      expect(inputWrap).toHaveAttribute('data-error')
       expect(inputWrap).toHaveClass('disabled')
     })
 
@@ -250,7 +250,7 @@ describe('Checkbox', () => {
 
       expect(screen.getByTestId('CheckIcon')).toBeInTheDocument()
       expect(screen.getByTestId('CheckIcon')).toHaveClass('opacity-100')
-      expect(inputWrap).not.toHaveClass('selected')
+      expect(inputWrap).not.toHaveAttribute('data-selected')
     })
   })
 

@@ -68,7 +68,7 @@ describe('DateInput', () => {
       render(<DateInput name="test" error="required" onChange={() => {}} />)
       const wrapper = screen.getByTestId('InputWrap')
 
-      expect(wrapper).toHaveClass('error')
+      expect(wrapper).toHaveAttribute('data-error')
     })
 
     it('disabled sets native disabled', () => {

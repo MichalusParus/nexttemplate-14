@@ -107,7 +107,7 @@ describe('RangeDatePicker', () => {
       render(<RangeDatePicker name="datePickerTest" value={{}} error="error" onChange={() => {}} />)
       const combobox = screen.getByRole('combobox')
 
-      expect(combobox).toHaveClass('error')
+      expect(combobox).toHaveAttribute('data-error')
     })
 
     it('dropdownProps forwarded', async () => {

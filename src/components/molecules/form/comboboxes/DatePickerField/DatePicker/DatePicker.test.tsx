@@ -64,7 +64,7 @@ describe('DatePicker', () => {
       render(<DatePicker name="datePickerTest" error="error" onChange={() => {}} />)
       const combobox = screen.getByRole('combobox')
 
-      expect(combobox).toHaveClass('error')
+      expect(combobox).toHaveAttribute('data-error')
     })
 
     it('aria-expanded false when closed', () => {

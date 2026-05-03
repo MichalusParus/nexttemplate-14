@@ -85,7 +85,7 @@ describe('FileInput', () => {
       )
       const wrapper = screen.getByTestId('InputWrap')
 
-      expect(wrapper).toHaveClass('error')
+      expect(wrapper).toHaveAttribute('data-error')
     })
 
     it('disabled sets aria-disabled and disabled class', () => {

@@ -49,11 +49,12 @@ export const TextArea = forwardRef<HTMLTextAreaElement | null, TextAreaProps>(
           'TextAreaWrap',
           inputWrapClass,
           inputVariant[variant][color],
-          error && 'error',
           disabled && 'disabled ' + disabledVariant[variant],
           className,
         )}
+        data-error={error || undefined}
         aria-disabled={disabled}
+        aria-invalid={!!error || undefined}
         data-testid="TextAreaWrap"
       >
         <textarea

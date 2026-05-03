@@ -35,9 +35,9 @@ export const RangeInput = forwardRef<HTMLInputElement | null, RangeProps>(
           rangeWrapClass,
           rangeWrapSize[size],
           rangeWrapFocusRing[color],
-          error && 'error',
           className,
         )}
+        data-error={error || undefined}
         data-testid="RangeWrap"
       >
         <Span aria-hidden="true" className={cn('ValueWrap', 'min-w-12', value == null && 'opacity-0')}>
@@ -46,12 +46,9 @@ export const RangeInput = forwardRef<HTMLInputElement | null, RangeProps>(
         <input
           id={name}
           aria-orientation="horizontal"
-          className={cn(
-            rangeClass,
-            rangeColor[color],
-            rangeThumbSize[size],
-            error && 'error',
-          )}
+          className={cn(rangeClass, rangeColor[color], rangeThumbSize[size])}
+          data-error={error || undefined}
+          aria-invalid={!!error || undefined}
           type="range"
           name={name}
           value={value}

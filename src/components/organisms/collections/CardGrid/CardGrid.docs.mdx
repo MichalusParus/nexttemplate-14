@@ -1,0 +1,114 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Organisms/Collections/CardGrid/Def" />
+
+# CardGrid
+
+> Pure grid component for rendering collections of cards with built-in loading skeletons and empty state. Pagination and infinite scroll are composed externally — CardGrid only handles the grid layout and loading state machine.
+
+<br/>
+
+## Features
+
+- Generic TypeScript typing — item type inferred from `items`
+- Loading state with `renderGhost` skeletons — ghost count driven by `ghostCount` (default 3)
+- Empty state with custom ReactNode
+- Fluid CSS Grid layout with `auto-fill` + `minmax(16rem, 1fr)`, overridable via `className`
+- `aria-busy` signaling during loading
+- Staggered entrance animation on mount — ghost and item cards slide up into position with a square-root diminishing delay (~450ms total reveal)
+
+<br/>
+
+## Composition Patterns
+
+CardGrid is a pure rendering primitive. Pagination and infinite scroll are composed by consumers:
+
+### With Pagination (server-side)
+
+```tsx
+<CardGrid items={pageItems} ghostCount={20} isLoading ... />
+<Pagination count={totalPages} page={page} onChange={setPage} className="mx-auto mt-10 mb-4" />
+```
+
+### With Pagination (client-side)
+
+```tsx
+const {'{ pagedData, pages, page, onChange }'} = usePagination(allItems, 6)
+<CardGrid items={pagedData} ghostCount={6} isLoading ... />
+<Pagination count={pages.length} page={page} onChange={onChange} />
+```
+
+### With InfiniteScroll
+
+```tsx
+<InfiniteScroll bottom={'{...}'}>
+  <CardGrid items={allItems} ghostCount={20} isLoading={isInitialLoading} ... />
+</InfiniteScroll>
+```
+
+<br/>
+
+## Component Definition
+
+### Semantics & HTML
+
+- Single `<div>` holds `ref`, `data-testid`, `className`, `aria-busy`, and native HTML attributes
+- Empty state renders inside the grid div — grid layout classes are removed when empty, keeping the ref accessible
+- Cards carry their own semantics — CardGrid imposes no semantic meaning
+
+### Accessibility (WAI-ARIA)
+
+- `aria-busy="true"` on the grid container during loading
+- Ghost items are presentational — cards should handle their own `aria-label` / `role="status"`
+
+### Interaction Behavior
+
+- No direct user interaction — CardGrid is a layout and state orchestrator
+- `isLoading` swaps all items for `renderGhost` skeletons — consumer controls what counts as "loading" (e.g. TanStack Query's `isLoading` vs `isFetching`)
+- Empty state check uses `items.length`
+
+### Responsive & Layout
+
+- Default: `grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-3` — fluid responsive columns, single column on narrow containers
+- Override via `className` and `cn()` merging
+
+<br/>
+
+## Architecture Decisions
+
+- **`renderItem` + `renderGhost`** — two render props instead of one. Maps to the discriminated union card pattern (`{'{ isLoading: true } | { item: T }'}`). The consumer does not handle branching — CardGrid decides when to show ghosts vs items.
+- **Loading is the consumer's responsibility** — CardGrid doesn't know about TanStack Query, refetch states, or stale data. It receives `isLoading` and acts on it.
+- **`ghostCount` controls skeleton count** — separate from any pagination page size. Default 3. Consumers set it to match their expected page size for visual consistency.
+- **`getKey` required** — generic `T` is unconstrained, no reasonable default key extraction.
+- **No StyleProps** — no visual chrome. Cards carry their own styling.
+- **Composition over configuration for pagination** — CardGrid does not embed Pagination or InfiniteScroll. Consumers compose these externally, keeping CardGrid focused on rendering and enabling any pagination strategy.
+- **Div wrapping with entrance animation** — each ghost and item is wrapped in a `div` with `animate-card-grid-ghost` and a square-root stagger delay (`√(index/total) * 200ms`). Animation triggers on mount. `animation-fill-mode: both` keeps items invisible during delay and visible after completion. Respects `prefers-reduced-motion`.
+- **Square-root stagger** — linear stagger makes later cards feel delayed in large grids. Square-root compression front-loads the visible cascade while keeping total reveal time constant (~450ms) regardless of card count.
+
+<br/>
+
+## Known Bugs & Limitations
+
+*None identified.*
+
+<br/>
+
+## Future Ideas
+
+- [ ] Virtualized rendering for very large item counts
+
+<br/>
+
+## Developer Notes
+
+> Pagination is no longer baked into CardGrid. Use `<Pagination>` alongside CardGrid for traditional pagination, or wrap CardGrid with `<InfiniteScroll>` for infinite loading. Both components are exported from the library. The `usePagination` hook is also exported for client-side array slicing.
+
+<br/>
+
+## Review
+
+> CardGrid is now a clean, focused layout primitive that handles exactly one concern: rendering a responsive grid of cards with loading and empty states. By moving pagination out, it composes naturally with both `<Pagination>` (traditional) and `<InfiniteScroll>` (sentinel-based) patterns — consumers choose the strategy, CardGrid renders the grid.
+>
+> The `ghostCount` prop is an honest name: it controls skeleton count and nothing else. The entrance animation with square-root stagger remains elegant. The component earns its place by being small, generic, and composable.
+>
+> — *Claude, Opus 4.6, 2026-04-13*

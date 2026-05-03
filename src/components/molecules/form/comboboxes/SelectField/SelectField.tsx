@@ -9,12 +9,12 @@ import { FieldProps } from '@/components/utils/types'
 import { FormStyleContext } from '../../forms/Form/Form'
 import { Select, SelectProps } from './Select/Select'
 
-export type SelectFieldProps = Omit<SelectProps, 'value' | 'error' | 'onChange'> &
-  Partial<Pick<SelectProps, 'onChange'>> &
+export type SelectFieldProps<T = string> = Omit<SelectProps<T>, 'value' | 'error' | 'onChange'> &
+  Partial<Pick<SelectProps<T>, 'onChange'>> &
   FieldProps
 
 /** Form and style context wrapper for Select inside Label component. Label, Button, Dropdown and ListBox props supported. USE CLIENT */
-export const SelectField = ({
+export function SelectField<T = string>({
   className,
   name,
   label,
@@ -24,7 +24,7 @@ export const SelectField = ({
   labelProps = {},
   onChange,
   ...rest
-}: SelectFieldProps) => {
+}: SelectFieldProps<T>) {
   const {
     control,
     formState: { errors },
@@ -37,8 +37,14 @@ export const SelectField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps}>
-          <Select
+        <Label
+          name={name}
+          label={label}
+          size={size || formSize}
+          error={errorMessage}
+          {...labelProps}
+        >
+          <Select<T>
             className={className}
             variant={variant || formVariant}
             color={color || formColor}

@@ -10,3 +10,16 @@ export const avatarSize = {
   lg: cn('h-12 w-12 min-w-12 text-2xl'),
   none: '',
 }
+
+export const hueVariantClass = {
+  contained: cn(
+    'bg-(--av-bg) dark:bg-(--av-bg-dark)',
+    'border-(--av-border) dark:border-(--av-border-dark)',
+    'text-(--av-text) dark:text-(--av-text-dark)',
+  ),
+  outlined: cn(
+    'border-(--av-border) dark:border-(--av-border-dark)',
+    'text-(--av-text) dark:text-(--av-text-dark)',
+  ),
+  text: cn('border-transparent', 'text-(--av-text) dark:text-(--av-text-dark)'),
+}

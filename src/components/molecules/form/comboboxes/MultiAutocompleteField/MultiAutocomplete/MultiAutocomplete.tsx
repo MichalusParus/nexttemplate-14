@@ -9,7 +9,13 @@ import { Autocomplete, AutocompleteProps } from '../../AutocompleteField/Autocom
 
 export type MultiAutocompleteProps<T = string> = Omit<
   AutocompleteProps<T>,
-  'value' | 'onChange' | 'selectedOptions' | 'multiValue' | 'onSelectAll' | 'selectAllState'
+  | 'value'
+  | 'onChange'
+  | 'selectedOptions'
+  | 'multiValue'
+  | 'onSelectAll'
+  | 'selectAllState'
+  | 'freeSolo'
 > & {
   /** current value of component */
   value: T[]
@@ -91,6 +97,7 @@ function MultiAutocompleteComponent<T = string>(
         value.some(v => isEqual(v, option.value)),
       )
       setSelectedOptions(newSelectedOptions)
+      selectedOptionsRef.current = value
     }
   }, [value, flatOptions])
 

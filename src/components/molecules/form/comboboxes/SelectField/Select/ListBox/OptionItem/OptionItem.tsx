@@ -58,8 +58,8 @@ function OptionItemComponent<T = string>(
       <Button
         className={cn(
           'Option',
-          'flex w-full items-center justify-start rounded-none border border-transparent disabled-aria:border-transparent focus:outline-hidden dark:border-transparent dark:disabled-aria:border-transparent',
-          isSelected && 'selected',
+          'disabled-aria:border-transparent dark:disabled-aria:border-transparent flex w-full items-center justify-start rounded-none border border-transparent font-normal focus:outline-hidden dark:border-transparent',
+          variant !== 'contained' ? 'text-text dark:text-contrast' : 'text-contrast',
           isLoading ? 'cursor-not-allowed' : 'cursor-pointer',
           buttonClassName,
         )}
@@ -85,6 +85,7 @@ function OptionItemComponent<T = string>(
             />
           )
         }
+        data-selected={isSelected || undefined}
         id={id}
         role="option"
         tabIndex={-1}

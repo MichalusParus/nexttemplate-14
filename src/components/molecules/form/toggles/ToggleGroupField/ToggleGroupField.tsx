@@ -17,7 +17,7 @@ export type ToggleGroupFieldProps<T = string> = Omit<
   FieldProps
 
 /** Form and style context wrapper for ToggleGroup inside fake Label component. Native InputHTMLAttributes and Label props supported. USE CLIENT */
-export const ToggleGroupField = <T = string,>({
+export function ToggleGroupField<T = string>({
   className,
   name,
   label,
@@ -27,7 +27,7 @@ export const ToggleGroupField = <T = string,>({
   labelProps = {},
   onChange,
   ...rest
-}: ToggleGroupFieldProps<T>) => {
+}: ToggleGroupFieldProps<T>) {
   const {
     control,
     formState: { errors },
@@ -40,7 +40,14 @@ export const ToggleGroupField = <T = string,>({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps} variant="legend">
+        <Label
+          name={name}
+          label={label}
+          size={size || formSize}
+          error={errorMessage}
+          {...labelProps}
+          variant="legend"
+        >
           <ToggleGroup<T>
             className={className}
             variant={variant || formVariant}

@@ -19,7 +19,7 @@ Built on TailwindCSS, React Hook Form, Zod, next-intl, and Popper — nothing el
 ## Why ParusUI
 
 **Complete Component System**
-- **59 Production Components** — from buttons and inputs to data grids, date pickers, and multi-step forms. Everything you need to build a real application, not a demo
+- **63 Production Components** — from buttons and inputs to data grids, date pickers, and multi-step forms. Everything you need to build a real application, not a demo
 - **Zero UI Library Dependencies** — no MUI, no Radix, no Chakra. Every component, every style, every behavior is yours to read, modify, and own
 - **Connected, Not Scattered** — components share a unified style system, consistent accessibility patterns, and a single focus management hook. This is a designed system, not a collection of copy-pasted primitives
 
@@ -33,7 +33,7 @@ Built on TailwindCSS, React Hook Form, Zod, next-intl, and Popper — nothing el
 - **Custom Focus System** — one composable hook handles keyboard navigation for lists, menus, comboboxes, grids, modals, and calendars. Module-level scope tree coordinates nested components without React Context — no providers, no re-renders
 - **Touch Optimized** — custom `hoverable` variant prevents stuck hover states on touchscreens. Swipe gestures on Carousel and Gallery. Responsive alternatives for mobile screens
 
-**+2100 Tests as Contracts**
+**+2250 Tests as Contracts**
 - **5-Category Test Structure** — Semantics, Keyboard, Interaction, Ref, Accessibility. Every component follows the same structure. Tests double as a readable specification of what each component guarantees
 - **100% jest-axe Coverage** — automated accessibility audits on every single component. No exceptions
 - **Zero Snapshot Tests** — every assertion is explicit. Tests break when behavior changes, not when markup shifts
@@ -41,7 +41,7 @@ Built on TailwindCSS, React Hook Form, Zod, next-intl, and Popper — nothing el
 **Full Documentation**
 - **Storybook Coverage** — every component has rich stories with all props connected to controls. Working examples for every implementation pattern
 - **Per-Component Definition** — structured specification covering semantics, keyboard, ARIA, visual states, architecture decisions, known limitations, and review
-- **24 Custom SVG Icons** — auto-sized, color-inheriting, `className`-customizable. No icon library dependency
+- **28 Custom SVG Icons** — auto-sized, color-inheriting, `className`-customizable. No icon library dependency
 
 **Integrated Form System**
 - **React Hook Form + Zod** — fully wired. Every input has a standalone version and a form-integrated Field version with automatic error wiring, Label, and `aria-describedby`
@@ -72,9 +72,9 @@ Once you have the components, restyle through the three-layer style system descr
 ## Component List
 <br/>
 
-<ComponentSection title="Atoms" count={20} subtitle="Basic building blocks for your UI">
+<ComponentSection title="Atoms" count={21} subtitle="Basic building blocks for your UI">
 
-### Common (9)
+### Common (10)
 
 <ComponentGrid>
   <ComponentCard
@@ -121,6 +121,11 @@ Once you have the components, restyle through the three-layer style system descr
     name="Overlay"
     path="atoms-common-overlay"
     description="Background overlay for modal popovers"
+  />
+  <ComponentCard
+    name="Rating"
+    path="atoms-common-rating"
+    description="Read-only star rating with row and compact modes"
   />
 </ComponentGrid>
 
@@ -197,7 +202,7 @@ Once you have the components, restyle through the three-layer style system descr
 </ComponentSection>
 <br/>
 
-<ComponentSection title="Molecules" count={35}>
+<ComponentSection title="Molecules" count={36}>
 
 ### Common (5)
 
@@ -229,13 +234,18 @@ Once you have the components, restyle through the three-layer style system descr
   />
 </ComponentGrid>
 
-### Form - Forms (2)
+### Form - Forms (3)
 
 <ComponentGrid>
   <ComponentCard
     name="Form"
     path="molecules-form-forms-form"
     description="Comprehensive form wrapper with validation"
+  />
+  <ComponentCard
+    name="FormServerError"
+    path="molecules-form-forms-formservererror"
+    description="Surface server-side validation errors inside a Form"
   />
   <ComponentCard
     name="StepForm"
@@ -408,30 +418,45 @@ Once you have the components, restyle through the three-layer style system descr
 </ComponentSection>
 <br/>
 
-<ComponentSection title="Organisms" count={4}>
+<ComponentSection title="Organisms" count={6}>
 
-### Data & Navigation (4)
+### Collections (4)
+
+<ComponentGrid>
+  <ComponentCard
+    name="CardGrid"
+    path="organisms-collections-cardgrid"
+    description="Responsive card grid with paging and ghost loading"
+  />
+  <ComponentCard
+    name="DataGrid"
+    path="organisms-collections-datagrid"
+    description="Data grid with sorting and filtering"
+  />
+  <ComponentCard
+    name="Gallery"
+    path="organisms-collections-gallery"
+    description="Image gallery viewer"
+  />
+  <ComponentCard
+    name="InfiniteScroll"
+    path="organisms-collections-infinitescroll"
+    description="Bidirectional sentinel-based infinite scroll container"
+  />
+</ComponentGrid>
+
+### Navigation (2)
 
 <ComponentGrid>
   <ComponentCard
     name="Pagination"
-    path="organisms-pagination-pagination"
+    path="organisms-navigation-pagination"
     description="Responsive pagination"
   />
   <ComponentCard
     name="Tabs"
-    path="organisms-common-tabs"
+    path="organisms-navigation-tabs"
     description="Tabbed content navigation"
-  />
-  <ComponentCard
-    name="Gallery"
-    path="organisms-common-gallery"
-    description="Image gallery viewer"
-  />
-  <ComponentCard
-    name="DataGrid"
-    path="organisms-datagrid"
-    description="Data grid with sorting and filtering"
   />
 </ComponentGrid>
 
@@ -491,7 +516,7 @@ Every restyle maps to one of five layers. Start at Layer 1 and go deeper only if
 
 ### Icons
 
-24 custom SVG icons — the most common set (chevrons, check, close, search, edit, plus, minus, status icons, etc.). No icon library dependency. Most are used internally by components (ChevronIcon in Select, Calendar, Menu; CheckIcon in Checkbox; status icons in Alert), so if you rebrand you'll want to replace them. Adding more follows the same pattern — an SVG component with `currentColor` stroke and a barrel export.
+32 custom SVG icons — the most common set (chevrons, check, close, search, edit, plus, minus, status icons, sort, filter, filter-reset, star, heart, etc.) plus domain icons (leaf, dollar, hourglass, lightning for level indicators). No icon library dependency. Most are used internally by components (ChevronIcon in Select, Calendar, Menu; CheckIcon in Checkbox; status icons in Alert), so if you rebrand you'll want to replace them. Adding more follows the same pattern — an SVG component with `currentColor` stroke and a barrel export.
 
 Icons inherit color from their parent via `currentColor` and are auto-sized by the parent component through CSS selectors (`[&_svg]`), so they scale with `sm`/`md`/`lg` without any size prop. Direct `className` customization works on every icon. For the full icon set, see [Iconography](?path=/story/iconography--docs).
 
@@ -530,7 +555,7 @@ Custom focus management system built around one composable hook — `useFocus`. 
 
 ## Testing
 
-+2100 unit tests designed as component contracts. When you customize a component, these tests tell you exactly what behavior you need to preserve — and catch you when you don't. This isn't test coverage for the sake of metrics. It's a safety net built for a library meant to be rewritten.
++2250 unit tests designed as component contracts. When you customize a component, these tests tell you exactly what behavior you need to preserve — and catch you when you don't. This isn't test coverage for the sake of metrics. It's a safety net built for a library meant to be rewritten.
 
 **5-Category Structure** — Every component's test suite is organized into the same five describe blocks: Semantics (correct HTML elements, roles, attributes), Keyboard (Enter, Space, Escape, arrow keys), Interaction (click handlers, state changes, callbacks), Ref (forwarding works via `createRef`), and Accessibility (ARIA attributes, jest-axe audit). This mirrors the documentation structure — tests double as a readable specification of what each component guarantees.
 

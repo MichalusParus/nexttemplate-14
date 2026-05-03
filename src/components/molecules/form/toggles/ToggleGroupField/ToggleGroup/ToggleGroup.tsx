@@ -98,10 +98,10 @@ function ToggleGroupComponent<T = string>(
         toggleWrapClass,
         toggleVariant[variant][color],
         column && 'flex-col',
-        error && 'error',
         disabled && 'disabled ' + disabledVariant[variant],
         className,
       )}
+      data-error={error || undefined}
       role="group"
       aria-disabled={disabled}
       ref={componentRef}
@@ -121,9 +121,9 @@ function ToggleGroupComponent<T = string>(
               index === options.length - 1 && !column && 'rounded-r-md',
               index === 0 && column && 'rounded-t-md',
               index === options.length - 1 && column && 'rounded-b-md',
-              isSelected && 'selected',
               buttonClassName,
             )}
+            data-selected={isSelected || undefined}
             variant={variant}
             color={color}
             size={size}

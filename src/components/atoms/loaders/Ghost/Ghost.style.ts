@@ -7,11 +7,11 @@ export const ghostStyle = cn(
 )
 
 export const ghostSize = {
-  sm: cn('my-[3px] h-sm'),
-  md: cn('my-1 h-md'),
-  lg: cn('my-[5px] h-lg'),
-  xl: cn('my-1 h-xl'),
-  '2xl': cn('my-1 h-2xl'),
-  '3xl': cn('my-[3px] h-3xl'),
+  sm: cn('my-[3px] h-text-height-sm'),
+  md: cn('my-1 h-text-height-md'),
+  lg: cn('my-[5px] h-text-height-lg'),
+  xl: cn('my-1 h-text-height-xl'),
+  '2xl': cn('my-1 h-text-height-2xl'),
+  '3xl': cn('my-[3px] h-text-height-3xl'),
   none: '',
 }

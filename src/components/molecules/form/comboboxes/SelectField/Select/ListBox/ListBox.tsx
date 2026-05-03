@@ -4,7 +4,6 @@ import { useTranslations } from 'next-intl'
 import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react'
 
 import { buttonSize } from '@/components/atoms/common/Button/Button.style'
-import { spanColor } from '@/components/atoms/typography/Span/Span.style'
 import { OptionGroupType, OptionType, SelectAllState, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -69,7 +68,7 @@ function ListBoxComponent<T = string>(
     if (!options.length && !isLoading && noOptionLabel)
       return (
         <li
-          className={cn('NoOptionLabel', 'text-center', buttonSize[size], spanColor[color])}
+          className={cn('NoOptionLabel', 'text-center', buttonSize[size])}
           role="presentation"
         >
           {noOptionLabel}

@@ -31,8 +31,8 @@ export const alertVariant = {
 }
 
 export const alertSize = {
-  sm: cn('px-1 py-0.5 text-sm'),
-  md: cn('px-1.5 py-1 text-base'),
-  lg: cn('px-2 py-1.5 text-lg'),
+  sm: cn('px-1 py-0.5'),
+  md: cn('px-1.5 py-1'),
+  lg: cn('px-2 py-1.5'),
   none: '',
 }

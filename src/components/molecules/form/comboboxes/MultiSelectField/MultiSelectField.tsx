@@ -9,12 +9,15 @@ import { FieldProps } from '@/components/utils/types'
 import { FormStyleContext } from '../../forms/Form/Form'
 import { MultiSelect, MultiSelectProps } from './MultiSelect/MultiSelect'
 
-export type MultiSelectFieldProps = Omit<MultiSelectProps, 'value' | 'error' | 'onChange'> &
-  Partial<Pick<MultiSelectProps, 'onChange'>> &
+export type MultiSelectFieldProps<T = string> = Omit<
+  MultiSelectProps<T>,
+  'value' | 'error' | 'onChange'
+> &
+  Partial<Pick<MultiSelectProps<T>, 'onChange'>> &
   FieldProps
 
 /** Form and style context wrapper for MultiSelect inside Label component. Label, Button, Dropdown and ListBox props supported. USE CLIENT */
-export const MultiSelectField = ({
+export function MultiSelectField<T = string>({
   className,
   name,
   label,
@@ -24,7 +27,7 @@ export const MultiSelectField = ({
   labelProps = {},
   onChange,
   ...rest
-}: MultiSelectFieldProps) => {
+}: MultiSelectFieldProps<T>) {
   const {
     control,
     formState: { errors },
@@ -37,8 +40,14 @@ export const MultiSelectField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps}>
-          <MultiSelect
+        <Label
+          name={name}
+          label={label}
+          size={size || formSize}
+          error={errorMessage}
+          {...labelProps}
+        >
+          <MultiSelect<T>
             className={className}
             variant={variant || formVariant}
             color={color || formColor}

@@ -45,9 +45,11 @@ export const Nav = forwardRef<HTMLDivElement | null, NavProps>(
                   'Navlink',
                   navLinkClass,
                   menu ? 'w-full' : 'rounded-md px-3 py-1',
-                  (slug === '/' ? pathName === '/' : !!pathName?.startsWith(slug)) && 'selected',
                   linkClassName,
                 )}
+                data-selected={
+                  (slug === '/' ? pathName === '/' : !!pathName?.startsWith(slug)) || undefined
+                }
                 href={slug}
                 variant={menu ? 'text' : 'contained'}
                 size={menu ? 'md' : 'none'}

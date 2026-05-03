@@ -242,7 +242,7 @@ describe('AutocompleteCombobox', () => {
           onInputChange={() => {}}
         />,
       )
-      expect(screen.getByRole('combobox')).toHaveClass('error')
+      expect(screen.getByRole('combobox')).toHaveAttribute('data-error')
     })
 
     it('disabled sets aria-disabled and tabindex', () => {
@@ -297,7 +297,7 @@ describe('AutocompleteCombobox', () => {
           onInputChange={() => {}}
         />,
       )
-      expect(screen.getByRole('combobox')).toHaveClass('selected')
+      expect(screen.getByRole('combobox')).toHaveAttribute('data-selected')
     })
 
     it('combobox focus redirects to input', () => {

@@ -144,7 +144,7 @@ describe('CheckboxGroup', () => {
       )
       const inputWraps = screen.getAllByTestId('CheckboxInputWrap')
 
-      expect(inputWraps[0]).toHaveClass('error')
+      expect(inputWraps[0]).toHaveAttribute('data-error')
     })
 
     it('column applies flex-col to fieldset', () => {
@@ -206,7 +206,7 @@ describe('CheckboxGroup', () => {
       const inputWraps = screen.getAllByTestId('CheckboxInputWrap')
       const checkboxes = screen.getAllByRole('checkbox')
 
-      expect(inputWraps[0]).toHaveClass('error')
+      expect(inputWraps[0]).toHaveAttribute('data-error')
       expect(checkboxes[0]).toHaveAttribute('disabled')
     })
 

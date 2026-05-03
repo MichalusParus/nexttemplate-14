@@ -57,7 +57,7 @@ export const SearchInput = forwardRef<HTMLInputElement | null, SearchInputProps>
             )}
             type="button"
             variant={variant}
-            color={color}
+            color="none"
             size="none"
             startIcon={<XIcon />}
             hideShadow

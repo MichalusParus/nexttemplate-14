@@ -1,6 +1,6 @@
 import { forwardRef, ReactNode } from 'react'
 
-import { childrenIconSize } from '@/components/utils/common.style'
+import { childrenIconSize, textSize } from '@/components/utils/common.style'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
@@ -55,6 +55,7 @@ export const Alert = forwardRef<HTMLDivElement | null, AlertProps>(
           alertClass,
           alertVariant[variant][status],
           alertSize[size],
+          textSize[size],
           childrenIconSize[size],
           className,
         )}

@@ -128,22 +128,23 @@
   --spacing-sm-y: 0.375rem;
   --spacing-sm-x: 0.5rem;
   --spacing-sm-icon: 1.25rem;
-  --spacing-sm: var(--text-sm);
+  --spacing-text-height-sm: var(--text-sm);
   --spacing-md-y: 0.5rem;
   --spacing-md-x: 0.75rem;
   --spacing-md-icon: 1.5rem;
-  --spacing-md: var(--text-base);
+  --spacing-text-height-md: var(--text-base);
   --spacing-lg-y: 0.625rem;
   --spacing-lg-x: 1rem;
   --spacing-lg-icon: 1.75rem;
-  --spacing-lg: var(--text-lg);
-  --spacing-xl: var(--text-xl);
+  --spacing-text-height-lg: var(--text-lg);
+  --spacing-text-height-xl: var(--text-xl);
   --spacing-xl-icon: 1.75rem;
-  --spacing-2xl: var(--text-2xl);
+  --spacing-text-height-2xl: var(--text-2xl);
   --spacing-2xl-icon: 2rem;
-  --spacing-3xl: var(--text-3xl);
-  --spacing-sm-header: 3.313rem;
+  --spacing-text-height-3xl: var(--text-3xl);
+  --spacing-sm-header: 2.938rem;
   --spacing-lg-header: 4.063rem;
+  --spacing-bottom-nav: 3.75rem;
   --spacing-sidebar: 16rem;
   --spacing-sm-sidebar: 6rem;
   --spacing-gallery-inner: calc(100vh - 98px);
@@ -167,6 +168,7 @@
   --animate-inline-loader: inlineLoaderAnim 1400ms infinite;
   --animate-circular-loader: circularLoaderAnim1 800ms infinite linear alternate, circularLoaderAnim2 1600ms infinite linear;
   --animate-progress-bar: progressBarAnim 1500ms infinite ease-in-out;
+  --animate-card-grid-ghost: cardGridGhostAnim 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 
   /* Keyframe definitions */
   @keyframes inlineLoaderAnim {
@@ -212,6 +214,17 @@
       transform: translateX(100%);
     }
   }
+
+  @keyframes cardGridGhostAnim {
+    from {
+      opacity: 0;
+      transform: translateY(2rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 /* Accessibility — disable all animations and transitions for reduced-motion users */
@@ -229,16 +242,21 @@
 @variant autofill (&:-webkit-autofill);
 @custom-variant hoverable {
   @media (hover: hover) {
-    &:hover {
+    &:hover:not(:active) {
       @slot;
     }
   }
 }
 @custom-variant group-hoverable {
   @media (hover: hover) {
-    :merge(.group):hover & {
+    .group:hover:not(:active) & {
       @slot;
     }
+  }
+}
+@custom-variant hover-device {
+  @media (hover: hover) {
+    @slot;
   }
 }
 @variant disabled-aria (&.disabled[aria-disabled="true"]);
@@ -251,13 +269,13 @@
 }
 
 @utility transition-position {
-  transition-property: top, left, bottom, right, transform, translate, opacity;
+  transition-property: top, left, bottom, right, transform, translate, rotate, scale, opacity;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
 
 @utility transition-activity {
-  transition-property: background-color, color, box-shadow, border-color;
+  transition-property: color, box-shadow, border-color;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }

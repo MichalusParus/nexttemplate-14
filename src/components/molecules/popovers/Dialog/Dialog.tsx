@@ -1,5 +1,4 @@
 'use client'
-
 import { useTranslations } from 'next-intl'
 import {
   forwardRef,
@@ -24,9 +23,17 @@ import { devWarning } from '@/components/utils/devWarning'
 import { useFocus } from '@/components/utils/hooks/useFocus'
 import { usePortalContainer } from '@/components/utils/hooks/usePortalContainer'
 import { NativeDivProps, StyleProps } from '@/components/utils/types'
+import { useTouch } from '@/utils/hooks/useTouch'
 import { cn } from '@/utils/utils'
 
-import { closeClass, dialogPosition, openClass } from './Dialog.style'
+import {
+  closeClass,
+  closeClassCentered,
+  dialogPosition,
+  dialogPositionCentered,
+  openClass,
+  openClassCentered,
+} from './Dialog.style'
 
 export type DialogProps = NativeDivProps &
   Omit<StyleProps, 'size'> & {
@@ -58,6 +65,8 @@ export type DialogProps = NativeDivProps &
     paperProps?: Partial<PaperProps>
     /** for passing aditional props to title */
     titleProps?: Partial<TitleProps>
+    /** disable bottom sheet on mobile — keep centered dialog at all breakpoints */
+    disableBottomSheet?: boolean
     /** optional setOpen function for controlled open state */
     setIsOpen: (value: boolean) => void
   }
@@ -79,6 +88,7 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
       dialogActions,
       closeButton,
       hideXButton,
+      disableBottomSheet,
       portalContainerId,
       paperProps = {},
       titleProps = {},
@@ -90,13 +100,21 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
   ) => {
     const t = useTranslations('Components')
     const [componentEl, setComponentEl] = useState<HTMLDivElement | null>(null)
-    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
-      ref,
-      () => componentEl,
-    )
+    useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => componentEl)
     const [isVisible, setIsVisible] = useState(false)
     const container = usePortalContainer(portalContainerId)
     const { className: paperClassName, ...restPaperProps } = paperProps
+
+    const positionClass = disableBottomSheet ? dialogPositionCentered : dialogPosition
+    const openCls = disableBottomSheet ? openClassCentered : openClass
+    const closeCls = disableBottomSheet ? closeClassCentered : closeClass
+    const isBottomSheet = !disableBottomSheet
+
+    useTouch({
+      element: isBottomSheet ? componentEl : null,
+      onSwipeDown: isBottomSheet ? () => setIsOpen(false) : undefined,
+      swipeThreshold: 50,
+    })
 
     const containerRef = useRef<HTMLElement | null>(null)
     useFocus(isOpen, containerRef, {
@@ -105,7 +123,10 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
       onToggle: setIsOpen,
     })
 
-    devWarning(!title && !label, 'Dialog: no title or label provided — dialog will only have a generic aria-label. Provide at least one for screen reader context.')
+    devWarning(
+      !title && !label,
+      'Dialog: no title or label provided — dialog will only have a generic aria-label. Provide at least one for screen reader context.',
+    )
 
     const handleClose = () => {
       setIsOpen(false)
@@ -114,7 +135,7 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
     useEffect(() => {
       if (typeof window === 'undefined') return
 
-      let timerId: NodeJS.Timeout
+      let timerId: ReturnType<typeof setTimeout>
       if (isOpen) {
         setIsVisible(true)
       } else {
@@ -135,13 +156,13 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
           className={cn(
             'Dialog',
             width,
-            dialogPosition,
-            closeClass,
-            isVisible && isOpen && openClass,
+            positionClass,
+            closeCls,
+            isVisible && isOpen && openCls,
             className,
           )}
           role="dialog"
-          aria-label={!title ? (label || t('dialog')) : undefined}
+          aria-label={!title ? label || t('dialog') : undefined}
           aria-labelledby={title ? `${name}-title` : undefined}
           aria-modal="true"
           ref={setComponentEl}
@@ -152,9 +173,23 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
             variant={variant}
             color={color}
             padding={paddingY}
+            rounded="rounded-[inherit]"
             {...restPaperProps}
           >
-            <div className={cn('DialogTitleWrap', 'relative', paddingX, (title || !hideXButton) && 'pb-8')}>
+            {!disableBottomSheet && (
+              <div className="-mt-1 flex justify-center pb-2 md:hidden">
+                <div className="bg-dark-300 h-1 w-10 rounded-full" />
+              </div>
+            )}
+            <div
+              className={cn(
+                'DialogTitleWrap',
+                'relative',
+                paddingX,
+                title && 'pb-7',
+                !title && !hideXButton && (isBottomSheet ? 'md:pb-7' : 'pb-7'),
+              )}
+            >
               {title && (
                 <Title
                   id={`${name}-title`}
@@ -163,13 +198,21 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
                   align="text-center"
                   size="xl"
                   {...titleProps}
+                  className={cn(
+                    !hideXButton && (isBottomSheet ? 'md:px-10' : 'px-10'),
+                    titleProps.className,
+                  )}
                 >
                   {title}
                 </Title>
               )}
               {!hideXButton && (
                 <Button
-                  className={cn('XButton', 'absolute right-1 top-0 border-none px-0 py-0')}
+                  className={cn(
+                    'XButton',
+                    'absolute top-0 right-1 border-none bg-transparent px-0 py-0 dark:bg-transparent',
+                    isBottomSheet && 'hidden md:flex',
+                  )}
                   variant={variant}
                   color={color}
                   size="lg"
@@ -181,7 +224,7 @@ export const Dialog = forwardRef<HTMLDivElement | null, PropsWithChildren<Dialog
                 />
               )}
             </div>
-            <ScrollShadow height="max-h-[75vh]" padding={paddingX}>
+            <ScrollShadow height="max-h-[70vh] md:max-h-[75vh]" padding={cn(paddingX, 'py-1')}>
               {children}
             </ScrollShadow>
             {(closeButton || dialogActions) && (

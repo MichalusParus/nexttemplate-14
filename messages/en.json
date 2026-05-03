@@ -64,6 +64,14 @@
       "skipToContent": "Skip to content",
       "fileMessage": "Drag 'n' drop some files here, or click to select files",
       "fileDropMessage": "Drop the files here ...",
+      "infiniteScroll": {
+        "error": "Failed to load more items",
+        "retry": "Retry",
+        "endReached": "No more items"
+      },
+      "today": "Today",
+      "selectMonth": "Select month",
+      "selectYear": "Select year",
       "days": {
         "0": "Sunday",
         "1": "Monday",
@@ -88,7 +96,8 @@
         "11": "December"
       },
       "dataGrid": {
-      "operatorLabel": "operator:"
+        "operatorLabel": "operator:",
+        "rowsPerPage": "Rows per page"
       },
       "operators": {
         "equals": "Equals",

@@ -8,7 +8,8 @@ import { cn } from '@/utils/utils'
 
 import { ProfileIcon } from '../../icons'
 import { Image } from '../Image'
-import { avatarClass, avatarSize } from './Avatar.style'
+import { avatarClass, avatarSize, hueVariantClass } from './Avatar.style'
+import { getHueStyle } from './utils'
 
 export type AvatarProps = NativeDivProps &
   StyleProps & {
@@ -18,12 +19,24 @@ export type AvatarProps = NativeDivProps &
     src?: string
     /** username for avatar initials, without username displays profile icon  */
     username?: string
+    /** oklch hue angle (0-360) — overrides color prop with dynamic oklch color */
+    hue?: number
   }
 
 /** Avatar component for displaying user initials. By default shows profile icon. Native HTMLAttributes props supported. USE CLIENT */
 export const Avatar = forwardRef<HTMLDivElement | null, AvatarProps>(
   (
-    { className, src, username, variant = 'outlined', color = 'primary', size = 'md', ...rest },
+    {
+      className,
+      src,
+      username,
+      hue,
+      variant = 'outlined',
+      color = 'primary',
+      size = 'md',
+      style,
+      ...rest
+    },
     ref,
   ) => {
     const t = useTranslations('Components')
@@ -67,18 +80,23 @@ export const Avatar = forwardRef<HTMLDivElement | null, AvatarProps>(
       }
     }
 
+    const useHue = hue !== undefined
+    const hueStyle = useHue ? getHueStyle(variant, hue) : undefined
+
     return (
       <div
         className={cn(
           'Avatar',
           avatarClass,
-          baseVariant[variant][color],
-          textVariant[variant][color],
+          useHue
+            ? hueVariantClass[variant]
+            : [baseVariant[variant][color], textVariant[variant][color]],
           avatarSize[size],
           className,
         )}
         ref={ref}
         data-testid="Avatar"
+        style={useHue ? { ...hueStyle, ...style } : style}
         {...rest}
       >
         {renderAvatarContent()}

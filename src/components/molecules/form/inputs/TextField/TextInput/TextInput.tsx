@@ -5,12 +5,7 @@ import { childrenIconSize, disabledVariant } from '@/components/utils/common.sty
 import { InputProps, NativeInputProps, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import {
-  inputClass,
-  inputSize,
-  inputVariant,
-  inputWrapClass,
-} from './TextInput.style'
+import { inputClass, inputSize, inputVariant, inputWrapClass } from './TextInput.style'
 
 export type TextInputProps = NativeInputProps &
   InputProps &
@@ -53,31 +48,29 @@ export const TextInput = forwardRef<HTMLInputElement | null, TextInputProps>(
           'InputWrap',
           inputWrapClass,
           inputVariant[variant][color],
-          error && 'error',
-          disabled && 'disabled ' + disabledVariant[variant],
+          inputSize[size],
+          disabled && cn('disabled', disabledVariant[variant]),
           childrenIconSize[size],
           className,
         )}
+        data-error={error || undefined}
         aria-disabled={disabled}
         data-testid="InputWrap"
       >
-        {startIcon && (
-          <span className={cn('absolute left-2 top-1/2 -translate-y-1/2')}>{startIcon}</span>
-        )}
+        {startIcon && <span className="shrink-0">{startIcon}</span>}
         <input
           id={name}
-          className={cn(inputClass, inputSize[size], startIcon && 'pl-10', endIcon && 'pr-10')}
+          className={cn(inputClass)}
           name={name}
           type={type}
           value={value}
           disabled={disabled}
+          aria-invalid={!!error || undefined}
           onChange={e => onChange(e.target.value)}
           ref={ref}
           {...rest}
         />
-        {endIcon && (
-          <span className={cn('absolute right-2 top-1/2 -translate-y-1/2')}>{endIcon}</span>
-        )}
+        {endIcon && <span className="shrink-0">{endIcon}</span>}
       </div>
     )
   },

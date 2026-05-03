@@ -50,7 +50,6 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
     ref,
   ) => {
     const [isOpen, setIsOpen] = useState(false)
-    const componentRef = useRef<HTMLDivElement>(null)
     const comboboxRef = useRef<HTMLButtonElement | null>(null)
     const [dropdownEl, setDropdownEl] = useState<HTMLDivElement | null>(null)
     const { scrollShadowProps, ...restDropdownProps } = dropdownProps
@@ -114,12 +113,10 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
     })
 
     return (
-      <div
-        className={cn('DatePicker', 'min-w-0 relative w-full')}
-        ref={componentRef}
-        data-testid="DatePicker"
-      >
+      <>
         <DatePickerCombobox
+          className={cn('DatePicker', 'min-w-0')}
+          data-testid="DatePicker"
           isOpen={isOpen}
           name={name}
           value={dateValue}
@@ -138,7 +135,7 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
         />
         <Dropdown
           isOpen={isOpen}
-          anchorRef={componentRef}
+          anchorRef={comboboxRef}
           placement={placement}
           variant={variant}
           color={color}
@@ -166,7 +163,7 @@ export const DatePicker = forwardRef<HTMLButtonElement | null, DatePickerProps>(
             {...restCalendarProps}
           />
         </Dropdown>
-      </div>
+      </>
     )
   },
 )

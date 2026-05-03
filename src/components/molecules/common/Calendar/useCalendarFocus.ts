@@ -1,9 +1,9 @@
-import { addMonths, addYears, getDate } from 'date-fns'
+import { addMonths, addWeeks, addYears, getDate } from 'date-fns'
 import { MutableRefObject, useEffect, useMemo, useRef } from 'react'
 
 import { CustomKeyHandler, FOCUS_SELECTORS, useFocus } from '@/components/utils/hooks/useFocus'
 
-import { CalendarState } from './Calendar'
+import type { CalendarState, CalendarView } from './types'
 
 type UseCalendarFocusOptions = {
   /** Enables keyboard navigation and roving tabindex */
@@ -14,6 +14,8 @@ type UseCalendarFocusOptions = {
   gridRef: MutableRefObject<HTMLDivElement | null>
   /** Current calendar view state */
   calendarState: CalendarState
+  /** Day grid layout: full month (default) or single week */
+  view?: CalendarView
   /** Current month being displayed */
   currentMonth: Date
   /** Callback to change the displayed month */
@@ -35,6 +37,7 @@ export const useCalendarFocus = ({
   focusOnOpen,
   gridRef,
   calendarState,
+  view = 'day',
   currentMonth,
   setCurrentMonth,
   onClose,
@@ -43,21 +46,31 @@ export const useCalendarFocus = ({
   const shouldFocusGridRef = useRef(false)
   const calendarStateRef = useRef(calendarState)
   calendarStateRef.current = calendarState
+  const viewRef = useRef(view)
+  viewRef.current = view
 
   // Ref for currentMonth — handlers read this to avoid stale closures during fast key repeat
   const currentMonthRef = useRef(currentMonth)
   currentMonthRef.current = currentMonth
 
   // Dummy ref — prevents useFocus from attaching focus/blur listeners on gridRef
-  // (which would activate hasTriggerFocus when the grid div itself gets accidentally focused)
   const dummyRef = useRef<HTMLElement>(null)
 
-  const getGridCols = () => calendarStateRef.current === 'days' ? 7 : calendarStateRef.current === 'months' ? 3 : 5
+  const getGridCols = () => {
+    const v = viewRef.current
+    if (v === 'month') return 3
+    if (v === 'year') return 5
+    return calendarStateRef.current === 'days' ? 7 : calendarStateRef.current === 'months' ? 3 : 5
+  }
 
-  // Memoized custom key handlers — stabilizes identity to avoid unnecessary handleKeyDown recreation.
-  // All mutable state is read via refs (currentMonthRef, calendarStateRef, pendingFocusRef).
+  const allowsBoundaryCrossing = () => {
+    const v = viewRef.current
+    if (v === 'week' || v === 'month') return true
+    if (v === 'year') return false
+    return calendarStateRef.current === 'days'
+  }
+
   const customKeyHandlers = useMemo<{ [key: string]: CustomKeyHandler }>(() => {
-    // Click the focused gridcell (shared by Enter and Space)
     const clickCell: CustomKeyHandler = (e, { focusableEl, currentIndex }) => {
       const cell = focusableEl[currentIndex]
       if (!cell) return false
@@ -67,23 +80,33 @@ export const useCalendarFocus = ({
       return true
     }
 
-    // Page navigation: next/prev month (Shift → year) — DayPicker only.
-    // Preserves day-of-month per WAI-ARIA APG (e.g. March 15 → April 15).
-    const pageNav = (direction: 1 | -1): CustomKeyHandler => (e, { focusableEl, currentIndex }) => {
-      if (calendarStateRef.current !== 'days') return false
-      e.preventDefault()
-      e.stopPropagation()
-      const cell = focusableEl[currentIndex]
-      const dateStr = cell?.getAttribute('data-date')
-      const dayOfMonth = dateStr ? getDate(new Date(dateStr)) : 1
-      pendingFocusRef.current = { row: 'sameDay', column: currentIndex % 7, dayOfMonth }
-      const navFn = e.shiftKey ? addYears : addMonths
-      setCurrentMonth(navFn(currentMonthRef.current, direction))
-      return true
+    const stepRange = (direction: 1 | -1) => {
+      switch (viewRef.current) {
+        case 'week':
+          return addWeeks(currentMonthRef.current, direction)
+        case 'month':
+          return addYears(currentMonthRef.current, direction)
+        default:
+          return addMonths(currentMonthRef.current, direction)
+      }
     }
 
+    const pageNav =
+      (direction: 1 | -1): CustomKeyHandler =>
+      (e, { focusableEl, currentIndex }) => {
+        if (viewRef.current !== 'day' || calendarStateRef.current !== 'days') return false
+        e.preventDefault()
+        e.stopPropagation()
+        const cell = focusableEl[currentIndex]
+        const dateStr = cell?.getAttribute('data-date')
+        const dayOfMonth = dateStr ? getDate(new Date(dateStr)) : 1
+        pendingFocusRef.current = { row: 'sameDay', column: currentIndex % 7, dayOfMonth }
+        const navFn = e.shiftKey ? addYears : addMonths
+        setCurrentMonth(navFn(currentMonthRef.current, direction))
+        return true
+      }
+
     return {
-      // Arrow Down: Move down by row, cross month boundary for DayPicker
       ArrowDown: (e, { focusableEl, currentIndex, focusElement }) => {
         if (!focusableEl.length) return false
         e.preventDefault()
@@ -93,14 +116,13 @@ export const useCalendarFocus = ({
         const nextIndex = currentIndex + cols
         if (nextIndex < focusableEl.length) {
           focusElement(nextIndex)
-        } else if (calendarStateRef.current === 'days') {
+        } else if (allowsBoundaryCrossing()) {
           pendingFocusRef.current = { row: 'first', column: currentIndex % cols }
-          setCurrentMonth(addMonths(currentMonthRef.current, 1))
+          setCurrentMonth(stepRange(1))
         }
         return true
       },
 
-      // Arrow Up: Move up by row, cross month boundary for DayPicker
       ArrowUp: (e, { focusableEl, currentIndex, focusElement }) => {
         if (!focusableEl.length) return false
         e.preventDefault()
@@ -110,14 +132,13 @@ export const useCalendarFocus = ({
         const prevIndex = currentIndex - cols
         if (prevIndex >= 0) {
           focusElement(prevIndex)
-        } else if (calendarStateRef.current === 'days') {
+        } else if (allowsBoundaryCrossing()) {
           pendingFocusRef.current = { row: 'last', column: currentIndex % cols }
-          setCurrentMonth(addMonths(currentMonthRef.current, -1))
+          setCurrentMonth(stepRange(-1))
         }
         return true
       },
 
-      // Arrow Right: Move one cell, cross month boundary for DayPicker
       ArrowRight: (e, { focusableEl, currentIndex, focusElement }) => {
         if (!focusableEl.length) return false
         e.preventDefault()
@@ -126,14 +147,13 @@ export const useCalendarFocus = ({
         const nextIndex = currentIndex + 1
         if (nextIndex < focusableEl.length) {
           focusElement(nextIndex)
-        } else if (calendarStateRef.current === 'days') {
+        } else if (allowsBoundaryCrossing()) {
           pendingFocusRef.current = { row: 'first', column: 0 }
-          setCurrentMonth(addMonths(currentMonthRef.current, 1))
+          setCurrentMonth(stepRange(1))
         }
         return true
       },
 
-      // Arrow Left: Move one cell, cross month boundary for DayPicker
       ArrowLeft: (e, { focusableEl, currentIndex, focusElement }) => {
         if (!focusableEl.length) return false
         e.preventDefault()
@@ -142,9 +162,9 @@ export const useCalendarFocus = ({
         const prevIndex = currentIndex - 1
         if (prevIndex >= 0) {
           focusElement(prevIndex)
-        } else if (calendarStateRef.current === 'days') {
-          pendingFocusRef.current = { row: 'last', column: 6 }
-          setCurrentMonth(addMonths(currentMonthRef.current, -1))
+        } else if (allowsBoundaryCrossing()) {
+          pendingFocusRef.current = { row: 'last', column: getGridCols() - 1 }
+          setCurrentMonth(stepRange(-1))
         }
         return true
       },
@@ -152,7 +172,6 @@ export const useCalendarFocus = ({
       PageDown: pageNav(1),
       PageUp: pageNav(-1),
 
-      // Home: First cell in current row
       Home: (e, { currentIndex, focusElement }) => {
         e.preventDefault()
         e.stopPropagation()
@@ -162,7 +181,6 @@ export const useCalendarFocus = ({
         return true
       },
 
-      // End: Last cell in current row
       End: (e, { focusableEl, currentIndex, focusElement }) => {
         e.preventDefault()
         e.stopPropagation()
@@ -176,9 +194,7 @@ export const useCalendarFocus = ({
       Enter: clickCell,
       Space: clickCell,
 
-      // Standalone (no onClose): Tab/Shift+Tab flow naturally, exit Calendar.
-      // Dropdown (onClose exists): Tab → MonthSelect (step 1), Shift+Tab → close + focus trigger.
-      Tab: (e) => {
+      Tab: e => {
         if (onClose) {
           e.preventDefault()
           e.stopPropagation()
@@ -186,27 +202,26 @@ export const useCalendarFocus = ({
             onClose()
           } else {
             const calendar = gridRef.current?.closest('.Calendar')
-            const monthSelect = calendar?.querySelector('.MonthSelect') as HTMLElement
-            monthSelect?.focus()
+            const monthSelect = calendar?.querySelector('button.MonthSelect') as HTMLElement
+            if (monthSelect) {
+              monthSelect.focus()
+            } else {
+              onClose()
+            }
           }
         }
         return true
       },
 
-      // Escape: Close the dropdown from the grid
-      Escape: (e) => {
+      Escape: e => {
         e.preventDefault()
         e.stopPropagation()
         onClose?.()
         return true
       },
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gridRef, setCurrentMonth, onClose])
 
-  // No scope — Calendar's grid is part of the same dropdown, not a nested popover.
-  // Keyboard isolation works naturally: keydown listener is on gridRef, so events from
-  // header buttons (outside grid) never reach it. DatePicker's scope stays topmost.
   const { focusElement } = useFocus(isActive, gridRef, {
     triggerRef: dummyRef,
     selectors: FOCUS_SELECTORS.grid,
@@ -215,12 +230,10 @@ export const useCalendarFocus = ({
     value: `${calendarState}-${currentMonth.getTime()}`,
   })
 
-  // Focus grid on mount when focusOnOpen is set (DatePicker dropdown open).
   useEffect(() => {
     if (isActive && focusOnOpen) shouldFocusGridRef.current = true
   }, [isActive, focusOnOpen])
 
-  // Focus grid on calendarState change (view switch: days → years → months).
   const prevCalendarStateRef = useRef(calendarState)
   useEffect(() => {
     if (isActive && prevCalendarStateRef.current !== calendarState) {
@@ -229,10 +242,6 @@ export const useCalendarFocus = ({
     prevCalendarStateRef.current = calendarState
   }, [calendarState, isActive])
 
-  // Focus resolution effect.
-  // Runs AFTER useFocusableElements' effect (which populates focusableElRef + sets roving tabindex),
-  // so focusElement() reads the correct, up-to-date cells.
-  // Only moves focus for keyboard boundary crossing / open / state change.
   useEffect(() => {
     if (!isActive || !gridRef.current) return
 
@@ -244,7 +253,6 @@ export const useCalendarFocus = ({
     let targetIndex: number
 
     if (pendingFocusRef.current) {
-      // Handle pending focus from month boundary crossing or page navigation
       const cols = getGridCols()
       const { row, column, dayOfMonth } = pendingFocusRef.current
       if (row === 'first') {
@@ -252,11 +260,12 @@ export const useCalendarFocus = ({
       } else if (row === 'last') {
         targetIndex = cells.length - cols + column
       } else {
-        // 'sameDay': find cell matching the day-of-month in current month (PageDown/PageUp).
-        // Falls back to column position if day doesn't exist (e.g. Jan 31 → Feb has no 31st).
         const isCurrentMonth = (dateStr: string) => {
           const d = new Date(dateStr)
-          return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear()
+          return (
+            d.getMonth() === currentMonth.getMonth() &&
+            d.getFullYear() === currentMonth.getFullYear()
+          )
         }
         const matchIndex = dayOfMonth
           ? cells.findIndex(el => {
@@ -268,32 +277,21 @@ export const useCalendarFocus = ({
       }
       targetIndex = Math.max(0, Math.min(targetIndex, cells.length - 1))
     } else {
-      // Normal: focus selected/current/first cell
-      const selectedIndex = cells.findIndex(
-        el => el.getAttribute('aria-selected') === 'true',
-      )
-      const currentIndex = cells.findIndex(
-        el => el.getAttribute('aria-current') === 'date',
-      )
+      const selectedIndex = cells.findIndex(el => el.getAttribute('aria-selected') === 'true')
+      const currentIndex = cells.findIndex(el => el.getAttribute('aria-current') === 'date')
       targetIndex = selectedIndex !== -1 ? selectedIndex : currentIndex !== -1 ? currentIndex : 0
     }
 
-    // Only move focus to grid for keyboard boundary crossing or initial open/state change.
-    // Clicking Next/Prev button only changes currentMonth — focus stays on the button.
     if (pendingFocusRef.current || shouldFocusGridRef.current) {
-      focusElement(targetIndex) // Also sets roving tabindex via useFocus
+      focusElement(targetIndex)
       pendingFocusRef.current = null
       shouldFocusGridRef.current = false
     } else {
-      // No focus move — still sync roving tabindex to selected cell (e.g. standalone mount, month click)
       cells.forEach((el, i) => el.setAttribute('tabindex', i === targetIndex ? '0' : '-1'))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calendarState, isActive, currentMonth])
 
-  // Arrow key navigation on header buttons (PreviousMonth, MonthSelect, NextMonth).
-  // Native listener on Calendar element fires before DatePicker's portal listener,
-  // so we intercept and stopPropagation to prevent DatePicker's useFocus from handling with stale index.
   useEffect(() => {
     const calendar = gridRef.current?.closest('.Calendar') as HTMLElement
     if (!calendar || !isActive) return
@@ -319,17 +317,24 @@ export const useCalendarFocus = ({
       if (e.code === 'ArrowRight') {
         e.preventDefault()
         e.stopPropagation()
-        idx < headerButtons.length - 1 ? headerButtons[idx + 1].focus() : focusGrid()
+        if (idx < headerButtons.length - 1) {
+          headerButtons[idx + 1].focus()
+        } else {
+          focusGrid()
+        }
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault()
         e.stopPropagation()
-        idx > 0 ? headerButtons[idx - 1].focus() : focusGrid()
+        if (idx > 0) {
+          headerButtons[idx - 1].focus()
+        } else {
+          focusGrid()
+        }
       } else if (e.code === 'ArrowDown') {
         e.preventDefault()
         e.stopPropagation()
         focusGrid()
       } else if (e.code === 'Tab' && onClose) {
-        // Dropdown context: Tab/Shift+Tab from header closes picker + returns focus to trigger
         e.preventDefault()
         e.stopPropagation()
         onClose()

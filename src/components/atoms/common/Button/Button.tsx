@@ -15,7 +15,7 @@ type NativeButtonProps = Omit<
   'className' | 'color' | 'onClick' | 'size'
 >
 
-export type ButtonColor = StyleProps['color'] | 'error' | 'success' | 'dark'
+export type ButtonColor = StyleProps['color'] | 'error' | 'success' | 'ghost'
 
 export type ButtonProps = NativeButtonProps &
   Pick<StyleProps, 'variant'> & {
@@ -33,6 +33,8 @@ export type ButtonProps = NativeButtonProps &
     isLoading?: boolean
     /** hide button shadow */
     hideShadow?: boolean
+    /** force border-transparent across all variants — used by complex widgets (Calendar, DataGrid, Menu) */
+    hideBorder?: boolean
     /** onClick function */
     onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
   }
@@ -50,6 +52,7 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(
       endIcon,
       isLoading = false,
       hideShadow = false,
+      hideBorder = false,
       disabled = false,
       children,
       onClick,
@@ -76,10 +79,13 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(
           childrenIconSize[size],
           disabled && 'disabled',
           disabledVariant[variant],
-          isLoading && 'selected cursor-progress opacity-80',
+          hideBorder &&
+            'disabled-aria:border-transparent border-transparent dark:border-transparent',
+          isLoading && 'cursor-progress opacity-80',
           variant === 'contained' && !hideShadow && 'shadow-button active:shadow-none',
           className,
         )}
+        data-selected={isLoading || undefined}
         type={disabled ? 'button' : type}
         aria-busy={isLoading}
         aria-disabled={disabled}

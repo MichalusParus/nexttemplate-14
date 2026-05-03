@@ -84,8 +84,8 @@ describe('ListBox', () => {
     const checkIconTestIds = screen.getAllByTestId('CheckIcon')
 
     expect(optionRoles[0]).toHaveAttribute('aria-selected', 'true')
-    expect(optionRoles[0]).toHaveClass('selected')
-    expect(optionRoles[1]).not.toHaveClass('selected')
+    expect(optionRoles[0]).toHaveAttribute('data-selected')
+    expect(optionRoles[1]).not.toHaveAttribute('data-selected')
     expect(checkIconTestIds[0]).toHaveClass('opacity-100')
     expect(checkIconTestIds[1]).toHaveClass('opacity-0')
   })
@@ -230,7 +230,7 @@ describe('ListBox', () => {
     expect(selectAll).toBeInTheDocument()
     expect(selectAll).toHaveAttribute('role', 'option')
     expect(selectAll).toHaveAttribute('aria-selected', 'false')
-    expect(selectAll).not.toHaveClass('selected')
+    expect(selectAll).not.toHaveAttribute('data-selected')
   })
 
   it('onSelectAll not rendered when prop absent', () => {
@@ -258,7 +258,7 @@ describe('ListBox', () => {
     )
     const selectAll = screen.getByRole('option', { name: /select all/i })
     expect(selectAll).toHaveAttribute('aria-selected', 'true')
-    expect(selectAll).toHaveClass('selected')
+    expect(selectAll).toHaveAttribute('data-selected')
   })
 
   it('onSelectAll indeterminate when some selected', () => {
@@ -274,7 +274,7 @@ describe('ListBox', () => {
     )
     const selectAll = screen.getByRole('option', { name: /select all/i })
     expect(selectAll).toHaveAttribute('aria-selected', 'false')
-    expect(selectAll).not.toHaveClass('selected')
+    expect(selectAll).not.toHaveAttribute('data-selected')
     const minusIcon = screen.getByTestId('MinusIcon')
     expect(minusIcon).toHaveClass('opacity-100')
   })
@@ -312,7 +312,7 @@ describe('ListBox', () => {
     const selectAll = screen.getByRole('option', { name: /select all/i })
     expect(selectAll).toBeInTheDocument()
     expect(selectAll).toHaveAttribute('aria-selected', 'true')
-    expect(selectAll).toHaveClass('selected')
+    expect(selectAll).toHaveAttribute('data-selected')
   })
 
   it('onSelectAll disabled when no options', () => {

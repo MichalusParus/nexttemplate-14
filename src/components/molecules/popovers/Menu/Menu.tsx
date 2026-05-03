@@ -149,7 +149,8 @@ export const Menu = forwardRef<HTMLDivElement | null, PropsWithChildren<MenuProp
           {!setIsOpen && (
             <Button
               id={`${nameId}-button`}
-              className={cn('MenuButton', openState && 'selected z-combobox', buttonClassName)}
+              className={cn('MenuButton', openState && 'z-combobox', buttonClassName)}
+              data-selected={openState || undefined}
               variant={variant}
               color={color}
               size={size}

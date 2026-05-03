@@ -23,7 +23,7 @@ export const Paper = forwardRef<HTMLDivElement | null, PropsWithChildren<PaperPr
   (
     {
       className,
-      padding = 'py-2 px-2 md:pt-2 md:pb-3 md:px-5',
+      padding = 'py-4 px-4 md:py-6 md:px-8',
       rounded = 'rounded-md',
       variant = 'text',
       color = 'primary',
@@ -39,6 +39,7 @@ export const Paper = forwardRef<HTMLDivElement | null, PropsWithChildren<PaperPr
           'Paper',
           'border',
           baseVariant[variant][color],
+          variant === 'contained' ? 'text-contrast' : 'text-text dark:text-contrast',
           padding,
           rounded,
           !hideShadow && 'shadow-paper',

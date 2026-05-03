@@ -22,6 +22,8 @@ export type ScrollShadowProps = NativeDivProps & {
   shadowSize?: string
   /** disable horizontal scroll */
   disableHorizontal?: boolean
+  /** ARIA role for the inner scroll container (e.g. "rowgroup" inside a grid) */
+  contentRole?: React.AriaRole
 }
 
 /** Content wrapper for scroll shadow effect. Use inside Paper or other wrap with from-"bgColor" class or specify color prop. Native HTMLAttributes props supported. USE CLIENT */
@@ -35,12 +37,21 @@ export const ScrollShadow = forwardRef<HTMLDivElement | null, ScrollShadowProps>
       shadowSize = '1.5rem',
       gutter,
       disableHorizontal,
+      contentRole,
       children,
       ...rest
     },
     ref,
   ) => {
-    const { contentRef, shadowRefs, overflow, handleScroll } = useScrollShadow(disableHorizontal)
+    const {
+      contentRef,
+      setTopShadowRef,
+      setBottomShadowRef,
+      setLeftShadowRef,
+      setRightShadowRef,
+      overflow,
+      handleScroll,
+    } = useScrollShadow(disableHorizontal)
     const scrollbarInset = 'calc(100% - var(--scrollbar-size))'
 
     return (
@@ -62,6 +73,7 @@ export const ScrollShadow = forwardRef<HTMLDivElement | null, ScrollShadowProps>
             scrollbarGutter: gutter ? 'stable' : 'initial',
             scrollPadding: shadowSize,
           }}
+          role={contentRole}
           tabIndex={-1}
           ref={contentRef}
           onScroll={handleScroll}
@@ -74,7 +86,7 @@ export const ScrollShadow = forwardRef<HTMLDivElement | null, ScrollShadowProps>
             <div
               className={cn('TopShadow', shadowPosition.top, shadowClass)}
               style={{ height: shadowSize, width: scrollbarInset, opacity: 0 }}
-              ref={el => { shadowRefs.current.top = el }}
+              ref={setTopShadowRef}
               aria-hidden
               data-testid="TopShadow"
             />
@@ -86,7 +98,7 @@ export const ScrollShadow = forwardRef<HTMLDivElement | null, ScrollShadowProps>
                 bottom: overflow.horizontal ? 'var(--scrollbar-size)' : 0,
                 opacity: 0,
               }}
-              ref={el => { shadowRefs.current.bottom = el }}
+              ref={setBottomShadowRef}
               aria-hidden
               data-testid="BottomShadow"
             />
@@ -97,7 +109,7 @@ export const ScrollShadow = forwardRef<HTMLDivElement | null, ScrollShadowProps>
             <div
               className={cn('LeftShadow', shadowPosition.left, shadowClass)}
               style={{ width: shadowSize, height: scrollbarInset, opacity: 0 }}
-              ref={el => { shadowRefs.current.left = el }}
+              ref={setLeftShadowRef}
               aria-hidden
               data-testid="LeftShadow"
             />
@@ -109,7 +121,7 @@ export const ScrollShadow = forwardRef<HTMLDivElement | null, ScrollShadowProps>
                 right: overflow.vertical ? 'var(--scrollbar-size)' : 0,
                 opacity: 0,
               }}
-              ref={el => { shadowRefs.current.right = el }}
+              ref={setRightShadowRef}
               aria-hidden
               data-testid="RightShadow"
             />

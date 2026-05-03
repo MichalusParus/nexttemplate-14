@@ -14,7 +14,7 @@ import {
   checkboxVariant,
   checkIconDisabledVariant,
 } from '../../CheckboxField/Checkbox/Checkbox.style'
-import { switchLeft, switchSize, switchWrapClass, thumbClass } from './Switch.style'
+import { switchSize, switchThumbOff, switchThumbOn, switchWrapClass, thumbClass } from './Switch.style'
 
 export type SwitchProps = NativeInputProps &
   Pick<FieldProps, 'label'> &
@@ -53,7 +53,7 @@ export const Switch = forwardRef<HTMLInputElement | null, SwitchProps>(
     },
     ref,
   ) => {
-    const thumbPosition = isChecked ? switchLeft[size] : '-left-1'
+    const thumbPosition = isChecked ? switchThumbOn[size] : switchThumbOff
 
     return (
       <div
@@ -70,13 +70,13 @@ export const Switch = forwardRef<HTMLInputElement | null, SwitchProps>(
             'SwitchInputWrap',
             'relative flex',
             switchWrapClass,
-            isChecked && !fake && 'selected',
             !fake && 'mr-2',
             switchSize[size],
             checkboxVariant[variant][color],
-            error && 'error',
-            disabled && 'disabled ' + disabledVariant[variant],
+            disabled && cn('disabled', disabledVariant[variant]),
           )}
+          data-error={error || undefined}
+          data-selected={(isChecked && !fake) || undefined}
           aria-disabled={disabled}
           data-testid="SwitchInputWrap"
         >
@@ -84,7 +84,7 @@ export const Switch = forwardRef<HTMLInputElement | null, SwitchProps>(
             <input
               id={name}
               className={cn(
-                'absolute left-0 top-0 z-10 cursor-pointer opacity-0 disabled:cursor-not-allowed',
+                'absolute top-0 left-0 z-10 cursor-pointer opacity-0 disabled:cursor-not-allowed',
                 switchSize[size],
               )}
               type="checkbox"
@@ -94,6 +94,7 @@ export const Switch = forwardRef<HTMLInputElement | null, SwitchProps>(
               role="switch"
               checked={isChecked}
               aria-checked={isChecked}
+              aria-invalid={!!error || undefined}
               disabled={disabled}
               ref={ref}
               {...rest}

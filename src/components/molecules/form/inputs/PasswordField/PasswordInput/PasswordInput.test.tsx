@@ -38,7 +38,7 @@ describe('PasswordInput', () => {
       render(<PasswordInput name="password" error="required" onChange={() => {}} />)
       const wrapper = screen.getByTestId('InputWrap')
 
-      expect(wrapper).toHaveClass('error')
+      expect(wrapper).toHaveAttribute('data-error')
     })
 
     it('disabled disables both input and toggle button', () => {

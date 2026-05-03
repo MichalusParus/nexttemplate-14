@@ -9,12 +9,15 @@ import { FieldProps } from '@/components/utils/types'
 import { FormStyleContext } from '../../forms/Form/Form'
 import { Autocomplete, AutocompleteProps } from './Autocomplete/Autocomplete'
 
-export type AutocompleteFieldProps = Omit<AutocompleteProps, 'value' | 'error' | 'onChange'> &
-  Partial<Pick<AutocompleteProps, 'onChange'>> &
+export type AutocompleteFieldProps<T = string> = Omit<
+  AutocompleteProps<T>,
+  'value' | 'error' | 'onChange'
+> &
+  Partial<Pick<AutocompleteProps<T>, 'onChange'>> &
   FieldProps
 
 /** Form and style context wrapper for Autocomplete inside Label component. Label, Button, TextInput, Dropdown and ListBox props supported. USE CLIENT */
-export const AutocompleteField = ({
+export function AutocompleteField<T = string>({
   className,
   name,
   label,
@@ -24,7 +27,7 @@ export const AutocompleteField = ({
   labelProps = {},
   onChange,
   ...rest
-}: AutocompleteFieldProps) => {
+}: AutocompleteFieldProps<T>) {
   const {
     control,
     formState: { errors },
@@ -37,8 +40,14 @@ export const AutocompleteField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps}>
-          <Autocomplete
+        <Label
+          name={name}
+          label={label}
+          size={size || formSize}
+          error={errorMessage}
+          {...labelProps}
+        >
+          <Autocomplete<T>
             className={className}
             variant={variant || formVariant}
             color={color || formColor}

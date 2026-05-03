@@ -3,9 +3,8 @@ import '@testing-library/jest-dom'
 import { addMonths, startOfDay } from 'date-fns'
 import { axe, toHaveNoViolations } from 'jest-axe'
 
-import { defaultTestDate } from '@/components/molecules/form/comboboxes/DatePickerField/DatePicker/DatePicker.test'
-
 import { fireEvent, render, screen, within } from '../../../../../../.jest/customRender'
+import { defaultTestDate } from '../../../form/comboboxes/DatePickerField/DatePicker/DatePicker.test'
 import { MonthPicker } from '.'
 
 expect.extend(toHaveNoViolations)
@@ -13,13 +12,7 @@ expect.extend(toHaveNoViolations)
 describe('MonthPicker', () => {
   describe('Semantics', () => {
     it('renders grid with rows and cells', () => {
-      render(
-        <MonthPicker
-          month={defaultTestDate}
-          setCalendarState={() => {}}
-          setCurrentMonth={() => {}}
-        />,
-      )
+      render(<MonthPicker month={defaultTestDate} onSelect={() => {}} />)
       const grid = screen.getByRole('grid')
       const rows = screen.getAllByRole('row')
       const cells = screen.getAllByRole('gridcell')
@@ -35,13 +28,7 @@ describe('MonthPicker', () => {
     })
 
     it('first cell labeled January', () => {
-      render(
-        <MonthPicker
-          month={defaultTestDate}
-          setCalendarState={() => {}}
-          setCurrentMonth={() => {}}
-        />,
-      )
+      render(<MonthPicker month={defaultTestDate} onSelect={() => {}} />)
       const cells = screen.getAllByRole('gridcell')
 
       expect(cells[0]).toHaveTextContent('January')
@@ -49,16 +36,10 @@ describe('MonthPicker', () => {
     })
 
     it('selected month marked', () => {
-      render(
-        <MonthPicker
-          month={defaultTestDate}
-          setCalendarState={() => {}}
-          setCurrentMonth={() => {}}
-        />,
-      )
+      render(<MonthPicker month={defaultTestDate} onSelect={() => {}} />)
       const cells = screen.getAllByRole('gridcell')
 
-      expect(cells[2]).toHaveClass('selected')
+      expect(cells[2]).toHaveAttribute('data-selected')
       expect(cells[2]).toHaveAttribute('aria-selected')
       expect(cells[0]).toHaveAttribute('aria-selected', 'false')
     })
@@ -71,8 +52,7 @@ describe('MonthPicker', () => {
             min: addMonths(startOfDay(defaultTestDate), -1),
             max: addMonths(startOfDay(defaultTestDate), 1),
           }}
-          setCalendarState={() => {}}
-          setCurrentMonth={() => {}}
+          onSelect={() => {}}
         />,
       )
       const cells = screen.getAllByRole('gridcell')
@@ -85,8 +65,7 @@ describe('MonthPicker', () => {
       render(
         <MonthPicker
           month={defaultTestDate}
-          setCalendarState={() => {}}
-          setCurrentMonth={() => {}}
+          onSelect={() => {}}
           buttonProps={{ className: 'className' }}
         />,
       )
@@ -98,27 +77,20 @@ describe('MonthPicker', () => {
   })
 
   describe('Interaction', () => {
-    it('click sets month and switches to days', () => {
-      const spy = jest.fn()
-      render(<MonthPicker month={defaultTestDate} setCalendarState={spy} setCurrentMonth={spy} />)
+    it('click calls onSelect with the month date', () => {
+      const onSelect = jest.fn()
+      render(<MonthPicker month={defaultTestDate} onSelect={onSelect} />)
       const cells = screen.getAllByRole('gridcell')
 
       fireEvent.click(cells[2])
-      expect(spy).toHaveBeenCalledTimes(2)
-      expect(spy).toHaveBeenCalledWith(startOfDay(defaultTestDate))
-      expect(spy).toHaveBeenCalledWith('days')
+      expect(onSelect).toHaveBeenCalledTimes(1)
+      expect(onSelect).toHaveBeenCalledWith(startOfDay(defaultTestDate))
     })
   })
 
   describe('Accessibility', () => {
     it('no axe violations', async () => {
-      const { container } = render(
-        <MonthPicker
-          month={defaultTestDate}
-          setCalendarState={() => {}}
-          setCurrentMonth={() => {}}
-        />,
-      )
+      const { container } = render(<MonthPicker month={defaultTestDate} onSelect={() => {}} />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })

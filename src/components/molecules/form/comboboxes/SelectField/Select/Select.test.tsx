@@ -160,9 +160,9 @@ describe('Select', () => {
       })
 
       const optionElements = screen.getAllByRole('option')
-      expect(optionElements[0]).toHaveClass('selected')
+      expect(optionElements[0]).toHaveAttribute('data-selected')
       expect(optionElements[0]).toHaveAttribute('aria-selected', 'true')
-      expect(optionElements[1]).not.toHaveClass('selected')
+      expect(optionElements[1]).not.toHaveAttribute('data-selected')
       expect(optionElements[1]).toHaveAttribute('aria-selected', 'false')
     })
 
@@ -170,7 +170,7 @@ describe('Select', () => {
       render(
         <Select name="selectTest" value="" options={options} error="error" onChange={() => {}} />,
       )
-      expect(screen.getByRole('combobox')).toHaveClass('error')
+      expect(screen.getByRole('combobox')).toHaveAttribute('data-error')
     })
 
     it('disabled sets aria-disabled', () => {
@@ -298,8 +298,8 @@ describe('Select', () => {
       })
 
       const optionElements = screen.getAllByRole('option')
-      expect(optionElements[1]).toHaveClass('selected')
-      expect(optionElements[2]).not.toHaveClass('selected')
+      expect(optionElements[1]).toHaveAttribute('data-selected')
+      expect(optionElements[2]).not.toHaveAttribute('data-selected')
     })
   })
 

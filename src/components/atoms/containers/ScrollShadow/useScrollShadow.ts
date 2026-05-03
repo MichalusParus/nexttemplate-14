@@ -78,5 +78,26 @@ export const useScrollShadow = (disableHorizontal?: boolean) => {
     updateShadows()
   }, [updateShadows])
 
-  return { contentRef, shadowRefs, overflow, handleScroll }
+  const setTopShadowRef = useCallback((el: HTMLDivElement | null) => {
+    shadowRefs.current.top = el
+  }, [])
+  const setBottomShadowRef = useCallback((el: HTMLDivElement | null) => {
+    shadowRefs.current.bottom = el
+  }, [])
+  const setLeftShadowRef = useCallback((el: HTMLDivElement | null) => {
+    shadowRefs.current.left = el
+  }, [])
+  const setRightShadowRef = useCallback((el: HTMLDivElement | null) => {
+    shadowRefs.current.right = el
+  }, [])
+
+  return {
+    contentRef,
+    setTopShadowRef,
+    setBottomShadowRef,
+    setLeftShadowRef,
+    setRightShadowRef,
+    overflow,
+    handleScroll,
+  }
 }

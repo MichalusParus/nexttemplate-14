@@ -1,18 +1,28 @@
 'use client'
-import { FocusEvent, ForwardedRef, forwardRef, KeyboardEvent, MouseEvent, MutableRefObject, useCallback, useImperativeHandle, useRef } from 'react'
+import {
+  FocusEvent,
+  ForwardedRef,
+  forwardRef,
+  KeyboardEvent,
+  MouseEvent,
+  MutableRefObject,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+} from 'react'
 
 import { ButtonProps } from '@/components/atoms/common/Button'
-import {
-  buttonClass,
-  buttonSize,
-  buttonVariant,
-} from '@/components/atoms/common/Button/Button.style'
 import { ChipProps } from '@/components/atoms/common/Chip'
 import { ChevronIcon } from '@/components/atoms/icons'
 import { Ellipsis } from '@/components/atoms/typography/Ellipsis'
 import { ClearButton } from '@/components/molecules/form/comboboxes/SelectField/Select/ClearButton'
 import { TextInput, TextInputProps } from '@/components/molecules/form/inputs/TextField/TextInput'
-import { childrenIconSize, disabledVariant, focusWithinVariant } from '@/components/utils/common.style'
+import {
+  inputSize,
+  inputVariant,
+  inputWrapClass,
+} from '@/components/molecules/form/inputs/TextField/TextInput/TextInput.style'
+import { childrenIconSize, disabledVariant } from '@/components/utils/common.style'
 import { FOCUS_SELECTORS } from '@/components/utils/hooks/useFocus'
 import { InputProps, NativeDivProps, OptionType, StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
@@ -125,17 +135,17 @@ function AutocompleteComboboxComponent<T = string>(
       id={`${name}-combobox`}
       className={cn(
         'AutocompleteCombobox',
-        buttonClass,
-        'flex w-full cursor-text justify-between focus-within:ring-1',
-        isOpen && 'selected z-combobox',
-        error && 'error',
-        buttonVariant[variant][color],
-        focusWithinVariant[variant][color],
-        buttonSize[size],
+        inputWrapClass,
+        'flex cursor-text items-center justify-between gap-2',
+        isOpen && 'z-combobox',
+        inputVariant[variant][color],
+        inputSize[size],
         childrenIconSize[size],
-        disabled && 'disabled ' + disabledVariant[variant],
+        disabled && cn('disabled', disabledVariant[variant]),
         className,
       )}
+      data-selected={isOpen || undefined}
+      data-error={error || undefined}
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : 0}
       role="combobox"
@@ -171,7 +181,9 @@ function AutocompleteComboboxComponent<T = string>(
           id={name}
           className={cn(
             'AutocompleteInput',
-            'w-auto min-w-[30%] shrink border-0 outline-none [&_input]:p-0 [&:has(input:focus-visible)]:ring-0',
+            multiValue !== undefined
+              ? 'w-auto min-w-[30%] shrink border-0 outline-none [&_input]:p-0 [&:has(input:focus-visible)]:ring-0'
+              : 'w-full min-w-0 flex-1 border-0 outline-none [&_input]:p-0 [&:has(input:focus-visible)]:ring-0',
             inputClassName,
           )}
           name={name}
@@ -207,7 +219,9 @@ function AutocompleteComboboxComponent<T = string>(
         />
       </div>
       <div className="relative flex gap-2">
-        {onClear && (!!value || !!multiValue?.length) && <ClearButton onClick={onClear} data-testid="ClearAllButton" />}
+        {onClear && (!!value || !!multiValue?.length) && (
+          <ClearButton onClick={onClear} data-testid="ClearAllButton" />
+        )}
         <ChevronIcon className={cn('transition-transform', isOpen && 'rotate-180')} />
       </div>
     </div>

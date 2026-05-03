@@ -9,15 +9,15 @@ import { FieldProps } from '@/components/utils/types'
 import { FormStyleContext } from '../../forms/Form/Form'
 import { MultiAutocomplete, MultiAutocompleteProps } from './MultiAutocomplete/MultiAutocomplete'
 
-export type MultiAutocompleteFieldProps = Omit<
-  MultiAutocompleteProps,
+export type MultiAutocompleteFieldProps<T = string> = Omit<
+  MultiAutocompleteProps<T>,
   'value' | 'error' | 'onChange'
 > &
-  Partial<Pick<MultiAutocompleteProps, 'onChange'>> &
+  Partial<Pick<MultiAutocompleteProps<T>, 'onChange'>> &
   FieldProps
 
 /** Form and style context wrapper for MultiAutocomplete inside Label component. Label, Button, TextInput, Dropdown and ListBox props supported. USE CLIENT */
-export const MultiAutocompleteField = ({
+export function MultiAutocompleteField<T = string>({
   className,
   name,
   label,
@@ -27,7 +27,7 @@ export const MultiAutocompleteField = ({
   labelProps = {},
   onChange,
   ...rest
-}: MultiAutocompleteFieldProps) => {
+}: MultiAutocompleteFieldProps<T>) {
   const {
     control,
     formState: { errors },
@@ -40,8 +40,14 @@ export const MultiAutocompleteField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps}>
-          <MultiAutocomplete
+        <Label
+          name={name}
+          label={label}
+          size={size || formSize}
+          error={errorMessage}
+          {...labelProps}
+        >
+          <MultiAutocomplete<T>
             className={className}
             variant={variant || formVariant}
             color={color || formColor}

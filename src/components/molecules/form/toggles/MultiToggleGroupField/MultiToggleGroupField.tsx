@@ -17,7 +17,7 @@ export type MultiToggleGroupFieldProps<T = string> = Omit<
   FieldProps
 
 /** Form and style context wrapper for MultiToggleGroup inside fake Label component. Native InputHTMLAttributes and Label props supported. USE CLIENT */
-export const MultiToggleGroupField = <T = string,>({
+export function MultiToggleGroupField<T = string>({
   className,
   name,
   label,
@@ -27,7 +27,7 @@ export const MultiToggleGroupField = <T = string,>({
   labelProps = {},
   onChange,
   ...rest
-}: MultiToggleGroupFieldProps<T>) => {
+}: MultiToggleGroupFieldProps<T>) {
   const {
     control,
     formState: { errors },
@@ -40,7 +40,14 @@ export const MultiToggleGroupField = <T = string,>({
       name={name}
       control={control}
       render={({ field }) => (
-        <Label name={name} label={label} size={size || formSize} error={errorMessage} {...labelProps} variant="legend">
+        <Label
+          name={name}
+          label={label}
+          size={size || formSize}
+          error={errorMessage}
+          {...labelProps}
+          variant="legend"
+        >
           <MultiToggleGroup<T>
             className={className}
             variant={variant || formVariant}

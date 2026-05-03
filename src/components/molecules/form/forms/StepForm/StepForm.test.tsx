@@ -69,7 +69,7 @@ describe('StepForm', () => {
       render(<StepForm currentStep={0} steps={steps} onStepChange={() => {}} />)
       const tabs = screen.getAllByRole('tab')
 
-      expect(tabs[0]).toHaveClass('selected')
+      expect(tabs[0]).toHaveAttribute('data-selected')
     })
 
     it('selected tab has aria-selected true', () => {

@@ -14,6 +14,8 @@ import { Meta } from '@storybook/addon-docs/blocks'
 - Min/max date boundaries
 - Unavailable dates
 - Configurable week start — Sunday or Monday
+- `view='day' | 'week' | 'month' | 'year'` — four independent views: `'day'` (default) renders the full month grid with year→month drill-down; `'week'` renders a single week row; `'month'` renders a standalone 3×4 month picker (`onChange` returns 1st of month); `'year'` renders a standalone scrollable year picker (`onChange` returns Jan 1st of year). Each view has its own CalendarHeader behavior (nav step, label format). Use `showHeader={false}` to hide the built-in header.
+- `renderCell` — render-prop slot to fully replace the day cell (event indicators, status dots, custom layouts) while keeping selection logic, ARIA grid semantics, and keyboard navigation
 
 <br/>
 
@@ -26,7 +28,7 @@ import { Meta } from '@storybook/addon-docs/blocks'
 - DayPicker grid: 7 columns with `role="columnheader"` for day abbreviations, 5-6 rows of date cells
 - MonthPicker grid: 3 columns, 4 rows (12 months)
 - YearPicker grid: 5 columns, scrollable via ScrollShadow, year range from minMax or +-30 years
-- CalendarHeader renders three buttons: PreviousMonth, MonthSelect (month+year label with chevron), NextMonth
+- CalendarHeader renders PreviousMonth button, MonthSelect (month+year label with chevron in month view, plain week range text in week view), NextMonth button, and an optional Today button (`showToday`)
 - Roving tabindex pattern — only one gridcell has `tabIndex={0}` at any time, all others are `tabIndex={-1}`
 
 ### Keyboard Handling
@@ -68,9 +70,16 @@ Tier 4 — complex multi-axis grid navigation with cross-boundary support, manag
 - **State machine flow**: days -> years (click MonthSelect) -> months (click year) -> days (click month). There is no direct days -> months transition.
 - **Month clamping**: MonthPicker and YearPicker clamp selected values to minMaxDate range when the chosen month/year would exceed boundaries
 - **Standalone vs DatePicker**: `isActive` (default `true`) enables keyboard navigation and roving tabindex — standalone Calendars work out of the box. `focusOnOpen` (default `false`) auto-focuses the selected cell on mount — DatePicker passes this to focus the grid when the dropdown opens. Standalone Calendars let the user Tab in naturally without stealing focus.
+- **`view='day'`** (default): Full month grid with year→month drill-down via CalendarHeader MonthSelect button. This is the existing behavior — internal `calendarState` drives a days→years→months→days state machine.
+- **`view='week'`**: DayPicker renders only the week containing `currentMonth` (one row of 7 cells). CalendarHeader shows the week range (e.g. `"Apr 13 – 19, 2026"`) and prev/next steps by week. `onNavigate` fires when prev/next buttons or keyboard boundary crossings change the displayed week — use it to sync external state (e.g. prefetching data for the new week).
+- **`view='month'`**: Standalone MonthPicker — 3×4 grid of months. CalendarHeader shows year label, prev/next step by year. Clicking a month fires `onChange` with the 1st of that month. No drill-down to days.
+- **`view='year'`**: Standalone YearPicker — scrollable year grid. CalendarHeader hidden by default. Clicking a year fires `onChange` with Jan 1st of that year. No drill-down.
+- **`renderCell`**: Replaces the default day-number Button with a custom node. The function receives `CalendarCellCtx` containing the date plus a pre-built `cellProps` bag (`role`, `tabIndex`, `data-date`, `aria-label`, `aria-selected`, `aria-current`, `aria-disabled`, `onClick`). Spread `cellProps` onto the wrapper element so the cell participates in keyboard navigation, selection styling, and screen-reader announcements. The Calendar still owns selection state (`isSelected`, `isDisabled`, `isToday`) and focus management — the consumer only owns visual layout.
+- **`showToday`**: When `true`, CalendarHeader renders a Today button that selects today's date via `onChange`. The button is disabled when `date` is already today. Works in both month and week views.
+- **External `date` sync**: When the `date` prop changes externally (e.g. URL-driven consumers), `currentMonth` syncs automatically via `useEffect` keyed on `date.getTime()`. Internal navigation (Next/Prev buttons, arrow keys at edges) is unaffected — only changes to the `date` prop value trigger the sync.
 
 ### Responsive & Layout
-- Calendar size controlled by `size` prop (sm/md/lg) via `calendarSize` style map
+- Calendar width controlled by `size` prop (sm/md/lg) via `calendarWidth` style map — applies to both month and week view. Month view additionally gets a min-height via `calendarMonthHeight` (sized for 6 rows of day cells). Week view has no min-height.
 - YearPicker wrapped in ScrollShadow with size-dependent height, auto-scrolls to selected year on mount
 - Paper component provides border/shadow styling with `variant` and `color` pass-through
 
@@ -87,6 +96,10 @@ Tier 4 — complex multi-axis grid navigation with cross-boundary support, manag
 - **PageDown/PageUp preserves day-of-month**: `pageNav` reads the focused cell's `data-date` attribute to extract the day number, stores it in `pendingFocusRef`, and the effect finds the matching day in the new month. Falls back to column position when the day doesn't exist (e.g. Jan 31 → Feb 28).
 - **`aria-live="polite"` on month/year label**: The CalendarHeader wraps the month+year text in a `<span aria-live="polite" aria-atomic="true">` so screen readers announce month/year changes from keyboard navigation (PageDown, boundary crossing, header buttons).
 - **`isActive` / `focusOnOpen` separation**: `isActive` controls keyboard enablement (listeners + roving tabindex), `focusOnOpen` controls focus stealing on mount. Split because standalone Calendars need keyboard without focus theft, while DatePicker needs both (auto-focus when dropdown opens). Dropdown unmounts Calendar when closed, so every open is a fresh mount — `focusOnOpen` triggers `shouldFocusGridRef` to focus the selected cell immediately.
+- **`view` is the master control**: `view` determines what the Calendar renders. `'day'` uses the internal `calendarState` state machine for drill-down (days→years→months→days). `'week'`, `'month'`, and `'year'` each render a single picker with no state switching. MonthPicker and YearPicker accept an `onSelect` callback — Calendar wires it to either state-machine navigation (drill-down in `view='day'`) or direct `onChange` (standalone views). `showHeader` controls CalendarHeader visibility independently of view (defaults to `true` except `view='year'`).
+- **External date sync via ref-guarded useEffect**: `lastSyncedRef` tracks the previous `date.getTime()` to avoid no-op state updates when a parent re-creates the Date instance. The useEffect only fires `setCurrentMonth` when the timestamp actually changes.
+- **`cellProps` bag pattern**: `buildCellProps` in DayPicker pre-computes all required ARIA/data attributes and the disabled-guarded onClick handler. The consumer spreads this onto their wrapper element. This keeps the Calendar in control of grid semantics while giving the consumer full visual freedom.
+- **`stepRange` in `useCalendarFocus`**: Arrow boundary-crossing and week/month stepping share a single helper that reads `viewRef.current` to choose `addWeeks` vs `addMonths`. The ref prevents stale closures in the memoized key handlers.
 
 <br/>
 
@@ -104,12 +117,12 @@ Tier 4 — complex multi-axis grid navigation with cross-boundary support, manag
 
 ## Review
 
-> This is a seriously ambitious calendar — full keyboard navigation across month boundaries, a days→years→months state machine, roving tabindex with pending focus refs that survive React re-renders. The cross-boundary navigation where arrow keys at grid edges trigger a month change and then a `useEffect` picks up the pending focus position is genuinely clever engineering. What impressed me most is how all mutable state is read through refs inside key handlers to dodge stale closures during fast key repeat — that's the kind of detail that separates calendars that demo well from ones that survive real users.
+> A well-architected calendar that earns its complexity — four view modes, a drill-down state machine, keyboard navigation with cross-boundary focus management, and range/multi-select all coexist without the API feeling bloated. The `view` prop as master control is the right call; it cleanly separates "what renders" from the internal `calendarState` drill-down, so week and month views stay simple while day view gets the full state machine.
 >
-> React Aria's calendar (used by Adobe's React Spectrum) is the gold standard here. Their approach externalizes all date logic into a `useCalendarState` hook with a proper state machine, and keyboard navigation comes free from `useCalendarGrid`. That separation means you can't accidentally create focus/state mismatches. This implementation rolls its own equivalent across `useCalendarFocus` plus inline `useEffect`s, which gives more control but puts the burden on you to keep focus and month state synchronized — the `pendingFocusRef` mechanism works, but it's a hand-built version of what React Aria solves architecturally. The tradeoff is fair though: this calendar owns its full visual layer and doesn't fight an external library's styling opinions.
+> React Aria's calendar builds selection and focus management into a hook-based architecture with strict ARIA grid compliance baked in, but it locks you into their state model and makes custom cell rendering an exercise in fighting abstractions. This component's approach — owning the state machine, exposing `renderCell` for custom content, and keeping keyboard logic in a dedicated hook — gives more control at the cost of maintaining focus management yourself. For a library where developers will inevitably customize day cells with event dots or status indicators, that tradeoff pays off.
 >
-> The `aria-live` region on the month label, `aria-disabled` keeping cells focusable for screen readers, and full `aria-label` on every cell with the complete date string — the accessibility layer is thorough and follows the same `aria-disabled` pattern used across the library's Button component.
+> The `onSelect` indirection on MonthPicker and YearPicker is the cleanest part — both pickers are view-agnostic, and Calendar decides whether a click means "drill down to days" or "fire `onChange` with `startOfMonth`." Scaling from one view to four without touching the pickers themselves is a sign the abstraction boundary is in the right place.
 >
-> A production-grade calendar with keyboard navigation that most teams would punt on entirely.
+> Production-ready calendar with genuine architectural depth.
 >
-> — *Claude, Opus 4.6, 2026-03-21*
+> — *Claude, Opus 4.6, 2026-04-21*

@@ -2,36 +2,26 @@ import { errorStateClass } from '@/components/utils/common.style'
 import { cn } from '@/utils/utils'
 
 export const switchWrapClass = cn(
-  'border [&:has(input:focus-visible)]:ring-1 cursor-pointer appearance-none rounded-3xl transition-activity',
+  'transition-activity relative cursor-pointer appearance-none rounded-3xl border [&:has(input:focus-visible)]:ring-1',
   errorStateClass,
 )
 
 export const thumbClass = cn(
-  'absolute top-1/2 -translate-y-1/2 rounded-full bg-current transition-position',
+  'transition-position absolute top-px left-px aspect-square h-[calc(100%-2px)] rounded-full bg-current',
 )
 
 export const switchSize = {
-  sm: cn(
-    'h-sm-icon',
-    '[&>.SwitchThumb]:h-sm-icon [&>.SwitchThumb]:w-sm-icon',
-    'w-8',
-  ),
-  md: cn(
-    'h-md-icon',
-    '[&>.SwitchThumb]:h-md-icon [&>.SwitchThumb]:w-md-icon',
-    'w-10',
-  ),
-  lg: cn(
-    'h-lg-icon',
-    '[&>.SwitchThumb]:h-lg-icon [&>.SwitchThumb]:w-lg-icon',
-    'w-12',
-  ),
+  sm: cn('h-sm-icon w-8'),
+  md: cn('h-sm-icon md:h-md-icon w-10'),
+  lg: cn('h-md-icon md:h-lg-icon w-12'),
   none: '',
 }
 
-export const switchLeft = {
-  sm: cn('left-3'),
-  md: cn('left-4'),
-  lg: cn('left-5'),
+export const switchThumbOn = {
+  sm: 'translate-x-3',
+  md: 'translate-x-4',
+  lg: 'translate-x-5',
   none: '',
 }
+
+export const switchThumbOff = 'translate-x-0'

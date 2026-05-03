@@ -12,6 +12,7 @@ import {
   startOfMonth,
   startOfYear,
 } from 'date-fns'
+import { useTranslations } from 'next-intl'
 import { MutableRefObject, useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { Button, ButtonProps } from '@/components/atoms/common/Button'
@@ -20,8 +21,7 @@ import { disabledVariant } from '@/components/utils/common.style'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 
-import { CalendarState } from '../Calendar'
-import { scrollHeight } from '../Calendar.styles'
+import { scrollHeight } from '../Calendar.style'
 
 export type YearPickerProps = StyleProps & {
   /** current year */
@@ -32,10 +32,8 @@ export type YearPickerProps = StyleProps & {
   buttonProps?: Partial<ButtonProps>
   /** ref for the grid container (used by useCalendarFocus) */
   gridRef?: MutableRefObject<HTMLDivElement | null>
-  /** set calendar state function */
-  setCalendarState: (state: CalendarState) => void
-  /** set current month function */
-  setCurrentMonth: (date: Date) => void
+  /** callback when a year is selected — Calendar decides whether this fires onChange or navigates the state machine */
+  onSelect: (date: Date) => void
 }
 
 /** Year picker subcomponent for calendar. USE CLIENT */
@@ -47,9 +45,9 @@ export const YearPicker = ({
   size = 'md',
   buttonProps = {},
   gridRef,
-  setCalendarState,
-  setCurrentMonth,
+  onSelect,
 }: YearPickerProps) => {
+  const t = useTranslations('Components')
   const scrollRef = useRef<HTMLDivElement>(null)
   const { className: buttonClassName, ...restButtonProps } = buttonProps
   const yearRows = useMemo(() => {
@@ -73,21 +71,20 @@ export const YearPicker = ({
     (y: Date) => {
       const newDate = setYear(year, getYear(y))
       if (minMaxDate?.min && isBefore(startOfMonth(newDate), startOfMonth(minMaxDate?.min))) {
-        setCurrentMonth(minMaxDate?.min)
+        onSelect(minMaxDate?.min)
       } else if (minMaxDate?.max && isAfter(startOfMonth(newDate), startOfMonth(minMaxDate?.max))) {
-        setCurrentMonth(minMaxDate?.max)
+        onSelect(minMaxDate?.max)
       } else {
-        setCurrentMonth(newDate)
+        onSelect(newDate)
       }
-      setCalendarState('months')
     },
-    [year, minMaxDate, setCalendarState, setCurrentMonth],
+    [year, minMaxDate, onSelect],
   )
 
   useEffect(() => {
     if (year && scrollRef.current) {
       const container = scrollRef.current.querySelector('.ContentWrap') as HTMLElement | null
-      const selectedTab = scrollRef.current.querySelector('.selected') as HTMLElement | null
+      const selectedTab = scrollRef.current.querySelector('[data-selected]') as HTMLElement | null
 
       if (selectedTab && container) {
         const selectedTop = selectedTab.offsetTop
@@ -104,6 +101,7 @@ export const YearPicker = ({
       <div
         className={cn('YearPicker', 'grid grid-cols-5 gap-1')}
         role="grid"
+        aria-label={t('selectYear')}
         data-testid="YearPicker"
         ref={gridRef}
       >
@@ -118,10 +116,9 @@ export const YearPicker = ({
                   key={y.toDateString()}
                   className={cn(
                     'DateButton',
-                    'w-full border-none font-normal',
-                    isDisabled && 'disabled',
-                    disabledVariant[variant],
-                    isSameYear(y, year) && 'selected shadow-ring',
+                    'w-full font-normal',
+                    variant !== 'contained' && 'text-text dark:text-contrast',
+                    isDisabled && cn('disabled', disabledVariant[variant]),
                     buttonClassName,
                   )}
                   variant={variant}
@@ -130,9 +127,11 @@ export const YearPicker = ({
                   startIcon={format(y, 'yyyy')}
                   aria-label={format(y, 'yyyy')}
                   hideShadow
+                  hideBorder={!isSameYear(y, year)}
                   aria-disabled={isDisabled || undefined}
                   tabIndex={-1}
                   role="gridcell"
+                  data-selected={isSameYear(y, year) || undefined}
                   aria-selected={isSameYear(y, year)}
                   aria-current={isSameYear(y, new Date()) ? 'date' : undefined}
                   onClick={() => !isDisabled && handleYearChange(y)}

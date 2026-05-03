@@ -154,7 +154,7 @@ describe('DatePickerCombobox', () => {
       )
       const combobox = screen.getByRole('combobox')
 
-      expect(combobox).toHaveClass('selected')
+      expect(combobox).toHaveAttribute('data-selected')
     })
 
     it('displays formatted date', () => {
@@ -263,7 +263,7 @@ describe('DatePickerCombobox', () => {
       )
       const combobox = screen.getByRole('combobox')
 
-      expect(combobox).toHaveClass('error')
+      expect(combobox).toHaveAttribute('data-error')
     })
 
     it('disabled sets aria-disabled', () => {

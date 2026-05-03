@@ -105,7 +105,7 @@ export const Disclosure = forwardRef<HTMLDivElement | null, PropsWithChildren<Di
               ? 'visible grid-rows-[1fr] opacity-100'
               : 'invisible grid-rows-[0fr] opacity-0',
           )}
-          inert={!openState}
+          inert={!openState || undefined}
           data-testid="DisclosureDropdown"
         >
           <Paper

@@ -1,8 +1,8 @@
 'use client'
 import { forwardRef } from 'react'
 
-import { Tabs, TabsProps } from '@/components/organisms/common/Tabs'
-import { TabOption } from '@/components/organisms/common/Tabs/TabList'
+import { Tabs, TabsProps } from '@/components/organisms/navigation/Tabs'
+import { TabOption } from '@/components/organisms/navigation/Tabs/TabList'
 import { StyleProps } from '@/components/utils/types'
 import { cn } from '@/utils/utils'
 

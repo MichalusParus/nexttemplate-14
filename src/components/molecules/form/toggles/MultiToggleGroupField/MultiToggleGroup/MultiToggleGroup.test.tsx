@@ -60,9 +60,9 @@ describe('MultiToggleGroup', () => {
       )
       const buttons = screen.getAllByRole('button')
 
-      expect(buttons[0]).toHaveClass('selected')
+      expect(buttons[0]).toHaveAttribute('data-selected')
       expect(buttons[0]).toHaveTextContent(options[0].label)
-      expect(buttons[3]).not.toHaveClass('selected')
+      expect(buttons[3]).not.toHaveAttribute('data-selected')
       expect(buttons[3]).toHaveTextContent(options[3].label)
     })
 
@@ -77,11 +77,11 @@ describe('MultiToggleGroup', () => {
       )
       const buttons = screen.getAllByRole('button')
 
-      expect(buttons[0]).toHaveClass('selected')
-      expect(buttons[1]).not.toHaveClass('selected')
-      expect(buttons[2]).toHaveClass('selected')
-      expect(buttons[3]).not.toHaveClass('selected')
-      expect(buttons[4]).toHaveClass('selected')
+      expect(buttons[0]).toHaveAttribute('data-selected')
+      expect(buttons[1]).not.toHaveAttribute('data-selected')
+      expect(buttons[2]).toHaveAttribute('data-selected')
+      expect(buttons[3]).not.toHaveAttribute('data-selected')
+      expect(buttons[4]).toHaveAttribute('data-selected')
     })
 
     it('renders content instead of label when provided', () => {
@@ -113,7 +113,7 @@ describe('MultiToggleGroup', () => {
       )
       const group = screen.getByRole('group')
 
-      expect(group).toHaveClass('error')
+      expect(group).toHaveAttribute('data-error')
     })
 
     it('column applies flex-col to group wrapper', () => {
@@ -160,7 +160,7 @@ describe('MultiToggleGroup', () => {
       const group = screen.getByRole('group')
       const buttons = screen.getAllByRole('button')
 
-      expect(group).toHaveClass('error')
+      expect(group).toHaveAttribute('data-error')
       expect(group).toHaveAttribute('aria-disabled', 'true')
       expect(buttons[0]).toHaveAttribute('aria-disabled', 'true')
     })

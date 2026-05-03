@@ -137,7 +137,7 @@ describe('RadioGroup', () => {
       )
       const radios = screen.getAllByRole('radio')
 
-      expect(radios[0]).toHaveClass('error')
+      expect(radios[0]).toHaveAttribute('data-error')
     })
 
     it('column applies flex-col to fieldset', () => {
@@ -175,7 +175,7 @@ describe('RadioGroup', () => {
       )
       const radios = screen.getAllByRole('radio')
 
-      expect(radios[0]).toHaveClass('error')
+      expect(radios[0]).toHaveAttribute('data-error')
       expect(radios[0]).toHaveAttribute('disabled')
     })
 
